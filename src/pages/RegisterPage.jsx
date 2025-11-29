@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Country, State, City } from 'country-state-city';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -28,6 +28,7 @@ const Register = () => {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
+  const Navigate = useNavigate()
 
   // Country codes with flags
   const countryCodes = [
@@ -289,7 +290,7 @@ const Register = () => {
         });
 
         setOtp("");
-        window.location.href = "/login";
+       Navigate("/login")
       } else {
         setApiError(data.message || "Invalid OTP. Please try again.");
       }
