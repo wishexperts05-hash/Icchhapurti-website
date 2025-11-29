@@ -17,12 +17,12 @@ export default function AccountPage() {
     { link: "/lucky-draw", icon: Ticket, label: 'Lucky Draw' },
     { link: "/chat-support", icon: MessageCircle, label: 'Chat Support' },
     { link: "/languages", icon: Globe, label: 'Website Language' },
-    { link: "/about-us", icon: Globe, label: 'About Us' },
-    { link: "/blogs", icon: Globe, label: 'Our Blogs' },
-    { link: "/terms", icon: FileText, label: 'Terms & Conditions' },
-    { link: "/privacy", icon: Shield, label: 'Privacy Policy' },
-    { link: "/faq", icon: Shield, label: 'Faq' },
-    { link: 11, icon: LogOut, label: 'Logout' },
+    // { link: "/about-us", icon: Globe, label: 'About Us' },
+    // { link: "/blogs", icon: Globe, label: 'Our Blogs' },
+    // { link: "/terms", icon: FileText, label: 'Terms & Conditions' },
+    // { link: "/privacy", icon: Shield, label: 'Privacy Policy' },
+    // { link: "/faq", icon: Shield, label: 'Faq' },
+    // { link: 11, icon: LogOut, label: 'Logout' },
   ];
 
   return (

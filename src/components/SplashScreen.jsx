@@ -7,7 +7,7 @@ const SplashScreen = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       navigate("/homePage"); // Redirect to login
-    }, 10000); // 10 seconds
+    }, 5000); // 10 seconds
 
     return () => clearTimeout(timer); // Cleanup when unmounted
   }, [navigate]);

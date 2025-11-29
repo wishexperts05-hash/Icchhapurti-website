@@ -5,7 +5,7 @@ import DownloadAppSection from '../components/DownloadAppSection'
 
 const HomePage = () => {
     return (
-        <div className='max-w-7xl mx-auto'>
+        <div className='md:max-w-7xl mx-auto'>
 
             <HeroSection />
             <OurProducts />

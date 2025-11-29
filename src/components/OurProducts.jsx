@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Star, ChevronLeft, ChevronRight, ShoppingCart, Eye, Heart, Loader2, Check } from 'lucide-react';
-import { use } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function ImageCarousel({ images }) {
@@ -17,15 +16,15 @@ function ImageCarousel({ images }) {
 
   if (!images || images.length === 0) {
     return (
-      <div className="h-56 bg-gray-200 flex items-center justify-center">
-        <span className="text-gray-400">No Image</span>
+      <div className="h-48 sm:h-56 bg-gray-200 flex items-center justify-center">
+        <span className="text-gray-400 text-sm">No Image</span>
       </div>
     );
   }
 
   return (
     <div
-      className="relative h-56 overflow-hidden group"
+      className="relative h-48 sm:h-56 overflow-hidden group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
         setIsHovered(false);
@@ -40,8 +39,7 @@ function ImageCarousel({ images }) {
           className="absolute inset-0 w-full h-full object-contain transition-opacity duration-500"
           style={{ opacity: i === current ? 1 : 0 }}
           onError={e => {
-            e.target.src =
-              'https://via.placeholder.com/300x200?text=No+Image';
+            e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
           }}
         />
       ))}
@@ -80,8 +78,7 @@ function ImageCarousel({ images }) {
               }}
               className="w-1.5 h-1.5 rounded-full transition-all"
               style={{
-                backgroundColor:
-                  i === current ? '#C9A227' : 'rgba(255,255,255,0.5)',
+                backgroundColor: i === current ? '#C9A227' : 'rgba(255,255,255,0.5)',
               }}
             />
           ))}
@@ -92,10 +89,12 @@ function ImageCarousel({ images }) {
 }
 
 
+
 function ProductCard({ product, onAddToCart }) {
   const [liked, setLiked] = useState(false);
   const [addingToCart, setAddingToCart] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
+  const navigate = useNavigate();
 
   const handleAddToCart = async (e) => {
     e.stopPropagation();
@@ -111,14 +110,13 @@ function ProductCard({ product, onAddToCart }) {
       setAddingToCart(false);
     }
   };
-const navigate = useNavigate()
+
   const handleViewDetails = () => {
-    // Update this to match your routing structure
-   navigate(`/product/${product.id || product._id}`)
+    navigate(`/product/${product.id || product._id}`);
   };
 
   return (
-    <div className="bg-white rounded-xl  overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 relative group">
+    <div className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 relative group">
       {product.discount && (
         <div className="absolute top-2 left-2 z-10">
           <div className="px-2 py-1 rounded-md text-xs font-bold text-white" style={{ background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' }}>
@@ -127,53 +125,78 @@ const navigate = useNavigate()
         </div>
       )}
       
-      <button onClick={() => setLiked(!liked)} className="absolute top-2 right-2 z-10 w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md transition-transform hover:scale-110">
-        <Heart size={16} fill={liked ? '#ef4444' : 'none'} stroke={liked ? '#ef4444' : '#666'} />
+      <button 
+        onClick={() => setLiked(!liked)} 
+        className="absolute top-2 right-2 z-10 w-7 h-7 sm:w-8 sm:h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md transition-transform hover:scale-110"
+      >
+        <Heart size={14} className="sm:w-4 sm:h-4" fill={liked ? '#ef4444' : 'none'} stroke={liked ? '#ef4444' : '#666'} />
       </button>
 
       <div style={{ background: 'linear-gradient(180deg, #e8f4f8 0%, #c8dce8 100%)' }}>
-        <ImageCarousel images={product.images || []} />
+        <div className="h-48 sm:h-56 overflow-hidden flex items-center justify-center p-2">
+          <img
+            src={product.images?.[0] || 'https://via.placeholder.com/300x200?text=No+Image'}
+            alt={product.name}
+            className="w-full h-full object-contain"
+            onError={(e) => {
+              e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
+            }}
+          />
+        </div>
       </div>
 
-      <div className="p-4">
-        <h3 className="text-sm font-semibold text-gray-800 leading-snug mb-2 line-clamp-2 min-h-10">{product.name || 'Untitled Product'}</h3>
+      <div className="p-3 sm:p-4">
+        <h3 className="text-xs sm:text-sm font-semibold text-gray-800 leading-snug mb-2 line-clamp-2 min-h-8 sm:min-h-10">
+          {product.name || 'Untitled Product'}
+        </h3>
+
+        {/* Description */}
+        {product.description && (
+          <p className="text-xs text-gray-600 mb-2 line-clamp-2 leading-relaxed">
+            {product.description}
+          </p>
+        )}
         
-        <div className="flex items-center gap-1.5 mb-2">
-          <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded" style={{ backgroundColor: 'rgba(201,162,39,0.1)' }}>
-            <Star size={12} fill="#C9A227" stroke="#C9A227"/>
+        <div className="flex items-center gap-1 sm:gap-1.5 mb-2">
+          <div className="flex items-center gap-0.5 px-1 sm:px-1.5 py-0.5 rounded" style={{ backgroundColor: 'rgba(201,162,39,0.1)' }}>
+            <Star size={10} className="sm:w-3 sm:h-3" fill="#C9A227" stroke="#C9A227"/>
             <span className="text-xs font-semibold" style={{ color: '#C9A227' }}>{product.overallRating || 0}</span>
           </div>
-          <span className="text-xs text-gray-400">({product.totalReviews || '0'} Reviews)</span>
+          <span className="text-xs text-gray-400">({product.totalReviews || '0'})</span>
         </div>
         
         <div className="flex items-center gap-2 mb-3">
-          <span className="text-lg font-bold" style={{ color: '#C9A227' }}>₹{product.price || 0}</span>
+          <span className="text-base sm:text-lg font-bold" style={{ color: '#C9A227' }}>₹{product.price || 0}</span>
           {product.originalPrice && (
-            <span className="text-sm text-gray-400 line-through">₹{product.originalPrice}</span>
+            <span className="text-xs sm:text-sm text-gray-400 line-through">₹{product.originalPrice}</span>
           )}
         </div>
         
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <button 
             onClick={handleAddToCart}
             disabled={addingToCart || addedToCart}
-            className="flex-1 flex items-center justify-center gap-1 py-2 px-3 border-2 rounded-lg font-medium text-xs transition-all hover:bg-amber-50 disabled:opacity-70 disabled:cursor-not-allowed" 
+            className="flex-1 flex items-center justify-center gap-1 py-2 px-2 sm:px-3 border-2 rounded-lg font-medium text-xs transition-all hover:bg-amber-50 disabled:opacity-70 disabled:cursor-not-allowed" 
             style={{ borderColor: '#C9A227', color: addedToCart ? '#22c55e' : '#C9A227' }}
           >
             {addingToCart ? (
               <Loader2 size={14} className="animate-spin" />
             ) : addedToCart ? (
               <>
-                <Check size={14} /> Added
+                <Check size={14} /> <span className="hidden sm:inline">Added</span>
               </>
             ) : (
               <>
-                <ShoppingCart size={14}/> Add
+                <ShoppingCart size={14}/> <span className="hidden sm:inline">Add</span>
               </>
             )}
           </button>
-          <button onClick={handleViewDetails} className="flex-1 flex items-center justify-center gap-1 py-2 px-3 rounded-lg font-medium text-xs text-white transition-all hover:opacity-90" style={{ background: 'linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)' }}>
-            <Eye size={14}/> Details
+          <button 
+            onClick={handleViewDetails} 
+            className="flex-1 flex items-center justify-center gap-1 py-2 px-2 sm:px-3 rounded-lg font-medium text-xs text-white transition-all hover:opacity-90" 
+            style={{ background: 'linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)' }}
+          >
+            <Eye size={14}/> <span className="hidden sm:inline">Details</span>
           </button>
         </div>
       </div>
@@ -181,10 +204,13 @@ const navigate = useNavigate()
   );
 }
 
+// export default ProductCard;
+
 export default function OurProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProducts();
@@ -209,7 +235,6 @@ export default function OurProducts() {
 
       const data = await response.json();
 
-      // Handle different API response structures
       if (data.success && Array.isArray(data.products)) {
         setProducts(data.products);
       } else if (data.success && Array.isArray(data.data)) {
@@ -226,14 +251,13 @@ export default function OurProducts() {
       setLoading(false);
     }
   };
-const Navigate = useNavigate()
 
   const handleAddToCart = async (product) => {
     const token = localStorage.getItem("token");
     
     if (!token) {
       alert("Please login to add items to cart");
-     Navigate('/login');
+      navigate('/login');
       return;
     }
 
@@ -259,12 +283,8 @@ const Navigate = useNavigate()
         throw new Error(result.message || 'Failed to add to cart');
       }
 
-      console.log('Added to cart successfully:', result);
-      
-      // Optional: Update cart count in header or show notification
-      // You can dispatch an event here that your header component listens to
       window.dispatchEvent(new CustomEvent('cartUpdated', { detail: result }));
-      Navigate("/cart")
+      navigate("/cart");
     } catch (error) {
       console.error('Error adding to cart:', error);
       alert(error.message || 'Failed to add product to cart. Please try again.');
@@ -274,10 +294,10 @@ const Navigate = useNavigate()
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0f1c2e 0%, #1a3352 50%, #0d2440 100%)' }}>
+      <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, #0f1c2e 0%, #1a3352 50%, #0d2440 100%)' }}>
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4" style={{ color: '#C9A227' }} />
-          <p className="text-white text-lg">Loading products...</p>
+          <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 animate-spin mx-auto mb-4" style={{ color: '#C9A227' }} />
+          <p className="text-white text-base sm:text-lg">Loading products...</p>
         </div>
       </div>
     );
@@ -285,16 +305,16 @@ const Navigate = useNavigate()
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6" style={{ background: 'linear-gradient(135deg, #0f1c2e 0%, #1a3352 50%, #0d2440 100%)' }}>
-        <div className="bg-white rounded-2xl p-8 max-w-md w-full text-center shadow-2xl">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-3xl">⚠️</span>
+      <div className="min-h-screen flex items-center justify-center p-4 sm:p-6" style={{ background: 'linear-gradient(135deg, #0f1c2e 0%, #1a3352 50%, #0d2440 100%)' }}>
+        <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl sm:text-3xl">⚠️</span>
           </div>
-          <h3 className="text-xl font-bold text-gray-800 mb-2">Error Loading Products</h3>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">Error Loading Products</h3>
+          <p className="text-sm sm:text-base text-gray-600 mb-4">{error}</p>
           <button 
             onClick={fetchProducts}
-            className="px-6 py-2 rounded-lg text-white font-medium transition-all hover:opacity-90"
+            className="px-5 sm:px-6 py-2 rounded-lg text-white font-medium transition-all hover:opacity-90 text-sm sm:text-base"
             style={{ background: 'linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)' }}
           >
             Try Again
@@ -306,32 +326,37 @@ const Navigate = useNavigate()
 
   if (products.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6" style={{ background: 'linear-gradient(135deg, #0f1c2e 0%, #1a3352 50%, #0d2440 100%)' }}>
-        <div className="bg-white rounded-2xl p-8 max-w-md w-full text-center shadow-2xl">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-3xl">📦</span>
+      <div className="min-h-screen flex items-center justify-center p-4 sm:p-6" style={{ background: 'linear-gradient(135deg, #0f1c2e 0%, #1a3352 50%, #0d2440 100%)' }}>
+        <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl sm:text-3xl">📦</span>
           </div>
-          <h3 className="text-xl font-bold text-gray-800 mb-2">No Products Found</h3>
-          <p className="text-gray-600">There are currently no products available.</p>
+          <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">No Products Found</h3>
+          <p className="text-sm sm:text-base text-gray-600">There are currently no products available.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen p-6 md:p-8" style={{ background: 'linear-gradient(135deg, #0f1c2e 0%, #1a3352 50%, #0d2440 100%)' }}>
+    <div className="min-h-screen p-4 sm:p-6 md:p-8" style={{ background: 'linear-gradient(135deg, #0f1c2e 0%, #1a3352 50%, #0d2440 100%)' }}>
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
           <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">Our Products</h2>
-            <p className="text-gray-400 text-sm">Discover amazing deals on top products</p>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-1">Our Products</h2>
+            <p className="text-gray-400 text-xs sm:text-sm">Discover amazing deals on top products</p>
           </div>
-          <button onClick={() => Navigate('/products')} className="flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium transition-all hover:gap-2" style={{ backgroundColor: 'rgba(201,162,39,0.15)', color: '#C9A227', border: '1px solid rgba(201,162,39,0.3)' }}>
+          <button 
+            onClick={() => navigate('/products')} 
+            className="flex items-center gap-1 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all hover:gap-2" 
+            style={{ backgroundColor: 'rgba(201,162,39,0.15)', color: '#C9A227', border: '1px solid rgba(201,162,39,0.3)' }}
+          >
             View All <ChevronRight size={16}/>
           </button>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-6">
+        {/* Mobile: 1 column, Desktop: 2 columns */}
+        <div className="grid grid-cols-2 md:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
           {products.map((product) => (
             <ProductCard 
               key={product.id || product._id} 
@@ -341,8 +366,8 @@ const Navigate = useNavigate()
           ))}
         </div>
 
-        <div className="mt-8 text-center">
-          <p className="text-gray-400 text-sm">
+        <div className="mt-6 sm:mt-8 text-center">
+          <p className="text-gray-400 text-xs sm:text-sm">
             Showing {products.length} product{products.length !== 1 ? 's' : ''}
           </p>
         </div>

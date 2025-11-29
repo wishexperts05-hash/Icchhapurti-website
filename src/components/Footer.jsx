@@ -26,9 +26,10 @@ const Footer = () => {
   className="absolute inset-0 pointer-events-none"
   style={{
     background:
-      "linear-gradient(135deg, rgba(10, 22, 40, 0.35) 0%, rgba(26, 58, 92, 0.35) 50%, rgba(13, 42, 74, 0.35) 100%)",
+      "linear-gradient(135deg, rgba(6, 14, 28, 0.75) 0%, rgba(14, 30, 50, 0.75) 50%, rgba(8, 20, 36, 0.75) 100%)",
   }}
 />
+
 
       </div>
 

@@ -1,0 +1,35 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "blogs": "Blogs",
+    "products": "Products",
+    "cart": "Cart",
+    "wallet": "Wallet",
+    "orders": "My Orders",
+    "account": "Account",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "common": {
+    "search": "Search products...",
+    "viewAll": "View All",
+    "loading": "Loading...",
+    "error": "Error",
+    "trustedUsers": "Trusted users"
+  },
+  "products": {
+    "title": "Our Products",
+    "subtitle": "Discover amazing deals on top products",
+    "addToCart": "Add to Cart",
+    "viewDetails": "View Details",
+    "price": "Price",
+    "rating": "Rating",
+    "reviews": "Reviews"
+  },
+  "language": {
+    "title": "Language",
+    "subtitle": "Choose Your Language",
+    "save": "Save Language"
+  }
+}
