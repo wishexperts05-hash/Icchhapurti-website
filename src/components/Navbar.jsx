@@ -10,16 +10,19 @@ export default function Navbar() {
   const [searchFocused, setSearchFocused] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-const { t } = useTranslation();
-
-  const menuItems = [
-    { icon: MdAccountBox, label: "Account", href: "/account" },
-    { icon: Home, label: "Home", href: "/homePage" },
-    { icon: ShoppingBag, label: "Products", href: "/products" },
-    { icon: Package, label: "My Orders", href: "/orders" },
-    { icon: Wallet, label: "Wallet", href: "/wallet" },
-    { icon: ShoppingBag, label: "Cart", href: "/cart" },
+  const { t } = useTranslation();
+  const token = localStorage?.getItem("token");
+  const baseMenu = [
+    { icon: MdAccountBox, label: "Account", href: "/account", auth: true },
+    { icon: Home, label: "Home", href: "/homePage", auth: false },
+    { icon: ShoppingBag, label: "Products", href: "/products", auth: false },
+    { icon: Package, label: "My Orders", href: "/orders", auth: true },
+    { icon: Wallet, label: "Wallet", href: "/wallet", auth: true },
+    { icon: ShoppingBag, label: "Cart", href: "/cart", auth: true },
   ];
+
+  // 👇 Filter only authorized items if user logged in
+  const menuItems = baseMenu.filter(item => !item.auth || token);
 
   const navLinks = [
     { label: t(`nav.home`), href: "/homePage" },
@@ -66,15 +69,13 @@ const { t } = useTranslation();
                 <Link
                   key={index}
                   to={link.href}
-                  className={`text-gray-700 font-medium transition-colors relative pb-1 ${
-                    isActive(link.href) ? 'text-[#C9A227]' : 'hover:text-[#C9A227]'
-                  }`}
+                  className={`text-gray-700 font-medium transition-colors relative pb-1 ${isActive(link.href) ? 'text-[#C9A227]' : 'hover:text-[#C9A227]'
+                    }`}
                 >
                   {link.label}
-                  <span 
-                    className={`absolute bottom-0 left-0 h-0.5 bg-[#C9A227] transition-all ${
-                      isActive(link.href) ? 'w-full' : 'w-0 group-hover:w-full'
-                    }`}
+                  <span
+                    className={`absolute bottom-0 left-0 h-0.5 bg-[#C9A227] transition-all ${isActive(link.href) ? 'w-full' : 'w-0 group-hover:w-full'
+                      }`}
                   ></span>
                 </Link>
               ))}
@@ -126,9 +127,8 @@ const { t } = useTranslation();
 
       {/* RIGHT SLIDING DRAWER */}
       <div
-        className={`fixed top-0 right-0 h-full w-full sm:w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
-          menuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 h-full w-full sm:w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         {/* User Profile Section */}
         <div className="bg-gradient-to-br from-[#C9A227] to-[#B89020] p-4 sm:p-6 text-white">
@@ -189,11 +189,10 @@ const { t } = useTranslation();
                 key={index}
                 to={item.href}
                 onClick={() => setMenuOpen(false)}
-                className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${
-                  isItemActive 
-                    ? 'bg-[#C9A227]/10 text-[#C9A227]' 
+                className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isItemActive
+                    ? 'bg-[#C9A227]/10 text-[#C9A227]'
                     : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-[#C9A227]'
-                }`}
+                  }`}
               >
                 <Icon size={20} className="group-hover:scale-110 transition-transform" />
                 <span className="font-medium flex-1 text-sm sm:text-base">{item.label}</span>
@@ -208,11 +207,10 @@ const { t } = useTranslation();
             <Link
               to="/about-us"
               onClick={() => setMenuOpen(false)}
-              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${
-                isActive('/about-us')
+              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isActive('/about-us')
                   ? 'bg-[#C9A227]/10 text-[#C9A227]'
                   : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-[#C9A227]'
-              }`}
+                }`}
             >
               <Info size={20} className="group-hover:scale-110 transition-transform" />
               <span className="font-medium flex-1 text-sm sm:text-base">About Us</span>
@@ -221,11 +219,10 @@ const { t } = useTranslation();
             <Link
               to="/blogs"
               onClick={() => setMenuOpen(false)}
-              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${
-                isActive('/blogs')
+              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isActive('/blogs')
                   ? 'bg-[#C9A227]/10 text-[#C9A227]'
                   : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-[#C9A227]'
-              }`}
+                }`}
             >
               <BookOpen size={20} className="group-hover:scale-110 transition-transform" />
               <span className="font-medium flex-1 text-sm sm:text-base">Blogs</span>

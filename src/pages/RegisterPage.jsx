@@ -233,6 +233,7 @@ const Register = () => {
       if (data.success) {
         setToken(data.registrationToken);
         setShowOtpModal(true);
+        alert(data.otp)
       } else {
         setApiError(data.message || "Failed to send OTP. Please try again.");
       }
@@ -534,7 +535,7 @@ const Register = () => {
 
       {/* OTP MODAL */}
       {showOtpModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0  bg-opacity-60  flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl transform transition-all">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-2xl font-bold text-gray-800">Verify OTP</h3>
