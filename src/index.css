@@ -1,1 +1,92 @@
 @import "tailwindcss";
+
+html, body {
+  margin: 0;
+  padding: 0;
+  /* overflow: hidden; */
+  height: 100%;
+  width: 100%;
+}
+
+.splash-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Fullscreen background image */
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/bg-img.jpg');
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+  /* Add a dark semi-transparent overlay */
+  filter: brightness(0.5); /* darkens the image */
+  /* Alternatively, you can use this for more control:
+  ::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+  }
+  */
+}
+.background-dark-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(26, 6, 6, 0.4); /* semi-transparent black */
+  z-index: 1;
+}
+
+
+/* Logo on top */
+.logo {
+  position: absolute;
+  top: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  width: 350px;
+  display: flex;
+  justify-content: center;
+}
+
+.logo img {
+  width: 100%;
+  height: auto;
+}
+
+/* Fullscreen video */
+.centered-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  max-height: 830px;
+  transform: translate(-50%, -50%);
+  object-fit: contain; /* keep ratio, no stretch */
+  background: transparent;
+  z-index: 2;
+
+}@media (max-width: 768px) {
+  .centered-video {
+    width: 100vw;
+    height: 120vh;
+    max-height: none;
+    object-fit: cover;
+  }
+  
+}
+/* index.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
+  font-family: 'Inter', 'Poppins', sans-serif;
+}

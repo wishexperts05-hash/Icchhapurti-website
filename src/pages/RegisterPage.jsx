@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Country, State, City } from 'country-state-city';
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -301,14 +302,32 @@ const Register = () => {
 
   return (
     <div className="flex min-h-screen w-full">
-      {/* LEFT IMAGE */}
-      <div className="hidden lg:block w-1/2 relative">
-        <img src="/bg.jpg" alt="bg" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-br from-yellow-600/20 to-transparent"></div>
+      {/* LEFT SIDE - VIDEO WITH LOGO */}
+      <div className="hidden lg:block w-1/2 h-screen sticky top-0 relative">
+        {/* Logo positioned on top - centered */}
+        <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-10">
+          <img 
+            src="/logo-white.png" 
+            alt="Logo" 
+            className="h-24 w-auto"
+          />
+        </div>
+
+        {/* Background Video */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
+        >
+          <source src="/bg-video.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
       </div>
 
-      {/* RIGHT FORM */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4">
+      {/* RIGHT SIDE - FORM */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50  px-4">
         <div className="w-full max-w-lg bg-white shadow-2xl rounded-2xl p-8 md:p-10 my-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-800 mb-2">
@@ -505,9 +524,9 @@ const Register = () => {
           <div className="mt-6 text-center">
             <p className="text-gray-600 text-sm">
               Already have an account?
-              <a href="/" className="text-yellow-600 hover:text-yellow-700 font-semibold ml-1 transition">
+              <Link to="/login" className="text-yellow-600 hover:text-yellow-700 font-semibold ml-1 transition">
                 Login here
-              </a>
+              </Link>
             </p>
           </div>
         </div>

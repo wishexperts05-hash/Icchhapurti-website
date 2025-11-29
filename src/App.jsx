@@ -32,6 +32,7 @@ import AboutUsPage from "./pages/AboutUsPage";
 import BlogsPage from "./pages/BlogsPage";
 import BlogDetailPage from "./pages/BlogDetailPage";
 import FAQPage from "./pages/FAQPage";
+import SplashScreen from "./components/SplashScreen";
 
 function App() {
   return (
@@ -41,10 +42,11 @@ function App() {
         {/* Public routes without layout */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
+  <Route path="/" element={<SplashScreen />} />
         {/* Routes with layout */}
         <Route element={<Layout />}>
-          <Route path="/" element={<HomePage />} />
+        
+          <Route path="/homePage" element={<HomePage />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="/wallet" element={<WalletPage />} />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Package, Check } from 'lucide-react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 const formatDateTime = (iso) => {
   if (!iso) return '';
@@ -27,7 +27,7 @@ const OrderDetailsPage = () => {
         setLoading(true);
         setError(null);
         // Replace URL with actual API endpoint
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/orders/getOrderById/${orderId}`,{
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/orders/getOrderById/${orderId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -51,9 +51,15 @@ const OrderDetailsPage = () => {
     fetchOrderDetails();
   }, [orderId]);
 
+  const Navigate = useNavigate()
+  const handleAddReview = (productId, e) => {
+    e.stopPropagation();
+    Navigate(`/add/review/${productId}`)
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen  flex items-center justify-center">
         <div className="text-white text-xl">Loading orders Details...</div>
       </div>
     );
@@ -73,11 +79,12 @@ const OrderDetailsPage = () => {
     timeline,
     status,
     paymentMethod,
-    paymentStatus,
+    paymentStatus
+
   } = order;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen  relative overflow-hidden">
       {/* Background elements omitted for brevity, keep same as your original code */}
 
       <div className="relative z-10 max-w-5xl mx-auto p-6">
@@ -121,21 +128,44 @@ const OrderDetailsPage = () => {
                   )}
                 </div>
               </div>
+              <div className='flex gap-2'>
+                {/* Add Review Button */}
+                <button
+                  onClick={(e) => {
+                    if (status !== "Delivered") {
+                      e.preventDefault();
+                      return;
+                    }
+                    handleAddReview(item.productId, e);
+                  }}
+                  disabled={status !== "Delivered"}
+                  className={`text-xs ml-2 px-3 py-1.5 rounded transition-colors duration-300
+      ${status === "Delivered"
+                      ? "text-white bg-green-600 hover:bg-green-700 cursor-pointer"
+                      : "text-gray-400 bg-gray-200 cursor-not-allowed"
+                    }
+    `}
+                  title={status === "Delivered" ? "Write a review" : "Only delivered products can be reviewed"}
+                >
+                  Add Review
+                </button>
 
- <Link
-  to={status === 'Delivered' ? `/orders/return/${item.productId}` : '#'}
-  className={`px-4 py-1.5 text-white text-sm rounded transition-all duration-300 ${
-    status === 'Delivered'
-      ? 'bg-amber-500 hover:bg-amber-600 cursor-pointer'
-      : 'bg-gray-600 cursor-not-allowed'
-  }`}
-  title={status === 'Delivered' ? '' : 'Only delivered products can be returned'}
-  onClick={(e) => {
-    if (status !== 'Delivered') e.preventDefault();
-  }}
->
-  Return
-</Link>
+                {/* Return Button */}
+                <Link
+                  to={status === 'Delivered' && item?.returnable ? `/orders/return/${item.productId}` : '#'}
+                  className={`px-4 py-1.5 text-white text-sm rounded transition-all duration-300 
+      ${status === 'Delivered' && item?.returnable 
+                      ? 'bg-amber-500 hover:bg-amber-600 cursor-pointer'
+                      : 'bg-gray-600 cursor-not-allowed'
+                    }`}
+                  title={status === 'Delivered' && item?.returnable  ? '' : 'Only delivered & Returnable products can be returned'}
+                  onClick={(e) => {
+                    if (status !== 'Delivered') e.preventDefault();
+                  }}
+                >
+                  Return
+                </Link>
+              </div>
 
             </div>
           ))}

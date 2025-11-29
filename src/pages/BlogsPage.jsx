@@ -118,7 +118,7 @@ const Navigate = useNavigate()
   );
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-gradient-to-br from-blue-950 via-blue-900 to-slate-900">
+    <div className="relative min-h-screen overflow-x-hidden ">
       {/* Cosmic Background */}
       <div className="absolute inset-0 bg-gradient-radial from-blue-800/30 via-transparent to-transparent"></div>
       

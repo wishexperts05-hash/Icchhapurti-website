@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
 
 const REASONS = [
   "Product damaged",
@@ -9,6 +11,12 @@ const REASONS = [
 ];
 
 const OrderReturnPage = () => {
+  const { id } = useParams(); // PRODUCT or ORDER ID
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
+  const [product, setProduct] = useState(null);
+
   const [selected, setSelected] = useState(REASONS[0]);
   const [reason, setReason] = useState("");
 
@@ -17,48 +25,89 @@ const OrderReturnPage = () => {
     if (val !== "Other") setReason("");
   };
 
+  // Fetch product by ID
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const { data } = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/user/orders/getOrderById/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+          }
+        );
+        setProduct(data.order);
+      } catch (error) {
+        console.log("Fetch Error:", error);
+      }
+    };
+    fetchProduct();
+  }, [id]);
+
+  const submitReturn = async () => {
+    if (selected === "Other" && !reason.trim()) {
+      alert("Please write your reason");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const payload = {
+        orderId: id,
+        reason: selected,
+        comment: reason,
+      };
+
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/user/orders/return`,
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          }
+        }
+      );
+
+      if (data.success) {
+        alert("Return request submitted successfully!");
+        navigate("/my-orders");
+      }
+    } catch (error) {
+      console.log("Submit Return Error:", error);
+      alert("Failed to submit return request");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden">
+      
+      {/* UI Background Stars (same as your design)… */}
 
-      {/* Background Graphics */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-20 left-1/4 w-96 h-96 border border-blue-400/30 rounded-full"></div>
-        <div className="absolute top-40 left-1/3 w-64 h-64 border border-blue-300/20 rounded-full"></div>
-        <div className="absolute bottom-32 right-1/4 w-80 h-80 border border-amber-400/30 rounded-full"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          <div className="w-64 h-64 border-2 border-blue-400/20 rounded-full flex items-center justify-center">
-            <div className="w-48 h-48 border border-blue-300/20 rounded-full flex items-center justify-center">
-              <div className="w-32 h-32 bg-gradient-to-br from-amber-500/30 to-orange-500/30 rounded-full blur-xl"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Stars */}
-      <div className="absolute inset-0">
-        {[...Array(50)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-white rounded-full opacity-70"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animation: `twinkle ${2 + Math.random() * 3}s infinite ${Math.random() * 2}s`
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Content */}
       <div className="min-h-screen flex flex-col px-4 pt-12 items-center">
         <div className="w-full max-w-4xl bg-white/5 backdrop-blur-lg p-6 rounded-xl border border-white/20">
           
-          {/* Dummy Order Info */}
-          <h1 className="text-white text-2xl font-bold mb-1">Order #ORD658234</h1>
-          <p className="text-gray-300 text-sm">Wireless Bluetooth Headphones - Black</p>
-          <p className="text-gray-400 text-xs mb-6">Delivered on: 24 November 2025, 8:45 PM</p>
+          {/* Dynamic Order Info */}
+          {product ? (
+            <>
+              <h1 className="text-white text-2xl font-bold mb-1">
+                Order #{product?.orderNumber || id}
+              </h1>
+              <p className="text-gray-300 text-sm">{product?.productName}</p>
+              <p className="text-gray-400 text-xs mb-6">
+                Delivered on: {new Date(product?.deliveredAt).toLocaleString()}
+              </p>
+            </>
+          ) : (
+            <p className="text-gray-300 mb-6">Loading order details...</p>
+          )}
 
           <h2 className="text-white text-lg font-semibold mb-2">Return Reason</h2>
+
           <div className="mb-2 text-white font-medium">Choose a Reason</div>
 
           <div className="flex flex-col gap-2 mb-6">
@@ -67,7 +116,6 @@ const OrderReturnPage = () => {
                 <input
                   type="radio"
                   className="accent-[#C8AC5B] w-4 h-4"
-                  value={item}
                   checked={selected === item}
                   onChange={() => handleChange(item)}
                   name="returnReason"
@@ -82,28 +130,21 @@ const OrderReturnPage = () => {
             placeholder="Write a Reason"
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            // disabled={selected !== "Other"}
+            disabled={selected !== "Other"}
           />
 
           <div className="flex justify-center">
             <button
+              onClick={submitReturn}
               className="bg-[#C8AC5B] hover:bg-yellow-600 text-white font-semibold rounded-md px-12 py-3 text-lg transition disabled:opacity-60"
-              type="button"
-              disabled={selected === "Other" && reason.trim() === ""}
+              disabled={loading || (selected === "Other" && reason.trim() === "")}
             >
-              Submit
+              {loading ? "Submitting..." : "Submit"}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Animation Style */}
-      <style>{`
-        @keyframes twinkle {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 1; }
-        }
-      `}</style>
     </div>
   );
 };

@@ -4,92 +4,136 @@ import { Camera, MapPin, ChevronDown } from "lucide-react";
 import { Country, State, City } from "country-state-city";
 
 export default function ViewProfile() {
-  const user = JSON.parse(localStorage.getItem("user"));
-// Convert DD-MM-YYYY to YYYY-MM-DD
-const formatDOB = (dob) => {
-  if (!dob) return "";
-  const [day, month, year] = dob.split("-");
-  return `${year}-${month}-${day}`;
-};
+  // const user = JSON.parse(localStorage.getItem("user"));
+  const [loading, setLoading] = useState()
+  // Convert DD-MM-YYYY to YYYY-MM-DD
+  const formatDOB = (dob) => {
+    if (!dob) return "";
+    const [day, month, year] = dob.split("-");
+    return `${year}-${month}-${day}`;
+  };
+
+
+  const [user, setUsers] = useState()
 
   const [avatar, setAvatar] = useState(
-    user.profileImage ||
+    user?.profileImage ||
     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
   );
   const [avatarFile, setAvatarFile] = useState(null);
 
-//   const [countries, setCountries] = useState([]);
-//   const [states, setStates] = useState([]);
-//   const [cities, setCities] = useState([]);
+  //   const [countries, setCountries] = useState([]);
+  //   const [states, setStates] = useState([]);
+  //   const [cities, setCities] = useState([]);
 
-  const { register, handleSubmit, watch, formState: { errors } } = useForm({
-   defaultValues: {
-  fullName: user.name || "",
-  email: user.email || "",
-  country: user.country || "",
-  state: user.state || "",
-  city: user.city || "",
-  mobileNumber: user.phoneNumber || "",
-  dateOfBirth: formatDOB(user.dob),
 
-  bankName: user.bankDetails?.bankName || "",
-  accountNumber: user.bankDetails?.accountNumber || "",
-  ifsc: user.bankDetails?.ifscCode || "",
-  accountType: user.bankDetails?.accountType || "",
-  accountHolderName: user.bankDetails?.accountHolderName || "",
-}
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        // const user = JSON.parse(localStorage.getItem("user"));
+        // if (!user?._id) return;
 
-  });
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/getProfile`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        console.log(data,"adata")
 
+        if (data.success) {
+          // Save user details in a state if needed
+          // console.log("Fetched User:", data.user);
+          setUsers(data.data)
+          localStorage.setItem("user" , JSON.stringify(data.data))
+          // setUserData(data.user);  // <-- Uncomment if you have state
+        }
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+
+ const { register, handleSubmit, watch, formState: { errors }, reset } = useForm({
+  defaultValues: {}
+});
+
+// Reset form values when user data updates
+useEffect(() => {
+  if (user) {
+    reset({
+      name: user?.name || "",
+      email: user?.email || "",
+      phoneNumber: user?.phoneNumber || "",
+      country: user?.country || "",
+      state: user?.state || "",
+      city: user?.city || "",
+      dob: user?.dob ? user.dob.split("T")[0] : "",
+
+      bankName: user?.bankDetails?.bankName || "",
+      accountNumber: user?.bankDetails?.accountNumber || "",
+      ifscCode: user?.bankDetails?.ifscCode || "",
+      accountType: user?.bankDetails?.accountType || "",
+      accountHolderName: user?.bankDetails?.accountHolderName || "",
+    });
+
+    // Update Avatar
+    setAvatar(user?.profileImage);
+  }
+}, [user, reset]);
   // Watch fields
   const country = watch("country");
   const state = watch("state");
 
-//   // Load country list on mount
-//   useEffect(() => {
-//     setCountries(Country.getAllCountries());
-//   }, []);
+  //   // Load country list on mount
+  //   useEffect(() => {
+  //     setCountries(Country.getAllCountries());
+  //   }, []);
 
-//   // Update states when country changes
-//   useEffect(() => {
-//     if (selectedCountry) {
-//       const countryObj = countries.find(c => c.name === selectedCountry);
-//       setStates(State.getStatesOfCountry(countryObj?.isoCode));
-//     }
-//   }, [selectedCountry]);
+  //   // Update states when country changes
+  //   useEffect(() => {
+  //     if (selectedCountry) {
+  //       const countryObj = countries.find(c => c.name === selectedCountry);
+  //       setStates(State.getStatesOfCountry(countryObj?.isoCode));
+  //     }
+  //   }, [selectedCountry]);
 
-//   // Update city list when state changes
-//   useEffect(() => {
-//     if (selectedState) {
-//       const countryObj = countries.find(c => c.name === selectedCountry);
-//       const stateObj = states.find(s => s.name === selectedState);
-//       setCities(City.getCitiesOfState(countryObj?.isoCode, stateObj?.isoCode));
-//     }
-//   }, [selectedState]);
+  //   // Update city list when state changes
+  //   useEffect(() => {
+  //     if (selectedState) {
+  //       const countryObj = countries.find(c => c.name === selectedCountry);
+  //       const stateObj = states.find(s => s.name === selectedState);
+  //       setCities(City.getCitiesOfState(countryObj?.isoCode, stateObj?.isoCode));
+  //     }
+  //   }, [selectedState]);
 
 
-const countries = Country.getAllCountries();
+  const countries = Country.getAllCountries();
 
   // Find ISO code from country name
-const selectedCountry = Country.getAllCountries().find(
-  c => c.name === country
-)
-// Get states by country ISO
-const states = selectedCountry
-  ? State.getStatesOfCountry(selectedCountry.isoCode)
-  : [];
+  const selectedCountry = Country.getAllCountries().find(
+    c => c.name === country
+  )
+  // Get states by country ISO
+  const states = selectedCountry
+    ? State.getStatesOfCountry(selectedCountry.isoCode)
+    : [];
 
-console.log(states);
+  console.log(states);
 
-// Find state iso by name
-const selectedState = states.find(s => s.name === state);
+  // Find state iso by name
+  const selectedState = states.find(s => s.name === state);
 
-// Get cities by state ISO
-const cities = selectedState
-  ? City.getCitiesOfState(selectedCountry.isoCode, selectedState.isoCode)
-  : [];
+  // Get cities by state ISO
+  const cities = selectedState
+    ? City.getCitiesOfState(selectedCountry.isoCode, selectedState.isoCode)
+    : [];
 
-console.log(cities);
+  console.log(cities);
 
 
 
@@ -104,12 +148,30 @@ console.log(cities);
 
   // Submit Function with API call
   const onSubmit = async (data) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => formData.append(key, value));
+    setLoading(true)
+const formData = new FormData();
 
-    if (avatarFile) {
-      formData.append("profileImage", avatarFile);
-    }
+// Append profile image if updated
+if (avatarFile) {
+  formData.append("profileImage", avatarFile);
+}
+
+// Add personal details
+formData.append("name", data.name);
+formData.append("email", data.email);
+formData.append("phoneNumber", data.phoneNumber);
+formData.append("dob", data.dob);
+formData.append("country", data.country);
+formData.append("state", data.state);
+formData.append("city", data.city);
+
+// Add bank details under nested object
+formData.append("bankDetails[bankName]", data.bankName);
+formData.append("bankDetails[accountNumber]", data.accountNumber);
+formData.append("bankDetails[ifscCode]", data.ifscCode);
+formData.append("bankDetails[accountType]", data.accountType);
+formData.append("bankDetails[accountHolderName]", data.accountHolderName);
+
 
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/updateProfile`, {
@@ -123,14 +185,17 @@ console.log(cities);
       const result = await res.json();
 
       if (result.success) {
+        setLoading(false)
         localStorage.setItem("user", JSON.stringify(result.data));
         alert("Profile updated successfully!");
         // window.location.reload();
       } else {
         alert(result.message || "Update failed");
+        setLoading(false)
       }
     } catch (error) {
       console.error("Update failed:", error);
+      setLoading(false)
     }
   };
 
@@ -165,7 +230,7 @@ console.log(cities);
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
+    <div className="min-h-screen ">
       <div className="max-w-4xl mx-auto p-6">
 
         <h1 className="text-white font-bold text-xl mb-6">Update Profile</h1>
@@ -184,10 +249,10 @@ console.log(cities);
 
           {/* Personal Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InputField label="Full Name" name="fullName" />
-            <InputField label="Mobile Number" name="mobileNumber" />
+            <InputField label="Full Name" name="name" />
+            <InputField label="Mobile Number" name="phoneNumber" />
             <InputField label="Email" type="email" name="email" />
-            <InputField label="Date Of Birth" name="dateOfBirth" type="date" />
+            <InputField label="Date Of Birth" name="dob" type="date" />
 
             <InputField label="Country" name="country" isSelect options={countries} />
             <InputField label="State" name="state" isSelect options={states} />
@@ -199,7 +264,7 @@ console.log(cities);
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputField label="Bank Name" name="bankName" />
             <InputField label="Account Number" name="accountNumber" />
-            <InputField label="IFSC" name="ifsc" />
+            <InputField label="IFSC" name="ifscCode" />
             <InputField label="Account Type" name="accountType" isSelect options={["Savings", "Current", "Salary"]} />
           </div>
 
@@ -208,7 +273,10 @@ console.log(cities);
           <button
             className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:opacity-90"
           >
-            Save Changes
+            {
+              loading ? "saving..." : "Save Changes"
+            }
+
           </button>
         </form>
       </div>

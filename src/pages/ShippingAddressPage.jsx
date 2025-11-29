@@ -71,14 +71,14 @@ const ShippingAddressPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
+      <div className="min-h-screen flex items-center justify-center ">
         <Loader2 className="w-12 h-12 animate-spin text-[#C8AC5B]" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex flex-col items-center justify-start py-10">
+    <div className="min-h-screen  flex flex-col items-center justify-start py-10">
 
       <h2 className="text-white text-lg font-semibold mb-6">Shipping Address</h2>
 

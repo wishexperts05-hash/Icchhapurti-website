@@ -5,6 +5,7 @@ export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [selectedAddressIndex, setSelectedAddressIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAddressModal, setShowAddressModal] = useState(false);
@@ -117,7 +118,7 @@ export default function CartPage() {
 
   const totalItems = cartItems.reduce((sum, item) => sum + Number(item.quantity), 0);
   const totalPrice = cartItems.reduce((sum, item) => sum + Number(item.totalAmount), 0);
-  const totalAmount = totalPrice - staffDiscount + shippingAmount;
+  const totalAmount = totalPrice  + shippingAmount;
 
   const PenIcon = ({ color }) => (
     <div className="w-14 h-14 bg-slate-700 rounded-lg flex items-center justify-center overflow-hidden">
@@ -137,7 +138,7 @@ export default function CartPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen  flex items-center justify-center">
         <div className="text-white text-xl">Loading cart...</div>
       </div>
     );
@@ -145,7 +146,7 @@ export default function CartPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-400 text-xl mb-4">Error: {error}</p>
           <button
@@ -160,7 +161,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen  relative overflow-hidden">
       {/* Background glow */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-500 rounded-full blur-3xl"></div>
@@ -210,28 +211,29 @@ export default function CartPage() {
               </div>
 
               <div className="space-y-3">
-                {addresses.map(address => (
+                {addresses.map((address, i) => (
                   <div
-                    key={address.id}
+                    key={address._id}
                     onClick={() => {
                       setSelectedAddress(address);
+                      setSelectedAddressIndex(i)
                       setShowAddressModal(false);
                     }}
-                    className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${selectedAddress?.id === address.id
+                    className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${selectedAddress?._id === address._id
                       ? 'border-amber-500 bg-slate-700/50'
                       : 'border-slate-700 hover:border-slate-600'
                       }`}
                   >
                     <p className="text-white text-sm">
                       {/* <span className="text-gray-400">Deliver to: </span> */}
-                      <span className="font-semibold">{selectedAddress.fullName}</span>
+                      <span className="font-semibold">{address.fullName}</span>
                     </p>
-                    <p className="text-gray-400 text-sm mt-1">{selectedAddress.country}</p>
-                    <p className="text-gray-400 text-sm mt-1">{selectedAddress.state}</p>
-                    <p className="text-gray-400 text-sm mt-1">{selectedAddress.city}</p>
-                    <p className="text-gray-400 text-sm mt-1">{selectedAddress.street}</p>
-                    <p className="text-gray-400 text-sm mt-1">{selectedAddress.pinCode}</p>
-                    <p className="text-gray-400 text-sm">Mobile Number: {selectedAddress.phoneNumber}</p>
+                    <p className="text-gray-400 text-sm mt-1">{address.country}</p>
+                    <p className="text-gray-400 text-sm mt-1">{address.state}</p>
+                    <p className="text-gray-400 text-sm mt-1">{address.city}</p>
+                    <p className="text-gray-400 text-sm mt-1">{address.street}</p>
+                    <p className="text-gray-400 text-sm mt-1">{address.pinCode}</p>
+                    <p className="text-gray-400 text-sm">Mobile Number: {address.phoneNumber}</p>
                   </div>
                 ))}
               </div>
@@ -247,7 +249,7 @@ export default function CartPage() {
                 <PenIcon color={item.color || 'blue'} />
                 <div className="flex-1">
                   <h3 className="text-white text-sm font-medium">{item.product.name}</h3>
-                  <p className="text-amber-500 font-semibold mt-1">₹ {item.totalAmount}</p>
+                  <p className="text-amber-500 font-semibold mt-1">₹ {item.product.price}</p>
                 </div>
                 <div className="flex flex-col items-end gap-2">
                   <div className="flex items-center gap-2">
@@ -294,11 +296,11 @@ export default function CartPage() {
         {cartItems.length === 0 && (
           <div className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-8 mb-4 border border-slate-700 text-center">
             <p className="text-gray-400 text-lg">Your cart is empty</p>
-            <button
+            <Link to="/products"
               className="inline-block mt-4 text-amber-500 hover:text-amber-400 transition-colors"
             >
               Continue Shopping
-            </button>
+            </Link>
           </div>
         )}
 
@@ -315,10 +317,10 @@ export default function CartPage() {
                 <span>Price</span>
                 <span className="text-white">₹ {totalPrice}</span>
               </div>
-              <div className="flex justify-between text-gray-400 border-b border-slate-700 border-dashed pb-2">
+              {/* <div className="flex justify-between text-gray-400 border-b border-slate-700 border-dashed pb-2">
                 <span>Staff Referral Discount</span>
                 <span className="text-green-400">-₹ {staffDiscount}</span>
-              </div>
+              </div> */}
               <div className="flex justify-between text-gray-400 border-b border-slate-700 border-dashed pb-2">
                 <span>Shipping Amount</span>
                 <span className="text-white">₹ {shippingAmount}</span>
@@ -334,7 +336,7 @@ export default function CartPage() {
         {/* Checkout Button */}
         {cartItems.length > 0 && (
           <div className="flex justify-center">
-            <Link to ="/payments"
+            <Link to={`/payments?addressIndex=${selectedAddressIndex}`}
               className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 px-20 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/30"
             >
               Check Out

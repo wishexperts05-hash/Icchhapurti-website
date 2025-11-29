@@ -1,7 +1,7 @@
 // DownloadAppSection.jsx
 export default function DownloadAppSection() {
   return (
-    <section className="w-full bg-[#EAE6F6] py-12 px-4 md:px-12">
+    <section className="w-full bg-[#EAE6F6] py-12 px-4 md:px-12 my-5">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
 
         {/* ---------- Left Section ---------- */}

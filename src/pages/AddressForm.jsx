@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Country, State, City } from 'country-state-city';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function AddressForm() {
   const [formData, setFormData] = useState({
@@ -191,10 +191,10 @@ console.log(cities);
       setLoading(false);
     }
   };
-
+const Navigate = useNavigate()
   if (submitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-4">
+      <div className="min-h-screen flex items-center justify-center  p-4">
         <div className="bg-slate-800/90 backdrop-blur-sm rounded-xl p-8 text-center max-w-md">
           <div className="w-16 h-16 bg-amber-500 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,7 +209,7 @@ console.log(cities);
           </p>
           <div className="flex gap-3 justify-center">
             <button
-              onClick={() => window.location.href = '/addresses'}
+              onClick={() => Navigate( '/addresses')}
               className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors">
               View All
             </button>
@@ -250,7 +250,7 @@ console.log(cities);
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen  relative overflow-hidden">
       {/* Spiral Background Effect */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-500 rounded-full blur-3xl"></div>

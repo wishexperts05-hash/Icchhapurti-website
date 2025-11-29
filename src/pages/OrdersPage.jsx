@@ -58,13 +58,10 @@ const OrdersPage = () => {
   const Navigate = useNavigate()
   const handleNavigateToOrder = (orderId) => {
     // Navigate to order details page
-   
+
   };
 
-  const handleAddReview = (orderId, e) => {
-    e.stopPropagation();
-    window.location.href = `/add/review/${orderId}`;
-  };
+  
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -139,7 +136,7 @@ const OrdersPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen  flex items-center justify-center">
         <div className="text-white text-xl">Loading orders...</div>
       </div>
     );
@@ -147,7 +144,7 @@ const OrdersPage = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen  flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-400 text-xl mb-4">Error: {error}</p>
           <button
@@ -162,7 +159,7 @@ const OrdersPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen  relative overflow-hidden">
       {/* Mystical background elements */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-20 left-1/4 w-96 h-96 border border-blue-400/30 rounded-full"></div>
@@ -222,7 +219,7 @@ const OrdersPage = () => {
                   <div className="flex items-center gap-4">
                     {/* Product Image */}
                     <div
-                      onClick={() =>  Navigate(`/orders/${order._id}`)}
+                      onClick={() => Navigate(`/orders/${order._id}`)}
                       className="w-16 h-16 rounded cursor-pointer overflow-hidden flex-shrink-0 bg-slate-700"
                     >
                       {order.image ? (
@@ -256,7 +253,7 @@ const OrdersPage = () => {
                       <p className="text-amber-400 font-semibold">₹ {order.price}</p>
 
                       {/* Star Rating - Show only for delivered orders */}
-                      {isDelivered && (
+                      {/* {!isDelivered && (
                         <div className="flex items-center gap-1 mt-2">
                           {[...Array(5)].map((_, i) => (
                             <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
@@ -268,7 +265,7 @@ const OrdersPage = () => {
                             Add Review
                           </button>
                         </div>
-                      )}
+                      )} */}
                     </div>
                   </div>
                 </div>

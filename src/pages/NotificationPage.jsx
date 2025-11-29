@@ -1,63 +1,198 @@
-import { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
 
 export default function Notification() {
     const [activeTab, setActiveTab] = useState('unread');
     const [currentPage, setCurrentPage] = useState(1);
+    const [notifications, setNotifications] = useState([]);
+    const [filteredNotifications, setFilteredNotifications] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [totalPages, setTotalPages] = useState(1);
+    const [markingAsRead, setMarkingAsRead] = useState({});
 
-    const tabs = [
-        { id: 'unread', label: 'Unread' },
-        { id: 'read', label: 'Read' },
-    ];
+    const itemsPerPage = 5;
 
-    // Dummy data updated
-    const unreadData = [
-        { id: 1, title: "Offer Received", desc: "You have received a 20% discount offer.", time: "05:41 AM" },
-        { id: 2, title: "New Message", desc: "Admin replied to your redemption request.", time: "06:15 AM" },
-        { id: 3, title: "Lucky Draw", desc: "You won 500 credits in lucky draw.", time: "07:20 AM" },
-        { id: 4, title: "System Update", desc: "New version available, update required.", time: "08:10 AM" },
-    ];
+    const fetchNotifications = async () => {
+        try {
+            setLoading(true);
 
-    const readData = [
-        { id: 1, title: "Redeem Approved", desc: "Your redeem request for ₹1000 has been approved.", time: "Yesterday" },
-        { id: 2, title: "Redeem Successful", desc: "Amount transferred to your wallet.", time: "2 days ago" },
-        { id: 3, title: "Login Alert", desc: "Your account was logged in from new device.", time: "3 days ago" },
-        { id: 4, title: "Welcome Bonus", desc: "You received 200 bonus credits.", time: "4 days ago" },
-    ];
+            const res = await fetch(
+                `${import.meta.env.VITE_API_URL}/api/user/notifications/get`,
+                {
+                    headers: {
+                        'Authorization': localStorage.getItem('token'),
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
 
-    const getData = () => {
-        switch (activeTab) {
-            case 'unread': return unreadData;
-            case 'read': return readData;
-            default: return unreadData;
+            if (!res.ok) {
+                throw new Error('Failed to fetch notifications');
+            }
+
+            const data = await res.json();
+            const allNotifications = data.data || [];
+
+            setNotifications(allNotifications);
+
+        } catch (err) {
+            console.error("Error fetching notifications:", err);
+            setNotifications([]);
+        } finally {
+            setLoading(false);
         }
     };
 
-    return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 relative overflow-hidden">
+    const markAsRead = async (notificationId) => {
+        try {
+            setMarkingAsRead(prev => ({ ...prev, [notificationId]: true }));
 
-            {/* Background Effects */}
+            const res = await fetch(
+                `${import.meta.env.VITE_API_URL}/api/user/notifications/markAsRead/${notificationId}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': localStorage.getItem('token'),
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            if (!res.ok) {
+                throw new Error('Failed to mark notification as read');
+            }
+
+            // Update local state
+            setNotifications(prevNotifications =>
+                prevNotifications.map(notif =>
+                    notif._id === notificationId
+                        ? { ...notif, isRead: true }
+                        : notif
+                )
+            );
+
+        } catch (err) {
+            console.error("Error marking notification as read:", err);
+        } finally {
+            setMarkingAsRead(prev => ({ ...prev, [notificationId]: false }));
+        }
+    };
+
+    const markAllAsRead = async () => {
+        try {
+            setLoading(true);
+
+            const res = await fetch(
+                `${import.meta.env.VITE_API_URL}/api/user/notifications/mark-all-read`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': localStorage.getItem('token'),
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            if (!res.ok) {
+                throw new Error('Failed to mark all notifications as read');
+            }
+
+            // Refresh notifications
+            await fetchNotifications();
+
+        } catch (err) {
+            console.error("Error marking all notifications as read:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Filter and paginate notifications whenever notifications, activeTab, or currentPage changes
+    useEffect(() => {
+        // Filter by read/unread status
+        const filtered = notifications.filter(notif => {
+            if (activeTab === 'unread') {
+                return notif.isRead === false;
+            } else {
+                return notif.isRead === true;
+            }
+        });
+
+        // Calculate pagination
+        const total = Math.ceil(filtered.length / itemsPerPage);
+        setTotalPages(Math.max(total, 1));
+
+        // Get current page items
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const paginatedNotifications = filtered.slice(startIndex, endIndex);
+
+        setFilteredNotifications(paginatedNotifications);
+    }, [notifications, activeTab, currentPage]);
+
+    useEffect(() => {
+        fetchNotifications();
+    }, []);
+
+    const handleTabChange = (tabId) => {
+        setActiveTab(tabId);
+        setCurrentPage(1);
+    };
+
+    const handlePreviousPage = () => {
+        setCurrentPage(p => Math.max(p - 1, 1));
+    };
+
+    const handleNextPage = () => {
+        setCurrentPage(p => Math.min(p + 1, totalPages));
+    };
+
+    const unreadCount = notifications.filter(n => !n.isRead).length;
+
+    return (
+        <div className="min-h-screen  relative overflow-hidden">
             <div className="absolute inset-0 overflow-hidden">
                 <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-gradient-to-r from-amber-500/20 via-cyan-500/15 to-blue-500/20 rounded-full blur-3xl animate-pulse -translate-x-1/2 -translate-y-1/2"></div>
             </div>
 
             <div className="relative z-10 max-w-7xl mx-auto p-4">
-                <h1 className="text-white font-bold text-xl mb-6">Notification</h1>
+                <div className="flex items-center justify-between mb-6">
+                    <h1 className="text-white font-bold text-xl">Notification</h1>
+                    {/* {activeTab === 'unread' && unreadCount > 0 && (
+                        <button
+                            onClick={markAllAsRead}
+                            disabled={loading}
+                            className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        >
+                            <Check size={16} />
+                            Mark All as Read
+                        </button>
+                    )} */}
+                </div>
 
                 {/* Tabs */}
                 <div className="relative mb-6">
                     <div className="flex border-b border-slate-700">
-                        {tabs.map((tab) => (
+                        {[
+                            { id: 'unread', label: 'Unread', count: unreadCount },
+                            { id: 'read', label: 'Read', count: notifications.filter(n => n.isRead).length },
+                        ].map((tab) => (
                             <button
                                 key={tab.id}
-                                onClick={() => {
-                                    setActiveTab(tab.id);
-                                    setCurrentPage(1);
-                                }}
-                                className={`flex-1 py-3 text-center text-sm font-medium transition-all duration-300 relative
-                            ${activeTab === tab.id ? 'text-amber-400' : 'text-gray-400 hover:text-gray-300'}`}
+                                onClick={() => handleTabChange(tab.id)}
+                                className={`flex-1 py-3 text-center text-sm font-medium transition-all duration-300 relative 
+                                    ${activeTab === tab.id ? 'text-amber-400' : 'text-gray-400 hover:text-gray-300'}`}
                             >
-                                {tab.label}
+                                <span>{tab.label}</span>
+                                {tab.count > 0 && (
+                                    <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
+                                        activeTab === tab.id 
+                                            ? 'bg-amber-500/20 text-amber-400' 
+                                            : 'bg-slate-700 text-gray-400'
+                                    }`}>
+                                        {tab.count}
+                                    </span>
+                                )}
                                 {activeTab === tab.id && (
                                     <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-400 to-orange-400"></div>
                                 )}
@@ -67,46 +202,77 @@ export default function Notification() {
                 </div>
 
                 {/* Notification List */}
-                <div className="space-y-1">
-                    {getData().map((item) => (
-                        <div
-                            key={item.id}
-                            className="flex items-center justify-between py-4 border-b border-slate-700/50 hover:bg-slate-800/20 transition-colors px-2 rounded"
-                        >
-                            {/* LEFT */}
-                            <div className="flex-1 pr-4">
-                                <h3 className="text-white text-sm font-semibold">{item.title}</h3>
-                                <p className="text-gray-400 text-xs mt-1">{item.desc}</p>
-                            </div>
+                <div className="space-y-1 min-h-[400px]">
+                    {loading ? (
+                        <div className="text-center py-10 text-gray-400">Loading...</div>
+                    ) : filteredNotifications.length > 0 ? (
+                        filteredNotifications.map((item) => (
+                            <div key={item._id} className="flex items-center justify-between py-4 border-b border-slate-700/50 hover:bg-slate-800/20 transition-colors px-2 rounded group">
+                                <div className="flex-1 pr-4">
+                                    <h3 className="text-white text-sm font-semibold">
+                                        {item.title}
+                                    </h3>
+                                    <p className="text-gray-400 text-xs mt-1">
+                                        {item.message}
+                                    </p>
+                                </div>
 
-                            {/* RIGHT TIME */}
-                            <div className="text-xs text-gray-500 whitespace-nowrap">
-                                {item.time}
+                                <div className="flex items-center gap-3">
+                                    <div className="text-xs text-gray-500 whitespace-nowrap">
+                                        {new Date(item.createdAt).toLocaleDateString()} {new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </div>
+                                    
+                                    {!item.isRead && (
+                                        <button
+                                            onClick={() => markAsRead(item._id)}
+                                            disabled={markingAsRead[item._id]}
+                                            className="p-2 rounded-full bg-slate-700 hover:bg-amber-500 text-gray-300 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed opacity-0 group-hover:opacity-100"
+                                            title="Mark as read"
+                                        >
+                                            {markingAsRead[item._id] ? (
+                                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                            ) : (
+                                                <Check size={16} />
+                                            )}
+                                        </button>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    ))}
-
-                    {getData().length === 0 && (
+                        ))
+                    ) : (
                         <div className="text-center py-10 text-gray-400">
                             No {activeTab} notifications found
                         </div>
                     )}
                 </div>
 
-                {/* Pagination Dummy */}
-                <div className="flex items-center justify-center gap-2 mt-8">
-                    <button className="w-8 h-8 rounded-full bg-slate-700 hover:bg-slate-600 text-white flex items-center justify-center">
-                        <ChevronLeft size={16} />
-                    </button>
+                {/* Pagination UI */}
+                {filteredNotifications.length > 0 && totalPages > 1 && (
+                    <div className="flex items-center justify-center gap-2 mt-8">
+                        <button
+                            onClick={handlePreviousPage}
+                            disabled={currentPage === 1}
+                            className="w-8 h-8 rounded-full bg-slate-700 hover:bg-slate-600 text-white flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                        >
+                            <ChevronLeft size={16} />
+                        </button>
 
-                    <button className="w-8 h-8 rounded-full bg-amber-500 text-white">1</button>
-                    <button className="w-8 h-8 rounded-full bg-slate-700 hover:bg-slate-600 text-gray-300">2</button>
-                    <button className="w-8 h-8 rounded-full bg-slate-700 hover:bg-slate-600 text-gray-300">3</button>
+                        <div className="flex items-center gap-1">
+                            <button className="w-8 h-8 rounded-full bg-amber-500 text-white font-medium">
+                                {currentPage}
+                            </button>
+                            <span className="text-gray-400 text-sm px-2">of {totalPages}</span>
+                        </div>
 
-                    <button className="w-8 h-8 rounded-full bg-slate-700 hover:bg-slate-600 text-white">
-                        <ChevronRight size={16} />
-                    </button>
-                </div>
+                        <button
+                            onClick={handleNextPage}
+                            disabled={currentPage === totalPages}
+                            className="w-8 h-8 rounded-full bg-slate-700 hover:bg-slate-600 text-white flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                        >
+                            <ChevronRight size={16} />
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );

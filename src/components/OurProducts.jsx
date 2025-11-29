@@ -17,39 +17,80 @@ function ImageCarousel({ images }) {
 
   if (!images || images.length === 0) {
     return (
-      <div className="h-36 bg-gray-200 flex items-center justify-center">
+      <div className="h-56 bg-gray-200 flex items-center justify-center">
         <span className="text-gray-400">No Image</span>
       </div>
     );
   }
 
   return (
-    <div className="relative h-36 overflow-hidden group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => { setIsHovered(false); setCurrent(0); }}>
+    <div
+      className="relative h-56 overflow-hidden group"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setCurrent(0);
+      }}
+    >
       {images.map((img, i) => (
-        <img key={i} src={img} alt="Product" className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500" style={{ opacity: i === current ? 1 : 0 }} onError={(e) => { e.target.src = 'https://via.placeholder.com/300x200?text=No+Image'; }}/>
+        <img
+          key={i}
+          src={img}
+          alt="Product"
+          className="absolute inset-0 w-full h-full object-contain transition-opacity duration-500"
+          style={{ opacity: i === current ? 1 : 0 }}
+          onError={e => {
+            e.target.src =
+              'https://via.placeholder.com/300x200?text=No+Image';
+          }}
+        />
       ))}
-      
+
       {isHovered && images.length > 1 && (
         <>
-          <button onClick={(e) => { e.stopPropagation(); setCurrent(p => (p - 1 + images.length) % images.length); }} className="absolute left-1 top-1/2 -translate-y-1/2 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity">
-            <ChevronLeft size={14} className="text-gray-700"/>
+          <button
+            onClick={e => {
+              e.stopPropagation();
+              setCurrent(p => (p - 1 + images.length) % images.length);
+            }}
+            className="absolute left-1 top-1/2 -translate-y-1/2 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <ChevronLeft size={14} className="text-gray-700" />
           </button>
-          <button onClick={(e) => { e.stopPropagation(); setCurrent(p => (p + 1) % images.length); }} className="absolute right-1 top-1/2 -translate-y-1/2 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity">
-            <ChevronRight size={14} className="text-gray-700"/>
+          <button
+            onClick={e => {
+              e.stopPropagation();
+              setCurrent(p => (p + 1) % images.length);
+            }}
+            className="absolute right-1 top-1/2 -translate-y-1/2 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <ChevronRight size={14} className="text-gray-700" />
           </button>
         </>
       )}
-      
+
       {images.length > 1 && (
         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
           {images.map((_, i) => (
-            <button key={i} onClick={(e) => { e.stopPropagation(); setCurrent(i); }} className="w-1.5 h-1.5 rounded-full transition-all" style={{ backgroundColor: i === current ? '#C9A227' : 'rgba(255,255,255,0.5)' }}/>
+            <button
+              key={i}
+              onClick={e => {
+                e.stopPropagation();
+                setCurrent(i);
+              }}
+              className="w-1.5 h-1.5 rounded-full transition-all"
+              style={{
+                backgroundColor:
+                  i === current ? '#C9A227' : 'rgba(255,255,255,0.5)',
+              }}
+            />
           ))}
         </div>
       )}
     </div>
   );
 }
+
 
 function ProductCard({ product, onAddToCart }) {
   const [liked, setLiked] = useState(false);
@@ -70,14 +111,14 @@ function ProductCard({ product, onAddToCart }) {
       setAddingToCart(false);
     }
   };
-
+const navigate = useNavigate()
   const handleViewDetails = () => {
     // Update this to match your routing structure
-    window.location.href = `/product/${product.id || product._id}`;
+   navigate(`/product/${product.id || product._id}`)
   };
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 relative group">
+    <div className="bg-white rounded-xl  overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 relative group">
       {product.discount && (
         <div className="absolute top-2 left-2 z-10">
           <div className="px-2 py-1 rounded-md text-xs font-bold text-white" style={{ background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' }}>
@@ -154,7 +195,7 @@ export default function OurProducts() {
     setError(null);
     
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/products/getAllProducts?page=1&limit=8`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=1&limit=8`, {
         method: 'GET',
         headers: {
           "Content-Type": "application/json",
@@ -186,12 +227,13 @@ export default function OurProducts() {
     }
   };
 const Navigate = useNavigate()
+
   const handleAddToCart = async (product) => {
     const token = localStorage.getItem("token");
     
     if (!token) {
       alert("Please login to add items to cart");
-      window.location.href = '/login';
+     Navigate('/login');
       return;
     }
 
@@ -284,12 +326,12 @@ const Navigate = useNavigate()
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">Our Products</h2>
             <p className="text-gray-400 text-sm">Discover amazing deals on top products</p>
           </div>
-          <button onClick={() => window.location.href = '/products'} className="flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium transition-all hover:gap-2" style={{ backgroundColor: 'rgba(201,162,39,0.15)', color: '#C9A227', border: '1px solid rgba(201,162,39,0.3)' }}>
+          <button onClick={() => Navigate('/products')} className="flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium transition-all hover:gap-2" style={{ backgroundColor: 'rgba(201,162,39,0.15)', color: '#C9A227', border: '1px solid rgba(201,162,39,0.3)' }}>
             View All <ChevronRight size={16}/>
           </button>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-6">
           {products.map((product) => (
             <ProductCard 
               key={product.id || product._id} 

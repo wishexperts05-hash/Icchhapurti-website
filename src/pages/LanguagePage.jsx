@@ -15,7 +15,7 @@ const LanguagePage = () => {
   const [selected, setSelected] = useState("English");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen  relative overflow-hidden">
       
       {/* Background effects */}
       <div className="absolute inset-0 opacity-20">

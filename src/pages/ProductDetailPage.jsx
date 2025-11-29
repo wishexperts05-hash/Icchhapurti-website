@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Star, ShoppingCart, Eye, ChevronLeft, ChevronRight, Loader2, AlertCircle } from 'lucide-react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -39,7 +39,7 @@ export default function ProductDetails() {
     setError(null);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/products/productById/${productId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/v1/products/productById/${productId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ export default function ProductDetails() {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/user/reviews/getProductReviews/${productId}?page=${page}&limit=10`,
+        `${import.meta.env.VITE_API_URL}/api/user/v1/reviews/getProductReviews/${productId}?page=${page}&limit=10`,
         {
           method: 'GET',
           headers: {
@@ -133,6 +133,52 @@ export default function ProductDetails() {
     }
   };
 
+   const token = localStorage.getItem("token");
+  const Navigate = useNavigate()
+  const handleAddToCart = async (product) => {
+ 
+
+    if (!token) {
+      alert("Please login to add items to cart");
+      Navigate('/login')
+      return;
+    }
+
+    try {
+      const cartData = {
+        productId: product._id || product.id,
+        quantity: 1,
+        totalAmount: product.price || 0
+      };
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/addToCart`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(cartData)
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Failed to add to cart');
+      }
+
+      console.log('Added to cart successfully:', result);
+
+      // Optional: Update cart count in header or show notification
+      // You can dispatch an event here that your header component listens to
+      window.dispatchEvent(new CustomEvent('cartUpdated', { detail: result }));
+      Navigate("/cart")
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      alert(error.message || 'Failed to add product to cart. Please try again.');
+      throw error;
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
@@ -146,7 +192,7 @@ export default function ProductDetails() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center p-6">
+      <div className="min-h-screen flex items-center justify-center p-6">
         <div className="bg-slate-800 rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-slate-700">
           <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-8 h-8 text-red-500" />
@@ -179,7 +225,7 @@ export default function ProductDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen  relative overflow-hidden">
       {/* Animated background */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500 rounded-full filter blur-3xl animate-pulse"></div>
@@ -189,12 +235,12 @@ export default function ProductDetails() {
 
       <div className="relative z-10 max-w-7xl mx-auto p-4">
         {/* Header */}
-        <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3 px-6 rounded-t-xl font-bold text-xl shadow-lg">
+        <div className="  text-white py-3 px-6 rounded-t-xl font-bold text-xl shadow-lg">
           Product Details
         </div>
 
         {/* Main Content */}
-        <div className="bg-slate-800/80 backdrop-blur-sm rounded-b-xl shadow-2xl border border-slate-700/50">
+        <div className="  rounded-b-xl shadow-2xl border border-slate-700/50">
           {/* Product Image */}
           <div className="p-6 flex justify-center">
             <div className="bg-white rounded-xl p-6 shadow-inner w-full max-w-md">
@@ -227,11 +273,19 @@ export default function ProductDetails() {
 
           {/* Action Buttons */}
           <div className="grid grid-cols-2 gap-4 px-6">
-            <button className="flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-gray-800 py-3 px-6 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg">
+            <button onClick={() => handleAddToCart(product)} className="flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-gray-800 py-3 px-6 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg">
               <ShoppingCart size={20} />
               Add to Cart
             </button>
-            <button className="flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg">
+            <button onClick={() => {
+              if (!token) {
+                alert("Please login to view items In cart");
+                Navigate('/login')
+                return;
+              }
+
+              Navigate("/cart")
+            }} className="flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg">
               <Eye size={20} />
               View Cart
             </button>

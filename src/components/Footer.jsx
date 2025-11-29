@@ -1,15 +1,36 @@
-import { Phone, Mail, MapPin } from 'lucide-react';
+import { Phone, Mail, MapPin, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
+  const quickLinks = [
+    { label: "Home", href: "/homePage" },
+    { label: "About Us", href: "/about-us" },
+    { label: "Products", href: "/products" },
+    { label: "Blogs", href: "/blogs" },
+    // { label: "Contact Us", href: "/contact" },
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms & Conditions", href: "/terms" },
+  ];
+
   return (
     <footer className="relative text-white overflow-hidden">
-      {/* Background gradient */}
+      {/* Background Image with Overlay */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          background: "linear-gradient(135deg, #0a1628 0%, #1a3a5c 50%, #0d2a4a 100%)",
+          backgroundImage: "url('/footer1-bg.jpg')",
         }}
-      />
+      >
+        {/* Dark gradient overlay for better readability */}
+      <div
+  className="absolute inset-0 pointer-events-none"
+  style={{
+    background:
+      "linear-gradient(135deg, rgba(10, 22, 40, 0.35) 0%, rgba(26, 58, 92, 0.35) 50%, rgba(13, 42, 74, 0.35) 100%)",
+  }}
+/>
+
+      </div>
 
       {/* Decorative gradient shapes */}
       <div
@@ -31,27 +52,14 @@ const Footer = () => {
       <div className="relative max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
 
-          {/* LEFT SECTION */}
+          {/* LEFT SECTION - Logo & Description */}
           <div className="md:col-span-4">
-            <div className="flex items-start gap-3 mb-5">
-             
-
-              {/* <div className="flex flex-col justify-center">
-                <h2 className="text-xl font-bold tracking-wide">
-                  <span className="text-[#C9A227]">I</span>CCHHA
-                  <span className="text-[#C9A227]">PURTI</span>
-                </h2>
-                <p className="text-xs text-gray-400 italic">
-                  पूर्ण करे हर इच्छा आपकी
-                </p>
-              </div> */}
-              <div className="flex flex-col justify-center">
-                 <img
-                src="/logo.png"
+            <div className="mb-6">
+              <img
+                src="/logo-white.png"
                 alt="IcchhaPurti"
-                className="w-50 h-50 object-contain"
+                className="h-30 w-auto object-contain"
               />
-              </div>
             </div>
 
             <p className="text-sm leading-relaxed text-gray-300 mb-6">
@@ -64,7 +72,7 @@ const Footer = () => {
                 <a
                   key={i}
                   href="#"
-                  className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                  className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg"
                   style={{
                     background: "linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)",
                   }}
@@ -75,8 +83,74 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* MIDDLE SECTION - Contact */}
-          <div className="md:col-span-4">
+          {/* MIDDLE SECTION - Quick Links */}
+          <div className="md:col-span-3">
+            <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
+              <span className="w-8 h-0.5 bg-[#C9A227]"></span> QUICK LINKS
+            </h3>
+
+            <ul className="space-y-2">
+              {quickLinks.map((link, index) => (
+                <li key={index}>
+                  <Link
+                    to={link.href}
+                    className="flex items-center gap-2 text-sm text-gray-300 hover:text-[#C9A227] transition-all group"
+                  >
+                    <ChevronRight
+                      size={16}
+                      className="text-[#C9A227] opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all"
+                    />
+                    <span className="group-hover:translate-x-1 transition-transform">
+                      {link.label}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* RIGHT TOP SECTION - Download App */}
+          <div className="md:col-span-5">
+            <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
+              <span className="w-8 h-0.5 bg-[#C9A227]"></span> DOWNLOAD APP
+            </h3>
+            <p className="text-sm text-gray-300 mb-4">
+              Get the best experience on our mobile app. Download now!
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 mb-8">
+              <a
+                href="#"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:scale-105 hover:shadow-lg flex-1"
+                style={{
+                  background: "linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%)",
+                  border: "1px solid #444",
+                }}
+              >
+                <div className="text-3xl">🍎</div>
+                <div>
+                  <p className="text-xs text-gray-400">Download on the</p>
+                  <p className="text-base font-semibold">App Store</p>
+                </div>
+              </a>
+
+              <a
+                href="#"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:scale-105 hover:shadow-lg flex-1"
+                style={{
+                  background: "linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%)",
+                  border: "1px solid #444",
+                }}
+              >
+                <div className="text-3xl">▶️</div>
+                <div>
+                  <p className="text-xs text-gray-400">Get it on</p>
+                  <p className="text-base font-semibold">Google Play</p>
+                </div>
+              </a>
+            </div>
+
+            {/* CONTACT INFO - Moved below Download App */}
             <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
               <span className="w-8 h-0.5 bg-[#C9A227]"></span> CONTACT INFO
             </h3>
@@ -121,7 +195,7 @@ const Footer = () => {
               </a>
 
               {/* Address */}
-              <div className="flex items-start gap-3">
+              {/* <div className="flex items-start gap-3">
                 <div
                   className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
                   style={{
@@ -138,64 +212,22 @@ const Footer = () => {
                     4517 Washington Ave. Manchester, Kentucky 39495
                   </p>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* RIGHT SECTION - App Download */}
-          <div className="md:col-span-4">
-            <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
-              <span className="w-8 h-0.5 bg-[#C9A227]"></span> DOWNLOAD APP
-            </h3>
-            <p className="text-sm text-gray-300 mb-4">
-              Get the best experience on our mobile app. Download now!
-            </p>
-
-            <div className="flex flex-col gap-3">
-              <a
-                href="#"
-                className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:scale-105 hover:shadow-lg"
-                style={{
-                  background: "linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%)",
-                  border: "1px solid #444",
-                }}
-              >
-                <div className="text-3xl">🍎</div>
-                <div>
-                  <p className="text-xs text-gray-400">Download on the</p>
-                  <p className="text-base font-semibold">App Store</p>
-                </div>
-              </a>
-
-              <a
-                href="#"
-                className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:scale-105 hover:shadow-lg"
-                style={{
-                  background: "linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%)",
-                  border: "1px solid #444",
-                }}
-              >
-                <div className="text-3xl">▶️</div>
-                <div>
-                  <p className="text-xs text-gray-400">Get it on</p>
-                  <p className="text-base font-semibold">Google Play</p>
-                </div>
-              </a>
+              </div> */}
             </div>
           </div>
         </div>
       </div>
 
       {/* BOTTOM BAR */}
-      <div className="relative border-t border-gray-700">
+      <div className="relative border-t border-gray-700/50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-2 text-sm text-gray-400">
           <p>
             Copyright © 2025{" "}
-            <span className="text-[#C9A227]">ICCHHA PURTI</span> All Rights Reserved
+            <span className="text-[#C9A227] font-semibold">ICCHHA PURTI</span> All Rights Reserved
           </p>
           <p>
             Designed by{" "}
-            <a href="#" className="hover:text-yellow-400 transition-colors">
+            <a href="#" className="text-[#C9A227] hover:text-yellow-400 transition-colors font-medium">
               Talentrise Technokrate Pvt. Ltd.
             </a>
           </p>
