@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { MapPin, Plus } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
@@ -22,8 +23,7 @@ export default function CartPage() {
   const fetchCartData = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems
-`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +103,6 @@ export default function CartPage() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        // body: JSON.stringify({ itemId: id })
       });
 
       if (!response.ok) throw new Error('Failed to remove item');
@@ -116,9 +115,15 @@ export default function CartPage() {
     }
   };
 
+  const Navigate = useNavigate()
+  const handleAddAddress = () => {
+    // Navigate to add address page or open add address modal
+    Navigate("/address-form") // Adjust based on your routing
+  };
+
   const totalItems = cartItems.reduce((sum, item) => sum + Number(item.quantity), 0);
   const totalPrice = cartItems.reduce((sum, item) => sum + Number(item.totalAmount), 0);
-  const totalAmount = totalPrice  + shippingAmount;
+  const totalAmount = totalPrice + shippingAmount;
 
   const PenIcon = ({ color }) => (
     <div className="w-14 h-14 bg-slate-700 rounded-lg flex items-center justify-center overflow-hidden">
@@ -138,7 +143,7 @@ export default function CartPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen  flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
         <div className="text-white text-xl">Loading cart...</div>
       </div>
     );
@@ -146,7 +151,7 @@ export default function CartPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-400 text-xl mb-4">Error: {error}</p>
           <button
@@ -161,7 +166,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen  relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
       {/* Background glow */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-500 rounded-full blur-3xl"></div>
@@ -171,7 +176,7 @@ export default function CartPage() {
         <h1 className="text-xl font-bold text-white mb-4">My Cart</h1>
 
         {/* Delivery Address */}
-        {selectedAddress && (
+        {selectedAddress ? (
           <div className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 mb-4 border border-slate-700">
             <div className="flex justify-between items-start">
               <div>
@@ -194,6 +199,21 @@ export default function CartPage() {
               </button>
             </div>
           </div>
+        ) : (
+          <div className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 mb-4 border border-amber-500/50">
+            <div className="flex flex-col items-center justify-center text-center">
+              <MapPin className="w-12 h-12 text-amber-500 mb-3" />
+              <h3 className="text-white font-semibold text-lg mb-2">No Delivery Address</h3>
+              <p className="text-gray-400 text-sm mb-4">Please add a delivery address to proceed with checkout</p>
+              <button
+                onClick={handleAddAddress}
+                className="bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-2.5 rounded-lg transition-colors flex items-center gap-2"
+              >
+                <Plus className="w-5 h-5" />
+                Add Address
+              </button>
+            </div>
+          </div>
         )}
 
         {/* Address Selection Modal */}
@@ -210,33 +230,52 @@ export default function CartPage() {
                 </button>
               </div>
 
-              <div className="space-y-3">
-                {addresses.map((address, i) => (
-                  <div
-                    key={address._id}
-                    onClick={() => {
-                      setSelectedAddress(address);
-                      setSelectedAddressIndex(i)
-                      setShowAddressModal(false);
-                    }}
-                    className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${selectedAddress?._id === address._id
-                      ? 'border-amber-500 bg-slate-700/50'
-                      : 'border-slate-700 hover:border-slate-600'
-                      }`}
+              {addresses.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-400 mb-4">No addresses found</p>
+                  <button
+                    onClick={handleAddAddress}
+                    className="bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-2.5 rounded-lg transition-colors flex items-center gap-2 mx-auto"
                   >
-                    <p className="text-white text-sm">
-                      {/* <span className="text-gray-400">Deliver to: </span> */}
-                      <span className="font-semibold">{address.fullName}</span>
-                    </p>
-                    <p className="text-gray-400 text-sm mt-1">{address.country}</p>
-                    <p className="text-gray-400 text-sm mt-1">{address.state}</p>
-                    <p className="text-gray-400 text-sm mt-1">{address.city}</p>
-                    <p className="text-gray-400 text-sm mt-1">{address.street}</p>
-                    <p className="text-gray-400 text-sm mt-1">{address.pinCode}</p>
-                    <p className="text-gray-400 text-sm">Mobile Number: {address.phoneNumber}</p>
-                  </div>
-                ))}
-              </div>
+                    <Plus className="w-5 h-5" />
+                    Add New Address
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {addresses.map((address, i) => (
+                    <div
+                      key={address._id}
+                      onClick={() => {
+                        setSelectedAddress(address);
+                        setSelectedAddressIndex(i)
+                        setShowAddressModal(false);
+                      }}
+                      className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${selectedAddress?._id === address._id
+                        ? 'border-amber-500 bg-slate-700/50'
+                        : 'border-slate-700 hover:border-slate-600'
+                        }`}
+                    >
+                      <p className="text-white text-sm">
+                        <span className="font-semibold">{address.fullName}</span>
+                      </p>
+                      <p className="text-gray-400 text-sm mt-1">{address.country}</p>
+                      <p className="text-gray-400 text-sm mt-1">{address.state}</p>
+                      <p className="text-gray-400 text-sm mt-1">{address.city}</p>
+                      <p className="text-gray-400 text-sm mt-1">{address.street}</p>
+                      <p className="text-gray-400 text-sm mt-1">{address.pinCode}</p>
+                      <p className="text-gray-400 text-sm">Mobile Number: {address.phoneNumber}</p>
+                    </div>
+                  ))}
+                  <button
+                    onClick={handleAddAddress}
+                    className="w-full bg-slate-700 hover:bg-slate-600 text-white font-medium px-4 py-3 rounded-lg transition-colors flex items-center justify-center gap-2 border border-slate-600"
+                  >
+                    <Plus className="w-5 h-5" />
+                    Add New Address
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -317,10 +356,6 @@ export default function CartPage() {
                 <span>Price</span>
                 <span className="text-white">₹ {totalPrice}</span>
               </div>
-              {/* <div className="flex justify-between text-gray-400 border-b border-slate-700 border-dashed pb-2">
-                <span>Staff Referral Discount</span>
-                <span className="text-green-400">-₹ {staffDiscount}</span>
-              </div> */}
               <div className="flex justify-between text-gray-400 border-b border-slate-700 border-dashed pb-2">
                 <span>Shipping Amount</span>
                 <span className="text-white">₹ {shippingAmount}</span>
@@ -335,9 +370,24 @@ export default function CartPage() {
 
         {/* Checkout Button */}
         {cartItems.length > 0 && (
-          <div className="flex justify-center">
-            <Link to={`/payments?addressIndex=${selectedAddressIndex}`}
-              className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 px-20 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/30"
+          <div className="flex flex-col items-center gap-3">
+            {!selectedAddress && (
+              <p className="text-amber-400 text-sm flex items-center gap-2">
+                <MapPin className="w-4 h-4" />
+                Please add a delivery address to proceed
+              </p>
+            )}
+            <Link
+              to={selectedAddress ? `/payments?addressIndex=${selectedAddressIndex}` : '#'}
+              onClick={(e) => {
+                if (!selectedAddress) {
+                  e.preventDefault();
+                }
+              }}
+              className={`font-semibold py-3 px-20 rounded-lg transition-all duration-300 ${selectedAddress
+                  ? 'bg-amber-500 hover:bg-amber-600 text-white hover:shadow-lg hover:shadow-amber-500/30 cursor-pointer'
+                  : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-60'
+                }`}
             >
               Check Out
             </Link>

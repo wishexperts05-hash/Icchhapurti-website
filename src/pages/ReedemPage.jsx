@@ -101,14 +101,14 @@ export default function RedeemPage() {
             <h1 className="text-white font-bold text-xl mb-4">Redeem</h1>
 
             {/* Wallet Card */}
-            <div className="bg-gradient-to-br from-red-800 to-red-900 rounded-xl p-6 mb-4 shadow-2xl border border-red-700/50">
+            <div className="bg-gradient-to-br from-gray-400 to-gray-500  rounded-xl p-6 mb-4 shadow-2xl border border-red-700/50">
                 <div className="flex flex-col items-center">
                     <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center mb-3 shadow-lg">
                         <Wallet className="text-white" size={24} />
                     </div>
 
                     <p className="text-amber-400 text-sm mb-1">Available Balance</p>
-                    <h2 className="text-white text-3xl font-bold mb-4">₹ {balance}</h2>
+                    <h2 className="text-white text-3xl font-bold mb-4">₹ {balance.toFixed(2)}</h2>
 
                     <button
                         disabled={loading}

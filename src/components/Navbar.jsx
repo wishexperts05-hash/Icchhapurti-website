@@ -131,7 +131,7 @@ export default function Navbar() {
           }`}
       >
         {/* User Profile Section */}
-        <div className="bg-gradient-to-br from-[#C9A227] to-[#B89020] p-4 sm:p-6 text-white">
+        <div className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden p-4 sm:p-6 text-white">
           <div className="flex items-center justify-between mb-4">
             {user ? (
               <div className="flex items-center gap-3 flex-1">
@@ -190,8 +190,8 @@ export default function Navbar() {
                 to={item.href}
                 onClick={() => setMenuOpen(false)}
                 className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isItemActive
-                    ? 'bg-[#C9A227]/10 text-[#C9A227]'
-                    : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-[#C9A227]'
+                    ? 'bg-blue-900 text-[#C9A227]'
+                    : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-blue-900'
                   }`}
               >
                 <Icon size={20} className="group-hover:scale-110 transition-transform" />

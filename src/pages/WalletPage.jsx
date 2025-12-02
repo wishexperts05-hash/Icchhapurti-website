@@ -19,16 +19,16 @@ export default function WalletPage() {
       setError("");
 
       // Get token from localStorage
-      const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MWYxNTQ5YmFjZmM4MGY0OGEzNzMwNiIsImlhdCI6MTc2MzY0NDc0NiwiZXhwIjoxNzY2MjM2NzQ2fQ.jDIJvr4OiTUhBOGuc_YAI7bFg29dw0Clah2z7XRZSwo"
+      // const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MWYxNTQ5YmFjZmM4MGY0OGEzNzMwNiIsImlhdCI6MTc2MzY0NDc0NiwiZXhwIjoxNzY2MjM2NzQ2fQ.jDIJvr4OiTUhBOGuc_YAI7bFg29dw0Clah2z7XRZSwo"
 
-      if (!token) {
+      if (!localStorage.getItem("token")) {
         setError("Please login to view wallet");
         setLoading(false);
         return;
       }
 
       const headers = {
-        'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         'Content-Type': 'application/json'
       };
 
@@ -121,7 +121,7 @@ export default function WalletPage() {
         <h1 className="text-white font-bold text-xl mb-4">Wallet</h1>
 
         {/* Wallet Balance Card */}
-        <div className="bg-gradient-to-br from-red-800 to-red-900 rounded-xl p-6 mb-4 shadow-lg border border-red-700/40">
+        <div className="bg-gradient-to-br from-gray-400 to-gray-500 rounded-xl p-6 mb-4 shadow-lg border ">
           <div className="flex flex-col items-center">
             <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center mb-3 shadow-lg">
               <Wallet size={24} className="text-white" />

@@ -14,7 +14,7 @@ export default function AccountPage() {
     { link: "/cart", icon: ShoppingCart, label: 'My Cart' },
     { link: "/orders", icon: Package, label: 'My Orders' },
     { link: "/refer-programme", icon: Gift, label: 'Referral Program' },
-    { link: "/lucky-draw", icon: Ticket, label: 'Lucky Draw' },
+    // { link: "/lucky-draw", icon: Ticket, label: 'Lucky Draw' },
     { link: "/chat-support", icon: MessageCircle, label: 'Chat Support' },
     { link: "/languages", icon: Globe, label: 'Website Language' },
     // { link: "/about-us", icon: Globe, label: 'About Us' },

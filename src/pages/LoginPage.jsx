@@ -25,7 +25,7 @@ const Login = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ phoneNumber: phone }),
+        body: JSON.stringify({ phoneNumber: Number(phone) }),
       });
 
       const data = await response.json();

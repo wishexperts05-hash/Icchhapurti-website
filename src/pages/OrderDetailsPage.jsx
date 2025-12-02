@@ -151,20 +151,20 @@ const OrderDetailsPage = () => {
                 </button>
 
                 {/* Return Button */}
-                <Link
+                {/* <Link
                   to={status === 'Delivered' && item?.returnable ? `/orders/return/${item.productId}` : '#'}
                   className={`px-4 py-1.5 text-white text-sm rounded transition-all duration-300 
-      ${status === 'Delivered' && item?.returnable 
+      ${status === 'Delivered' && item?.returnable
                       ? 'bg-amber-500 hover:bg-amber-600 cursor-pointer'
                       : 'bg-gray-600 cursor-not-allowed'
                     }`}
-                  title={status === 'Delivered' && item?.returnable  ? '' : 'Only delivered & Returnable products can be returned'}
+                  title={status === 'Delivered' && item?.returnable ? '' : 'Only delivered & Returnable products can be returned'}
                   onClick={(e) => {
                     if (status !== 'Delivered') e.preventDefault();
                   }}
                 >
                   Return
-                </Link>
+                </Link> */}
               </div>
 
             </div>

@@ -1,4 +1,5 @@
 import { Phone, Mail, MapPin, ChevronRight } from 'lucide-react';
+
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
@@ -12,6 +13,29 @@ const Footer = () => {
     { label: "Terms & Conditions", href: "/terms" },
   ];
 
+
+ const socialLinks = [
+    { 
+      image: '/twitter.png', // Replace with your actual image path
+      label: 'X (Twitter)', 
+      href: 'https://twitter.com' 
+    },
+    { 
+      image: '/facebook.png', // Replace with your actual image path
+      label: 'Facebook', 
+      href: 'https://facebook.com' 
+    },
+    { 
+      image: '/instagram.png', // Replace with your actual image path
+      label: 'Instagram', 
+      href: 'https://instagram.com' 
+    },
+    { 
+      image: '/linkdin.png', // Replace with your actual image path
+      label: 'LinkedIn', 
+      href: 'https://linkedin.com' 
+    },
+  ];
   return (
     <footer className="relative text-white overflow-hidden">
       {/* Background Image with Overlay */}
@@ -22,13 +46,13 @@ const Footer = () => {
         }}
       >
         {/* Dark gradient overlay for better readability */}
-      <div
-  className="absolute inset-0 pointer-events-none"
-  style={{
-    background:
-      "linear-gradient(135deg, rgba(6, 14, 28, 0.75) 0%, rgba(14, 30, 50, 0.75) 50%, rgba(8, 20, 36, 0.75) 100%)",
-  }}
-/>
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(6, 14, 28, 0.75) 0%, rgba(14, 30, 50, 0.75) 50%, rgba(8, 20, 36, 0.75) 100%)",
+          }}
+        />
 
 
       </div>
@@ -69,19 +93,26 @@ const Footer = () => {
 
             {/* Social Icons */}
             <div className="flex items-center gap-3">
-              {["𝕏", "f", "📷", "in"].map((icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg"
-                  style={{
-                    background: "linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)",
-                  }}
-                >
-                  <span className="text-white text-sm font-bold">{icon}</span>
-                </a>
-              ))}
-            </div>
+       {socialLinks.map((social, i) => (
+          <a
+            key={i}
+            href={social.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={social.label}
+            className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-amber-500/50 overflow-hidden"
+            style={{
+              background: "linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)",
+            }}
+          >
+            <img 
+              src={social.image} 
+              alt={social.label}
+              className="w-6 h-6 object-contain"
+            />
+          </a>
+        ))}
+      </div>
           </div>
 
           {/* MIDDLE SECTION - Quick Links */}
@@ -123,31 +154,31 @@ const Footer = () => {
               <a
                 href="#"
                 className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:scale-105 hover:shadow-lg flex-1"
-                style={{
-                  background: "linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%)",
-                  border: "1px solid #444",
-                }}
+            
               >
-                <div className="text-3xl">🍎</div>
-                <div>
+                <div className="text-3xl">
+                  <img src="/appStore.png" alt="" />
+
+                </div>
+                {/* <div>
                   <p className="text-xs text-gray-400">Download on the</p>
                   <p className="text-base font-semibold">App Store</p>
-                </div>
+                </div> */}
               </a>
 
               <a
                 href="#"
                 className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:scale-105 hover:shadow-lg flex-1"
-                style={{
-                  background: "linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%)",
-                  border: "1px solid #444",
-                }}
+             
               >
-                <div className="text-3xl">▶️</div>
-                <div>
+                <div className="text-3xl">
+                  <img src="/googlePay.png" alt="" />
+
+                </div>
+                {/* <div>
                   <p className="text-xs text-gray-400">Get it on</p>
                   <p className="text-base font-semibold">Google Play</p>
-                </div>
+                </div> */}
               </a>
             </div>
 

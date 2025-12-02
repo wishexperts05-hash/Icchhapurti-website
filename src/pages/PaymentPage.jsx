@@ -15,12 +15,14 @@ export default function PaymentPage() {
   const addressIndex = searchParams.get("addressIndex");
 
   const user = JSON.parse(localStorage.getItem("user"))
+  const [addresses, setAddresses] = useState([]);
+  // const fetchProdile
 
   const paymentMethods = [
     { id: 'Online', name: 'Wallet', balance: balance, icon: '👛' },
     { id: 'apple', name: 'Apple Pay', icon: '' },
     { id: 'google', name: 'Google Pay', icon: 'G' },
-    { id: 'COD', name: 'COD', icon: BsCashCoin }
+    // { id: 'COD', name: 'COD', icon: BsCashCoin }
   ];
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,24 +30,25 @@ export default function PaymentPage() {
   useEffect(() => {
     fetchBalance();
     fetchCartData()
+    fetchAddresses()
   }, []);
 
 
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MWYxNTQ5YmFjZmM4MGY0OGEzNzMwNiIsImlhdCI6MTc2MzY0NDc0NiwiZXhwIjoxNzY2MjM2NzQ2fQ.jDIJvr4OiTUhBOGuc_YAI7bFg29dw0Clah2z7XRZSwo"
+  // const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MWYxNTQ5YmFjZmM4MGY0OGEzNzMwNiIsImlhdCI6MTc2MzY0NDc0NiwiZXhwIjoxNzY2MjM2NzQ2fQ.jDIJvr4OiTUhBOGuc_YAI7bFg29dw0Clah2z7XRZSwo"
   const fetchBalance = async () => {
     try {
       //   const { data } = await axios.get(`/api/wallet/balance/${user._id}`);
       //   setBalance(data.balance || 0);
 
 
-      if (!token) {
+      if (!localStorage.getItem("token")) {
         setError("Please login to view wallet");
         setLoading(false);
         return;
       }
 
       const headers = {
-        'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         'Content-Type': 'application/json'
       };
 
@@ -95,10 +98,34 @@ export default function PaymentPage() {
     }
   };
 
+const fetchAddresses = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/address/getAllAddress`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
+      const data = await res.json();
 
-  const price = 747;
-  const referralDiscount = codeApplied ? 47 : 0;
+      if (data.success) {
+        setAddresses(data.data);
+        // if (data.data?.length > 0) setSelected(data.data[0]._id);
+      }
+    } catch (error) {
+      console.error("Failed to fetch addresses:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  
+  const referralDiscount =0
   const shippingAmount = 50;
 
 
@@ -122,6 +149,7 @@ console.log(cartItems)
     if (!token) return alert("Please login first!");
 
     if (!cartItems.length) return alert("Cart is empty!");
+    
 
     const items = cartItems.map((item) => ({
       productId: item.product._id ,
@@ -130,10 +158,10 @@ console.log(cartItems)
 
     const body = {
       items,
-      shippingAddress: user?.shippingAddress[addressIndex],
+      shippingAddress: addresses[addressIndex],
       paymentMethod: selectedMethod,
       shippingAmount: shippingAmount,
-      discountAmount: referralDiscount,
+      referralCode
     };
 
     try {
@@ -259,7 +287,7 @@ console.log(cartItems)
                 <span className="text-white text-sm">
                   {method.name}
                   {method.balance && (
-                    <span className="text-gray-400"> (Balance: ₹ {method.balance})</span>
+                    <span className="text-gray-400"> (Balance: ₹ {(method.balance).toFixed(2)})</span>
                   )}
                 </span>
               </div>

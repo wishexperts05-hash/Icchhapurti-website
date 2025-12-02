@@ -30,7 +30,7 @@ const PrivacyPage = () => {
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Background effects */}
-      <div className="absolute inset-0 opacity-20">
+  <div className="absolute inset-0 opacity-20">
         <div className="absolute top-20 left-1/4 w-96 h-96 border border-blue-400/30 rounded-full"></div>
         <div className="absolute top-40 left-1/3 w-64 h-64 border border-blue-300/20 rounded-full"></div>
         <div className="absolute bottom-32 right-1/4 w-80 h-80 border border-amber-400/30 rounded-full"></div>
