@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const ShippingAddressPage = () => {
   const [addresses, setAddresses] = useState([]);
   const [selected, setSelected] = useState(null);
   const [loading, setLoading] = useState(true);
   const [deleteLoading, setDeleteLoading] = useState(null); // track delete button state
-
+const { t } = useTranslation();
   useEffect(() => {
     fetchAddresses();
   }, []);
@@ -77,13 +78,16 @@ const ShippingAddressPage = () => {
     );
   }
 
+
+  
+
   return (
     <div className="min-h-screen  flex flex-col items-center justify-start py-10">
 
-      <h2 className="text-white text-lg font-semibold mb-6">Shipping Address</h2>
+      <h2 className="text-white text-lg font-semibold mb-6">{t("addresses.shippingAddress")}</h2>
 
       {addresses.length === 0 ? (
-        <p className="text-gray-300 mb-6">No addresses found. Please add one.</p>
+        <p className="text-gray-300 mb-6">{t("addresses.noAddress")}</p>
       ) : (
         <div className="w-full max-w-4xl flex flex-col gap-4">
           {addresses.map((addr) => (
@@ -133,7 +137,7 @@ const ShippingAddressPage = () => {
         to="/address-form"
         className="mt-8 px-10 py-3 rounded-md bg-[#C8AC5B] text-white text-lg font-semibold transition hover:bg-yellow-600"
       >
-        Add New Address
+       {t("addresses.addAddress")}
       </Link>
     </div>
   );

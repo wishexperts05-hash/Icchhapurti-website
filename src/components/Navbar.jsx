@@ -13,12 +13,12 @@ export default function Navbar() {
   const { t } = useTranslation();
   const token = localStorage?.getItem("token");
   const baseMenu = [
-    { icon: MdAccountBox, label: "Account", href: "/account", auth: true },
-    { icon: Home, label: "Home", href: "/homePage", auth: false },
-    { icon: ShoppingBag, label: "Products", href: "/products", auth: false },
-    { icon: Package, label: "My Orders", href: "/orders", auth: true },
-    { icon: Wallet, label: "Wallet", href: "/wallet", auth: true },
-    { icon: ShoppingBag, label: "Cart", href: "/cart", auth: true },
+    { icon: MdAccountBox, label: t(`nav.account`), href: "/account", auth: true },
+    { icon: Home, label: t(`nav.home`), href: "/homePage", auth: false },
+    { icon: ShoppingBag, label:t(`nav.products`), href: "/products", auth: false },
+    { icon: Package, label: t(`nav.orders`), href: "/orders", auth: true },
+    { icon: Wallet, label: t(`nav.wallet`), href: "/wallet", auth: true },
+    { icon: ShoppingBag, label: t(`nav.cart`), href: "/cart", auth: true },
   ];
 
   // 👇 Filter only authorized items if user logged in
@@ -97,7 +97,7 @@ export default function Navbar() {
               {/* Trusted Users Badge - Hidden on mobile */}
               <div className="hidden sm:flex text-[#C9A227] flex-col text-sm lg:text-base leading-tight">
                 <span className="font-bold">1000+</span>
-                <span className="text-xs lg:text-sm">{t(`Trusted users`)}</span>
+                <span className="text-xs lg:text-sm">{t(`nav.trustedUsers`)}</span>
               </div>
 
               {user && (
@@ -146,7 +146,7 @@ export default function Navbar() {
                 <Link to="/view-profile" onClick={() => setMenuOpen(false)} className="group flex-1">
                   <p className="font-semibold text-base sm:text-lg truncate">{user?.name || "Guest User"}</p>
                   <p className="text-xs sm:text-sm text-white/90 flex items-center gap-1 group-hover:gap-2 transition-all">
-                    View Profile
+                 {t("nav.viewProfile")}
                     <ChevronRight size={14} />
                   </p>
                 </Link>
@@ -213,7 +213,7 @@ export default function Navbar() {
                 }`}
             >
               <Info size={20} className="group-hover:scale-110 transition-transform" />
-              <span className="font-medium flex-1 text-sm sm:text-base">About Us</span>
+              <span className="font-medium flex-1 text-sm sm:text-base">{t("nav.about")}</span>
               <ChevronRight size={18} className={`transition-opacity ${isActive('/about-us') ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`} />
             </Link>
             <Link
@@ -225,7 +225,7 @@ export default function Navbar() {
                 }`}
             >
               <BookOpen size={20} className="group-hover:scale-110 transition-transform" />
-              <span className="font-medium flex-1 text-sm sm:text-base">Blogs</span>
+              <span className="font-medium flex-1 text-sm sm:text-base">{t("nav.blogs")}</span>
               <ChevronRight size={18} className={`transition-opacity ${isActive('/blogs') ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`} />
             </Link>
           </div>

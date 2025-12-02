@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Star, ChevronLeft, ChevronRight, ShoppingCart, Eye, Heart, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 function ImageCarousel({ images }) {
   const [current, setCurrent] = useState(0);
@@ -55,6 +56,8 @@ function ProductCard({ product, onAddToCart }) {
   const [addingToCart, setAddingToCart] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
   const navigate = useNavigate();
+
+  
 
   const handleAddToCart = async (e) => {
     e.stopPropagation();
@@ -175,7 +178,7 @@ export default function ProductsPage() {
   const [totalProducts, setTotalProducts] = useState(0);
   const Navigate = useNavigate()
 
-
+const { t } = useTranslation();
   const handleAddToCart = async (product) => {
     const token = localStorage.getItem("token");
 
@@ -302,8 +305,8 @@ export default function ProductsPage() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between  gap-4 mb-8">
           <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">Our Products</h2>
-            <p className="text-gray-400 text-sm">Discover amazing deals on top products</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">{t("common.ourProducts")}</h2>
+            <p className="text-gray-400 text-sm">{t("home.tagline")}</p>
           </div>
 
           {/* Search Input */}

@@ -1,8 +1,6 @@
-import axios from 'axios';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BsCashCoin } from 'react-icons/bs';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function PaymentPage() {
   const [referralCode, setReferralCode] = useState('CXESRF');
@@ -10,37 +8,61 @@ export default function PaymentPage() {
   const [selectedMethod, setSelectedMethod] = useState('Online');
   const [codeApplied, setCodeApplied] = useState(false);
   const [balance, setBalance] = useState(0);
-
-  const [searchParams] = useSearchParams();
-  const addressIndex = searchParams.get("addressIndex");
-
-  const user = JSON.parse(localStorage.getItem("user"))
   const [addresses, setAddresses] = useState([]);
-  // const fetchProdile
-
-  const paymentMethods = [
-    { id: 'Online', name: 'Wallet', balance: balance, icon: '👛' },
-    { id: 'apple', name: 'Apple Pay', icon: '' },
-    { id: 'google', name: 'Google Pay', icon: 'G' },
-    // { id: 'COD', name: 'COD', icon: BsCashCoin }
-  ];
+  const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Mock translation function - replace with actual useTranslation hook
+  const t = (key) => {
+    const translations = {
+      'payment.title': 'भुगतान विधि चुनें',
+      'payment.referral.label': 'रेफ़रल कोड दर्ज करें',
+      'payment.referral.placeholder': 'कोड दर्ज करें',
+      'payment.referral.apply': 'लागू करें',
+      'payment.referral.success': '✓ रेफ़रल कोड सफलतापूर्वक लागू हुआ!',
+      'payment.referral.default': 'डिफ़ॉल्ट रेफ़रल कोड लागू करें',
+      'payment.methods.wallet': 'वॉलेट',
+      'payment.methods.apple': 'एप्पल पे',
+      'payment.methods.google': 'गूगल पे',
+      'payment.methods.cod': 'कैश ऑन डिलीवरी',
+      'payment.methods.balance': 'बैलेंस',
+      'payment.price_details.title': 'मूल्य विवरण',
+      'payment.price_details.total_items': 'कुल आइटम',
+      'payment.price_details.price': 'क़ीमत',
+      'payment.price_details.discount': 'छूट राशि',
+      'payment.price_details.shipping': 'शिपिंग राशि',
+      'payment.price_details.total_amount': 'कुल राशि',
+      'payment.checkout': 'भुगतान करें',
+      'payment.alerts.login_first': 'कृपया पहले लॉगिन करें!',
+      'payment.alerts.cart_empty': 'कार्ट खाली है!',
+      'payment.alerts.order_success': 'ऑर्डर सफलतापूर्वक किया गया!',
+      'payment.alerts.something_wrong': 'कुछ गलत हो गया!'
+    };
+    return translations[key] || key;
+  };
+
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const searchParams = new URLSearchParams(window.location.search);
+  const addressIndex = searchParams.get("addressIndex");
+
+  const paymentMethods = [
+    { id: 'Online', name: t('payment.methods.wallet'), balance: balance, icon: '👛' },
+    { id: 'apple', name: t('payment.methods.apple'), icon: '' },
+    { id: 'google', name: t('payment.methods.google'), icon: 'G' },
+  ];
+
+  const referralDiscount = 0;
+  const shippingAmount = 50;
+
   useEffect(() => {
     fetchBalance();
-    fetchCartData()
-    fetchAddresses()
+    fetchCartData();
+    fetchAddresses();
   }, []);
 
-
-  // const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MWYxNTQ5YmFjZmM4MGY0OGEzNzMwNiIsImlhdCI6MTc2MzY0NDc0NiwiZXhwIjoxNzY2MjM2NzQ2fQ.jDIJvr4OiTUhBOGuc_YAI7bFg29dw0Clah2z7XRZSwo"
   const fetchBalance = async () => {
     try {
-      //   const { data } = await axios.get(`/api/wallet/balance/${user._id}`);
-      //   setBalance(data.balance || 0);
-
-
       if (!localStorage.getItem("token")) {
         setError("Please login to view wallet");
         setLoading(false);
@@ -48,40 +70,34 @@ export default function PaymentPage() {
       }
 
       const headers = {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
         'Content-Type': 'application/json'
       };
 
-      // Fetch balance
       const balanceRes = await fetch(
         `${import.meta.env.VITE_API_URL}/api/user/walletAndTransaction/getWalletBalance`,
         { headers }
       );
-      console.log(balanceRes, "balanceRes")
+
       if (!balanceRes.ok) {
         throw new Error('Failed to fetch balance');
       }
 
       const balanceData = await balanceRes.json();
       setBalance(balanceData.data || 0);
-
-
     } catch (err) {
       console.log("Balance fetch failed:", err);
     }
   };
 
-  const [cartItems, setCartItems] = useState([]);
-
   const fetchCartData = async () => {
     try {
-      setLoading(true)
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems
-`, {
+      setLoading(true);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Adjust based on your auth method
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
 
@@ -98,7 +114,7 @@ export default function PaymentPage() {
     }
   };
 
-const fetchAddresses = async () => {
+  const fetchAddresses = async () => {
     try {
       setLoading(true);
       const res = await fetch(
@@ -115,7 +131,6 @@ const fetchAddresses = async () => {
 
       if (data.success) {
         setAddresses(data.data);
-        // if (data.data?.length > 0) setSelected(data.data[0]._id);
       }
     } catch (error) {
       console.error("Failed to fetch addresses:", error);
@@ -124,35 +139,27 @@ const fetchAddresses = async () => {
     }
   };
 
-  
-  const referralDiscount =0
-  const shippingAmount = 50;
-
-
-
-
   const totalItems = cartItems.reduce((sum, item) => sum + Number(item.quantity), 0);
   const totalPrice = cartItems.reduce((sum, item) => sum + Number(item.totalAmount), 0);
   const totalAmount = totalPrice - referralDiscount + shippingAmount;
-console.log(cartItems)
+
   const handleApply = () => {
     if (referralCode.trim()) {
       setCodeApplied(true);
     }
   };
 
-  //  import axios from "axios";
-  const Navigate = useNavigate()
+
+const Navigate = useNavigate()
 
   const handleCheckout = async () => {
     const token = localStorage.getItem("token");
-    if (!token) return alert("Please login first!");
+    if (!token) return alert(t('payment.alerts.login_first'));
 
-    if (!cartItems.length) return alert("Cart is empty!");
-    
+    if (!cartItems.length) return alert(t('payment.alerts.cart_empty'));
 
     const items = cartItems.map((item) => ({
-      productId: item.product._id ,
+      productId: item.product._id,
       quantity: item.quantity,
     }));
 
@@ -167,35 +174,31 @@ console.log(cartItems)
     try {
       setLoading(true);
 
-      const res = await axios.post(
+      const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/user/orders/createOrder`,
-        body,
         {
+          method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
+          body: JSON.stringify(body)
         }
       );
 
-      if (res.data.success) {
-        alert("Order placed successfully!");
-        console.log("Order:", res.data.order);
+      const data = await res.json();
 
-        Navigate("/orders")
-
-        // Optional → Clear cart or redirect
-        // navigate(`/order/${res.data.order._id}`);
+      if (data.success) {
+        alert(t('payment.alerts.order_success'));
+        Navigate('/orders')
       }
     } catch (error) {
       console.error("Checkout Error:", error);
-      alert(error.response?.data?.message || "Something went wrong!");
+      alert(error.response?.data?.message || t('payment.alerts.something_wrong'));
     } finally {
       setLoading(false);
     }
   };
-
-
 
   const AppleIcon = () => (
     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -219,7 +222,7 @@ console.log(cartItems)
   );
 
   return (
-    <div className="min-h-screen  relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
       {/* Background glow */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-500 rounded-full blur-3xl"></div>
@@ -227,28 +230,28 @@ console.log(cartItems)
       </div>
 
       <div className="relative z-10 p-4 md:p-6 max-w-5xl mx-auto">
-        <h1 className="text-xl font-bold text-white mb-6">Choose Payment Method</h1>
+        <h1 className="text-xl font-bold text-white mb-6">{t('payment.title')}</h1>
 
         {/* Referral Code Input */}
         <div className="mb-4">
-          <label className="block text-white text-sm mb-2">Enter Referral Code</label>
+          <label className="block text-white text-sm mb-2">{t('payment.referral.label')}</label>
           <div className="flex bg-white rounded-lg overflow-hidden">
             <input
               type="text"
               value={referralCode}
               onChange={(e) => { setReferralCode(e.target.value); setCodeApplied(false); }}
-              placeholder="Enter code"
+              placeholder={t('payment.referral.placeholder')}
               className="flex-1 px-4 py-3 text-gray-800 focus:outline-none"
             />
             <button
               onClick={handleApply}
               className="px-6 py-3 text-amber-500 hover:text-amber-600 font-medium transition-colors"
             >
-              Apply
+              {t('payment.referral.apply')}
             </button>
           </div>
           {codeApplied && (
-            <p className="text-green-400 text-xs mt-1">✓ Referral code applied successfully!</p>
+            <p className="text-green-400 text-xs mt-1">{t('payment.referral.success')}</p>
           )}
         </div>
 
@@ -256,8 +259,9 @@ console.log(cartItems)
         <label className="flex items-center gap-3 mb-6 cursor-pointer">
           <div
             onClick={() => setApplyDefault(!applyDefault)}
-            className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${applyDefault ? 'bg-amber-500 border-amber-500' : 'border-gray-400 bg-transparent'
-              }`}
+            className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+              applyDefault ? 'bg-amber-500 border-amber-500' : 'border-gray-400 bg-transparent'
+            }`}
           >
             {applyDefault && (
               <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -265,7 +269,7 @@ console.log(cartItems)
               </svg>
             )}
           </div>
-          <span className="text-white text-sm">Apply default referral code</span>
+          <span className="text-white text-sm">{t('payment.referral.default')}</span>
         </label>
 
         {/* Payment Methods */}
@@ -274,25 +278,26 @@ console.log(cartItems)
             <div
               key={method.id}
               onClick={() => setSelectedMethod(method.id)}
-              className={`flex items-center justify-between p-4 cursor-pointer transition-colors hover:bg-slate-700/50 ${index !== paymentMethods.length - 1 ? 'border-b border-slate-700' : ''
-                }`}
+              className={`flex items-center justify-between p-4 cursor-pointer transition-colors hover:bg-slate-700/50 ${
+                index !== paymentMethods.length - 1 ? 'border-b border-slate-700' : ''
+              }`}
             >
               <div className="flex items-center gap-3">
                 <span className="text-amber-500">
                   {method.id === 'Online' && <WalletIcon />}
                   {method.id === 'apple' && <AppleIcon />}
                   {method.id === 'google' && <GoogleIcon />}
-                  {method.id === 'COD' && <BsCashCoin />}
                 </span>
                 <span className="text-white text-sm">
                   {method.name}
-                  {method.balance && (
-                    <span className="text-gray-400"> (Balance: ₹ {(method.balance).toFixed(2)})</span>
+                  {method.balance !== undefined && (
+                    <span className="text-gray-400"> ({t('payment.methods.balance')}: ₹ {(method.balance).toFixed(2)})</span>
                   )}
                 </span>
               </div>
-              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${selectedMethod === method.id ? 'border-amber-500' : 'border-gray-500'
-                }`}>
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                selectedMethod === method.id ? 'border-amber-500' : 'border-gray-500'
+              }`}>
                 {selectedMethod === method.id && (
                   <div className="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
                 )}
@@ -303,28 +308,28 @@ console.log(cartItems)
 
         {/* Price Details */}
         <div className="bg-slate-800/60 backdrop-blur-sm rounded-xl p-4 mb-6 border border-slate-700">
-          <h3 className="text-white font-semibold mb-3">Price Details</h3>
+          <h3 className="text-white font-semibold mb-3">{t('payment.price_details.title')}</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between text-gray-400 border-b border-slate-600 border-dashed pb-2">
-              <span>Total Items</span>
+              <span>{t('payment.price_details.total_items')}</span>
               <span className="text-white">{totalItems}</span>
             </div>
             <div className="flex justify-between text-gray-400 border-b border-slate-600 border-dashed pb-2">
-              <span>Price</span>
+              <span>{t('payment.price_details.price')}</span>
               <span className="text-white">₹ {totalPrice}</span>
             </div>
             <div className="flex justify-between text-gray-400 border-b border-slate-600 border-dashed pb-2">
-              <span> Discount Amount</span>
+              <span>{t('payment.price_details.discount')}</span>
               <span className={referralDiscount > 0 ? 'text-green-400' : 'text-gray-400'}>
                 {referralDiscount > 0 ? `-₹ ${referralDiscount}` : '₹ 0'}
               </span>
             </div>
             <div className="flex justify-between text-gray-400 border-b border-slate-600 border-dashed pb-2">
-              <span>Shipping Amount</span>
+              <span>{t('payment.price_details.shipping')}</span>
               <span className="text-white">₹ {shippingAmount}</span>
             </div>
             <div className="flex justify-between text-white font-semibold pt-1">
-              <span>Total Amount</span>
+              <span>{t('payment.price_details.total_amount')}</span>
               <span className="text-amber-500">₹ {totalAmount}</span>
             </div>
           </div>
@@ -334,11 +339,10 @@ console.log(cartItems)
         <button
           onClick={handleCheckout}
           disabled={loading}
-          className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 px-20 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/30 w-full max-w-sm disabled:opacity-50"
+          className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 px-20 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/30 w-full max-w-sm disabled:opacity-50 mx-auto block"
         >
-          {loading ? "Processing..." : "Check Out"}
+          {loading ? "Processing..." : t('payment.checkout')}
         </button>
-
       </div>
     </div>
   );

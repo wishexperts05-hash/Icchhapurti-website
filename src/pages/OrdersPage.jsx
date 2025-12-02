@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Package, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -60,7 +61,7 @@ const OrdersPage = () => {
     // Navigate to order details page
 
   };
-
+  const { t } = useTranslation();
   
 
   const handlePageChange = (page) => {
@@ -191,12 +192,12 @@ const OrdersPage = () => {
 
       {/* Content */}
       <div className="relative z-10 max-w-5xl mx-auto p-6">
-        <h1 className="text-3xl font-bold text-white mb-8">My Orders</h1>
+        <h1 className="text-3xl font-bold text-white mb-8">{t("nav.orders")}</h1>
 
         {orders.length === 0 ? (
           <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-8 text-center">
             <Package className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-            <p className="text-gray-400 text-lg">No orders found</p>
+            <p className="text-gray-400 text-lg">{t("common.noOrder")}</p>
             <button
               onClick={() => window.location.href = '/'}
               className="mt-4 bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-lg transition-colors"

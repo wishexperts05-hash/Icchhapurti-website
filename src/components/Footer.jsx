@@ -1,41 +1,47 @@
 import { Phone, Mail, MapPin, ChevronRight } from 'lucide-react';
-
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
+  const { t } = useTranslation();
+
   const quickLinks = [
-    { label: "Home", href: "/homePage" },
-    { label: "About Us", href: "/about-us" },
-    { label: "Products", href: "/products" },
-    { label: "Blogs", href: "/blogs" },
-    // { label: "Contact Us", href: "/contact" },
-    { label: "Privacy Policy", href: "/privacy" },
-    { label: "Terms & Conditions", href: "/terms" },
+    { label: t('footer.links.home'), href: "/homePage" },
+    { label: t('footer.links.aboutUs'), href: "/about-us" },
+    { label: t('footer.links.products'), href: "/products" },
+    { label: t('footer.links.blogs'), href: "/blogs" },
+    { label: t('footer.links.privacyPolicy'), href: "/privacy" },
+    { label: t('footer.links.termsConditions'), href: "/terms" },
   ];
 
-
- const socialLinks = [
+  const socialLinks = [
     { 
-      image: '/twitter.png', // Replace with your actual image path
+      image: '/twitter.png',
       label: 'X (Twitter)', 
       href: 'https://twitter.com' 
     },
     { 
-      image: '/facebook.png', // Replace with your actual image path
+      image: '/facebook.png',
       label: 'Facebook', 
       href: 'https://facebook.com' 
     },
     { 
-      image: '/instagram.png', // Replace with your actual image path
+      image: '/instagram.png',
       label: 'Instagram', 
-      href: 'https://instagram.com' 
+      href: 'https://www.instagram.com/icchhapurtiofficial?igsh=ZHE1anhrdWgwNzFp&utm_source=qr' 
     },
     { 
-      image: '/linkdin.png', // Replace with your actual image path
+      image: '/linkdin.png',
       label: 'LinkedIn', 
       href: 'https://linkedin.com' 
     },
+    { 
+      image: '/youtube.png',
+      label: 'YouTube', 
+      href: 'https://youtube.com' 
+    },
   ];
+
   return (
     <footer className="relative text-white overflow-hidden">
       {/* Background Image with Overlay */}
@@ -53,8 +59,6 @@ const Footer = () => {
               "linear-gradient(135deg, rgba(6, 14, 28, 0.75) 0%, rgba(14, 30, 50, 0.75) 50%, rgba(8, 20, 36, 0.75) 100%)",
           }}
         />
-
-
       </div>
 
       {/* Decorative gradient shapes */}
@@ -88,37 +92,37 @@ const Footer = () => {
             </div>
 
             <p className="text-sm leading-relaxed text-gray-300 mb-6">
-              Your one-stop destination for quality products. We are committed to delivering excellence and fulfilling every wish with our trusted service and premium selection.
+              {t('footer.description')}
             </p>
 
             {/* Social Icons */}
             <div className="flex items-center gap-3">
-       {socialLinks.map((social, i) => (
-          <a
-            key={i}
-            href={social.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={social.label}
-            className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-amber-500/50 overflow-hidden"
-            style={{
-              background: "linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)",
-            }}
-          >
-            <img 
-              src={social.image} 
-              alt={social.label}
-              className="w-6 h-6 object-contain"
-            />
-          </a>
-        ))}
-      </div>
+              {socialLinks.map((social, i) => (
+                <a
+                  key={i}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-amber-500/50 overflow-hidden"
+                  style={{
+                    background: "linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)",
+                  }}
+                >
+                  <img 
+                    src={social.image} 
+                    alt={social.label}
+                    className="w-6 h-6 object-contain"
+                  />
+                </a>
+              ))}
+            </div>
           </div>
 
           {/* MIDDLE SECTION - Quick Links */}
           <div className="md:col-span-3">
             <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
-              <span className="w-8 h-0.5 bg-[#C9A227]"></span> QUICK LINKS
+              <span className="w-8 h-0.5 bg-[#C9A227]"></span> {t('footer.quickLinks')}
             </h3>
 
             <ul className="space-y-2">
@@ -144,47 +148,35 @@ const Footer = () => {
           {/* RIGHT TOP SECTION - Download App */}
           <div className="md:col-span-5">
             <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
-              <span className="w-8 h-0.5 bg-[#C9A227]"></span> DOWNLOAD APP
+              <span className="w-8 h-0.5 bg-[#C9A227]"></span> {t('footer.downloadApp')}
             </h3>
             <p className="text-sm text-gray-300 mb-4">
-              Get the best experience on our mobile app. Download now!
+              {t('footer.downloadAppDesc')}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 mb-8">
               <a
                 href="#"
                 className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:scale-105 hover:shadow-lg flex-1"
-            
               >
-                <div className="text-3xl">
-                  <img src="/appStore.png" alt="" />
-
+                <div className="text-2xl">
+                  <img src="/appStore.png" alt={t('footer.appStore')} />
                 </div>
-                {/* <div>
-                  <p className="text-xs text-gray-400">Download on the</p>
-                  <p className="text-base font-semibold">App Store</p>
-                </div> */}
               </a>
 
               <a
                 href="#"
                 className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:scale-105 hover:shadow-lg flex-1"
-             
               >
-                <div className="text-3xl">
-                  <img src="/googlePay.png" alt="" />
-
+                <div className="text-xl">
+                  <img src="/googlePay.png" alt={t('footer.googlePlay')} />
                 </div>
-                {/* <div>
-                  <p className="text-xs text-gray-400">Get it on</p>
-                  <p className="text-base font-semibold">Google Play</p>
-                </div> */}
               </a>
             </div>
 
             {/* CONTACT INFO - Moved below Download App */}
             <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
-              <span className="w-8 h-0.5 bg-[#C9A227]"></span> CONTACT INFO
+              <span className="w-8 h-0.5 bg-[#C9A227]"></span> {t('footer.contactInfo')}
             </h3>
 
             <div className="space-y-4">
@@ -200,7 +192,7 @@ const Footer = () => {
                   <Phone size={18} className="text-[#C9A227]" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-400">Phone</p>
+                  <p className="text-xs text-gray-400">{t('footer.phone')}</p>
                   <p className="text-sm text-white group-hover:text-yellow-400 transition-colors">
                     +91 9876543210
                   </p>
@@ -219,32 +211,12 @@ const Footer = () => {
                   <Mail size={18} className="text-[#C9A227]" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-400">Email</p>
+                  <p className="text-xs text-gray-400">{t('footer.email')}</p>
                   <p className="text-sm text-white group-hover:text-yellow-400 transition-colors">
                     example@icchhapurti.com
                   </p>
                 </div>
               </a>
-
-              {/* Address */}
-              {/* <div className="flex items-start gap-3">
-                <div
-                  className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{
-                    backgroundColor: "rgba(201, 162, 39, 0.15)",
-                    border: "1px solid rgba(201, 162, 39, 0.3)",
-                  }}
-                >
-                  <MapPin size={18} className="text-[#C9A227]" />
-                </div>
-
-                <div>
-                  <p className="text-xs text-gray-400">Address</p>
-                  <p className="text-sm text-gray-200">
-                    4517 Washington Ave. Manchester, Kentucky 39495
-                  </p>
-                </div>
-              </div> */}
             </div>
           </div>
         </div>
@@ -254,11 +226,12 @@ const Footer = () => {
       <div className="relative border-t border-gray-700/50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-2 text-sm text-gray-400">
           <p>
-            Copyright © 2025{" "}
-            <span className="text-[#C9A227] font-semibold">ICCHHA PURTI</span> All Rights Reserved
+            {t('footer.copyright')}{" "}
+            <span className="text-[#C9A227] font-semibold">{t('footer.companyName')}</span>{" "}
+            {t('footer.allRightsReserved')}
           </p>
           <p>
-            Designed by{" "}
+            {t('footer.designedBy')}{" "}
             <a href="#" className="text-[#C9A227] hover:text-yellow-400 transition-colors font-medium">
               Talentrise Technokrate Pvt. Ltd.
             </a>

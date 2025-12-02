@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Wallet, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function WalletPage() {
   const [balance, setBalance] = useState(0);
@@ -109,7 +110,7 @@ export default function WalletPage() {
       maximumFractionDigits: 2
     }).format(amount);
   };
-
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen  relative overflow-hidden">
       {/* Background */}
@@ -118,7 +119,7 @@ export default function WalletPage() {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto p-4">
-        <h1 className="text-white font-bold text-xl mb-4">Wallet</h1>
+        <h1 className="text-white font-bold text-xl mb-4">{t("nav.wallet")}</h1>
 
         {/* Wallet Balance Card */}
         <div className="bg-gradient-to-br from-gray-400 to-gray-500 rounded-xl p-6 mb-4 shadow-lg border ">
@@ -126,7 +127,7 @@ export default function WalletPage() {
             <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center mb-3 shadow-lg">
               <Wallet size={24} className="text-white" />
             </div>
-            <p className="text-amber-400 text-sm">Available Balance</p>
+            <p className="text-amber-400 text-sm">{t("common.availableBalanace")}</p>
             <h2 className="text-white text-3xl font-bold mb-4">
               ₹ {formatAmount(balance)}
             </h2>
@@ -135,7 +136,7 @@ export default function WalletPage() {
               to="/reedem"
               className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-10 py-2 rounded-full font-semibold shadow-lg hover:from-amber-600 hover:to-orange-600 transition-all"
             >
-              Redeem
+              {t("common.redeem")}
             </Link>
           </div>
         </div>
@@ -145,16 +146,16 @@ export default function WalletPage() {
             to="/reedem-history"
             className="text-amber-400 text-sm hover:text-amber-300 transition-colors"
           >
-            See Redeem History
+             {t("common.seeRedeemHistory")}
           </Link>
         </div>
 
         {/* Transaction History */}
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-white font-semibold">Transaction History</h2>
+          <h2 className="text-white font-semibold">    {t("common.transactionHistory")}</h2>
           {pagination.totalItems > 0 && (
             <span className="text-gray-400 text-sm">
-              {pagination.totalItems} transactions
+              {pagination.totalItems}  {t("common.transaction")}
             </span>
           )}
         </div>

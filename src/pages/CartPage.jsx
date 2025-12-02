@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { MapPin, Plus } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function CartPage() {
+  const { t } = useTranslation();
   const [cartItems, setCartItems] = useState([]);
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -27,7 +29,7 @@ export default function CartPage() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Adjust based on your auth method
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
 
@@ -59,7 +61,6 @@ export default function CartPage() {
       const data = await response.json();
       setAddresses(data.data || []);
 
-      // Set default address or first address
       const defaultAddr = data.addresses?.find(addr => addr.isDefault) || data.data?.[0];
       setSelectedAddress(defaultAddr);
     } catch (err) {
@@ -87,7 +88,6 @@ export default function CartPage() {
 
       if (!response.ok) throw new Error('Failed to update quantity');
 
-      // Refetch cart data to get updated state
       fetchCartData();
     } catch (err) {
       console.error('Error updating quantity:', err);
@@ -107,7 +107,6 @@ export default function CartPage() {
 
       if (!response.ok) throw new Error('Failed to remove item');
 
-      // Update local state
       fetchCartData()
     } catch (err) {
       console.error('Error removing item:', err);
@@ -117,8 +116,7 @@ export default function CartPage() {
 
   const Navigate = useNavigate()
   const handleAddAddress = () => {
-    // Navigate to add address page or open add address modal
-    Navigate("/address-form") // Adjust based on your routing
+    Navigate("/address-form")
   };
 
   const totalItems = cartItems.reduce((sum, item) => sum + Number(item.quantity), 0);
@@ -144,7 +142,7 @@ export default function CartPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading cart...</div>
+        <div className="text-white text-xl">{t('cart.loading')}</div>
       </div>
     );
   }
@@ -153,12 +151,12 @@ export default function CartPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-400 text-xl mb-4">Error: {error}</p>
+          <p className="text-red-400 text-xl mb-4">{t('cart.error')}: {error}</p>
           <button
             onClick={fetchCartData}
             className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-lg"
           >
-            Retry
+            {t('cart.retry')}
           </button>
         </div>
       </div>
@@ -173,7 +171,7 @@ export default function CartPage() {
       </div>
 
       <div className="relative z-10 p-4 md:p-6 max-w-5xl mx-auto">
-        <h1 className="text-xl font-bold text-white mb-4">My Cart</h1>
+        <h1 className="text-xl font-bold text-white mb-4">{t('cart.title')}</h1>
 
         {/* Delivery Address */}
         {selectedAddress ? (
@@ -181,7 +179,7 @@ export default function CartPage() {
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-white text-sm">
-                  <span className="text-gray-400">Deliver to: </span>
+                  <span className="text-gray-400">{t('cart.deliveryAddress.deliverTo')} </span>
                   <span className="font-semibold">{selectedAddress.fullName}</span>
                 </p>
                 <p className="text-gray-400 text-sm mt-1">{selectedAddress.country}</p>
@@ -189,13 +187,13 @@ export default function CartPage() {
                 <p className="text-gray-400 text-sm mt-1">{selectedAddress.city}</p>
                 <p className="text-gray-400 text-sm mt-1">{selectedAddress.street}</p>
                 <p className="text-gray-400 text-sm mt-1">{selectedAddress.pinCode}</p>
-                <p className="text-gray-400 text-sm">Mobile Number: {selectedAddress.phoneNumber}</p>
+                <p className="text-gray-400 text-sm">{t('cart.deliveryAddress.mobileNumber')} {selectedAddress.phoneNumber}</p>
               </div>
               <button
                 onClick={() => setShowAddressModal(true)}
                 className="bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
               >
-                Change Address
+                {t('cart.deliveryAddress.changeAddress')}
               </button>
             </div>
           </div>
@@ -203,14 +201,14 @@ export default function CartPage() {
           <div className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 mb-4 border border-amber-500/50">
             <div className="flex flex-col items-center justify-center text-center">
               <MapPin className="w-12 h-12 text-amber-500 mb-3" />
-              <h3 className="text-white font-semibold text-lg mb-2">No Delivery Address</h3>
-              <p className="text-gray-400 text-sm mb-4">Please add a delivery address to proceed with checkout</p>
+              <h3 className="text-white font-semibold text-lg mb-2">{t('cart.deliveryAddress.noAddress')}</h3>
+              <p className="text-gray-400 text-sm mb-4">{t('cart.deliveryAddress.noAddressDesc')}</p>
               <button
                 onClick={handleAddAddress}
                 className="bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-2.5 rounded-lg transition-colors flex items-center gap-2"
               >
                 <Plus className="w-5 h-5" />
-                Add Address
+                {t('cart.deliveryAddress.addAddress')}
               </button>
             </div>
           </div>
@@ -221,7 +219,7 @@ export default function CartPage() {
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className="bg-slate-800 rounded-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-white">Select Delivery Address</h2>
+                <h2 className="text-xl font-bold text-white">{t('cart.deliveryAddress.selectAddress')}</h2>
                 <button
                   onClick={() => setShowAddressModal(false)}
                   className="text-gray-400 hover:text-white text-2xl"
@@ -232,13 +230,13 @@ export default function CartPage() {
 
               {addresses.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-gray-400 mb-4">No addresses found</p>
+                  <p className="text-gray-400 mb-4">{t('cart.deliveryAddress.noAddressesFound')}</p>
                   <button
                     onClick={handleAddAddress}
                     className="bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-2.5 rounded-lg transition-colors flex items-center gap-2 mx-auto"
                   >
                     <Plus className="w-5 h-5" />
-                    Add New Address
+                    {t('cart.deliveryAddress.addNewAddress')}
                   </button>
                 </div>
               ) : (
@@ -264,7 +262,7 @@ export default function CartPage() {
                       <p className="text-gray-400 text-sm mt-1">{address.city}</p>
                       <p className="text-gray-400 text-sm mt-1">{address.street}</p>
                       <p className="text-gray-400 text-sm mt-1">{address.pinCode}</p>
-                      <p className="text-gray-400 text-sm">Mobile Number: {address.phoneNumber}</p>
+                      <p className="text-gray-400 text-sm">{t('cart.deliveryAddress.mobileNumber')} {address.phoneNumber}</p>
                     </div>
                   ))}
                   <button
@@ -272,7 +270,7 @@ export default function CartPage() {
                     className="w-full bg-slate-700 hover:bg-slate-600 text-white font-medium px-4 py-3 rounded-lg transition-colors flex items-center justify-center gap-2 border border-slate-600"
                   >
                     <Plus className="w-5 h-5" />
-                    Add New Address
+                    {t('cart.deliveryAddress.addNewAddress')}
                   </button>
                 </div>
               )}
@@ -323,7 +321,7 @@ export default function CartPage() {
                     onClick={() => removeItem(item.product._id)}
                     className="text-red-400 hover:text-red-300 text-xs transition-colors"
                   >
-                    Remove
+                    {t('cart.product.remove')}
                   </button>
                 </div>
               </div>
@@ -334,11 +332,11 @@ export default function CartPage() {
         {/* Empty Cart State */}
         {cartItems.length === 0 && (
           <div className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-8 mb-4 border border-slate-700 text-center">
-            <p className="text-gray-400 text-lg">Your cart is empty</p>
+            <p className="text-gray-400 text-lg">{t('cart.emptyCart.message')}</p>
             <Link to="/products"
               className="inline-block mt-4 text-amber-500 hover:text-amber-400 transition-colors"
             >
-              Continue Shopping
+              {t('cart.emptyCart.continueShopping')}
             </Link>
           </div>
         )}
@@ -346,22 +344,22 @@ export default function CartPage() {
         {/* Price Details */}
         {cartItems.length > 0 && (
           <div className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 mb-4 border border-slate-700">
-            <h3 className="text-white font-semibold mb-3">Price Details</h3>
+            <h3 className="text-white font-semibold mb-3">{t('cart.priceDetails.title')}</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between text-gray-400">
-                <span>Total Items</span>
+                <span>{t('cart.priceDetails.totalItems')}</span>
                 <span className="text-white">{totalItems}</span>
               </div>
               <div className="flex justify-between text-gray-400 border-b border-slate-700 border-dashed pb-2">
-                <span>Price</span>
+                <span>{t('cart.priceDetails.price')}</span>
                 <span className="text-white">₹ {totalPrice}</span>
               </div>
               <div className="flex justify-between text-gray-400 border-b border-slate-700 border-dashed pb-2">
-                <span>Shipping Amount</span>
+                <span>{t('cart.priceDetails.shippingAmount')}</span>
                 <span className="text-white">₹ {shippingAmount}</span>
               </div>
               <div className="flex justify-between text-white font-semibold pt-1">
-                <span>Total Amount</span>
+                <span>{t('cart.priceDetails.totalAmount')}</span>
                 <span className="text-amber-500">₹ {totalAmount}</span>
               </div>
             </div>
@@ -374,7 +372,7 @@ export default function CartPage() {
             {!selectedAddress && (
               <p className="text-amber-400 text-sm flex items-center gap-2">
                 <MapPin className="w-4 h-4" />
-                Please add a delivery address to proceed
+                {t('cart.checkout.addAddressWarning')}
               </p>
             )}
             <Link
@@ -389,7 +387,7 @@ export default function CartPage() {
                   : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-60'
                 }`}
             >
-              Check Out
+              {t('cart.checkout.button')}
             </Link>
           </div>
         )}

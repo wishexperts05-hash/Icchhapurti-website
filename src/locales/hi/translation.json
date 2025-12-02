@@ -1,35 +1,194 @@
 {
-  "nav": {
-    "home": "होम",
-    "about": "हमारे बारे में",
-    "blogs": "ब्लॉग",
-    "products": "उत्पाद",
-    "cart": "कार्ट",
-    "wallet": "वॉलेट",
-    "orders": "मेरे आदेश",
-    "account": "खाता",
-    "login": "लॉगिन",
-    "logout": "लॉगआउट"
-  },
-  "common": {
-    "search": "उत्पाद खोजें...",
-    "viewAll": "सभी देखें",
-    "loading": "लोड हो रहा है...",
-    "error": "त्रुटि",
-    "trustedUsers": "विश्वसनीय उपयोगकर्ता"
-  },
-  "products": {
-    "title": "हमारे उत्पाद",
-    "subtitle": "शीर्ष उत्पादों पर अद्भुत सौदे खोजें",
-    "addToCart": "कार्ट में डालें",
-    "viewDetails": "विवरण देखें",
-    "price": "कीमत",
-    "rating": "रेटिंग",
-    "reviews": "समीक्षा"
-  },
-  "language": {
-    "title": "भाषा",
-    "subtitle": "अपनी भाषा चुनें",
-    "save": "भाषा सहेजें"
+    "nav": {
+      "home": "होम",
+      "about": "हमारे बारे में",
+      "blogs": "ब्लॉग",
+      "products": "उत्पाद",
+      "cart": "कार्ट",
+      "wallet": "वॉलेट",
+      "orders": "मेरे ऑर्डर",
+      "account": "खाता",
+      "login": "लॉगिन",
+      "logout": "लॉगआउट",
+      "viewProfile": "प्रोफ़ाइल देखें",
+      "trustedUsers": "विश्वसनीय उपयोगकर्ता",
+      "notification": "सूचनाएं",
+      "more": "और विकल्प"
+    },
+    "home": {
+      "search": "उत्पाद खोजें...",
+      "ourProducts": "हमारे उत्पाद",
+      "tagline": "शीर्ष उत्पादों पर शानदार ऑफ़र पाएँ",
+      "downloadWord": "इच्छापुरती मोबाइल ऐप डाउनलोड करें",
+      "downloadWord1": "बेहतरीन अनुभव और अधिक सुविधाएँ पाएं…",
+      "viewAll": "सभी देखें",
+      "loading": "लोड हो रहा है...",
+      "error": "त्रुटि",
+      "showing": "दिखा रहे हैं",
+      "products": "उत्पाद"
+    },
+
+    "account": {
+      "title": "खाता",
+      "referralBanner": {
+        "text": "अपने दोस्तों और परिवार को आमंत्रित करें और पाएं",
+        "coins": "10",
+        "coinsText": "सिक्के अपने वॉलेट में।",
+        "referButton": "अभी रेफर करें"
+      },
+      "menuItems": {
+        "profile": "प्रोफाइल",
+        "shippingAddress": "शिपिंग पता",
+        "myCart": "मेरी कार्ट",
+        "myOrders": "मेरे ऑर्डर",
+        "referralProgram": "रेफरल प्रोग्राम",
+        "luckyDraw": "लकी ड्रॉ",
+        "chatSupport": "चैट सपोर्ट",
+        "websiteLanguage": "वेबसाइट भाषा",
+        "aboutUs": "हमारे बारे में",
+        "ourBlogs": "हमारे ब्लॉग",
+        "termsConditions": "नियम और शर्तें",
+        "privacyPolicy": "गोपनीयता नीति",
+        "faq": "अक्सर पूछे जाने वाले प्रश्न",
+        "logout": "लॉगआउट"
+      }
+    },
+    "auth": {
+      "welcome": "स्वागत है!",
+      "loginToContinue": "जारी रखने के लिए लॉगिन करें"
+    },
+    "common": {
+      "search": "उत्पाद खोजें...",
+      "viewAll": "सभी देखें",
+      "loading": "लोड हो रहा है...",
+      "error": "त्रुटि",
+      "close": "बंद करें",
+        "ourProducts":"हमारे उत्पाद",
+        "noOrder":"ऑर्डर नहीं मिला",
+        "availableBalanace":"उपलब्ध शेष राशि",
+        "transactionHistory":"ट्रांजेक्शन इतिहास",
+        "seeRedeemHistory":"रिडीम हिस्ट्री देखें",
+        "redeem":"रिडीम",
+        "transaction":"ट्रांजेक्शन"
+    },
+    "cart": {
+      "title": "मेरी कार्ट",
+      "loading": "कार्ट लोड हो रहा है...",
+      "error": "त्रुटि",
+      "retry": "पुनः प्रयास करें",
+      "deliveryAddress": {
+        "deliverTo": "डिलीवर करें:",
+        "changeAddress": "पता बदलें",
+        "noAddress": "कोई डिलीवरी पता नहीं",
+        "noAddressDesc": "चेकआउट के साथ आगे बढ़ने के लिए कृपया डिलीवरी पता जोड़ें",
+        "addAddress": "पता जोड़ें",
+        "selectAddress": "डिलीवरी पता चुनें",
+        "noAddressesFound": "कोई पता नहीं मिला",
+        "addNewAddress": "नया पता जोड़ें",
+        "mobileNumber": "मोबाइल नंबर:"
+      },
+      "product": {
+        "remove": "हटाएं"
+      },
+      "emptyCart": {
+        "message": "आपकी कार्ट खाली है",
+        "continueShopping": "खरीदारी जारी रखें"
+      },
+      "priceDetails": {
+        "title": "मूल्य विवरण",
+        "totalItems": "कुल वस्तुएं",
+        "price": "कीमत",
+        "shippingAmount": "शिपिंग राशि",
+        "totalAmount": "कुल राशि"
+      },
+      "checkout": {
+        "button": "चेक आउट",
+        "addAddressWarning": "आगे बढ़ने के लिए कृपया डिलीवरी पता जोड़ें"
+      }
+    },
+
+    "products": {
+      "title": "हमारे उत्पाद",
+      "subtitle": "शीर्ष उत्पादों पर शानदार ऑफ़र पाएँ",
+      "addToCart": "कार्ट में जोड़ें",
+      "viewDetails": "विवरण देखें",
+      "price": "कीमत",
+      "rating": "रेटिंग",
+      "reviews": "समीक्षा"
+    },
+    "drawer": {
+      "more": "और विकल्प",
+      "trusted": "1000+ विश्वसनीय उपयोगकर्ता"
+    },
+    "footer": {
+      "description": "गुणवत्तापूर्ण उत्पादों के लिए आपका एकमात्र गंतव्य। हम उत्कृष्टता प्रदान करने और अपनी विश्वसनीय सेवा और प्रीमियम चयन के साथ हर इच्छा पूरी करने के लिए प्रतिबद्ध हैं।",
+      "quickLinks": "त्वरित लिंक",
+      "downloadApp": "ऐप डाउनलोड करें",
+      "downloadAppDesc": "हमारे मोबाइल ऐप पर सबसे अच्छा अनुभव प्राप्त करें। अभी डाउनलोड करें!",
+      "contactInfo": "संपर्क जानकारी",
+      "phone": "फोन",
+      "email": "ईमेल",
+      "address": "पता",
+      "copyright": "कॉपीराइट © 2025",
+      "allRightsReserved": "सर्वाधिकार सुरक्षित",
+      "designedBy": "द्वारा डिज़ाइन किया गया",
+      "companyName": "इच्छा पूर्ति",
+      "links": {
+        "home": "होम",
+        "aboutUs": "हमारे बारे में",
+        "products": "उत्पाद",
+        "blogs": "ब्लॉग",
+        "contactUs": "संपर्क करें",
+        "privacyPolicy": "गोपनीयता नीति",
+        "termsConditions": "नियम और शर्तें"
+      },
+      "downloadOn": "डाउनलोड करें",
+      "getItOn": "प्राप्त करें",
+      "appStore": "ऐप स्टोर",
+      "googlePlay": "गूगल प्ले"
+    },
+    "language": {
+      "title": "भाषा",
+      "subtitle": "अपनी भाषा चुनें",
+      "save": "भाषा सहेजें"
+    },
+    
+  "payment": {
+    "title": "भुगतान विधि चुनें",
+    "referral": {
+      "label": "रेफ़रल कोड दर्ज करें",
+      "placeholder": "कोड दर्ज करें",
+      "apply": "लागू करें",
+      "success": "✓ रेफ़रल कोड सफलतापूर्वक लागू हुआ!",
+      "default": "डिफ़ॉल्ट रेफ़रल कोड लागू करें"
+    },
+    "methods": {
+      "wallet": "वॉलेट",
+      "apple": "एप्पल पे",
+      "google": "गूगल पे",
+      "cod": "कैश ऑन डिलीवरी",
+      "balance": "बैलेंस"
+    },
+    "price_details": {
+      "title": "मूल्य विवरण",
+      "total_items": "कुल आइटम",
+      "price": "क़ीमत",
+      "discount": "छूट राशि",
+      "shipping": "शिपिंग राशि",
+      "total_amount": "कुल राशि"
+    },
+    "checkout": "भुगतान करें",
+    "alerts": {
+      "login_first": "कृपया पहले लॉगिन करें!",
+      "cart_empty": "कार्ट खाली है!",
+      "order_success": "ऑर्डर सफलतापूर्वक किया गया!",
+      "something_wrong": "कुछ गलत हो गया!"
+    }
   }
-}
+,
+ "addresses": {
+    "shippingAddress": "शिपिंग पता",
+    "addAddress": "शिपिंग पता जोड़ें",
+    "noAddress":"कोई डिलीवरी पता नहीं"
+  }
+  }

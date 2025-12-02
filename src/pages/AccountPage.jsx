@@ -1,32 +1,31 @@
 import { useState } from 'react';
 import { User, MapPin, ShoppingCart, Package, Gift, Ticket, MessageCircle, Globe, FileText, Shield, LogOut, ChevronRight, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function AccountPage() {
-  // const [user] = useState({
-  //   name: 'Tony Stark',
-  //   avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face'
-  // });
- const user = JSON.parse(localStorage.getItem("user"))
+  const { t } = useTranslation();
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const menuItems = [
-    { link: "/view-profile", icon: User, label: 'Profile' },
-    { link: "/addresses", icon: MapPin, label: 'Shipping Address' },
-    { link: "/cart", icon: ShoppingCart, label: 'My Cart' },
-    { link: "/orders", icon: Package, label: 'My Orders' },
-    { link: "/refer-programme", icon: Gift, label: 'Referral Program' },
-    // { link: "/lucky-draw", icon: Ticket, label: 'Lucky Draw' },
-    { link: "/chat-support", icon: MessageCircle, label: 'Chat Support' },
-    { link: "/languages", icon: Globe, label: 'Website Language' },
-    // { link: "/about-us", icon: Globe, label: 'About Us' },
-    // { link: "/blogs", icon: Globe, label: 'Our Blogs' },
-    // { link: "/terms", icon: FileText, label: 'Terms & Conditions' },
-    // { link: "/privacy", icon: Shield, label: 'Privacy Policy' },
-    // { link: "/faq", icon: Shield, label: 'Faq' },
-    // { link: 11, icon: LogOut, label: 'Logout' },
+    { link: "/view-profile", icon: User, label: t('account.menuItems.profile') },
+    { link: "/addresses", icon: MapPin, label: t('account.menuItems.shippingAddress') },
+    { link: "/cart", icon: ShoppingCart, label: t('account.menuItems.myCart') },
+    { link: "/orders", icon: Package, label: t('account.menuItems.myOrders') },
+    { link: "/refer-programme", icon: Gift, label: t('account.menuItems.referralProgram') },
+    // { link: "/lucky-draw", icon: Ticket, label: t('account.menuItems.luckyDraw') },
+    { link: "/chat-support", icon: MessageCircle, label: t('account.menuItems.chatSupport') },
+    { link: "/languages", icon: Globe, label: t('account.menuItems.websiteLanguage') },
+    // { link: "/about-us", icon: Globe, label: t('account.menuItems.aboutUs') },
+    // { link: "/blogs", icon: Globe, label: t('account.menuItems.ourBlogs') },
+    // { link: "/terms", icon: FileText, label: t('account.menuItems.termsConditions') },
+    // { link: "/privacy", icon: Shield, label: t('account.menuItems.privacyPolicy') },
+    // { link: "/faq", icon: Shield, label: t('account.menuItems.faq') },
+    // { link: 11, icon: LogOut, label: t('account.menuItems.logout') },
   ];
 
   return (
-    <div className="min-h-screen  relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden">
       {/* Cosmic background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-amber-500/20 via-cyan-500/15 to-blue-500/20 rounded-full filter blur-3xl animate-pulse"></div>
@@ -41,7 +40,7 @@ export default function AccountPage() {
 
       <div className="relative z-10 max-w-7xl mx-auto p-4">
         {/* Header */}
-        <h1 className="text-white font-bold text-xl mb-6">Account</h1>
+        <h1 className="text-white font-bold text-xl mb-6">{t('account.title')}</h1>
 
         {/* Profile Avatar */}
         <div className="flex flex-col items-center mb-6">
@@ -68,10 +67,10 @@ export default function AccountPage() {
             
             <div className="flex-1">
               <p className="text-white text-sm">
-                Invite your friends & family and get <span className="text-amber-400 font-bold">10</span> coins in your wallet.
+                {t('account.referralBanner.text')} <span className="text-amber-400 font-bold">{t('account.referralBanner.coins')}</span> {t('account.referralBanner.coinsText')}
               </p>
               <button className="mt-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1.5 rounded flex items-center gap-1 transition-colors">
-                Refer Now
+                {t('account.referralBanner.referButton')}
                 <ArrowRight size={12} />
               </button>
             </div>
@@ -80,17 +79,17 @@ export default function AccountPage() {
 
         {/* Menu Items */}
         <div className="space-y-1">
-          {menuItems.map((item) => {
+          {menuItems.map((item, index) => {
             const IconComponent = item.icon;
             return (
               <Link to={item.link}
-                key={item.id}
+                key={index}
                 className="w-full flex items-center justify-between py-3 px-2 hover:bg-slate-800/30 rounded-lg transition-colors group"
               >
                 <div className="flex items-center gap-3">
                   <IconComponent 
                     size={18} 
-                    className={`${item.label === 'Logout' ? 'text-gray-400' : 'text-amber-400'}`} 
+                    className={`${item.label === t('account.menuItems.logout') ? 'text-gray-400' : 'text-amber-400'}`} 
                   />
                   <span className="text-white text-sm">{item.label}</span>
                 </div>

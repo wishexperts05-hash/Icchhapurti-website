@@ -1,5 +1,9 @@
+import { useTranslation } from "react-i18next";
+
 // DownloadAppSection.jsx
 export default function DownloadAppSection() {
+
+  const { t } = useTranslation();
   return (
     <section className="w-full bg-[#EAE6F6] py-12 px-4 md:px-12 my-5">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -7,7 +11,7 @@ export default function DownloadAppSection() {
         {/* ---------- Left Section ---------- */}
         <div>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-            Download IcchhaPurti Mobile App
+         {t("home.downloadWord")}
           </h2>
 
           <ul className="space-y-4 text-lg text-gray-700">
@@ -26,7 +30,7 @@ export default function DownloadAppSection() {
           </ul>
 
           <p className="text-xl font-semibold mt-6 text-gray-800">
-            Get Best User Experience And More…
+          {t("home.downloadWord1")}
           </p>
 
           {/* App Buttons */}

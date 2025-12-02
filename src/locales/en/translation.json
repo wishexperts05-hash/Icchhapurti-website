@@ -9,27 +9,184 @@
     "orders": "My Orders",
     "account": "Account",
     "login": "Login",
-    "logout": "Logout"
+    "logout": "Logout",
+    "viewProfile": "View Profile",
+    "trustedUsers": "Trusted Users",
+    "notification": "Notifications",
+    "more": "More Options"
+  },
+  "home": {
+    "search": "Search products...",
+    "ourProducts": "Our Products",
+    "tagline": "Get amazing offers on top products",
+    "downloadWord": "Download IchhaPurti Mobile App",
+    "downloadWord1": "Get a better experience and more features...",
+    "viewAll": "View All",
+    "loading": "Loading...",
+    "error": "Error",
+    "showing": "Showing",
+    "products": "Products"
+  },
+  "account": {
+    "title": "Account",
+    "referralBanner": {
+      "text": "Invite your friends & family and get",
+      "coins": "10",
+      "coinsText": "coins in your wallet.",
+      "referButton": "Refer Now"
+    },
+    "menuItems": {
+      "profile": "Profile",
+      "shippingAddress": "Shipping Address",
+      "myCart": "My Cart",
+      "myOrders": "My Orders",
+      "referralProgram": "Referral Program",
+      "luckyDraw": "Lucky Draw",
+      "chatSupport": "Chat Support",
+      "websiteLanguage": "Website Language",
+      "aboutUs": "About Us",
+      "ourBlogs": "Our Blogs",
+      "termsConditions": "Terms & Conditions",
+      "privacyPolicy": "Privacy Policy",
+      "faq": "FAQ",
+      "logout": "Logout"
+    }
+  },
+  "auth": {
+    "welcome": "Welcome!",
+    "loginToContinue": "Login to continue"
   },
   "common": {
     "search": "Search products...",
     "viewAll": "View All",
     "loading": "Loading...",
     "error": "Error",
-    "trustedUsers": "Trusted users"
+    "close": "Close",
+    "ourProducts": "Our Products",
+    "noOrder": "No orders found",
+    "availableBalanace": "Available Balance",
+    "transactionHistory": "Transaction History",
+    "seeRedeemHistory": "See Redeem History",
+    "redeem": "Redeem",
+    "transaction": "Transaction"
+  },
+  "cart": {
+    "title": "My Cart",
+    "loading": "Loading cart...",
+    "error": "Error",
+    "retry": "Retry",
+    "deliveryAddress": {
+      "deliverTo": "Deliver to:",
+      "changeAddress": "Change Address",
+      "noAddress": "No Delivery Address",
+      "noAddressDesc": "Please add a delivery address to proceed with checkout",
+      "addAddress": "Add Address",
+      "selectAddress": "Select Delivery Address",
+      "noAddressesFound": "No addresses found",
+      "addNewAddress": "Add New Address",
+      "mobileNumber": "Mobile Number:"
+    },
+    "product": {
+      "remove": "Remove"
+    },
+    "emptyCart": {
+      "message": "Your cart is empty",
+      "continueShopping": "Continue Shopping"
+    },
+    "priceDetails": {
+      "title": "Price Details",
+      "totalItems": "Total Items",
+      "price": "Price",
+      "shippingAmount": "Shipping Amount",
+      "totalAmount": "Total Amount"
+    },
+    "checkout": {
+      "button": "Check Out",
+      "addAddressWarning": "Please add a delivery address to proceed"
+    }
   },
   "products": {
     "title": "Our Products",
-    "subtitle": "Discover amazing deals on top products",
+    "subtitle": "Get amazing offers on top products",
     "addToCart": "Add to Cart",
     "viewDetails": "View Details",
     "price": "Price",
     "rating": "Rating",
     "reviews": "Reviews"
   },
+  "drawer": {
+    "more": "More Options",
+    "trusted": "1000+ Trusted Users"
+  },
+  "footer": {
+    "description": "Your one-stop destination for quality products. We are committed to delivering excellence and fulfilling every wish with our trusted service and premium selection.",
+    "quickLinks": "QUICK LINKS",
+    "downloadApp": "DOWNLOAD APP",
+    "downloadAppDesc": "Get the best experience on our mobile app. Download now!",
+    "contactInfo": "CONTACT INFO",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "copyright": "Copyright © 2025",
+    "allRightsReserved": "All Rights Reserved",
+    "designedBy": "Designed by",
+    "companyName": "ICCHHA PURTI",
+    "links": {
+      "home": "Home",
+      "aboutUs": "About Us",
+      "products": "Products",
+      "blogs": "Blogs",
+      "contactUs": "Contact Us",
+      "privacyPolicy": "Privacy Policy",
+      "termsConditions": "Terms & Conditions"
+    },
+    "downloadOn": "Download on the",
+    "getItOn": "Get it on",
+    "appStore": "App Store",
+    "googlePlay": "Google Play"
+  },
   "language": {
     "title": "Language",
-    "subtitle": "Choose Your Language",
+    "subtitle": "Choose your language",
     "save": "Save Language"
+  },
+  "addresses": {
+    "shippingAddress": "Shipping Address",
+    "addAddress": "Add New Address",
+    "noAddress":"No Shipping Address"
+  },
+
+
+  "payment": {
+    "title": "Choose Payment Method",
+    "referral": {
+      "label": "Enter Referral Code",
+      "placeholder": "Enter code",
+      "apply": "Apply",
+      "success": "✓ Referral code applied successfully!",
+      "default": "Apply default referral code"
+    },
+    "methods": {
+      "wallet": "Wallet",
+      "apple": "Apple Pay",
+      "google": "Google Pay",
+      "cod": "Cash on Delivery",
+      "balance": "Balance"
+    },
+    "price_details": {
+      "title": "Price Details",
+      "total_items": "Total Items",
+      "price": "Price",
+      "discount": "Discount Amount",
+      "shipping": "Shipping Amount",
+      "total_amount": "Total Amount"
+    },
+    "checkout": "Checkout",
+    "alerts": {
+      "login_first": "Please login first!",
+      "cart_empty": "Cart is empty!",
+      "order_success": "Order placed successfully!",
+      "something_wrong": "Something went wrong!"
+    }
   }
 }

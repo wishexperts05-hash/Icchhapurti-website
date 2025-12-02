@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 const Login = () => {
   const [phone, setPhone] = useState("");
@@ -7,7 +8,10 @@ const Login = () => {
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+const Navigate = useNavigate()
+  const handleNavigate = (path) => {
+   Navigate(path) 
+  };
 
   // Send OTP API call
   const handleGetOtp = async () => {
@@ -31,7 +35,7 @@ const Login = () => {
       const data = await response.json();
 
       if (data.success) {
-       alert(`otp sent ${data.otp}`)
+        alert(`otp sent ${data.otp}`)
         setShowOtpModal(true);
         setError("");
       } else {
@@ -74,14 +78,12 @@ const Login = () => {
 
       if (data.success) {
         alert("Login Successful!");
-        // Save token and user data to React state instead of localStorage
-        // You should lift this state up or use context/redux in production
         localStorage.setItem("user", JSON.stringify(data.data))
         localStorage.setItem("token", data.token)
         setShowOtpModal(false);
         setPhone("");
         setOtp("");
-        navigate("/homePage");
+        handleNavigate("/homePage");
       } else {
         setError(data.message || "Invalid OTP. Please try again.");
       }
@@ -94,15 +96,15 @@ const Login = () => {
   };
 
   return (
-    <div className="flex h-screen w-full">
-      {/* LEFT SIDE - VIDEO WITH LOGO */}
-      <div className="hidden md:block w-1/2 h-full relative">
+    <div className="flex h-screen w-full relative">
+      {/* BACKGROUND VIDEO - Full screen on mobile, left side on desktop */}
+      <div className="absolute md:relative w-full md:w-1/2 h-full">
         {/* Logo positioned on top - centered */}
-        <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-10">
+        <div className="absolute top-18 left-1/2 transform -translate-x-1/2 z-10">
           <img
             src="/logo-white.png"
             alt="Logo"
-            className="h-24 w-auto"
+            className="h-20 md:h-24 w-auto drop-shadow-2xl"
           />
         </div>
 
@@ -117,18 +119,21 @@ const Login = () => {
           <source src="/bg-video.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
+
+        {/* Dark overlay for mobile to make form more readable */}
+        <div className="absolute inset-0 bg-black/40 md:hidden"></div>
       </div>
 
-      {/* RIGHT SIDE - FORM */}
-      <div className="w-full md:w-1/2 flex items-center justify-center bg-gray-50">
-       
-        <div className="w-[90%] max-w-md bg-white shadow-xl rounded-lg p-8">
-          <h2 className="text-center text-xl font-bold mb-6">
+      {/* FORM CONTAINER */}
+      <div className="relative md:static w-full md:w-1/2 flex items-center justify-center z-10">
+        {/* Semi-transparent background for mobile */}
+        <div className="w-[90%] max-w-md bg-white/95 md:bg-white backdrop-blur-sm shadow-xl rounded-lg p-8">
+          <h2 className="text-center text-xl font-bold mb-6 text-gray-800">
             Enter Mobile Number
           </h2>
 
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm">
               {error}
             </div>
           )}
@@ -151,21 +156,21 @@ const Login = () => {
             {loading ? "Sending..." : "Get OTP"}
           </button>
 
-          <p className="mt-4 text-center text-sm">
+          <p className="mt-4 text-center text-sm text-gray-700">
             Don't have an account?
-            <Link to="/register" className="text-blue-600 font-semibold ml-1 hover:underline">
+            <a href="/register" className="text-blue-600 font-semibold ml-1 hover:underline">
               Register Now
-            </Link>
+            </a>
           </p>
         </div>
       </div>
 
       {/* OTP MODAL */}
       {showOtpModal && (
-        <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-8 w-[90%] max-w-md shadow-2xl">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold">Verify OTP</h3>
+              <h3 className="text-xl font-bold text-gray-800">Verify OTP</h3>
               <button
                 onClick={() => {
                   setShowOtpModal(false);
@@ -179,7 +184,7 @@ const Login = () => {
             </div>
 
             {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm">
                 {error}
               </div>
             )}
