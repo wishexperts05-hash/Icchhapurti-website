@@ -110,20 +110,26 @@ console.log(addVideo,"addVideo")
 
   return (
     <section
-      className="w-full bg-cover bg-center py-6"
+      className="w-full bg-cover bg-center "
     // style={{ backgroundImage: "url('/bg.jpg')" }}
     >
-      <div className="max-w-7xl mx-auto  space-y-6">
+      <div className=" mx-auto  space-y-6">
         <div className="relative rounded-xl overflow-hidden shadow-lg h-[290px] md:h-[500px]">
-          {current.type === "image" && (
+          {/* {current.type === "image" && (
             <img
               src={current.src}
               alt="banner"
               className="w-full h-full object-cover transition-all duration-700 scale-100"
             />
           )}
+{/*  */}
 
-          {current.type === "video" && (
+ <img
+              src="/slider1.jpeg"
+              alt="banner"
+              className="w-full h-full object-cover transition-all duration-700 scale-100"
+            />
+          {/* {current.type === "video" && (
             <video
               src={current.src}
               autoPlay
@@ -131,7 +137,7 @@ console.log(addVideo,"addVideo")
               muted
               className="w-full h-full object-cover"
             />
-          )}
+          )}  */}
 
           {/* Navigation Buttons */}
           <button
@@ -161,12 +167,17 @@ console.log(addVideo,"addVideo")
           </div>
         </div>
    <div className="relative rounded-xl overflow-hidden shadow-lg h-[290px] md:h-[500px]">  {addVideo&& (
-            <video
-              src={addVideo}
-              autoPlay
-              loop
-              muted
-              className="w-full h-full object-cover"
+            // <video
+            //   src={addVideo}
+            //   autoPlay
+            //   loop
+            //   muted
+            //   className="w-full h-full object-cover"
+            // />
+            <img
+              src="/slider2.jpeg"
+              alt="banner"
+              className="w-full h-full object-cover transition-all duration-700 scale-100"
             />
           )}</div>
       
