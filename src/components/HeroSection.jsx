@@ -1,58 +1,131 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function HeroSection() {
-  const slides = [
-    { type: "image", src: "/hero_img.jpg" },
-    { type: "image", src: "/hero_img2.png" }
-    // { type: "image", src: "/hero_img.jpg" },
-    // { type: "video", src: "/video.mp4" }, // if needed
-  ];
-
+  const [banners, setBanners] = useState([]);
+  const [addVideo, setAddVideo] = useState()
+  const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  // Auto slide every 4 sec
+console.log(addVideo,"addVideo")
   useEffect(() => {
+    const getBanners = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/user/banners/getBanner/Home`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        ); // fetch JSON from backend [web:21][web:23]
+        let res1 = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/user/banners/getBanner/Home Refer`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        res1 = await res1.json()
+
+        setAddVideo(res1.data?.mediaUrls[0])
+        console.log(res1)// fetch JSON from backend [web:21][web:23]
+        const data = await res.json(); // parse JSON [web:22]
+
+        const media = data?.data?.mediaUrls || [];
+        console.log(data, "data")
+        // normalize into { type, src }
+        const normalized = media.map((item) => ({
+          type: "video", // "image" | "video"
+          src: item,   // URL from backend
+        })); // mapping API response for slider data [web:46][web:59]
+
+        setBanners(normalized);
+      } catch (err) {
+        console.error("Error fetching banners:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getBanners();
+  }, []);
+
+  // auto-slide only when we have banners
+  useEffect(() => {
+    if (!banners.length) return; // avoid running when empty [web:48]
+
     const interval = setInterval(() => {
-      nextSlide();
+      setCurrentIndex((prev) =>
+        prev === banners.length - 1 ? 0 : prev + 1
+      );
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [currentIndex]);
+  }, [banners, currentIndex]);
 
   const nextSlide = () => {
+    if (!banners.length) return;
     setCurrentIndex((prev) =>
-      prev === slides.length - 1 ? 0 : prev + 1
+      prev === banners.length - 1 ? 0 : prev + 1
     );
   };
 
   const prevSlide = () => {
+    if (!banners.length) return;
     setCurrentIndex((prev) =>
-      prev === 0 ? slides.length - 1 : prev - 1
+      prev === 0 ? banners.length - 1 : prev - 1
     );
   };
+
+  if (loading) {
+    return (
+      <section
+      
+      // className="w-full bg-cover bg-center py-6" style={{ backgroundImage: "url('/bg.jpg')" }}
+      
+      >
+        <div className="max-w-6xl mx-auto px-4">
+          <p className="text-white">Loading banners...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (!banners.length) {
+    return (
+      <section className="w-full bg-cover bg-center py-6" style={{ backgroundImage: "url('/bg.jpg')" }}>
+        <div className="max-w-6xl mx-auto px-4">
+          <p className="text-white">No banners available</p>
+        </div>
+      </section>
+    );
+  }
+
+  const current = banners[currentIndex];
 
   return (
     <section
       className="w-full bg-cover bg-center py-6"
-      style={{ backgroundImage: "url('/bg.jpg')" }}
+    // style={{ backgroundImage: "url('/bg.jpg')" }}
     >
-      <div className="max-w-6xl mx-auto px-4 space-y-6">
-
-        {/* Carousel Box */}
-        <div className="relative rounded-xl overflow-hidden shadow-lg h-[260px] md:h-[380px]">
-
-          {slides[currentIndex].type === "image" && (
+      <div className="max-w-7xl mx-auto  space-y-6">
+        <div className="relative rounded-xl overflow-hidden shadow-lg h-[290px] md:h-[500px]">
+          {current.type === "image" && (
             <img
-              src={slides[currentIndex].src}
-              alt="slide"
+              src={current.src}
+              alt="banner"
               className="w-full h-full object-cover transition-all duration-700 scale-100"
             />
           )}
 
-          {slides[currentIndex].type === "video" && (
+          {current.type === "video" && (
             <video
-              src={slides[currentIndex].src}
+              src={current.src}
               autoPlay
               loop
               muted
@@ -77,18 +150,26 @@ export default function HeroSection() {
 
           {/* Slide Indicators */}
           <div className="absolute bottom-3 w-full flex justify-center gap-2">
-            {slides.map((_, idx) => (
+            {banners.map((_, idx) => (
               <div
                 key={idx}
                 onClick={() => setCurrentIndex(idx)}
-                className={`w-3 h-3 rounded-full cursor-pointer transition ${
-                  currentIndex === idx ? "bg-white" : "bg-white/40"
-                }`}
+                className={`w-3 h-3 rounded-full cursor-pointer transition ${currentIndex === idx ? "bg-white" : "bg-white/40"
+                  }`}
               ></div>
             ))}
           </div>
         </div>
-
+   <div className="relative rounded-xl overflow-hidden shadow-lg h-[290px] md:h-[500px]">  {addVideo&& (
+            <video
+              src={addVideo}
+              autoPlay
+              loop
+              muted
+              className="w-full h-full object-cover"
+            />
+          )}</div>
+      
       </div>
     </section>
   );

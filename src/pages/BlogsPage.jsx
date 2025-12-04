@@ -6,10 +6,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 export default function BlogsPage() {
   const navigate = useNavigate();
   const [blogs, setBlogs] = useState([]);
+
+  const { t } = useTranslation()
 
   const fetchBlogs = async () => {
     try {
@@ -55,11 +58,11 @@ export default function BlogsPage() {
         {/* Explore Our Latest Blog Section */}
         <div className="px-6 py-6">
           <h2 className="text-white text-xl font-bold mb-6">
-            Explore Our Latest Blogs
+            {t("blogs.title")}
           </h2>
 
           {blogs.length === 0 ? (
-            <p className="text-gray-300">No blogs found</p>
+            <p className="text-gray-300">  {t("blogs.noBlog")}</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {blogs.map((blog) => (

@@ -340,7 +340,7 @@ export default function OurProducts() {
   }
 
   return (
-    <div className="min-h-screen p-4 sm:p-6 md:p-8" style={{ background: 'linear-gradient(135deg, #0f1c2e 0%, #1a3352 50%, #0d2440 100%)' }}>
+    <div className=" p-4 sm:p-6 md:p-8" >
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
           <div>
@@ -358,7 +358,7 @@ export default function OurProducts() {
         
         {/* Mobile: 1 column, Desktop: 2 columns */}
         <div className="grid grid-cols-2 md:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
-          {products.map((product) => (
+          {products.slice(0,2).map((product) => (
             <ProductCard 
               key={product.id || product._id} 
               product={product} 
@@ -369,7 +369,7 @@ export default function OurProducts() {
 
         <div className="mt-6 sm:mt-8 text-center">
           <p className="text-gray-400 text-xs sm:text-sm">
-            {t("home.showing")} {products.length}  {t("home.products")}{products.length !== 1 ? '' : ''}
+            {/* {t("home.showing")} {products.length}  {t("home.products")}{products.length !== 1 ? '' : ''} */}
           </p>
         </div>
       </div>

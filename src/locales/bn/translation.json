@@ -2,8 +2,8 @@
   "nav": {
     "home": "হোম",
     "about": "আমাদের সম্পর্কে",
-    "blogs": "ব্লগ",
-    "products": "পণ্য",
+    "blogs": "ব্লগস",
+    "products": "প্রোডাক্টস",
     "cart": "কার্ট",
     "wallet": "ওয়ালেট",
     "orders": "আমার অর্ডার",
@@ -12,20 +12,20 @@
     "logout": "লগআউট",
     "viewProfile": "প্রোফাইল দেখুন",
     "trustedUsers": "বিশ্বস্ত ব্যবহারকারীরা",
-    "notification": "নোটিফিকেশন",
-    "more": "আরও বিকল্প"
+    "notification": "বিজ্ঞপ্তি",
+    "more": "আরও অপশন"
   },
   "home": {
-    "search": "পণ্য খুঁজুন...",
+    "search": "পণ্য অনুসন্ধান করুন...",
     "ourProducts": "আমাদের পণ্যসমূহ",
-    "tagline": "শীর্ষ পণ্যে অবিশ্বাস্য অফার পান",
+    "tagline": "সেরা পণ্যে দুর্দান্ত অফার পান",
     "downloadWord": "ইচ্ছাপূর্তি মোবাইল অ্যাপ ডাউনলোড করুন",
-    "downloadWord1": "আরও ভালো অভিজ্ঞতা ও আরও ফিচার পাবেন...",
+    "downloadWord1": "আরও ভাল অভিজ্ঞতা ও বৈশিষ্ট্য পান...",
     "viewAll": "সব দেখুন",
     "loading": "লোড হচ্ছে...",
     "error": "ত্রুটি",
-    "showing": "দেখাচ্ছে",
-    "products": "পণ্য"
+    "showing": "দেখানো হচ্ছে",
+    "products": "পণ্যসমূহ"
   },
   "account": {
     "title": "অ্যাকাউন্ট",
@@ -33,7 +33,7 @@
       "text": "বন্ধু ও পরিবারকে আমন্ত্রণ করুন এবং পান",
       "coins": "১০",
       "coinsText": "কয়েন আপনার ওয়ালেটে।",
-      "referButton": "এখনই রেফার করুন"
+      "referButton": "রেফার করুন"
     },
     "menuItems": {
       "profile": "প্রোফাইল",
@@ -45,7 +45,7 @@
       "chatSupport": "চ্যাট সাপোর্ট",
       "websiteLanguage": "ওয়েবসাইট ভাষা",
       "aboutUs": "আমাদের সম্পর্কে",
-      "ourBlogs": "আমাদের ব্লগ",
+      "ourBlogs": "আমাদের ব্লগস",
       "termsConditions": "শর্তাবলী",
       "privacyPolicy": "গোপনীয়তা নীতি",
       "faq": "জিজ্ঞাসিত প্রশ্ন",
@@ -57,7 +57,7 @@
     "loginToContinue": "চালিয়ে যেতে লগইন করুন"
   },
   "common": {
-    "search": "পণ্য খুঁজুন...",
+    "search": "পণ্য অনুসন্ধান করুন...",
     "viewAll": "সব দেখুন",
     "loading": "লোড হচ্ছে...",
     "error": "ত্রুটি",
@@ -88,7 +88,7 @@
       "mobileNumber": "মোবাইল নম্বর:"
     },
     "product": {
-      "remove": "মুছে ফেলুন"
+      "remove": "অপসারণ করুন"
     },
     "emptyCart": {
       "message": "আপনার কার্ট খালি",
@@ -103,12 +103,12 @@
     },
     "checkout": {
       "button": "চেকআউট",
-      "addAddressWarning": "চেকআউটের জন্য একটি ডেলিভারি ঠিকানা যোগ করুন"
+      "addAddressWarning": "আগে একটি ঠিকানা যোগ করুন"
     }
   },
   "products": {
     "title": "আমাদের পণ্যসমূহ",
-    "subtitle": "শীর্ষ পণ্যে অবিশ্বাস্য অফার পান",
+    "subtitle": "সেরা পণ্যে দুর্দান্ত অফার",
     "addToCart": "কার্টে যোগ করুন",
     "viewDetails": "বিস্তারিত দেখুন",
     "price": "মূল্য",
@@ -117,33 +117,33 @@
     "loading": "পণ্য লোড হচ্ছে"
   },
   "drawer": {
-    "more": "আরও বিকল্প",
+    "more": "আরও অপশন",
     "trusted": "১০০০+ বিশ্বস্ত ব্যবহারকারী"
   },
   "footer": {
-    "description": "গুণগত মানের পণ্যের জন্য আপনার একমাত্র গন্তব্য। সেরা পরিষেবা ও প্রিমিয়াম নির্বাচন সহ ইচ্ছা পূরণে আমরা প্রতিশ্রুতিবদ্ধ।",
-    "quickLinks": "দ্রুত লিংক",
-    "downloadApp": "অ্যাপ ডাউনলোড করুন",
-    "downloadAppDesc": "আমাদের অ্যাপ ব্যবহার করুন আরও উন্নত অভিজ্ঞতার জন্য!",
-    "contactInfo": "যোগাযোগের তথ্য",
+    "description": "উন্নত মানের পণ্যের জন্য আপনার একমাত্র গন্তব্য। আমরা প্রতিটি ইচ্ছা পূরণে এবং প্রিমিয়াম পরিষেবা প্রদানে অঙ্গীকারবদ্ধ।",
+    "quickLinks": "দ্রুত লিঙ্ক",
+    "downloadApp": "অ্যাপ ডাউনলোড",
+    "downloadAppDesc": "মোবাইল অ্যাপে আরও ভাল অভিজ্ঞতা পান!",
+    "contactInfo": "যোগাযোগ",
     "phone": "ফোন",
     "email": "ইমেইল",
     "address": "ঠিকানা",
     "copyright": "কপিরাইট © ২০২৫",
-    "allRightsReserved": "সর্বস্বত্ব সংরক্ষিত",
+    "allRightsReserved": "সকল অধিকার সংরক্ষিত",
     "designedBy": "ডিজাইন করেছেন",
     "companyName": "ইচ্ছাপূর্তি",
     "links": {
       "home": "হোম",
       "aboutUs": "আমাদের সম্পর্কে",
-      "products": "পণ্য",
-      "blogs": "ব্লগ",
+      "products": "পণ্যসমূহ",
+      "blogs": "ব্লগস",
       "contactUs": "যোগাযোগ করুন",
       "privacyPolicy": "গোপনীয়তা নীতি",
       "termsConditions": "শর্তাবলী"
     },
     "downloadOn": "ডাউনলোড করুন",
-    "getItOn": "গেট ইট অন",
+    "getItOn": "পান",
     "appStore": "অ্যাপ স্টোর",
     "googlePlay": "গুগল প্লে"
   },
@@ -177,29 +177,29 @@
       "title": "মূল্য বিবরণ",
       "total_items": "মোট আইটেম",
       "price": "মূল্য",
-      "discount": "ছাড়",
+      "discount": "ডিসকাউন্ট",
       "shipping": "শিপিং চার্জ",
       "total_amount": "মোট মূল্য"
     },
     "checkout": "চেকআউট",
     "alerts": {
-      "login_first": "প্রথমে লগইন করুন!",
+      "login_first": "অনুগ্রহ করে প্রথমে লগইন করুন!",
       "cart_empty": "কার্ট খালি!",
       "order_success": "অর্ডার সফলভাবে সম্পন্ন হয়েছে!",
       "something_wrong": "কিছু ভুল হয়েছে!"
     }
   },
   "profile": {
-    "title": "প্রোফাইল আপডেট করুন",
+    "title": "প্রোফাইল আপডেট",
     "avatar": {
       "upload": "ছবি আপলোড করুন"
     },
     "personal_info": {
       "title": "ব্যক্তিগত তথ্য",
-      "full_name": "পূর্ণ নাম",
+      "full_name": "পুরো নাম",
       "mobile_number": "মোবাইল নম্বর",
       "email": "ইমেইল",
-      "dob": "জন্মতারিখ",
+      "dob": "জন্ম তারিখ",
       "country": "দেশ",
       "state": "রাজ্য",
       "city": "শহর"
@@ -208,9 +208,9 @@
       "title": "ব্যাংক বিবরণ",
       "bank_name": "ব্যাংকের নাম",
       "account_number": "অ্যাকাউন্ট নম্বর",
-      "ifsc": "আইএফএসসি",
-      "account_type": "অ্যাকাউন্ট ধরন",
-      "account_holder_name": "হিসাবধারীর নাম",
+      "ifsc": "IFSC কোড",
+      "account_type": "অ্যাকাউন্ট ধরনের",
+      "account_holder_name": "অ্যাকাউন্ট হোল্ডারের নাম",
       "account_types": {
         "savings": "সেভিংস",
         "current": "কারেন্ট",
@@ -219,15 +219,15 @@
     },
     "buttons": {
       "save": "পরিবর্তন সংরক্ষণ করুন",
-      "saving": "সংরক্ষণ করা হচ্ছে..."
+      "saving": "সংরক্ষণ হচ্ছে..."
     },
     "validation": {
-      "required": "{field} প্রয়োজন"
+      "required": "{field} আবশ্যক"
     },
     "alerts": {
       "update_success": "প্রোফাইল সফলভাবে আপডেট হয়েছে!",
-      "update_failed": "আপডেট ব্যর্থ হয়েছে",
-      "fetch_failed": "ইউজার ডেটা আনতে ব্যর্থ"
+      "update_failed": "আপডেট ব্যর্থ",
+      "fetch_failed": "ডাটা আনতে ব্যর্থ"
     }
   },
   "referProgramme": {
@@ -235,27 +235,75 @@
     "availableCoins": "উপলব্ধ কয়েন",
     "buyCoin": "কয়েন কিনুন",
     "convertMoney": "টাকায় রূপান্তর করুন",
-    "converting": "রূপান্তর হচ্ছে",
+    "converting": "রূপান্তর হচ্ছে...",
     "coin": "কয়েন",
-    "referFriend": "বন্ধুকে রেফার করুন",
+    "referFriend": "বন্ধুকে আমন্ত্রণ করুন",
     "referal": "রেফারেল",
     "get": "পান",
     "referalCode": "আপনার রেফারেল কোড",
     "referNow": "এখনই রেফার করুন",
-    "noReferal": " এখনো কোনো রেফারেল নেই। কয়েন উপার্জনের জন্য বন্ধুদের রেফার করুন!"
+    "noReferal": "এখনও কোনো রেফারেল ইতিহাস নেই। বন্ধুদের আমন্ত্রণ করে কয়েন উপার্জন শুরু করুন!"
   },
   "chat": {
     "title": "চ্যাট সাপোর্ট",
-    "noChat": "এখনো কোনো বার্তা নেই। কথোপকথন শুরু করুন!",
+    "noChat": "এখনও কোনো বার্তা নেই। কথোপকথন শুরু করুন!",
     "send": "পাঠান",
-    "msgType": "এখানে বার্তা লিখুন",
+    "msgType": "এখানে বার্তা টাইপ করুন",
     "sending": "পাঠানো হচ্ছে...",
     "you": "আপনি",
     "admin": "অ্যাডমিন"
   },
   "notification": {
-    "title": "নোটিফিকেশন",
-    "read": "পড়া",
+    "title": "বিজ্ঞপ্তি",
+    "read": "পড়া হয়েছে",
     "unread": "অপঠিত"
+  },
+  "orders": {
+    "orderDetails": "অর্ডার বিস্তারিত",
+    "deliveryAddress": "ডেলিভারি ঠিকানা",
+    "price": "মূল্য",
+    "totalItems": "মোট আইটেম",
+    "shippingAmount": "শিপিং চার্জ",
+    "totalAmount": "মোট মূল্য",
+    "loading": "অর্ডার বিস্তারিত লোড হচ্ছে...",
+    "addReview": "রিভিউ যোগ করুন",
+    "returnable": "রিটার্নযোগ্য",
+    "qty": "পরিমাণ",
+    "subtotal": "সাব-টোটাল"
+  },
+  "addressForm": {
+    "labels": {
+      "fullName": "পুরো নাম",
+      "mobileNumber": "মোবাইল নম্বর",
+      "country": "দেশ",
+      "state": "রাজ্য",
+      "city": "শহর",
+      "street": "রাস্তা / ফ্ল্যাট নম্বর",
+      "pinCode": "পিন কোড"
+    },
+    "placeholders": {
+      "fullName": "Tony Stark",
+      "mobileNumber": "7896543210",
+      "street": "লন্ডন স্ট্রিট, ফ্ল্যাট নং 108",
+      "pinCode": "789458"
+    },
+    "buttons": {
+      "save": "ঠিকানা সংরক্ষণ করুন",
+      "update": "ঠিকানা আপডেট",
+      "viewAll": "সব দেখুন",
+      "addAnother": "আরেকটি যোগ করুন"
+    },
+    "messages": {
+      "required": "{field} আবশ্যক",
+      "mobileInvalid": "বৈধ মোবাইল নম্বর লিখুন",
+      "savedSuccess": "ঠিকানা সফলভাবে সংরক্ষণ হয়েছে!",
+      "updatedSuccess": "ঠিকানা আপডেট হয়েছে!",
+      "loading": "ঠিকানা লোড হচ্ছে...",
+      "networkError": "নেটওয়ার্ক ত্রুটি। অনুগ্রহ করে আবার চেষ্টা করুন।"
+    }
+  },
+  "blogs": {
+    "title": "আমাদের সর্বশেষ ব্লগস অন্বেষণ করুন",
+    "noBlog": "কোনো ব্লগ পাওয়া যায়নি"
   }
 }

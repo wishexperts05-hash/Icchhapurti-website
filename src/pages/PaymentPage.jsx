@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BsCashCoin } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,33 +15,7 @@ export default function PaymentPage() {
   const [error, setError] = useState(null);
 
   // Mock translation function - replace with actual useTranslation hook
-  const t = (key) => {
-    const translations = {
-      'payment.title': 'भुगतान विधि चुनें',
-      'payment.referral.label': 'रेफ़रल कोड दर्ज करें',
-      'payment.referral.placeholder': 'कोड दर्ज करें',
-      'payment.referral.apply': 'लागू करें',
-      'payment.referral.success': '✓ रेफ़रल कोड सफलतापूर्वक लागू हुआ!',
-      'payment.referral.default': 'डिफ़ॉल्ट रेफ़रल कोड लागू करें',
-      'payment.methods.wallet': 'वॉलेट',
-      'payment.methods.apple': 'एप्पल पे',
-      'payment.methods.google': 'गूगल पे',
-      'payment.methods.cod': 'कैश ऑन डिलीवरी',
-      'payment.methods.balance': 'बैलेंस',
-      'payment.price_details.title': 'मूल्य विवरण',
-      'payment.price_details.total_items': 'कुल आइटम',
-      'payment.price_details.price': 'क़ीमत',
-      'payment.price_details.discount': 'छूट राशि',
-      'payment.price_details.shipping': 'शिपिंग राशि',
-      'payment.price_details.total_amount': 'कुल राशि',
-      'payment.checkout': 'भुगतान करें',
-      'payment.alerts.login_first': 'कृपया पहले लॉगिन करें!',
-      'payment.alerts.cart_empty': 'कार्ट खाली है!',
-      'payment.alerts.order_success': 'ऑर्डर सफलतापूर्वक किया गया!',
-      'payment.alerts.something_wrong': 'कुछ गलत हो गया!'
-    };
-    return translations[key] || key;
-  };
+  const {t} = useTranslation()
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const searchParams = new URLSearchParams(window.location.search);

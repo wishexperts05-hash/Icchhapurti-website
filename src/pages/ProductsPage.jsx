@@ -321,7 +321,7 @@ const { t } = useTranslation();
 
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          {products.length > 0 ? products.map((product) => (
+          {products.length > 0 ? products.slice(0,2).map((product) => (
             <ProductCard key={product.id || product._id} product={product} onAddToCart={handleAddToCart} />
           ))
 
