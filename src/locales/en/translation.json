@@ -68,7 +68,8 @@
     "transactionHistory": "Transaction History",
     "seeRedeemHistory": "See Redeem History",
     "redeem": "Redeem",
-    "transaction": "Transaction"
+    "transaction": "Transaction",
+    "loadingOrders": "Loading Orders"
   },
   "cart": {
     "title": "My Cart",
@@ -112,7 +113,8 @@
     "viewDetails": "View Details",
     "price": "Price",
     "rating": "Rating",
-    "reviews": "Reviews"
+    "reviews": "Reviews",
+    "loading":"Loading Products"
   },
   "drawer": {
     "more": "More Options",
@@ -153,10 +155,8 @@
   "addresses": {
     "shippingAddress": "Shipping Address",
     "addAddress": "Add New Address",
-    "noAddress":"No Shipping Address"
+    "noAddress": "No Shipping Address"
   },
-
-
   "payment": {
     "title": "Choose Payment Method",
     "referral": {
@@ -188,5 +188,123 @@
       "order_success": "Order placed successfully!",
       "something_wrong": "Something went wrong!"
     }
+  },
+  "profile": {
+    "title": "Update Profile",
+    "avatar": {
+      "upload": "Upload Photo"
+    },
+    "personal_info": {
+      "title": "Personal Information",
+      "full_name": "Full Name",
+      "mobile_number": "Mobile Number",
+      "email": "Email",
+      "dob": "Date Of Birth",
+      "country": "Country",
+      "state": "State",
+      "city": "City"
+    },
+    "bank_details": {
+      "title": "Bank Details",
+      "bank_name": "Bank Name",
+      "account_number": "Account Number",
+      "ifsc": "IFSC",
+      "account_type": "Account Type",
+      "account_holder_name": "Account Holder Name",
+      "account_types": {
+        "savings": "Savings",
+        "current": "Current",
+        "salary": "Salary"
+      }
+    },
+    "buttons": {
+      "save": "Save Changes",
+      "saving": "Saving..."
+    },
+    "validation": {
+      "required": "{field} is required"
+    },
+    "alerts": {
+      "update_success": "Profile updated successfully!",
+      "update_failed": "Update failed",
+      "fetch_failed": "Failed to fetch user data"
+    }
+  },
+  "referProgramme": {
+    "title": "Refer Program",
+    "availableCoins": "Available Coins",
+    "buyCoin": "Buy Coins",
+    "convertMoney": "Convert to Money",
+    "converting": "Converting",
+    "coin": "Coin",
+    "referFriend": "Refer a friend",
+    "referal": "Referal",
+    "get": "Get",
+    "referalCode": "Your Referral Code",
+    "referNow": "Refer Now",
+    "noReferal": " No referral history yet. Start referring friends to earn coins!"
+  },
+  "chat": {
+    "title": "Chat support",
+    "noChat": "No messages yet. Start the conversation!",
+    "send": "Send",
+    "msgType": "Type Message here",
+    "sending": "Sending",
+    "you": "You",
+    "admin": "Admin"
+  },
+  "notification": {
+    "title": "Notification",
+    "read": "Read",
+    "unread": "UnRead"
+  },
+  "orders":{
+    "orderDetails":"Order Details",
+    "deliveryAddress":"Delivery Address",
+    "price":"Price",
+    "totalItems":"Total Items",
+    "price":"Price",
+    "shippingAmount":"Shipping Amount",
+    "totalAmount":"Total Amount",
+    "loading":"Loading Order Details",
+    "addReview":"Add Review",
+    "returnable":"Returnable",
+    "qty":"Qty",
+    "subtotal":"SubTotal"
+  },
+   "addressForm": {
+    "labels": {
+      "fullName": "Full Name",
+      "mobileNumber": "Mobile Number",
+      "country": "Country",
+      "state": "State",
+      "city": "City",
+      "street": "Street / Flat No.",
+      "pinCode": "Pin Code"
+    },
+    "placeholders": {
+      "fullName": "Tony Stark",
+      "mobileNumber": "7896543210",
+      "street": "London Street, Flat no 108",
+      "pinCode": "789458"
+    },
+    "buttons": {
+      "save": "Save Address",
+      "update": "Update Address",
+      "viewAll": "View All",
+      "addAnother": "Add Another"
+    },
+    "messages": {
+      "required": "{field} is required",
+      "mobileInvalid": "Enter valid mobile number",
+      "savedSuccess": "Address Saved!",
+      "updatedSuccess": "Address Updated!",
+      "loading": "Loading address...",
+      "networkError": "Network error. Please try again."
+    }
+  },
+  "blogs":{
+    "title":"Explore Our Latest Blogs",
+    "noBlog":"No Blogs Found"
   }
 }

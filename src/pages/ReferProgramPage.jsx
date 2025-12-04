@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Copy, Users, Coins, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const ReferProgramPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,7 +18,7 @@ const ReferProgramPage = () => {
   const [commissonCoins, setCommissionCoins] = useState()
   const referralCode = "RW40850";
   // let commissonCoins ;
-
+const { t } = useTranslation();
   // Fetch coins rate
   useEffect(() => {
     const fetchCoinsRate = async () => {
@@ -298,7 +299,7 @@ const ReferProgramPage = () => {
 
       {/* Content */}
       <div className="relative z-10 max-w-5xl mx-auto p-6">
-        <h1 className="text-3xl font-bold text-white mb-6">Refer Program</h1>
+        <h1 className="text-3xl font-bold text-white mb-6">{t("referProgramme.title")}</h1>
 
         {error && (
           <div className="bg-red-500/20 border border-red-500 rounded-lg p-4 mb-6 text-red-200">
@@ -312,10 +313,10 @@ const ReferProgramPage = () => {
             <div className="w-16 h-16 bg-amber-400 rounded-full flex items-center justify-center mb-3 shadow-lg">
               <Coins className="w-8 h-8 text-amber-900" />
             </div>
-            <p className="text-white text-sm mb-1">Available Coins</p>
+            <p className="text-white text-sm mb-1">{t("referProgramme.availableCoins")}</p>
             <p className="text-white text-4xl font-bold mb-1">{referAc?.coins||0}</p>
             <p className="text-amber-200 text-xs">
-              {coinsRate.coins} coin = ₹ {coinsRate.rate}
+              {coinsRate.coins} {t("referProgramme.coin")} = ₹ {coinsRate.rate}
             </p>
           </div>
 
@@ -325,29 +326,30 @@ const ReferProgramPage = () => {
               // disabled={buyingCoins}
               className="bg-amber-400 hover:bg-amber-500 text-amber-900 font-semibold py-2.5 px-4 rounded transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              Buy Coin
+          {t("referProgramme.buyCoin")}
             </button>
             <button
               onClick={handleConvertToMoney}
               disabled={converting || availableCoins === 0}
               className="bg-amber-400 hover:bg-amber-500 text-amber-900 font-semibold py-2.5 px-4 rounded transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {converting ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Converting...
-                </>
-              ) : (
-                'Convert to Money'
-              )}
+             {converting ? (
+  <>
+    <Loader2 className="w-4 h-4 animate-spin" />
+    {t("referProgramme.converting")}
+  </>
+) : (
+  t("referProgramme.convertMoney")
+)}
+
             </button>
           </div>
         </div>
 
         {/* Refer a Friend Card */}
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg p-6 mb-6 shadow-2xl">
-          <p className="text-blue-200 text-sm text-center mb-2">Refer a friend</p>
-          <p className="text-white text-xl font-bold text-center mb-4">Get 1 Referral = {commissonCoins||0} Coins</p>
+          <p className="text-blue-200 text-sm text-center mb-2">{t("referProgramme.referFriend")}</p>
+          <p className="text-white text-xl font-bold text-center mb-4">{t("referProgramme.get")} 1 {t("referProgramme.referal")} = {commissonCoins||0} {t("referProgramme.coin")}</p>
 
           <div className="flex justify-center mb-4">
             <div className="relative">
@@ -362,7 +364,7 @@ const ReferProgramPage = () => {
 
         {/* Referral Code */}
         <div className="mb-6">
-          <label className="text-white text-sm mb-2 block">Your Referral Code</label>
+          <label className="text-white text-sm mb-2 block">  {t("referProgramme.referalCode")}</label>
           <div className="relative">
             <input
               type="text"
@@ -386,7 +388,7 @@ const ReferProgramPage = () => {
         </div>
 
         {/* Coin Earning History */}
-        <h2 className="text-white text-lg font-semibold mb-4">Coin Earning History</h2>
+        <h2 className="text-white text-lg font-semibold mb-4">{t("referProgramme.coinEarningHostory")}</h2>
 
         {loading ? (
           <div className="flex items-center justify-center py-12">
@@ -394,7 +396,7 @@ const ReferProgramPage = () => {
           </div>
         ) : referrals.length === 0 ? (
           <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-8 text-center text-slate-400 mb-6">
-            No referral history yet. Start referring friends to earn coins!
+         {t("referProgramme.noReferal")}
           </div>
         ) : (
           <div className="space-y-3 mb-6">
@@ -449,7 +451,7 @@ const ReferProgramPage = () => {
 
         {/* Refer Now Button */}
         <button className="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 rounded-lg transition-all duration-300 shadow-lg text-lg">
-          Refer Now
+     {t("referProgramme.referNow")}
         </button>
       </div>
 

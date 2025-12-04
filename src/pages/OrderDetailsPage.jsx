@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Package, Check } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const formatDateTime = (iso) => {
   if (!iso) return '';
@@ -19,7 +20,7 @@ const OrderDetailsPage = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const { t } = useTranslation()
   // Fetch order details from API
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -60,7 +61,7 @@ const OrderDetailsPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen  flex items-center justify-center">
-        <div className="text-white text-xl">Loading orders Details...</div>
+        <div className="text-white text-xl">{t("orders.loading")}</div>
       </div>
     );
   }
@@ -88,7 +89,7 @@ const OrderDetailsPage = () => {
       {/* Background elements omitted for brevity, keep same as your original code */}
 
       <div className="relative z-10 max-w-5xl mx-auto p-6">
-        <h1 className="text-3xl font-bold text-white mb-2">Order Details</h1>
+        <h1 className="text-3xl font-bold text-white mb-2">{t("orders.orderDetails")}</h1>
         <p className="text-sm text-slate-300 mb-6">
           ORDER ID: <span className="text-white font-semibold">{oid}</span>
           <span className="ml-3 text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
@@ -117,13 +118,13 @@ const OrderDetailsPage = () => {
                 </div>
                 <div>
                   <p className="text-white text-sm line-clamp-2">{item.name}</p>
-                  <p className="text-slate-400 text-xs">Qty: {item.quantity}</p>
+                  <p className="text-slate-400 text-xs">{t("order.qty")}: {item.quantity}</p>
                   <p className="text-amber-400 font-semibold">
-                    ₹ {item.price} <span className="text-xs text-slate-400">(Subtotal: ₹ {item.subtotal})</span>
+                    ₹ {item.price} <span className="text-xs text-slate-400">({t("orders.subtotal")}: ₹ {item.subtotal})</span>
                   </p>
                   {item.returnable && (
                     <p className="text-xs text-emerald-400 mt-1">
-                      Returnable{item.returnableDays ? ` within ${item.returnableDays} days` : ''}
+                      {t("orders.returnable")}{item.returnableDays ? ` within ${item.returnableDays} days` : ''}
                     </p>
                   )}
                 </div>
@@ -147,7 +148,7 @@ const OrderDetailsPage = () => {
     `}
                   title={status === "Delivered" ? "Write a review" : "Only delivered products can be reviewed"}
                 >
-                  Add Review
+                {t("orders.addReview")}
                 </button>
 
                 {/* Return Button */}
@@ -195,7 +196,7 @@ const OrderDetailsPage = () => {
         {/* Delivery Address from API */}
         <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-4 mb-4">
           <h3 className="text-white font-semibold mb-3 text-sm border-b border-slate-700/50 pb-2">
-            Delivery Address
+             {t("orders.deliveryAddress")}
           </h3>
           <div className="text-slate-300 text-sm">
             <p className="font-semibold text-white mb-1">{shippingAddress.label}</p>
@@ -208,29 +209,29 @@ const OrderDetailsPage = () => {
         {/* Price Details from API */}
         <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-4">
           <h3 className="text-white font-semibold mb-3 text-sm border-b border-slate-700/50 pb-2">
-            Price Details
+                 {t("orders.price")}
           </h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between text-slate-300">
-              <span>Total Items</span>
+              <span>    {t("orders.totalItems")}</span>
               <span>{totalProducts}</span>
             </div>
             <div className="flex justify-between text-slate-300">
-              <span>Price</span>
+              <span> {t("orders.price")}</span>
               <span>₹ {subtotalAmount}</span>
             </div>
             {discountAmount > 0 && (
               <div className="flex justify-between text-emerald-400">
-                <span>Discount</span>
+                <span>{t("price_details.discount")}</span>
                 <span>-₹ {discountAmount}</span>
               </div>
             )}
             <div className="flex justify-between text-slate-300">
-              <span>Shipping Amount</span>
+              <span>{t("orders.shippingAmount")}</span>
               <span>₹ {shippingAmount}</span>
             </div>
             <div className="border-t border-slate-700/50 pt-2 mt-2 flex justify-between text-white font-semibold">
-              <span>Total Amount</span>
+              <span>{t("orders.totalAmount")}</span>
               <span>₹ {grandTotal}</span>
             </div>
           </div>

@@ -138,7 +138,7 @@ const OrdersPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen  flex items-center justify-center">
-        <div className="text-white text-xl">Loading orders...</div>
+        <div className="text-white text-xl">{t("common.loadingOrders")}</div>
       </div>
     );
   }

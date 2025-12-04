@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Camera, MapPin, ChevronDown } from "lucide-react";
 import { Country, State, City } from "country-state-city";
+import { useTranslation } from "react-i18next";
 
 export default function ViewProfile() {
   // const user = JSON.parse(localStorage.getItem("user"));
@@ -13,7 +14,7 @@ export default function ViewProfile() {
     return `${year}-${month}-${day}`;
   };
 
-
+const { t } = useTranslation();
   const [user, setUsers] = useState()
 
   const [avatar, setAvatar] = useState(
@@ -89,27 +90,7 @@ useEffect(() => {
   const country = watch("country");
   const state = watch("state");
 
-  //   // Load country list on mount
-  //   useEffect(() => {
-  //     setCountries(Country.getAllCountries());
-  //   }, []);
-
-  //   // Update states when country changes
-  //   useEffect(() => {
-  //     if (selectedCountry) {
-  //       const countryObj = countries.find(c => c.name === selectedCountry);
-  //       setStates(State.getStatesOfCountry(countryObj?.isoCode));
-  //     }
-  //   }, [selectedCountry]);
-
-  //   // Update city list when state changes
-  //   useEffect(() => {
-  //     if (selectedState) {
-  //       const countryObj = countries.find(c => c.name === selectedCountry);
-  //       const stateObj = states.find(s => s.name === selectedState);
-  //       setCities(City.getCitiesOfState(countryObj?.isoCode, stateObj?.isoCode));
-  //     }
-  //   }, [selectedState]);
+ 
 
 
   const countries = Country.getAllCountries();
@@ -233,7 +214,7 @@ formData.append("bankDetails[accountHolderName]", data.accountHolderName);
     <div className="min-h-screen ">
       <div className="max-w-4xl mx-auto p-6">
 
-        <h1 className="text-white font-bold text-xl mb-6">Update Profile</h1>
+        <h1 className="text-white font-bold text-xl mb-6">{t("profile.title")}</h1>
 
         <div className="flex justify-center mb-6">
           <div className="relative">
@@ -249,33 +230,32 @@ formData.append("bankDetails[accountHolderName]", data.accountHolderName);
 
           {/* Personal Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InputField label="Full Name" name="name" />
-            <InputField label="Mobile Number" name="phoneNumber" />
-            <InputField label="Email" type="email" name="email" />
-            <InputField label="Date Of Birth" name="dob" type="date" />
+            <InputField label={t("profile.personal_info.full_name")} name="name" />
+            <InputField label={t("profile.personal_info.mobile_number")} name="phoneNumber" />
+            <InputField label={t("profile.personal_info.email")}  type="email" name="email" />
+            <InputField label={t("profile.personal_info.dob")}   name="dob" type="date" />
 
-            <InputField label="Country" name="country" isSelect options={countries} />
-            <InputField label="State" name="state" isSelect options={states} />
-            <InputField label="City" name="city" isSelect options={cities} />
+            <InputField label={t("profile.personal_info.country")}  name="country" isSelect options={countries} />
+            <InputField label={t("profile.personal_info.state")}   name="state" isSelect options={states} />
+            <InputField label={t("profile.personal_info.city")}    name="city" isSelect options={cities} />
           </div>
 
           {/* Bank Details */}
-          <h2 className="text-white font-semibold mt-6">Bank Details</h2>
+          <h2 className="text-white font-semibold mt-6">{t("profile.bank_details.title")}   </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InputField label="Bank Name" name="bankName" />
-            <InputField label="Account Number" name="accountNumber" />
-            <InputField label="IFSC" name="ifscCode" />
-            <InputField label="Account Type" name="accountType" isSelect options={["Savings", "Current", "Salary"]} />
+            <InputField label={t("profile.bank_details.bank_name")} name="bankName" />
+            <InputField label={t("profile.bank_details.account_number")}  name="accountNumber" />
+            <InputField label={t("profile.bank_details.ifsc")}   name="ifscCode" />
+            <InputField label={t("profile.bank_details.account_type")}    name="accountType" isSelect options={["Savings", "Current", "Salary"]} />
           </div>
 
-          <InputField label="Account Holder Name" name="accountHolderName" />
+          <InputField label={t("profile.bank_details.account_holder_name")}    name="accountHolderName" />
 
           <button
             className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:opacity-90"
           >
-            {
-              loading ? "saving..." : "Save Changes"
-            }
+           {loading ? t("profile.buttons.saving") : t("profile.buttons.save")}
+
 
           </button>
         </form>

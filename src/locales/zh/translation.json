@@ -1,0 +1,261 @@
+{
+  "nav": {
+    "home": "首页",
+    "about": "关于我们",
+    "blogs": "博客",
+    "products": "产品",
+    "cart": "购物车",
+    "wallet": "钱包",
+    "orders": "我的订单",
+    "account": "账户",
+    "login": "登录",
+    "logout": "登出",
+    "viewProfile": "查看资料",
+    "trustedUsers": "可信用户",
+    "notification": "通知",
+    "more": "更多选项"
+  },
+  "home": {
+    "search": "搜索产品...",
+    "ourProducts": "我们的产品",
+    "tagline": "热门产品优惠多多",
+    "downloadWord": "下载 IchhaPurti 移动应用",
+    "downloadWord1": "获得更好的体验和更多功能...",
+    "viewAll": "查看全部",
+    "loading": "加载中...",
+    "error": "错误",
+    "showing": "显示",
+    "products": "产品"
+  },
+  "account": {
+    "title": "账户",
+    "referralBanner": {
+      "text": "邀请朋友和家人，即可获得",
+      "coins": "10",
+      "coinsText": "金币到账钱包。",
+      "referButton": "立即邀请"
+    },
+    "menuItems": {
+      "profile": "个人信息",
+      "shippingAddress": "配送地址",
+      "myCart": "我的购物车",
+      "myOrders": "我的订单",
+      "referralProgram": "推荐计划",
+      "luckyDraw": "抽奖",
+      "chatSupport": "聊天客服",
+      "websiteLanguage": "网站语言",
+      "aboutUs": "关于我们",
+      "ourBlogs": "我们的博客",
+      "termsConditions": "条款与条件",
+      "privacyPolicy": "隐私政策",
+      "faq": "常见问题",
+      "logout": "登出"
+    }
+  },
+  "auth": {
+    "welcome": "欢迎！",
+    "loginToContinue": "登录以继续"
+  },
+  "common": {
+    "search": "搜索产品...",
+    "viewAll": "查看全部",
+    "loading": "加载中...",
+    "error": "错误",
+    "close": "关闭",
+    "ourProducts": "我们的产品",
+    "noOrder": "未找到订单",
+    "availableBalanace": "可用余额",
+    "transactionHistory": "交易记录",
+    "seeRedeemHistory": "查看兑换记录",
+    "redeem": "兑换",
+    "transaction": "交易",
+    "loadingOrders": "正在加载订单"
+  },
+  "cart": {
+    "title": "我的购物车",
+    "loading": "正在加载购物车...",
+    "error": "错误",
+    "retry": "重试",
+    "deliveryAddress": {
+      "deliverTo": "送至：",
+      "changeAddress": "更改地址",
+      "noAddress": "没有配送地址",
+      "noAddressDesc": "请添加配送地址以继续结算",
+      "addAddress": "添加地址",
+      "selectAddress": "选择配送地址",
+      "noAddressesFound": "未找到地址",
+      "addNewAddress": "添加新地址",
+      "mobileNumber": "手机号码："
+    },
+    "product": {
+      "remove": "移除"
+    },
+    "emptyCart": {
+      "message": "购物车为空",
+      "continueShopping": "继续购物"
+    },
+    "priceDetails": {
+      "title": "价格详情",
+      "totalItems": "商品数量",
+      "price": "价格",
+      "shippingAmount": "运费",
+      "totalAmount": "总金额"
+    },
+    "checkout": {
+      "button": "去结算",
+      "addAddressWarning": "请先添加配送地址"
+    }
+  },
+  "products": {
+    "title": "我们的产品",
+    "subtitle": "热门产品优惠多多",
+    "addToCart": "加入购物车",
+    "viewDetails": "查看详情",
+    "price": "价格",
+    "rating": "评分",
+    "reviews": "评论",
+    "loading": "正在加载产品"
+  },
+  "drawer": {
+    "more": "更多选项",
+    "trusted": "1000+ 信任用户"
+  },
+  "footer": {
+    "description": "您的品质购物首选。我们致力于提供优质产品与服务，满足您的每一个愿望。",
+    "quickLinks": "快速链接",
+    "downloadApp": "下载应用",
+    "downloadAppDesc": "获取最佳体验，立即下载！",
+    "contactInfo": "联系方式",
+    "phone": "电话",
+    "email": "邮箱",
+    "address": "地址",
+    "copyright": "版权所有 © 2025",
+    "allRightsReserved": "保留所有权利",
+    "designedBy": "设计者",
+    "companyName": "ICCHHA PURTI",
+    "links": {
+      "home": "首页",
+      "aboutUs": "关于我们",
+      "products": "产品",
+      "blogs": "博客",
+      "contactUs": "联系我们",
+      "privacyPolicy": "隐私政策",
+      "termsConditions": "条款与条件"
+    },
+    "downloadOn": "下载于",
+    "getItOn": "获取于",
+    "appStore": "App Store",
+    "googlePlay": "Google Play"
+  },
+  "language": {
+    "title": "语言",
+    "subtitle": "选择您的语言",
+    "save": "保存语言"
+  },
+  "addresses": {
+    "shippingAddress": "配送地址",
+    "addAddress": "添加新地址",
+    "noAddress": "没有配送地址"
+  },
+  "payment": {
+    "title": "选择支付方式",
+    "referral": {
+      "label": "输入推荐码",
+      "placeholder": "输入代码",
+      "apply": "应用",
+      "success": "✓ 推荐码应用成功！",
+      "default": "使用默认推荐码"
+    },
+    "methods": {
+      "wallet": "钱包",
+      "apple": "Apple Pay",
+      "google": "Google Pay",
+      "cod": "货到付款",
+      "balance": "余额"
+    },
+    "price_details": {
+      "title": "价格详情",
+      "total_items": "商品数量",
+      "price": "价格",
+      "discount": "折扣金额",
+      "shipping": "运费",
+      "total_amount": "总金额"
+    },
+    "checkout": "结算",
+    "alerts": {
+      "login_first": "请先登录！",
+      "cart_empty": "购物车为空！",
+      "order_success": "下单成功！",
+      "something_wrong": "出现错误！"
+    }
+  },
+  "profile": {
+    "title": "更新资料",
+    "avatar": {
+      "upload": "上传照片"
+    },
+    "personal_info": {
+      "title": "个人信息",
+      "full_name": "姓名",
+      "mobile_number": "手机号码",
+      "email": "邮箱",
+      "dob": "出生日期",
+      "country": "国家",
+      "state": "省份",
+      "city": "城市"
+    },
+    "bank_details": {
+      "title": "银行信息",
+      "bank_name": "银行名称",
+      "account_number": "账号",
+      "ifsc": "IFSC 代码",
+      "account_type": "账户类型",
+      "account_holder_name": "开户人姓名",
+      "account_types": {
+        "savings": "储蓄账户",
+        "current": "活期账户",
+        "salary": "工资账户"
+      }
+    },
+    "buttons": {
+      "save": "保存更改",
+      "saving": "保存中..."
+    },
+    "validation": {
+      "required": "{field} 为必填项"
+    },
+    "alerts": {
+      "update_success": "资料更新成功！",
+      "update_failed": "更新失败",
+      "fetch_failed": "获取用户数据失败"
+    }
+  },
+  "referProgramme": {
+    "title": "推荐计划",
+    "availableCoins": "可用金币",
+    "buyCoin": "购买金币",
+    "convertMoney": "兑换现金",
+    "converting": "兑换中",
+    "coin": "金币",
+    "referFriend": "邀请好友",
+    "referal": "推荐",
+    "get": "获得",
+    "referalCode": "您的推荐码",
+    "referNow": "立即邀请",
+    "noReferal": "暂无推荐记录，开始邀请好友赚取金币吧！"
+  },
+  "chat": {
+    "title": "客服聊天",
+    "noChat": "暂无消息，开始聊天吧！",
+    "send": "发送",
+    "msgType": "请输入消息",
+    "sending": "发送中...",
+    "you": "您",
+    "admin": "管理员"
+  },
+  "notification": {
+    "title": "通知",
+    "read": "已读",
+    "unread": "未读"
+  }
+}

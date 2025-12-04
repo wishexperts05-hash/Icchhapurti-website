@@ -1,0 +1,261 @@
+{
+  "nav": {
+    "home": "मुख्य पृष्ठ",
+    "about": "आमच्याबद्दल",
+    "blogs": "ब्लॉग",
+    "products": "उत्पादने",
+    "cart": "कार्ट",
+    "wallet": "वॉलेट",
+    "orders": "माझी ऑर्डर्स",
+    "account": "अकाउंट",
+    "login": "लॉगिन",
+    "logout": "लॉगआऊट",
+    "viewProfile": "प्रोफाइल पाहा",
+    "trustedUsers": "विश्वासू वापरकर्ते",
+    "notification": "सूचना",
+    "more": "अधिक पर्याय"
+  },
+  "home": {
+    "search": "उत्पादने शोधा...",
+    "ourProducts": "आमची उत्पादने",
+    "tagline": "उत्तम उत्पादनांवर अद्भुत ऑफर मिळवा",
+    "downloadWord": "इच्छापूर्ती मोबाइल अॅप डाउनलोड करा",
+    "downloadWord1": "उत्तम अनुभव आणि अधिक फिचर्स मिळवा...",
+    "viewAll": "सर्व पाहा",
+    "loading": "लोड होत आहे...",
+    "error": "त्रुटी",
+    "showing": "दाखवत आहे",
+    "products": "उत्पादने"
+  },
+  "account": {
+    "title": "अकाउंट",
+    "referralBanner": {
+      "text": "मित्र आणि कुटुंबियांना आमंत्रित करा आणि मिळवा",
+      "coins": "10",
+      "coinsText": "कॉइन्स तुमच्या वॉलेटमध्ये.",
+      "referButton": "आता रेफर करा"
+    },
+    "menuItems": {
+      "profile": "प्रोफाइल",
+      "shippingAddress": "शिपिंग पत्ता",
+      "myCart": "माझे कार्ट",
+      "myOrders": "माझ्या ऑर्डर्स",
+      "referralProgram": "रेफरल प्रोग्राम",
+      "luckyDraw": "लकी ड्रॉ",
+      "chatSupport": "चॅट सपोर्ट",
+      "websiteLanguage": "वेबसाइट भाषा",
+      "aboutUs": "आमच्याबद्दल",
+      "ourBlogs": "आमचे ब्लॉग",
+      "termsConditions": "नियम व अटी",
+      "privacyPolicy": "गोपनीयता धोरण",
+      "faq": "FAQ",
+      "logout": "लॉगआऊट"
+    }
+  },
+  "auth": {
+    "welcome": "स्वागत आहे!",
+    "loginToContinue": "पुढे जाण्यासाठी लॉगिन करा"
+  },
+  "common": {
+    "search": "उत्पादने शोधा...",
+    "viewAll": "सर्व पाहा",
+    "loading": "लोड होत आहे...",
+    "error": "त्रुटी",
+    "close": "बंद करा",
+    "ourProducts": "आमची उत्पादने",
+    "noOrder": "ऑर्डर सापडली नाही",
+    "availableBalanace": "उपलब्ध शिल्लक",
+    "transactionHistory": "व्यवहार इतिहास",
+    "seeRedeemHistory": "रिडीम इतिहास पाहा",
+    "redeem": "रिडीम",
+    "transaction": "व्यवहार",
+    "loadingOrders": "ऑर्डर्स लोड होत आहेत"
+  },
+  "cart": {
+    "title": "माझे कार्ट",
+    "loading": "कार्ट लोड होत आहे...",
+    "error": "त्रुटी",
+    "retry": "पुन्हा प्रयत्न करा",
+    "deliveryAddress": {
+      "deliverTo": "यांना वितरित करा:",
+      "changeAddress": "पत्ता बदला",
+      "noAddress": "कोणताही डिलिव्हरी पत्ता नाही",
+      "noAddressDesc": "चेकआउटसाठी कृपया पत्ता जोडा",
+      "addAddress": "पत्ता जोडा",
+      "selectAddress": "डिलिव्हरी पत्ता निवडा",
+      "noAddressesFound": "पत्ते आढळले नाहीत",
+      "addNewAddress": "नवीन पत्ता जोडा",
+      "mobileNumber": "मोबाईल नंबर:"
+    },
+    "product": {
+      "remove": "काढून टाका"
+    },
+    "emptyCart": {
+      "message": "तुमचे कार्ट रिकामे आहे",
+      "continueShopping": "खरेदी सुरू ठेवा"
+    },
+    "priceDetails": {
+      "title": "किंमत तपशील",
+      "totalItems": "एकूण वस्तू",
+      "price": "किंमत",
+      "shippingAmount": "शिपिंग शुल्क",
+      "totalAmount": "एकूण रक्कम"
+    },
+    "checkout": {
+      "button": "चेकआउट",
+      "addAddressWarning": "कृपया पत्ता जोडा"
+    }
+  },
+  "products": {
+    "title": "आमची उत्पादने",
+    "subtitle": "उत्तम उत्पादनांवर अद्भुत ऑफर्स",
+    "addToCart": "कार्टमध्ये जोडा",
+    "viewDetails": "तपशील पाहा",
+    "price": "किंमत",
+    "rating": "रेटिंग",
+    "reviews": "रीव्ह्यू",
+    "loading":"उत्पादने लोड करत आहे"
+  },
+  "drawer": {
+    "more": "अधिक",
+    "trusted": "1000+ विश्वासू वापरकर्ते"
+  },
+  "footer": {
+    "description": "गुणवत्तापूर्ण उत्पादनांसाठी तुमचे एकमेव ठिकाण. आम्ही सर्वोत्तम सेवा आणि निवडीसह तुमची प्रत्येक इच्छा पूर्ण करण्यास वचनबद्ध आहोत.",
+    "quickLinks": "त्वरित दुवे",
+    "downloadApp": "अ‍ॅप डाउनलोड करा",
+    "downloadAppDesc": "आमच्या अॅपवर सर्वोत्तम अनुभव मिळवा!",
+    "contactInfo": "संपर्क माहिती",
+    "phone": "फोन",
+    "email": "ईमेल",
+    "address": "पत्ता",
+    "copyright": "प्रताधिकार © 2025",
+    "allRightsReserved": "सर्व हक्क राखीव",
+    "designedBy": "डिझाइन केले",
+    "companyName": "इच्छापूर्ती",
+    "links": {
+      "home": "मुख्य पृष्ठ",
+      "aboutUs": "आमच्याबद्दल",
+      "products": "उत्पादने",
+      "blogs": "ब्लॉग",
+      "contactUs": "संपर्क",
+      "privacyPolicy": "गोपनीयता धोरण",
+      "termsConditions": "नियम व अटी"
+    },
+    "downloadOn": "डाउनलोड करा",
+    "getItOn": "येथे मिळवा",
+    "appStore": "अॅप स्टोअर",
+    "googlePlay": "गूगल प्ले"
+  },
+  "language": {
+    "title": "भाषा",
+    "subtitle": "आपली भाषा निवडा",
+    "save": "भाषा जतन करा"
+  },
+  "addresses": {
+    "shippingAddress": "शिपिंग पत्ता",
+    "addAddress": "नवीन पत्ता जोडा",
+    "noAddress": "शिपिंग पत्ता नाही"
+  },
+  "payment": {
+    "title": "पेमेंट पद्धत निवडा",
+    "referral": {
+      "label": "रेफरल कोड टाका",
+      "placeholder": "कोड प्रविष्ट करा",
+      "apply": "लागू करा",
+      "success": "✓ रेफरल कोड यशस्वीपणे लागू केले!",
+      "default": "डिफॉल्ट रेफरल कोड लागू करा"
+    },
+    "methods": {
+      "wallet": "वॉलेट",
+      "apple": "ॲपल पे",
+      "google": "गूगल पे",
+      "cod": "कॅश ऑन डिलिव्हरी",
+      "balance": "बॅलन्स"
+    },
+    "price_details": {
+      "title": "किंमत तपशील",
+      "total_items": "एकूण वस्तू",
+      "price": "किंमत",
+      "discount": "सवलत रक्कम",
+      "shipping": "शिपिंग शुल्क",
+      "total_amount": "एकूण रक्कम"
+    },
+    "checkout": "चेकआउट",
+    "alerts": {
+      "login_first": "कृपया प्रथम लॉगिन करा!",
+      "cart_empty": "कार्ट रिकामे आहे!",
+      "order_success": "ऑर्डर यशस्वी!",
+      "something_wrong": "काहीतरी चूक झाली!"
+    }
+  },
+  "profile": {
+    "title": "प्रोफाइल अपडेट करा",
+    "avatar": {
+      "upload": "फोटो अपलोड करा"
+    },
+    "personal_info": {
+      "title": "वैयक्तिक माहिती",
+      "full_name": "पूर्ण नाव",
+      "mobile_number": "मोबाईल नंबर",
+      "email": "ईमेल",
+      "dob": "जन्म तारीख",
+      "country": "देश",
+      "state": "राज्य",
+      "city": "शहर"
+    },
+    "bank_details": {
+      "title": "बँक माहिती",
+      "bank_name": "बँक नाव",
+      "account_number": "अकाउंट क्रमांक",
+      "ifsc": "IFSC",
+      "account_type": "अकाउंट प्रकार",
+      "account_holder_name": "अकाउंट धारक नाव",
+      "account_types": {
+        "savings": "सेव्हिंग",
+        "current": "करंट",
+        "salary": "सॅलरी"
+      }
+    },
+    "buttons": {
+      "save": "बदल जतन करा",
+      "saving": "जतन होत आहे..."
+    },
+    "validation": {
+      "required": "{field} आवश्यक आहे"
+    },
+    "alerts": {
+      "update_success": "प्रोफाइल यशस्वीपणे अपडेट झाले!",
+      "update_failed": "अपडेट अयशस्वी",
+      "fetch_failed": "वापरकर्ता डेटा मिळवण्यात अयशस्वी"
+    }
+  },
+  "referProgramme": {
+    "title": "रेफर प्रोग्राम",
+    "availableCoins": "उपलब्ध कॉइन्स",
+    "buyCoin": "कॉइन्स खरेदी करा",
+    "convertMoney": "पैश्यात रूपांतरित करा",
+    "converting": "रूपांतरित होत आहे...",
+    "coin": "कॉइन",
+    "referFriend": "मित्राला रेफर करा",
+    "referal": "रेफरल",
+    "get": "मिळवा",
+    "referalCode": "तुमचा रेफरल कोड",
+    "referNow": "आता रेफर करा",
+    "noReferal": "अजून रेफरल इतिहास नाही. अधिक कॉइन्स मिळवण्यासाठी रेफर करा!"
+  },
+  "chat": {
+    "title": "चॅट सपोर्ट",
+    "noChat": "अजून संदेश नाहीत. संभाषण सुरू करा!",
+    "send": "पाठवा",
+    "msgType": "येथे संदेश लिहा",
+    "sending": "पाठवले जात आहे...",
+    "you": "आपण",
+    "admin": "प्रशासक"
+  },
+  "notification": {
+    "title": "सूचना",
+    "read": "वाचलेली",
+    "unread": "न वाचलेली"
+  }
+}

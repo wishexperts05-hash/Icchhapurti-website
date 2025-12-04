@@ -298,7 +298,7 @@ export default function OurProducts() {
       <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, #0f1c2e 0%, #1a3352 50%, #0d2440 100%)' }}>
         <div className="text-center">
           <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 animate-spin mx-auto mb-4" style={{ color: '#C9A227' }} />
-          <p className="text-white text-base sm:text-lg">Loading products...</p>
+          <p className="text-white text-base sm:text-lg">{t("products.loading")}</p>
         </div>
       </div>
     );

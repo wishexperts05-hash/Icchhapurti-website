@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function Notification() {
     const [activeTab, setActiveTab] = useState('unread');
@@ -9,7 +10,7 @@ export default function Notification() {
     const [loading, setLoading] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
     const [markingAsRead, setMarkingAsRead] = useState({});
-
+    const { t } = useTranslation();
     const itemsPerPage = 5;
 
     const fetchNotifications = async () => {
@@ -157,7 +158,7 @@ export default function Notification() {
 
             <div className="relative z-10 max-w-7xl mx-auto p-4">
                 <div className="flex items-center justify-between mb-6">
-                    <h1 className="text-white font-bold text-xl">Notification</h1>
+                    <h1 className="text-white font-bold text-xl">{t("notification.title")}</h1>
                     {/* {activeTab === 'unread' && unreadCount > 0 && (
                         <button
                             onClick={markAllAsRead}
@@ -174,8 +175,8 @@ export default function Notification() {
                 <div className="relative mb-6">
                     <div className="flex border-b border-slate-700">
                         {[
-                            { id: 'unread', label: 'Unread', count: unreadCount },
-                            { id: 'read', label: 'Read', count: notifications.filter(n => n.isRead).length },
+                            { id: 'unread', label: t("notification.unread"), count: unreadCount },
+                            { id: 'read', label: t("notification.read"), count: notifications.filter(n => n.isRead).length },
                         ].map((tab) => (
                             <button
                                 key={tab.id}
@@ -185,11 +186,10 @@ export default function Notification() {
                             >
                                 <span>{tab.label}</span>
                                 {tab.count > 0 && (
-                                    <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
-                                        activeTab === tab.id 
-                                            ? 'bg-amber-500/20 text-amber-400' 
-                                            : 'bg-slate-700 text-gray-400'
-                                    }`}>
+                                    <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${activeTab === tab.id
+                                        ? 'bg-amber-500/20 text-amber-400'
+                                        : 'bg-slate-700 text-gray-400'
+                                        }`}>
                                         {tab.count}
                                     </span>
                                 )}
@@ -204,7 +204,7 @@ export default function Notification() {
                 {/* Notification List */}
                 <div className="space-y-1 min-h-[400px]">
                     {loading ? (
-                        <div className="text-center py-10 text-gray-400">Loading...</div>
+                        <div className="text-center py-10 text-gray-400">{t("home.loading")}</div>
                     ) : filteredNotifications.length > 0 ? (
                         filteredNotifications.map((item) => (
                             <div key={item._id} className="flex items-center justify-between py-4 border-b border-slate-700/50 hover:bg-slate-800/20 transition-colors px-2 rounded group">
@@ -221,7 +221,7 @@ export default function Notification() {
                                     <div className="text-xs text-gray-500 whitespace-nowrap">
                                         {new Date(item.createdAt).toLocaleDateString()} {new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </div>
-                                    
+
                                     {!item.isRead && (
                                         <button
                                             onClick={() => markAsRead(item._id)}

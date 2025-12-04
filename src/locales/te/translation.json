@@ -1,0 +1,261 @@
+{
+  "nav": {
+    "home": "హోమ్",
+    "about": "మన గురించి",
+    "blogs": "బ్లాగ్స్",
+    "products": "ఉత్పత్తులు",
+    "cart": "కార్ట్",
+    "wallet": "వాలెట్",
+    "orders": "నా ఆర్డర్లు",
+    "account": "ఖాతా",
+    "login": "లాగిన్",
+    "logout": "లాగౌట్",
+    "viewProfile": "ప్రొఫైల్",
+    "trustedUsers": "నమ్మకమైన వినియోగదారులు",
+    "notification": "నోటిఫికేషన్స్",
+    "more": "ఇంకా"
+  },
+  "home": {
+    "search": "ఉత్పత్తులను వెతకండి...",
+    "ourProducts": "మా ఉత్పత్తులు",
+    "tagline": "అత్యుత్తమ ఉత్పత్తులపై అద్భుతమైన ఆఫర్లు",
+    "downloadWord": "ఇచ్చాపూర్తి మొబైల్ యాప్‌ను డౌన్‌లోడ్ చేయండి",
+    "downloadWord1": "మరింత మంచి అనుభవం కోసం…",
+    "viewAll": "అన్ని చూడండి",
+    "loading": "లోడ్ అవుతోంది...",
+    "error": "పొరపాటు",
+    "showing": "చూపిస్తోంది",
+    "products": "ఉత్పత్తులు"
+  },
+  "account": {
+    "title": "ఖాతా",
+    "referralBanner": {
+      "text": "మీ స్నేహితులను ఆహ్వానించండి & పొందండి",
+      "coins": "10",
+      "coinsText": "నాణేలు మీ వాలెట్లో",
+      "referButton": "ఇప్పుడే రిఫర్ చేయండి"
+    },
+    "menuItems": {
+      "profile": "ప్రొఫైల్",
+      "shippingAddress": "డెలివరీ చిరునామా",
+      "myCart": "నా కార్ట్",
+      "myOrders": "నా ఆర్డర్లు",
+      "referralProgram": "రిఫరల్ ప్రోగ్రామ్",
+      "luckyDraw": "లక్కీ డ్రా",
+      "chatSupport": "చాట్ సపోర్ట్",
+      "websiteLanguage": "సైట్ భాష",
+      "aboutUs": "మన గురించి",
+      "ourBlogs": "మా బ్లాగులు",
+      "termsConditions": "నిబంధనలు & షరతులు",
+      "privacyPolicy": "గోప్యతా విధానం",
+      "faq": "తరచుగా అడుగు ప్రశ్నలు",
+      "logout": "లాగ్ అవుట్"
+    }
+  },
+  "auth": {
+    "welcome": "స్వాగతం!",
+    "loginToContinue": "కొనసాగేందుకు లాగిన్ అవ్వండి"
+  },
+  "common": {
+    "search": "ఉత్పత్తులను వెతకండి...",
+    "viewAll": "అన్ని చూడండి",
+    "loading": "లోడ్ అవుతోంది...",
+    "error": "పొరపాటు",
+    "close": "మూసేయి",
+    "ourProducts": "మా ఉత్పత్తులు",
+    "noOrder": "ఆర్డర్లు లేవు",
+    "availableBalanace": "ఉపలబ్ధ బ్యాలెన్స్",
+    "transactionHistory": "ట్రాన్సాక్షన్ చరిత్ర",
+    "seeRedeemHistory": "రిడీమ్ హిస్టరీ చూడండి",
+    "redeem": "రిడీమ్",
+    "transaction": "ట్రాన్సాక్షన్",
+    "loadingOrders": "ఆర్డర్లు లోడ్ అవుతున్నాయి"
+  },
+  "cart": {
+    "title": "నా కార్ట్",
+    "loading": "కార్ట్ లోడ్ అవుతోంది...",
+    "error": "పొరపాటు",
+    "retry": "మళ్ళీ ప్రయత్నించండి",
+    "deliveryAddress": {
+      "deliverTo": "పంపాల్సింది:",
+      "changeAddress": "చిరునామా మార్చండి",
+      "noAddress": "డెలివరీ చిరునామా లేదు",
+      "noAddressDesc": "డెలివరీ కోసం దయచేసి చిరునామా జోడించండి",
+      "addAddress": "చిరునామా జోడించండి",
+      "selectAddress": "డెలివరీ చిరునామా ఎంచుకోండి",
+      "noAddressesFound": "చిరునామాలు కనబడలేదు",
+      "addNewAddress": "కొత్త చిరునామా జోడించండి",
+      "mobileNumber": "మొబైల్ నంబర్:"
+    },
+    "product": {
+      "remove": "తొలగించండి"
+    },
+    "emptyCart": {
+      "message": "మీ కార్ట్ ఖాళీగా ఉంది",
+      "continueShopping": "షాపింగ్ కొనసాగించండి"
+    },
+    "priceDetails": {
+      "title": "ధర వివరాలు",
+      "totalItems": "మొత్తం వస్తువులు",
+      "price": "ధర",
+      "shippingAmount": "డెలివరీ ఛార్జీ",
+      "totalAmount": "మొత్తం మొత్తం"
+    },
+    "checkout": {
+      "button": "చెకౌట్",
+      "addAddressWarning": "కొనసాగడానికి చిరునామా జోడించండి"
+    }
+  },
+  "products": {
+    "title": "మా ఉత్పత్తులు",
+    "subtitle": "అద్భుతమైన ఆఫర్లు",
+    "addToCart": "కార్టులో జోడించండి",
+    "viewDetails": "వివరాలు చూడండి",
+    "price": "ధర",
+    "rating": "రేటింగ్",
+    "reviews": "సమీక్షలు",
+    "loading": "ఉత్పత్తులు లోడ్ అవుతున్నాయి"
+  },
+  "drawer": {
+    "more": "ఇంకా",
+    "trusted": "1000+ నమ్మకమైన కస్టమర్లు"
+  },
+  "footer": {
+    "description": "నమ్మదగిన సేవలతో ఉత్తమమైన ఉత్పత్తులు మీకు దగ్గరగా!",
+    "quickLinks": "త్వరిత లింకులు",
+    "downloadApp": "యాప్ డౌన్‌లోడ్ చేయండి",
+    "downloadAppDesc": "ఉత్తమ అనుభవం కోసం యాప్ వాడండి!",
+    "contactInfo": "సంప్రదించండి",
+    "phone": "ఫోన్",
+    "email": "ఈమెయిల్",
+    "address": "చిరునామా",
+    "copyright": "కాపీరైట్ © 2025",
+    "allRightsReserved": "అన్ని హక్కులు రిజర్వ్",
+    "designedBy": "రూపొందించినది",
+    "companyName": "ICCHHA PURTI",
+    "links": {
+      "home": "హోమ్",
+      "aboutUs": "మన గురించి",
+      "products": "ఉత్పత్తులు",
+      "blogs": "బ్లాగ్స్",
+      "contactUs": "సంప్రదించండి",
+      "privacyPolicy": "గోప్యతా విధానం",
+      "termsConditions": "నిబంధనలు & షరతులు"
+    },
+    "downloadOn": "డౌన్‌లోడ్ చేయండి",
+    "getItOn": "దొరుకుతుంది",
+    "appStore": "యాప్ స్టోర్",
+    "googlePlay": "గూగుల్ ప్లే"
+  },
+  "language": {
+    "title": "భాష",
+    "subtitle": "మీ భాషను ఎంచుకోండి",
+    "save": "భాషను సేవ్ చేయండి"
+  },
+  "addresses": {
+    "shippingAddress": "షిప్పింగ్ చిరునామా",
+    "addAddress": "చిరునామా జోడించండి",
+    "noAddress": "చిరునామా లేదు"
+  },
+  "payment": {
+    "title": "చెల్లింపు పద్ధతిని ఎంచుకోండి",
+    "referral": {
+      "label": "రిఫరల్ కోడ్",
+      "placeholder": "కోడ్ నమోదు చేయండి",
+      "apply": "అప్లై చేయండి",
+      "success": "✓ రిఫరల్ కోడ్ విజయవంతంగా వర్తించబడింది!",
+      "default": "డిఫాల్ట్ కోడ్ వాడండి"
+    },
+    "methods": {
+      "wallet": "వాలెట్",
+      "apple": "ఆపిల్ పే",
+      "google": "గూగుల్ పే",
+      "cod": "క్యాష్ ఆన్ డెలివరీ",
+      "balance": "బ్యాలెన్స్"
+    },
+    "price_details": {
+      "title": "ధర వివరాలు",
+      "total_items": "మొత్తం వస్తువులు",
+      "price": "ధర",
+      "discount": "డిస్కౌంట్ మొత్తం",
+      "shipping": "డెలివరీ ఛార్జ్",
+      "total_amount": "మొత్తం మొత్తం"
+    },
+    "checkout": "చెకౌట్",
+    "alerts": {
+      "login_first": "దయచేసి ముందుగా లాగిన్ అవ్వండి!",
+      "cart_empty": "కార్ట్ ఖాళీగా ఉంది!",
+      "order_success": "ఆర్డర్ విజయవంతం!",
+      "something_wrong": "ఏదో తప్పు జరిగింది!"
+    }
+  },
+  "profile": {
+    "title": "ప్రొఫైల్ అప్‌డేట్ చేయండి",
+    "avatar": {
+      "upload": "ఫోటో అప్లోడ్ చేయండి"
+    },
+    "personal_info": {
+      "title": "వ్యక్తిగత సమాచారం",
+      "full_name": "పూర్తి పేరు",
+      "mobile_number": "మొబైల్ నంబర్",
+      "email": "ఈమెయిల్",
+      "dob": "పుట్టిన తేదీ",
+      "country": "దేశం",
+      "state": "రాష్ట్రం",
+      "city": "నగరం"
+    },
+    "bank_details": {
+      "title": "బ్యాంక్ వివరాలు",
+      "bank_name": "బ్యాంక్ పేరు",
+      "account_number": "ఖాతా నంబర్",
+      "ifsc": "IFSC కోడ్",
+      "account_type": "ఖాతా రకం",
+      "account_holder_name": "ఖాతాదారుడి పేరు",
+      "account_types": {
+        "savings": "సేవింగ్స్ అకౌంట్",
+        "current": "కరెంట్ అకౌంట్",
+        "salary": "జీతం అకౌంట్"
+      }
+    },
+    "buttons": {
+      "save": "సేవ్ చేయడం",
+      "saving": "సేవ్ అవుతోంది..."
+    },
+    "validation": {
+      "required": "{field} అవసరం"
+    },
+    "alerts": {
+      "update_success": "ప్రొఫైల్ అప్‌డేట్ అయింది!",
+      "update_failed": "అప్‌డేట్ విఫలమైంది",
+      "fetch_failed": "డేటా పొందలేకపోయాం"
+    }
+  },
+  "referProgramme": {
+    "title": "రిఫరల్ ప్రోగ్రామ్",
+    "availableCoins": "అందుబాటులో ఉన్న నాణేలు",
+    "buyCoin": "నాణేలు కొనండి",
+    "convertMoney": "డబ్బుగా మార్చు",
+    "converting": "మారుస్తోంది...",
+    "coin": "నాణెం",
+    "referFriend": "స్నేహితుడిని ఆహ్వానించండి",
+    "referal": "రిఫరల్",
+    "get": "పొందండి",
+    "referalCode": "మీ రిఫరల్ కోడ్",
+    "referNow": "ఇప్పుడే రిఫర్ చేయండి",
+    "noReferal": "రిఫరల్ చరిత్ర లేదు! స్నేహితులను ఆహ్వానించి నాణెలు సంపాదించండి!"
+  },
+  "chat": {
+    "title": "చాట్ సపోర్ట్",
+    "noChat": "ఇంకా సందేశాలు లేవు. సంభాషణ ప్రారంభించండి!",
+    "send": "పంపండి",
+    "msgType": "ఇక్కడ సందేశం టైప్ చేయండి",
+    "sending": "పంపుతోంది...",
+    "you": "మీరు",
+    "admin": "అడ్మిన్"
+  },
+  "notification": {
+    "title": "నోటిఫికేషన్",
+    "read": "చదివినవి",
+    "unread": "చదవని"
+  }
+}

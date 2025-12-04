@@ -1,0 +1,261 @@
+{
+  "nav": {
+    "home": "হোম",
+    "about": "আমাদের সম্পর্কে",
+    "blogs": "ব্লগ",
+    "products": "পণ্য",
+    "cart": "কার্ট",
+    "wallet": "ওয়ালেট",
+    "orders": "আমার অর্ডার",
+    "account": "অ্যাকাউন্ট",
+    "login": "লগইন",
+    "logout": "লগআউট",
+    "viewProfile": "প্রোফাইল দেখুন",
+    "trustedUsers": "বিশ্বস্ত ব্যবহারকারীরা",
+    "notification": "নোটিফিকেশন",
+    "more": "আরও বিকল্প"
+  },
+  "home": {
+    "search": "পণ্য খুঁজুন...",
+    "ourProducts": "আমাদের পণ্যসমূহ",
+    "tagline": "শীর্ষ পণ্যে অবিশ্বাস্য অফার পান",
+    "downloadWord": "ইচ্ছাপূর্তি মোবাইল অ্যাপ ডাউনলোড করুন",
+    "downloadWord1": "আরও ভালো অভিজ্ঞতা ও আরও ফিচার পাবেন...",
+    "viewAll": "সব দেখুন",
+    "loading": "লোড হচ্ছে...",
+    "error": "ত্রুটি",
+    "showing": "দেখাচ্ছে",
+    "products": "পণ্য"
+  },
+  "account": {
+    "title": "অ্যাকাউন্ট",
+    "referralBanner": {
+      "text": "বন্ধু ও পরিবারকে আমন্ত্রণ করুন এবং পান",
+      "coins": "১০",
+      "coinsText": "কয়েন আপনার ওয়ালেটে।",
+      "referButton": "এখনই রেফার করুন"
+    },
+    "menuItems": {
+      "profile": "প্রোফাইল",
+      "shippingAddress": "শিপিং ঠিকানা",
+      "myCart": "আমার কার্ট",
+      "myOrders": "আমার অর্ডার",
+      "referralProgram": "রেফারেল প্রোগ্রাম",
+      "luckyDraw": "লাকি ড্র",
+      "chatSupport": "চ্যাট সাপোর্ট",
+      "websiteLanguage": "ওয়েবসাইট ভাষা",
+      "aboutUs": "আমাদের সম্পর্কে",
+      "ourBlogs": "আমাদের ব্লগ",
+      "termsConditions": "শর্তাবলী",
+      "privacyPolicy": "গোপনীয়তা নীতি",
+      "faq": "জিজ্ঞাসিত প্রশ্ন",
+      "logout": "লগআউট"
+    }
+  },
+  "auth": {
+    "welcome": "স্বাগতম!",
+    "loginToContinue": "চালিয়ে যেতে লগইন করুন"
+  },
+  "common": {
+    "search": "পণ্য খুঁজুন...",
+    "viewAll": "সব দেখুন",
+    "loading": "লোড হচ্ছে...",
+    "error": "ত্রুটি",
+    "close": "বন্ধ করুন",
+    "ourProducts": "আমাদের পণ্যসমূহ",
+    "noOrder": "কোনো অর্ডার পাওয়া যায়নি",
+    "availableBalanace": "উপলব্ধ ব্যালেন্স",
+    "transactionHistory": "লেনদেন ইতিহাস",
+    "seeRedeemHistory": "রিডিম ইতিহাস দেখুন",
+    "redeem": "রিডিম",
+    "transaction": "লেনদেন",
+    "loadingOrders": "অর্ডার লোড হচ্ছে"
+  },
+  "cart": {
+    "title": "আমার কার্ট",
+    "loading": "কার্ট লোড হচ্ছে...",
+    "error": "ত্রুটি",
+    "retry": "পুনরায় চেষ্টা করুন",
+    "deliveryAddress": {
+      "deliverTo": "ডেলিভারি ঠিকানা:",
+      "changeAddress": "ঠিকানা পরিবর্তন করুন",
+      "noAddress": "কোনো ডেলিভারি ঠিকানা নেই",
+      "noAddressDesc": "চেকআউট করতে একটি ডেলিভারি ঠিকানা যোগ করুন",
+      "addAddress": "ঠিকানা যোগ করুন",
+      "selectAddress": "ডেলিভারি ঠিকানা নির্বাচন করুন",
+      "noAddressesFound": "কোনো ঠিকানা পাওয়া যায়নি",
+      "addNewAddress": "নতুন ঠিকানা যোগ করুন",
+      "mobileNumber": "মোবাইল নম্বর:"
+    },
+    "product": {
+      "remove": "মুছে ফেলুন"
+    },
+    "emptyCart": {
+      "message": "আপনার কার্ট খালি",
+      "continueShopping": "কেনাকাটা চালিয়ে যান"
+    },
+    "priceDetails": {
+      "title": "মূল্য বিবরণ",
+      "totalItems": "মোট আইটেম",
+      "price": "মূল্য",
+      "shippingAmount": "শিপিং চার্জ",
+      "totalAmount": "মোট মূল্য"
+    },
+    "checkout": {
+      "button": "চেকআউট",
+      "addAddressWarning": "চেকআউটের জন্য একটি ডেলিভারি ঠিকানা যোগ করুন"
+    }
+  },
+  "products": {
+    "title": "আমাদের পণ্যসমূহ",
+    "subtitle": "শীর্ষ পণ্যে অবিশ্বাস্য অফার পান",
+    "addToCart": "কার্টে যোগ করুন",
+    "viewDetails": "বিস্তারিত দেখুন",
+    "price": "মূল্য",
+    "rating": "রেটিং",
+    "reviews": "রিভিউ",
+    "loading": "পণ্য লোড হচ্ছে"
+  },
+  "drawer": {
+    "more": "আরও বিকল্প",
+    "trusted": "১০০০+ বিশ্বস্ত ব্যবহারকারী"
+  },
+  "footer": {
+    "description": "গুণগত মানের পণ্যের জন্য আপনার একমাত্র গন্তব্য। সেরা পরিষেবা ও প্রিমিয়াম নির্বাচন সহ ইচ্ছা পূরণে আমরা প্রতিশ্রুতিবদ্ধ।",
+    "quickLinks": "দ্রুত লিংক",
+    "downloadApp": "অ্যাপ ডাউনলোড করুন",
+    "downloadAppDesc": "আমাদের অ্যাপ ব্যবহার করুন আরও উন্নত অভিজ্ঞতার জন্য!",
+    "contactInfo": "যোগাযোগের তথ্য",
+    "phone": "ফোন",
+    "email": "ইমেইল",
+    "address": "ঠিকানা",
+    "copyright": "কপিরাইট © ২০২৫",
+    "allRightsReserved": "সর্বস্বত্ব সংরক্ষিত",
+    "designedBy": "ডিজাইন করেছেন",
+    "companyName": "ইচ্ছাপূর্তি",
+    "links": {
+      "home": "হোম",
+      "aboutUs": "আমাদের সম্পর্কে",
+      "products": "পণ্য",
+      "blogs": "ব্লগ",
+      "contactUs": "যোগাযোগ করুন",
+      "privacyPolicy": "গোপনীয়তা নীতি",
+      "termsConditions": "শর্তাবলী"
+    },
+    "downloadOn": "ডাউনলোড করুন",
+    "getItOn": "গেট ইট অন",
+    "appStore": "অ্যাপ স্টোর",
+    "googlePlay": "গুগল প্লে"
+  },
+  "language": {
+    "title": "ভাষা",
+    "subtitle": "আপনার ভাষা নির্বাচন করুন",
+    "save": "ভাষা সংরক্ষণ করুন"
+  },
+  "addresses": {
+    "shippingAddress": "শিপিং ঠিকানা",
+    "addAddress": "নতুন ঠিকানা যোগ করুন",
+    "noAddress": "কোনো শিপিং ঠিকানা নেই"
+  },
+  "payment": {
+    "title": "পেমেন্ট পদ্ধতি নির্বাচন করুন",
+    "referral": {
+      "label": "রেফারেল কোড লিখুন",
+      "placeholder": "কোড লিখুন",
+      "apply": "প্রয়োগ করুন",
+      "success": "✓ রেফারেল কোড সফলভাবে প্রয়োগ হয়েছে!",
+      "default": "ডিফল্ট রেফারেল কোড প্রয়োগ করুন"
+    },
+    "methods": {
+      "wallet": "ওয়ালেট",
+      "apple": "অ্যাপল পে",
+      "google": "গুগল পে",
+      "cod": "ক্যাশ অন ডেলিভারি",
+      "balance": "ব্যালেন্স"
+    },
+    "price_details": {
+      "title": "মূল্য বিবরণ",
+      "total_items": "মোট আইটেম",
+      "price": "মূল্য",
+      "discount": "ছাড়",
+      "shipping": "শিপিং চার্জ",
+      "total_amount": "মোট মূল্য"
+    },
+    "checkout": "চেকআউট",
+    "alerts": {
+      "login_first": "প্রথমে লগইন করুন!",
+      "cart_empty": "কার্ট খালি!",
+      "order_success": "অর্ডার সফলভাবে সম্পন্ন হয়েছে!",
+      "something_wrong": "কিছু ভুল হয়েছে!"
+    }
+  },
+  "profile": {
+    "title": "প্রোফাইল আপডেট করুন",
+    "avatar": {
+      "upload": "ছবি আপলোড করুন"
+    },
+    "personal_info": {
+      "title": "ব্যক্তিগত তথ্য",
+      "full_name": "পূর্ণ নাম",
+      "mobile_number": "মোবাইল নম্বর",
+      "email": "ইমেইল",
+      "dob": "জন্মতারিখ",
+      "country": "দেশ",
+      "state": "রাজ্য",
+      "city": "শহর"
+    },
+    "bank_details": {
+      "title": "ব্যাংক বিবরণ",
+      "bank_name": "ব্যাংকের নাম",
+      "account_number": "অ্যাকাউন্ট নম্বর",
+      "ifsc": "আইএফএসসি",
+      "account_type": "অ্যাকাউন্ট ধরন",
+      "account_holder_name": "হিসাবধারীর নাম",
+      "account_types": {
+        "savings": "সেভিংস",
+        "current": "কারেন্ট",
+        "salary": "স্যালারি"
+      }
+    },
+    "buttons": {
+      "save": "পরিবর্তন সংরক্ষণ করুন",
+      "saving": "সংরক্ষণ করা হচ্ছে..."
+    },
+    "validation": {
+      "required": "{field} প্রয়োজন"
+    },
+    "alerts": {
+      "update_success": "প্রোফাইল সফলভাবে আপডেট হয়েছে!",
+      "update_failed": "আপডেট ব্যর্থ হয়েছে",
+      "fetch_failed": "ইউজার ডেটা আনতে ব্যর্থ"
+    }
+  },
+  "referProgramme": {
+    "title": "রেফার প্রোগ্রাম",
+    "availableCoins": "উপলব্ধ কয়েন",
+    "buyCoin": "কয়েন কিনুন",
+    "convertMoney": "টাকায় রূপান্তর করুন",
+    "converting": "রূপান্তর হচ্ছে",
+    "coin": "কয়েন",
+    "referFriend": "বন্ধুকে রেফার করুন",
+    "referal": "রেফারেল",
+    "get": "পান",
+    "referalCode": "আপনার রেফারেল কোড",
+    "referNow": "এখনই রেফার করুন",
+    "noReferal": " এখনো কোনো রেফারেল নেই। কয়েন উপার্জনের জন্য বন্ধুদের রেফার করুন!"
+  },
+  "chat": {
+    "title": "চ্যাট সাপোর্ট",
+    "noChat": "এখনো কোনো বার্তা নেই। কথোপকথন শুরু করুন!",
+    "send": "পাঠান",
+    "msgType": "এখানে বার্তা লিখুন",
+    "sending": "পাঠানো হচ্ছে...",
+    "you": "আপনি",
+    "admin": "অ্যাডমিন"
+  },
+  "notification": {
+    "title": "নোটিফিকেশন",
+    "read": "পড়া",
+    "unread": "অপঠিত"
+  }
+}

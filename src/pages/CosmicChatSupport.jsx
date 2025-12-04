@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function CosmicChatSupport() {
   const [messages, setMessages] = useState([]);
@@ -9,7 +10,7 @@ export default function CosmicChatSupport() {
   const [conversation, setConversation] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const chatAreaRef = useRef(null);
-
+  const { t } = useTranslation();
   // Get current user info from localStorage
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -51,23 +52,9 @@ export default function CosmicChatSupport() {
 
   // Send message
   const sendMessage = async () => {
-    if (inputValue.trim() === '' ) return;
+    if (inputValue.trim() === '') return;
 
-    // const tempMessage = {
-    //   _id: `temp-${Date.now()}`,
-    //   message: inputValue,
-    //   sender: {
-    //     userId: currentUser?._id || currentUser?.id,
-    //     userType: 'User',
-    //     Username: currentUser?.name || currentUser?.username || 'You',
-    //     profileImage: currentUser?.profileImage || null
-    //   },
-    //   createdAt: new Date().toISOString(),
-    //   isDeleted: false,
-    //   isSending: true
-    // };
-
-    // setMessages(prev => [...prev, tempMessage]);
+    
     const messageToSend = inputValue;
     setInputValue('');
 
@@ -99,14 +86,7 @@ export default function CosmicChatSupport() {
         fetchChatHistory()
       }
 
-      // Replace temp message with actual message from server
-      // setMessages(prev => 
-      //   prev.map(msg => 
-      //     msg._id === tempMessage._id 
-      //       ? { ...data.data.message, isSending: false }
-      //       : msg
-      //   )
-      // );
+     
     } catch (err) {
       console.error("Error sending message:", err);
       // Remove temp message on error
@@ -178,7 +158,7 @@ export default function CosmicChatSupport() {
         {/* Header */}
         <div className="px-10 py-5 bg-slate-900/50 backdrop-blur-sm">
           <div className="flex items-center justify-between">
-            <h1 className="text-white text-2xl font-semibold">Chat Support</h1>
+            <h1 className="text-white text-2xl font-semibold">{t("chat.title")}</h1>
             {conversation && (
               <div className="text-sm text-white/70">
                 {conversation.participants.find(p => p.userType === 'Admin')?.userType || 'Support'}
@@ -192,9 +172,9 @@ export default function CosmicChatSupport() {
           ref={chatAreaRef}
           className="flex-1 overflow-y-auto px-10 py-5 flex flex-col gap-4"
         >
-          { messages.length === 0 ? (
+          {messages.length === 0 ? (
             <div className="flex items-center justify-center h-full text-white/50">
-              No messages yet. Start the conversation!
+            {t("chat.noChat")}
             </div>
           ) : (
             messages.map((message) => {
@@ -223,8 +203,8 @@ export default function CosmicChatSupport() {
                   <div className={`flex flex-col gap-1 ${isUser ? 'items-end' : 'items-start'}`}>
                     <div
                       className={`px-4 py-3 rounded-xl text-sm leading-relaxed relative ${isUser
-                          ? 'bg-orange-300/90 text-gray-800 rounded-br-sm'
-                          : 'bg-white/95 text-gray-800 rounded-bl-sm'
+                        ? 'bg-orange-300/90 text-gray-800 rounded-br-sm'
+                        : 'bg-white/95 text-gray-800 rounded-bl-sm'
                         }`}
                     >
                       {message.message}
@@ -233,7 +213,12 @@ export default function CosmicChatSupport() {
                       )}
                     </div>
                     <div className={`flex items-center gap-2 text-xs text-white/70 ${isUser ? 'flex-row-reverse' : ''}`}>
-                      <span>{message.sender.userType == "User" ? "You" : "Admin"}</span>
+                  <span>
+  {message.sender.userType === "User"
+    ? t("chat.you")
+    : t("chat.admin")}
+</span>
+
                       <span>•</span>
                       <span>{formatTime(message.createdAt)}</span>
                     </div>
@@ -252,7 +237,7 @@ export default function CosmicChatSupport() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Type message here..."
+              placeholder=  {t("chat.msgType")}
               disabled={sending || loading}
               className="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder-white/50 disabled:opacity-50"
             />
@@ -264,12 +249,12 @@ export default function CosmicChatSupport() {
               {sending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Sending
+                 {t("chat.sending")}
                 </>
               ) : (
                 <>
                   <Send className="w-4 h-4" />
-                  Send
+                  {t("chat.send")}
                 </>
               )}
             </button>
