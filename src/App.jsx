@@ -33,6 +33,7 @@ import BlogsPage from "./pages/BlogsPage";
 import BlogDetailPage from "./pages/BlogDetailPage";
 import FAQPage from "./pages/FAQPage";
 import SplashScreen from "./components/SplashScreen";
+import ContactUs from "./components/ContactUs";
 
 function App() {
   return (
@@ -76,6 +77,7 @@ function App() {
           <Route path="/blogs" element={<BlogsPage />} />
           <Route path="/blogs/:id" element={<BlogDetailPage />} />
           <Route path="/faq" element={<FAQPage />} />
+          <Route path="/contact" element={<ContactUs />} />
         </Route>
       </Routes>
     </>

@@ -44,15 +44,15 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative text-white overflow-hidden">
-      {/* Background Image with Overlay */}
-      <div
+    <footer className="relative text-white overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+
+      {/* <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: "url('/footer1-bg.jpg')",
         }}
       >
-        {/* Dark gradient overlay for better readability */}
+
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -60,7 +60,7 @@ const Footer = () => {
               "linear-gradient(135deg, rgba(6, 14, 28, 0.75) 0%, rgba(14, 30, 50, 0.75) 50%, rgba(8, 20, 36, 0.75) 100%)",
           }}
         />
-      </div>
+      </div> */}
 
       {/* Decorative gradient shapes */}
       <div

@@ -94,13 +94,13 @@ export default function HeroSection() {
           </div>
         </div>
 
-        <div className="relative  overflow-hidden shadow-lg h-[290px] md:h-[500px]">
+        {/* <div className="relative  overflow-hidden shadow-lg h-[290px] md:h-[500px]">
            <img
             src="/slider3.jpeg"
             alt={`Slide `}
             className="w-full h-full object-cover transition-opacity duration-700"
           />
-        </div>
+        </div> */}
       </div>
     </section>
   );
