@@ -8,6 +8,7 @@ import HowToUseManifestationPen from '../components/HowToUseManifestationPen'
 import ManifestationFeatures from '../components/ManifestationFeatures'
 import CustomerReviews from '../components/CustomerReviews'
 import ManifestationStory from '../components/ManifestationStory'
+import ImageCarousel from '../components/ImageCarousel'
 
 const HomePage = () => {
     return (
@@ -16,6 +17,7 @@ const HomePage = () => {
             
 
             {/* <HeroSection /> */}
+            <ImageCarousel/>
             <ManifestationPenHero/>
             <ManifestationBenefits/>
             <HowToUseManifestationPen/>

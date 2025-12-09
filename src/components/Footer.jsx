@@ -92,7 +92,7 @@ const Footer = () => {
               />
             </div>
 
-            <p className="text-sm leading-relaxed text-gray-300 mb-6">
+            <p className="text-md leading-relaxed text-gray-300 mb-6">
               {t('footer.description')}
             </p>
 
@@ -131,7 +131,7 @@ const Footer = () => {
                 <li key={index}>
                   <Link
                     to={link.href}
-                    className="flex items-center gap-2 text-sm text-gray-300 hover:text-[#C9A227] transition-all group"
+                    className="flex items-center gap-2 text-md text-gray-300 hover:text-[#C9A227] transition-all group"
                   >
                     <ChevronRight
                       size={16}
@@ -151,7 +151,7 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
               <span className="w-8 h-0.5 bg-[#C9A227]"></span> {t('footer.downloadApp')}
             </h3>
-            <p className="text-sm text-gray-300 mb-4">
+            <p className="text-md text-gray-300 mb-4">
               {t('footer.downloadAppDesc')}
             </p>
 
