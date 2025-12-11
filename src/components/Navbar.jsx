@@ -4,6 +4,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Wallet } from "lucide-react";
 import { MdAccountBox } from "react-icons/md";
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -12,7 +13,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const token = localStorage?.getItem("token");
-  
+  const cart = localStorage.getItem("cart")
   const baseMenu = [
     { icon: MdAccountBox, label: t(`nav.account`), href: "/account", auth: true },
     { icon: Home, label: t(`nav.home`), href: "/homePage", auth: false },
@@ -44,6 +45,37 @@ export default function Navbar() {
 
   const isActive = (href) => {
     return location.pathname === href;
+  };
+
+ const [cartItems, setCartItems] = useState([]);
+
+  useEffect(() => {
+    fetchCartData();
+ 
+  }, []);
+
+  const fetchCartData = async () => {
+    try {
+      // setLoading(true)
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch cart data');
+
+      const data = await response.json();
+      setCartItems(data.data || []);
+      // setError(null);
+    } catch (err) {
+      // setError(err.message);
+      console.error('Error fetching cart:', err);
+    } finally {
+      // setLoading(false);
+    }
   };
 
   return (
@@ -100,7 +132,7 @@ export default function Navbar() {
                   >
                     <ShoppingCart size={18} className="sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
                     <span className="absolute -top-1 -right-1 w-4 h-4 bg-purple-900 rounded-full text-[10px] flex items-center justify-center font-semibold">
-                      5
+                      {cart}
                     </span>
                   </Link>
 

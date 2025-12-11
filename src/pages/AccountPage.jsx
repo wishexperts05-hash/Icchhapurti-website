@@ -15,7 +15,7 @@ export default function AccountPage() {
     { link: "/refer-programme", icon: Gift, label: t('account.menuItems.referralProgram') },
     // { link: "/lucky-draw", icon: Ticket, label: t('account.menuItems.luckyDraw') },
     { link: "/chat-support", icon: MessageCircle, label: t('account.menuItems.chatSupport') },
-    { link: "/languages", icon: Globe, label: t('account.menuItems.websiteLanguage') },
+    // { link: "/languages", icon: Globe, label: t('account.menuItems.websiteLanguage') },
     // { link: "/about-us", icon: Globe, label: t('account.menuItems.aboutUs') },
     // { link: "/blogs", icon: Globe, label: t('account.menuItems.ourBlogs') },
     // { link: "/terms", icon: FileText, label: t('account.menuItems.termsConditions') },

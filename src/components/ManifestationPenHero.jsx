@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Sparkles, Star, ArrowRight, ShoppingCart, Heart, Zap, CheckCircle, Target, TrendingUp, BookOpen, Brain, Calendar, Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function ManifestationPenHero() {
   const [isVisible, setIsVisible] = useState(false);
@@ -71,6 +72,54 @@ export default function ManifestationPenHero() {
       glow: "rose"
     }
   ];
+
+
+
+
+   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=1&limit=8`, {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success && Array.isArray(data.products)) {
+        setProducts(data.products);
+      } else if (data.success && Array.isArray(data.data)) {
+        setProducts(data.data);
+      } else if (Array.isArray(data)) {
+        setProducts(data);
+      } else {
+        throw new Error('Invalid response format');
+      }
+    } catch (err) {
+      console.error('Error fetching products:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="bg-slate-50">
@@ -154,9 +203,9 @@ export default function ManifestationPenHero() {
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <button className="group relative px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-slate-900 rounded-full font-bold text-lg shadow-2xl shadow-yellow-500/50 hover:shadow-yellow-500/70 transition-all duration-300 hover:scale-105 overflow-hidden">
-                  <span className="relative z-10 flex items-center justify-center gap-2">
+                  <span onClick={()=>{navigate(`/product/${products[0].id || products[0]._id}`);}} className="relative z-10 flex items-center justify-center gap-2">
                     <ShoppingCart className="w-5 h-5" />
-                    Shop Now - ₹999
+                    Shop Now - ₹{products[0]?.price}
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -244,9 +293,17 @@ export default function ManifestationPenHero() {
                   <div className="relative z-10 w-full h-full flex items-center justify-center">
                     <div className="relative w-3/4 h-3/4 bg-gradient-to-br from-yellow-600 via-yellow-500 to-yellow-400 rounded-full shadow-2xl shadow-yellow-500/50 flex items-center justify-center animate-float">
                       {/* Pen Icon Representation */}
-                      <div className="relative w-4/5 h-4 bg-gradient-to-r from-slate-800 to-slate-900 rounded-full shadow-inner">
+
+
+                      {
+                        products.length>0 ? <img src={products[0]?.images[0]} alt="pen" />:
+                          <div className="relative w-4/5 h-4 bg-gradient-to-r from-slate-800 to-slate-900 rounded-full shadow-inner">
                         <div className="absolute top-1/2 right-0 w-1/4 h-2 -translate-y-1/2 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-l-full"></div>
                       </div>
+                      }
+                    
+
+                     
                       
                       {/* Crystal Tips */}
                       <div className="absolute top-4 right-4 w-6 h-6 bg-purple-400 rounded-full blur-sm animate-pulse"></div>
@@ -272,9 +329,9 @@ export default function ManifestationPenHero() {
                     </div>
                     <div className="text-right">
                       <p className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
-                        ₹999
+                        ₹{products[0]?.price}
                       </p>
-                      <p className="text-sm text-gray-400 line-through">₹1,999</p>
+                      <p className="text-sm text-gray-400 line-through">  ₹{products[0]?.price +100}</p>
                     </div>
                   </div>
                 </div>

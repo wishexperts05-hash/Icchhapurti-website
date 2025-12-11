@@ -272,7 +272,7 @@ export default function ProductsPage() {
   const [error, setError] = useState(null);
 
   const [page, setPage] = useState(1);
-  const [limit] = useState(10);
+  const [limit] = useState(9);
   const [totalPages, setTotalPages] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
   const Navigate = useNavigate()
@@ -304,6 +304,10 @@ export default function ProductsPage() {
       });
 
       const result = await response.json();
+  const oldCount = Number(localStorage.getItem("cart")) || 0;
+      if (result.success) {
+        localStorage.setItem("cart", oldCount + 1);
+      }
 
       if (!response.ok) {
         throw new Error(result.message || 'Failed to add to cart');
@@ -437,7 +441,7 @@ export default function ProductsPage() {
 
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 md:gap-6">
-          {products.length > 0 ? products.slice(0, 2).map((product) => (
+          {products.length > 0 ? products.map((product) => (
             <ProductCard key={product.id || product._id} product={product} onAddToCart={handleAddToCart} />
           ))
 

@@ -8,10 +8,8 @@ export default function Layout() {
       {/* Background Image with Overlay */}
       {/* Background Image */}
       <div
-        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url(/home-bg.jpg)`, // 👈 Use backticks, remove quotes
-        }}
+        className="fixed inset-0 -z-10 bg-cover bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 bg-center bg-no-repeat"
+    
       />
       <div className="fixed bottom-6 right-6 z-50 group">
         <a

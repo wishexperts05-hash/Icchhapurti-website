@@ -1,10 +1,11 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BsCashCoin } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 
 export default function PaymentPage() {
-  const [referralCode, setReferralCode] = useState('CXESRF');
+  const [referralCode, setReferralCode] = useState();
   const [applyDefault, setApplyDefault] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState('Online');
   const [codeApplied, setCodeApplied] = useState(false);
@@ -15,25 +16,26 @@ export default function PaymentPage() {
   const [error, setError] = useState(null);
 
   // Mock translation function - replace with actual useTranslation hook
-  const {t} = useTranslation()
+  const { t } = useTranslation()
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const searchParams = new URLSearchParams(window.location.search);
   const addressIndex = searchParams.get("addressIndex");
 
   const paymentMethods = [
-    { id: 'Online', name: t('payment.methods.wallet'), balance: balance, icon: '👛' },
-    { id: 'apple', name: t('payment.methods.apple'), icon: '' },
-    { id: 'google', name: t('payment.methods.google'), icon: 'G' },
+    { id: 'wallet', name: t('payment.methods.wallet'), balance: balance, icon: '👛' },
+    { id: 'Online', name: t('payment.methods.apple'), icon: '' },
+    { id: 'Online1', name: t('payment.methods.google'), icon: 'G' },
   ];
 
-  const referralDiscount = 0;
-  const shippingAmount = 50;
+  // const referralDiscount = 0;
+  // const shippingAmount = 50;
 
   useEffect(() => {
     fetchBalance();
     fetchCartData();
     fetchAddresses();
+
   }, []);
 
   const fetchBalance = async () => {
@@ -115,17 +117,103 @@ export default function PaymentPage() {
   };
 
   const totalItems = cartItems.reduce((sum, item) => sum + Number(item.quantity), 0);
-  const totalPrice = cartItems.reduce((sum, item) => sum + Number(item.totalAmount), 0);
-  const totalAmount = totalPrice - referralDiscount + shippingAmount;
+  // const totalPrice = cartItems.reduce((sum, item) => sum + Number(item.totalAmount), 0);
+  // const totalAmount = totalPrice - referralDiscount + shippingAmount;
 
-  const handleApply = () => {
-    if (referralCode.trim()) {
-      setCodeApplied(true);
+
+
+
+  const [referralDiscount, setDiscount] = useState()
+
+  const handleApply = async (referralCode) => {
+    if (!referralCode) {
+      setError("Please enter referral code");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+    // setSuccessMsg("");
+
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/user/orders/applyReferralCode`,
+        { referralCode },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,   // <-- Add token here
+            "Content-Type": "application/json"
+          }
+        }
+      );
+
+
+      if (res.data.success) {
+        // setDetails(res.data.data); // update checkout details
+        setDiscount(res.data.data.referralDiscountRate)
+        setCodeApplied(true);
+      } else {
+        setError(res.data.message || "Failed to apply referral code");
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
 
-const Navigate = useNavigate()
+  const Navigate = useNavigate()
+
+
+
+  const [checkoutDetails, setDetails] = useState(null);
+
+  const fetchCheckOutDetails = async () => {
+    try {
+
+      const items = cartItems.map((item) => ({
+        productId: item.product._id,
+        quantity: item.quantity,
+      }));
+
+      const body = {
+        items,
+        shippingAddress: addresses[addressIndex],
+
+      };
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/orders/checkout`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body)
+        }
+      );
+
+      const data = await res.json();
+      if (data.success) {
+        setDetails(data.data); 
+        setReferralCode(data.data.referralCode)
+           // update state with checkout details
+      } else {
+        console.error("Failed to load checkout details");
+      }
+    } catch (error) {
+      console.error("Error fetching checkout details:", error);
+    }
+  };
+
+  // fetch on page load
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      fetchCheckOutDetails();
+    }
+  }, [cartItems])
+
 
   const handleCheckout = async () => {
     const token = localStorage.getItem("token");
@@ -142,8 +230,8 @@ const Navigate = useNavigate()
       items,
       shippingAddress: addresses[addressIndex],
       paymentMethod: selectedMethod,
-      shippingAmount: shippingAmount,
-      referralCode
+      shippingAmount: checkoutDetails.shippingCharge,
+      referralCode: applyDefault ? "" : referralCode
     };
 
     try {
@@ -154,7 +242,7 @@ const Navigate = useNavigate()
         {
           method: 'POST',
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(body)
@@ -197,7 +285,7 @@ const Navigate = useNavigate()
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
       {/* Background glow */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-500 rounded-full blur-3xl"></div>
@@ -214,12 +302,14 @@ const Navigate = useNavigate()
             <input
               type="text"
               value={referralCode}
+              disabled={checkoutDetails.referralCode}
               onChange={(e) => { setReferralCode(e.target.value); setCodeApplied(false); }}
               placeholder={t('payment.referral.placeholder')}
               className="flex-1 px-4 py-3 text-gray-800 focus:outline-none"
             />
             <button
-              onClick={handleApply}
+              onClick={() => { handleApply(referralCode) }}
+              disabled={codeApplied}
               className="px-6 py-3 text-amber-500 hover:text-amber-600 font-medium transition-colors"
             >
               {t('payment.referral.apply')}
@@ -233,10 +323,14 @@ const Navigate = useNavigate()
         {/* Apply Default Checkbox */}
         <label className="flex items-center gap-3 mb-6 cursor-pointer">
           <div
-            onClick={() => setApplyDefault(!applyDefault)}
-            className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
-              applyDefault ? 'bg-amber-500 border-amber-500' : 'border-gray-400 bg-transparent'
-            }`}
+            onClick={() => {
+              const code = "Default Referral";
+              setReferralCode(code);
+              setApplyDefault(!applyDefault);
+              handleApply(code);   // pass new referral code
+            }}
+            className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${applyDefault ? 'bg-amber-500 border-amber-500' : 'border-gray-400 bg-transparent'
+              }`}
           >
             {applyDefault && (
               <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -253,15 +347,14 @@ const Navigate = useNavigate()
             <div
               key={method.id}
               onClick={() => setSelectedMethod(method.id)}
-              className={`flex items-center justify-between p-4 cursor-pointer transition-colors hover:bg-slate-700/50 ${
-                index !== paymentMethods.length - 1 ? 'border-b border-slate-700' : ''
-              }`}
+              className={`flex items-center justify-between p-4 cursor-pointer transition-colors hover:bg-slate-700/50 ${index !== paymentMethods.length - 1 ? 'border-b border-slate-700' : ''
+                }`}
             >
               <div className="flex items-center gap-3">
                 <span className="text-amber-500">
-                  {method.id === 'Online' && <WalletIcon />}
-                  {method.id === 'apple' && <AppleIcon />}
-                  {method.id === 'google' && <GoogleIcon />}
+                  {method.id === 'wallet' && <WalletIcon />}
+                  {method.id === 'Online' && <AppleIcon />}
+                  {method.id === 'Online1' && <GoogleIcon />}
                 </span>
                 <span className="text-white text-sm">
                   {method.name}
@@ -270,9 +363,8 @@ const Navigate = useNavigate()
                   )}
                 </span>
               </div>
-              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                selectedMethod === method.id ? 'border-amber-500' : 'border-gray-500'
-              }`}>
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${selectedMethod === method.id ? 'border-amber-500' : 'border-gray-500'
+                }`}>
                 {selectedMethod === method.id && (
                   <div className="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
                 )}
@@ -291,21 +383,31 @@ const Navigate = useNavigate()
             </div>
             <div className="flex justify-between text-gray-400 border-b border-slate-600 border-dashed pb-2">
               <span>{t('payment.price_details.price')}</span>
-              <span className="text-white">₹ {totalPrice}</span>
+              <span className="text-white">₹ {checkoutDetails?.totalAmount}</span>
             </div>
             <div className="flex justify-between text-gray-400 border-b border-slate-600 border-dashed pb-2">
-              <span>{t('payment.price_details.discount')}</span>
+              <span>Discount Off</span>
+              <span className="text-white">₹ {checkoutDetails?.discountOff}</span>
+            </div>
+            <div className="flex justify-between text-gray-400 border-b border-slate-600 border-dashed pb-2">
+              <span>Referral Discount</span>
               <span className={referralDiscount > 0 ? 'text-green-400' : 'text-gray-400'}>
-                {referralDiscount > 0 ? `-₹ ${referralDiscount}` : '₹ 0'}
+
+                <p className="text-lg font-medium">
+                  ₹ {referralDiscount || checkoutDetails?.referralDiscount || 0}
+                </p>
+
               </span>
             </div>
             <div className="flex justify-between text-gray-400 border-b border-slate-600 border-dashed pb-2">
               <span>{t('payment.price_details.shipping')}</span>
-              <span className="text-white">₹ {shippingAmount}</span>
+              <span className="text-white">₹ {checkoutDetails?.shippingCharge}</span>
             </div>
             <div className="flex justify-between text-white font-semibold pt-1">
               <span>{t('payment.price_details.total_amount')}</span>
-              <span className="text-amber-500">₹ {totalAmount}</span>
+              <span className="text-amber-500">
+                ₹ {((checkoutDetails?.grandTotal || 0) - (referralDiscount || 0)).toLocaleString("en-IN")}
+              </span>
             </div>
           </div>
         </div>

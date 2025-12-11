@@ -9,7 +9,7 @@ const Register = () => {
     phoneNumber: "",
     countryCode: "+91",
     countryIsoCode: "IN",
-    country: "",
+    country: "India",
     stateIsoCode: "",
     state: "",
     city: "",
@@ -139,7 +139,7 @@ const Register = () => {
       const dobDate = new Date(formData.dob);
       const today = new Date();
       const age = today.getFullYear() - dobDate.getFullYear();
-      if (age < 18) {
+      if (age < 10) {
         newErrors.dob = "You must be at least 18 years old";
       }
     }

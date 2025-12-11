@@ -107,6 +107,15 @@ export default function CartPage() {
 
       if (!response.ok) throw new Error('Failed to remove item');
 
+      const result = await response.json()
+      console.log(result, "result")
+      const oldCount = Number(localStorage.getItem("cart")) || 0;
+      if (result.success) {
+        const oldCount = Number(localStorage.getItem("cart")) || 0;
+        const newCount = Math.max(oldCount - 1, 0); // never go below 0
+
+        localStorage.setItem("cart", newCount);
+      }
       fetchCartData()
     } catch (err) {
       console.error('Error removing item:', err);
@@ -141,7 +150,7 @@ export default function CartPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900  flex items-center justify-center">
         <div className="text-white text-xl">{t('cart.loading')}</div>
       </div>
     );
@@ -149,7 +158,7 @@ export default function CartPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900  flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-400 text-xl mb-4">{t('cart.error')}: {error}</p>
           <button
@@ -342,7 +351,7 @@ export default function CartPage() {
         )}
 
         {/* Price Details */}
-        {cartItems.length > 0 && (
+        {/* {cartItems.length > 0 && (
           <div className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 mb-4 border border-slate-700">
             <h3 className="text-white font-semibold mb-3">{t('cart.priceDetails.title')}</h3>
             <div className="space-y-2 text-sm">
@@ -364,7 +373,7 @@ export default function CartPage() {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Checkout Button */}
         {cartItems.length > 0 && (
@@ -383,11 +392,11 @@ export default function CartPage() {
                 }
               }}
               className={`font-semibold py-3 px-20 rounded-lg transition-all duration-300 ${selectedAddress
-                  ? 'bg-amber-500 hover:bg-amber-600 text-white hover:shadow-lg hover:shadow-amber-500/30 cursor-pointer'
-                  : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-60'
+                ? 'bg-amber-500 hover:bg-amber-600 text-white hover:shadow-lg hover:shadow-amber-500/30 cursor-pointer'
+                : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-60'
                 }`}
             >
-              {t('cart.checkout.button')}
+              Checkout
             </Link>
           </div>
         )}

@@ -19,6 +19,7 @@ const HomePage = () => {
             {/* <HeroSection /> */}
             <ImageCarousel/>
             <ManifestationPenHero/>
+            <OurProducts/>
             <ManifestationBenefits/>
             <HowToUseManifestationPen/>
             <ManifestationFeatures/>

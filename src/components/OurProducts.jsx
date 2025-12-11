@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Star, ChevronLeft, ChevronRight, ShoppingCart, Eye, Heart, Loader2, Check } from 'lucide-react';
+import { Star, ChevronLeft, ChevronRight, Eye, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
+import { Heart, ShoppingCart, Zap, Sparkles, Check } from 'lucide-react';
 
 function ImageCarousel({ images }) {
   const [current, setCurrent] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  const { t } = useTranslation();
+
   useEffect(() => {
     if (!isHovered || !images || images.length === 0) return;
     const interval = setInterval(() => {
@@ -17,52 +18,24 @@ function ImageCarousel({ images }) {
 
   if (!images || images.length === 0) {
     return (
-      <div className="h-48 sm:h-56 bg-gray-200 flex items-center justify-center">
-        <span className="text-gray-400 text-sm">No Image</span>
+      <div className="h-36 bg-gray-200 flex items-center justify-center">
+        <span className="text-gray-400">No Image</span>
       </div>
     );
   }
 
   return (
-    <div
-      className="relative h-48 sm:h-56 overflow-hidden group"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        setCurrent(0);
-      }}
-    >
+    <div className="relative h-36 overflow-hidden group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => { setIsHovered(false); setCurrent(0); }}>
       {images.map((img, i) => (
-        <img
-          key={i}
-          src={img}
-          alt="Product"
-          className="absolute inset-0 w-full h-full object-contain transition-opacity duration-500"
-          style={{ opacity: i === current ? 1 : 0 }}
-          onError={e => {
-            e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
-          }}
-        />
+        <img key={i} src={img} alt="Product" className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500" style={{ opacity: i === current ? 1 : 0 }} onError={(e) => { e.target.src = 'https://via.placeholder.com/300x200?text=No+Image'; }} />
       ))}
 
       {isHovered && images.length > 1 && (
         <>
-          <button
-            onClick={e => {
-              e.stopPropagation();
-              setCurrent(p => (p - 1 + images.length) % images.length);
-            }}
-            className="absolute left-1 top-1/2 -translate-y-1/2 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
-          >
+          <button onClick={(e) => { e.stopPropagation(); setCurrent(p => (p - 1 + images.length) % images.length); }} className="absolute left-1 top-1/2 -translate-y-1/2 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity">
             <ChevronLeft size={14} className="text-gray-700" />
           </button>
-          <button
-            onClick={e => {
-              e.stopPropagation();
-              setCurrent(p => (p + 1) % images.length);
-            }}
-            className="absolute right-1 top-1/2 -translate-y-1/2 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
-          >
+          <button onClick={(e) => { e.stopPropagation(); setCurrent(p => (p + 1) % images.length); }} className="absolute right-1 top-1/2 -translate-y-1/2 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity">
             <ChevronRight size={14} className="text-gray-700" />
           </button>
         </>
@@ -71,17 +44,7 @@ function ImageCarousel({ images }) {
       {images.length > 1 && (
         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
           {images.map((_, i) => (
-            <button
-              key={i}
-              onClick={e => {
-                e.stopPropagation();
-                setCurrent(i);
-              }}
-              className="w-1.5 h-1.5 rounded-full transition-all"
-              style={{
-                backgroundColor: i === current ? '#C9A227' : 'rgba(255,255,255,0.5)',
-              }}
-            />
+            <button key={i} onClick={(e) => { e.stopPropagation(); setCurrent(i); }} className="w-1.5 h-1.5 rounded-full transition-all" style={{ backgroundColor: i === current ? '#C9A227' : 'rgba(255,255,255,0.5)' }} />
           ))}
         </div>
       )}
@@ -89,13 +52,10 @@ function ImageCarousel({ images }) {
   );
 }
 
-
-
 function ProductCard({ product, onAddToCart }) {
   const [liked, setLiked] = useState(false);
   const [addingToCart, setAddingToCart] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
-  const navigate = useNavigate();
 
   const handleAddToCart = async (e) => {
     e.stopPropagation();
@@ -112,153 +72,219 @@ function ProductCard({ product, onAddToCart }) {
     }
   };
 
+  const handleBuyNow = () => {
+    // Navigate to checkout or handle buy now
+    console.log('Buy now:', product);
+  };
+  const navigate = useNavigate()
   const handleViewDetails = () => {
-    navigate(`/product/${product.id || product._id}`);
+    if (navigate) {
+      navigate(`/product/${product.id || product._id}`);
+    }
   };
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 relative group">
-      {product.discount && (
-        <div className="absolute top-2 left-2 z-10">
-          <div className="px-2 py-1 rounded-md text-xs font-bold text-white" style={{ background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' }}>
-            {product.discount}% OFF
+    <div className="relative group h-full">
+      {/* Main card */}
+      <div onClick={handleViewDetails} className="relative bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50 transition-all duration-500 hover:scale-[1.02] border border-purple-500/30 flex flex-col h-full">
+        {/* Animated gradient overlay on hover */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/0 via-pink-600/0 to-yellow-600/0 group-hover:from-purple-600/20 group-hover:via-pink-600/20 group-hover:to-yellow-600/20 transition-all duration-500" />
+
+        {/* Sparkle effect */}
+        <div className="absolute top-4 right-4 text-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-pulse">
+          <Sparkles className="w-5 h-5" />
+        </div>
+
+        {/* Discount badge */}
+        {product.discount && (
+          <div className="absolute top-3 left-3 z-10">
+            <div className="bg-gradient-to-r from-red-500 to-pink-600 px-3 py-1.5 rounded-full shadow-lg animate-pulse">
+              <span className="text-white text-xs font-black">
+                {product.discount}% OFF
+              </span>
+            </div>
           </div>
-        </div>
-      )}
-      
-      <button 
-        onClick={() => setLiked(!liked)} 
-        className="absolute top-2 right-2 z-10 w-7 h-7 sm:w-8 sm:h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md transition-transform hover:scale-110"
-      >
-        <Heart size={14} className="sm:w-4 sm:h-4" fill={liked ? '#ef4444' : 'none'} stroke={liked ? '#ef4444' : '#666'} />
-      </button>
-
-      <div style={{ background: 'linear-gradient(180deg, #e8f4f8 0%, #c8dce8 100%)' }}>
-        <div className="h-48 sm:h-56 overflow-hidden flex items-center justify-center p-2">
-          <img
-            src={product.images?.[0] || 'https://via.placeholder.com/300x200?text=No+Image'}
-            alt={product.name}
-            className="w-full h-full object-contain"
-            onError={(e) => {
-              e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
-            }}
-          />
-        </div>
-      </div>
-
-      <div className="p-3 sm:p-4">
-        <h3 className="text-xs sm:text-sm font-semibold text-gray-800 leading-snug mb-2 line-clamp-2 min-h-8 sm:min-h-10">
-          {product.name || 'Untitled Product'}
-        </h3>
-
-        {/* Description */}
-        {product.description && (
-          <p className="text-xs text-gray-600 mb-2 line-clamp-2 leading-relaxed">
-            {product.description}
-          </p>
         )}
-        
-        <div className="flex items-center gap-1 sm:gap-1.5 mb-2">
-          <div className="flex items-center gap-0.5 px-1 sm:px-1.5 py-0.5 rounded" style={{ backgroundColor: 'rgba(201,162,39,0.1)' }}>
-            <Star size={10} className="sm:w-3 sm:h-3" fill="#C9A227" stroke="#C9A227"/>
-            <span className="text-xs font-semibold" style={{ color: '#C9A227' }}>{product.overallRating || 0}</span>
+
+        {/* Bestseller badge */}
+        {product.badge && (
+          <div className="absolute top-3 right-14 z-10">
+            <div className="bg-gradient-to-r from-yellow-500 to-amber-600 px-3 py-1 rounded-full shadow-lg">
+              <span className="text-white text-xs font-bold">
+                ✨ {product.badge}
+              </span>
+            </div>
           </div>
-          <span className="text-xs text-gray-400">({product.totalReviews || '0'})</span>
+        )}
+
+        {/* Like button */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setLiked(!liked);
+          }}
+          className="absolute top-3 right-3 z-10 w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 hover:bg-white/20 border border-white/20"
+        >
+          <Heart
+            size={18}
+            fill={liked ? '#ef4444' : 'none'}
+            stroke={liked ? '#ef4444' : '#ffffff'}
+            className="transition-colors"
+          />
+        </button>
+
+        {/* Product image section */}
+        <div className="relative bg-gradient-to-br from-purple-800/30 to-slate-800/30 p-6 cursor-pointer" >
+          <div className="h-48 sm:h-56 flex items-center justify-center relative">
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent" />
+            <img
+              src={product.images?.[0] || 'https://images.unsplash.com/photo-1585409677983-0f6c41ca9c3b?w=400&h=400&fit=crop'}
+              alt={product.name}
+              className="w-full h-full object-contain relative z-10 group-hover:scale-110 transition-transform duration-500"
+              onError={(e) => {
+                e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
+              }}
+            />
+          </div>
         </div>
-        
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-base sm:text-lg font-bold" style={{ color: '#C9A227' }}>₹{product.price || 0}</span>
-          {product.originalPrice && (
-            <span className="text-xs sm:text-sm text-gray-400 line-through">₹{product.originalPrice}</span>
+
+        {/* Product info section */}
+        <div className="relative p-6 bg-gradient-to-b from-slate-900/80 to-slate-900 flex-1 flex flex-col">
+          {/* Product name */}
+          <h3 className="text-base sm:text-lg font-bold text-white leading-snug mb-2 line-clamp-2 min-h-[3rem] sm:min-h-[3.5rem] group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-300 group-hover:to-pink-300 transition-all">
+            {product.name || 'Untitled Product'}
+          </h3>
+
+          {/* Description */}
+          {product.description && (
+            <p className="text-xs sm:text-sm text-gray-400 mb-3 line-clamp-2 leading-relaxed">
+              {product.description}
+            </p>
           )}
-        </div>
-        
-        <div className="flex flex-col sm:flex-row gap-2">
-          <button 
-            onClick={handleAddToCart}
-            disabled={addingToCart || addedToCart}
-            className="flex-1 flex items-center justify-center gap-1 py-2 px-2 sm:px-3 border-2 rounded-lg font-medium text-xs transition-all hover:bg-amber-50 disabled:opacity-70 disabled:cursor-not-allowed" 
-            style={{ borderColor: '#C9A227', color: addedToCart ? '#22c55e' : '#C9A227' }}
-          >
-            {addingToCart ? (
-              <Loader2 size={14} className="animate-spin" />
-            ) : addedToCart ? (
-              <>
-                <Check size={14} /> <span className="hidden sm:inline">Added</span>
-              </>
-            ) : (
-              <>
-                <ShoppingCart size={14}/> <span className="hidden sm:inline">Add</span>
-              </>
+
+          {/* Rating */}
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-yellow-500/20 border border-yellow-500/30">
+              <Star size={12} className="sm:w-3.5 sm:h-3.5" fill="#eab308" stroke="#eab308" />
+              <span className="text-xs sm:text-sm font-bold text-yellow-400">
+                {product.overallRating || product.rating || 0}
+              </span>
+            </div>
+            <span className="text-xs sm:text-sm text-gray-400">
+              ({product.totalReviews || product.reviews || '0'})
+            </span>
+          </div>
+
+          {/* Price section */}
+          <div className="flex items-center gap-2 sm:gap-3 mb-4">
+            <span className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-500">
+              ₹{product.price || 0}
+            </span>
+            {product.originalPrice && (
+              <div className="flex flex-col">
+                <span className="text-xs sm:text-sm text-gray-500 line-through">
+                  ₹{product.originalPrice}
+                </span>
+                <span className="text-xs text-green-400 font-semibold">
+                  Save ₹{product.originalPrice - product.price}
+                </span>
+              </div>
             )}
-          </button>
-          <button 
-            onClick={handleViewDetails} 
-            className="flex-1 flex items-center justify-center gap-1 py-2 px-2 sm:px-3 rounded-lg font-medium text-xs text-white transition-all hover:opacity-90" 
-            style={{ background: 'linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)' }}
-          >
-            <Eye size={14}/> <span className="hidden sm:inline">Details</span>
-          </button>
+          </div>
+
+          {/* Trust badges */}
+          <div className="flex items-center gap-4 mb-4 text-xs text-gray-300 border-t border-white/10 pt-3">
+            <div className="flex items-center gap-1.5">
+              <div className="w-4 h-4 bg-green-500/20 rounded-full flex items-center justify-center">
+                <Check size={10} className="text-green-400" />
+              </div>
+              <span>Secure Payment</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-4 h-4 bg-blue-500/20 rounded-full flex items-center justify-center">
+                <Zap size={10} className="text-blue-400" />
+              </div>
+              <span>Fast Delivery</span>
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex gap-2 sm:gap-3 mt-auto">
+            {/* Add to Cart */}
+            <button
+              onClick={handleAddToCart}
+              disabled={addingToCart || addedToCart}
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 border-2 border-purple-500 rounded-xl font-bold text-xs sm:text-sm text-white transition-all hover:bg-purple-500/20 disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
+            >
+              {addingToCart ? (
+                <>
+                  <Loader2 size={16} className="sm:w-[18px] sm:h-[18px] animate-spin" />
+                  <span className="hidden sm:inline">Adding...</span>
+                </>
+              ) : addedToCart ? (
+                <>
+                  <Check size={16} className="sm:w-[18px] sm:h-[18px] text-green-400" />
+                  <span className="text-green-400 hidden sm:inline">Added!</span>
+                </>
+              ) : (
+                <>
+                  <ShoppingCart size={16} className="sm:w-[18px] sm:h-[18px]" />
+                  <span className="hidden sm:inline">Add to Cart</span>
+                </>
+              )}
+            </button>
+
+            {/* Buy Now */}
+            <button
+              onClick={handleBuyNow}
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl font-bold text-xs sm:text-sm text-white transition-all bg-gradient-to-r from-purple-600 via-pink-600 to-yellow-500 hover:from-purple-500 hover:via-pink-500 hover:to-yellow-400 hover:scale-105 hover:shadow-lg hover:shadow-pink-500/50"
+            >
+              <Zap size={16} className="sm:w-[18px] sm:h-[18px]" fill="currentColor" />
+              <span className="hidden sm:inline">Buy Now</span>
+            </button>
+          </div>
+
+          {/* Stock indicator */}
+          {product.inStock !== undefined && (
+            <div className="mt-3 flex items-center justify-center gap-2 text-xs sm:text-sm">
+              {product.inStock ? (
+                <>
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                  <span className="text-green-400 font-semibold">In Stock</span>
+                </>
+              ) : (
+                <>
+                  <div className="w-2 h-2 bg-red-400 rounded-full" />
+                  <span className="text-red-400 font-semibold">Out of Stock</span>
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-// export default ProductCard;
-
 export default function OurProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(3);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const Navigate = useNavigate()
 
-  const fetchProducts = async () => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=1&limit=8`, {
-        method: 'GET',
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (data.success && Array.isArray(data.products)) {
-        setProducts(data.products);
-      } else if (data.success && Array.isArray(data.data)) {
-        setProducts(data.data);
-      } else if (Array.isArray(data)) {
-        setProducts(data);
-      } else {
-        throw new Error('Invalid response format');
-      }
-    } catch (err) {
-      console.error('Error fetching products:', err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { t } = useTranslation();
 
   const handleAddToCart = async (product) => {
     const token = localStorage.getItem("token");
-    
+
     if (!token) {
       alert("Please login to add items to cart");
-      navigate('/login');
+      Navigate('/login')
       return;
     }
 
@@ -279,13 +305,21 @@ export default function OurProducts() {
       });
 
       const result = await response.json();
+      const oldCount = Number(localStorage.getItem("cart")) || 0;
+      if (result.success) {
+        localStorage.setItem("cart", oldCount + 1);
+      }
 
       if (!response.ok) {
         throw new Error(result.message || 'Failed to add to cart');
       }
 
+      console.log('Added to cart successfully:', result);
+
+      // Optional: Update cart count in header or show notification
+      // You can dispatch an event here that your header component listens to
       window.dispatchEvent(new CustomEvent('cartUpdated', { detail: result }));
-      navigate("/cart");
+      Navigate("/cart")
     } catch (error) {
       console.error('Error adding to cart:', error);
       alert(error.message || 'Failed to add product to cart. Please try again.');
@@ -293,85 +327,134 @@ export default function OurProducts() {
     }
   };
 
+  const [searchText, setSearchText] = useState("");
+  const [debounceSearch, setDebounceSearch] = useState("");
+
+
+  useEffect(() => {
+    fetchProducts();
+  }, [page, debounceSearch]);
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      setDebounceSearch(searchText);
+      setPage(1);
+    }, 500);
+
+    return () => clearTimeout(delay);
+  }, [searchText]);
+
+
+  const fetchProducts = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=${page}&limit=${limit}&search=${debounceSearch}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        setProducts(data.products || data.data || []);
+        setTotalProducts(data.pagination.totalRecords);
+        setTotalPages(data.pagination.totalPages || Math.ceil((data.pagination.totalRecords || 0) / limit));
+      }
+    } catch (err) {
+      console.error("Error fetching products:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePrev = () => {
+    if (page > 1) setPage(page - 1);
+  };
+
+  const handleNext = () => {
+    if (page < totalPages) setPage(page + 1);
+  };
+  const navigate = useNavigate()
+
+  if (error) return /* your error UI */;
+
+
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, #0f1c2e 0%, #1a3352 50%, #0d2440 100%)' }}>
+      <div className="min-h-screen  flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 animate-spin mx-auto mb-4" style={{ color: '#C9A227' }} />
-          <p className="text-white text-base sm:text-lg">{t("products.loading")}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4 sm:p-6" style={{ background: 'linear-gradient(135deg, #0f1c2e 0%, #1a3352 50%, #0d2440 100%)' }}>
-        <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl sm:text-3xl">⚠️</span>
-          </div>
-          <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">Error Loading Products</h3>
-          <p className="text-sm sm:text-base text-gray-600 mb-4">{error}</p>
-          <button 
-            onClick={fetchProducts}
-            className="px-5 sm:px-6 py-2 rounded-lg text-white font-medium transition-all hover:opacity-90 text-sm sm:text-base"
-            style={{ background: 'linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)' }}
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (products.length === 0) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4 sm:p-6" style={{ background: 'linear-gradient(135deg, #0f1c2e 0%, #1a3352 50%, #0d2440 100%)' }}>
-        <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl sm:text-3xl">📦</span>
-          </div>
-          <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">No Products Found</h3>
-          <p className="text-sm sm:text-base text-gray-600">There are currently no products available.</p>
+          <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-cyan-400" />
+          <p className="text-white text-lg">Loading products...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className=" p-4 sm:p-6 md:p-8" >
+    <div className="min-h-screen p-4 md:p-8" >
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+        <div className="flex flex-col md:flex-row justify-between  gap-4 mb-8">
           <div>
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-1">{t("home.ourProducts")}</h2>
-            <p className="text-gray-400 text-xs sm:text-sm">{t("home.tagline")}</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">{t("common.ourProducts")}</h2>
+            <p className="text-gray-400 text-sm">{t("home.tagline")}</p>
           </div>
-          <button 
-            onClick={() => navigate('/products')} 
-            className="flex items-center gap-1 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all hover:gap-2" 
-            style={{ backgroundColor: 'rgba(201,162,39,0.15)', color: '#C9A227', border: '1px solid rgba(201,162,39,0.3)' }}
-          >
-           {t("home.viewAll")}<ChevronRight size={16}/>
-          </button>
-        </div>
-        
-        {/* Mobile: 1 column, Desktop: 2 columns */}
-        <div className="grid grid-cols-2 md:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
-          {products.slice(0,2).map((product) => (
-            <ProductCard 
-              key={product.id || product._id} 
-              product={product} 
-              onAddToCart={handleAddToCart}
-            />
-          ))}
+
+
+          <span className='text-white cursor-pointer' onClick={() => navigate("/products")}>View All</span>
         </div>
 
-        <div className="mt-6 sm:mt-8 text-center">
-          <p className="text-gray-400 text-xs sm:text-sm">
-            {/* {t("home.showing")} {products.length}  {t("home.products")}{products.length !== 1 ? '' : ''} */}
-          </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 md:gap-6">
+          {products.length > 0 ? products.map((product) => (
+            <ProductCard key={product.id || product._id} product={product} onAddToCart={handleAddToCart} />
+          ))
+
+            : <span className='text-white text-center'>No Product Not found</span>
+          }
         </div>
+
+        {/* Pagination */}
+        {/* <div className="mt-10 flex items-center justify-center gap-4">
+          <button
+            disabled={page === 1}
+            onClick={handlePrev}
+            className="px-4 py-2 rounded-lg text-white text-sm disabled:opacity-40"
+            style={{ background: 'linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)' }}
+          >
+            Prev
+          </button>
+
+          <span className="text-white font-semibold text-lg">
+            {page} / {totalPages}
+          </span>
+
+          <button
+            disabled={page === totalPages}
+            onClick={handleNext}
+            className="px-4 py-2 rounded-lg text-white text-sm disabled:opacity-40"
+            style={{ background: 'linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)' }}
+          >
+            Next
+          </button>
+        </div> */}
+
+        {/* <p className="text-center text-gray-400 mt-3 text-sm">
+          Showing {(page - 1) * limit + 1} – {Math.min(page * limit, totalProducts)} of {totalProducts} products
+        </p> */}
       </div>
     </div>
   );

@@ -34,8 +34,46 @@ import BlogDetailPage from "./pages/BlogDetailPage";
 import FAQPage from "./pages/FAQPage";
 import SplashScreen from "./components/SplashScreen";
 import ContactUs from "./components/ContactUs";
+import { useEffect } from "react";
 
 function App() {
+
+
+
+
+  useEffect(() => {
+    fetchCartData();
+ 
+  }, []);
+
+  const fetchCartData = async () => {
+    try {
+      // setLoading(true)
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch cart data');
+
+      const data = await response.json();
+      if(data.cart){
+          localStorage.setItem("cart" ,0)
+      }
+      localStorage.setItem("cart" ,data.data.length)
+    
+    } catch (err) {
+      // setError(err.message);
+      console.error('Error fetching cart:', err);
+    } finally {
+      // setLoading(false);
+    }
+  };
+
+
   return (
     <>
         <ScrollToTop />

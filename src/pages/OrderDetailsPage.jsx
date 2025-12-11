@@ -222,7 +222,7 @@ const OrderDetailsPage = () => {
             </div>
             {discountAmount > 0 && (
               <div className="flex justify-between text-emerald-400">
-                <span>{t("price_details.discount")}</span>
+                <span>Discount Amount</span>
                 <span>-₹ {discountAmount}</span>
               </div>
             )}

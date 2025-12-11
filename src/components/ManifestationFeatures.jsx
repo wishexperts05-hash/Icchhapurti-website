@@ -220,7 +220,7 @@ export default function ManifestationFeatures() {
         {/* Bottom CTA section */}
         <div className="relative mt-20">
           <div className="bg-gradient-to-r from-yellow-500 via-pink-500 to-purple-500 rounded-3xl p-1 shadow-2xl">
-            <div className="bg-slate-900 rounded-3xl px-12 py-16 text-center">
+            <div className="bg-slate-900 rounded-3xl px-5 py-16 text-center">
               <div className="flex justify-center gap-2 mb-6">
                 <Star className="w-8 h-8 text-yellow-400 fill-yellow-400" />
                 <Star className="w-8 h-8 text-yellow-400 fill-yellow-400" />
