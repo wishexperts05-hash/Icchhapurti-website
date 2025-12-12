@@ -223,7 +223,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between gap-4">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <Link to="/" className="flex items-center group">
+              <Link to="/homePage" className="flex items-center group">
                 <img
                   src="/logo-black.png"
                   alt="Logo"
@@ -406,7 +406,7 @@ export default function Navbar() {
                 localStorage.removeItem("user");
                 localStorage.removeItem("token");
                 localStorage.removeItem("cartItems");
-                localStorage.removeItem("cart");
+                localStorage.setItem("cart" ,0);
                 localStorage.removeItem("unreadCount");
                 navigate("/login");
                 setMenuOpen(false);

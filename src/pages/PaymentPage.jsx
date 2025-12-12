@@ -451,7 +451,9 @@ export default function PaymentPage() {
                 placeholder={t('payment.referral.placeholder')}
                 className="flex-1 px-4 py-4 bg-transparent text-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
-              <button
+           {
+            !checkoutDetails?.referralCode &&
+               <button
                 onClick={() => handleApply(referralCode)}
                 disabled={codeApplied || applyingCode || !referralCode.trim()}
                 className="px-6 py-4 text-amber-400 hover:text-amber-300 font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
@@ -467,6 +469,7 @@ export default function PaymentPage() {
                   t('payment.referral.apply')
                 )}
               </button>
+           }
             </div>
           </div>
         </div>

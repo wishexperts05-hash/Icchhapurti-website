@@ -81,7 +81,7 @@ export default function ManifestationStory() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [visiblePoints]);
 
-  const renderPointCard = (point, index, compact = false) => {
+  const renderPointCard = (point, index, compact = false, animated = true) => {
     const Icon = point.icon;
     const isVisible = visiblePoints.includes(index);
 
@@ -90,7 +90,11 @@ export default function ManifestationStory() {
         key={point.id}
         ref={(el) => (pointsRef.current[index] = el)}
         className={`transform transition-all duration-700 ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"
+          animated
+            ? isVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-20"
+            : "opacity-100 translate-y-0"
         }`}
       >
         <div className="relative group h-full">
@@ -201,7 +205,7 @@ export default function ManifestationStory() {
 
         {/* Power points: mobile carousel + desktop grid */}
         <div className="mb-16">
-          {/* Mobile: horizontal carousel */}
+          {/* Mobile: horizontal carousel (no visibility gating) */}
           <div className="md:hidden -mx-4 px-4">
             <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
               {powerPoints.map((point, index) => (
@@ -209,16 +213,16 @@ export default function ManifestationStory() {
                   key={point.id}
                   className="min-w-[80%] max-w-xs snap-center"
                 >
-                  {renderPointCard(point, index, true)}
+                  {renderPointCard(point, index, true, false)}
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Desktop: grid */}
+          {/* Desktop: grid with scroll animation */}
           <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-8">
             {powerPoints.map((point, index) => (
-              <div key={point.id}>{renderPointCard(point, index, false)}</div>
+              <div key={point.id}>{renderPointCard(point, index, false, true)}</div>
             ))}
           </div>
         </div>
@@ -249,7 +253,9 @@ export default function ManifestationStory() {
                   </span>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border border-white/20">
-                  <span className="text-pink-300 font-bold">🧠 Neuroplasticity</span>
+                  <span className="text-pink-300 font-bold">
+                    🧠 Neuroplasticity
+                  </span>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border border-white/20">
                   <span className="text-purple-300 font-bold">

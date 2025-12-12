@@ -148,31 +148,24 @@ export default function ManifestationBenefits() {
           </h2>
 
           <p className="text-md text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Every stroke brings you closer to your dreams. Experience the
-            premium benefits of manifestation journaling with a tool designed
-            for your spiritual journey.
+            Every stroke brings you closer to your dreams. Experience the premium
+            benefits of manifestation journaling with a tool designed for your
+            spiritual journey.
           </p>
         </div>
 
         {/* Benefits: carousel on mobile, grid on md+ */}
         <div className="mb-16">
-          {/* Mobile: horizontal scroll carousel */}
+          {/* Mobile: horizontal scroll carousel (no visibility gating) */}
           <div className="md:hidden -mx-4 px-4">
             <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
-              {benefits.map((benefit, index) => {
+              {benefits.map((benefit) => {
                 const Icon = benefit.icon;
-                const isVisible = visibleCards.includes(index);
 
                 return (
                   <div
                     key={benefit.id}
-                    ref={(el) => (cardsRef.current[index] = el)}
-                    className={`min-w-[80%] max-w-xs snap-center transform transition-all duration-700 ease-out ${
-                      isVisible
-                        ? "opacity-100 scale-100 translate-y-0"
-                        : "opacity-0 scale-95 translate-y-10"
-                    }`}
-                    style={{ transitionDelay: `${(index % 3) * 150}ms` }}
+                    className="min-w-[80%] max-w-xs snap-center transform transition-all duration-700 ease-out opacity-100 scale-100 translate-y-0"
                   >
                     <div className="group relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg rounded-3xl p-6 border border-white/20 hover:border-white/40 transition-all duration-300 h-full hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/20">
                       <div
@@ -202,7 +195,7 @@ export default function ManifestationBenefits() {
             </div>
           </div>
 
-          {/* Desktop: original grid */}
+          {/* Desktop: original grid with scroll animation */}
           <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-8">
             {benefits.map((benefit, index) => {
               const Icon = benefit.icon;

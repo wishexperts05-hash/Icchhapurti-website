@@ -178,24 +178,17 @@ export default function ManifestationFeatures() {
 
         {/* Features: mobile carousel + desktop grid */}
         <div className="mb-16">
-          {/* Mobile: horizontal scroll carousel */}
+          {/* Mobile: horizontal scroll carousel (no visibility gating) */}
           <div className="md:hidden -mx-4 px-4">
             <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
               {features.map((feature, index) => {
                 const Icon = feature.icon;
-                const isVisible = visibleFeatures.includes(index);
                 const isHovered = hoveredFeature === feature.id;
 
                 return (
                   <div
                     key={feature.id}
-                    ref={(el) => (featuresRef.current[index] = el)}
-                    className={`min-w-[80%] max-w-xs snap-center transform transition-all duration-700 ${
-                      isVisible
-                        ? "opacity-100 translate-y-0"
-                        : "opacity-0 translate-y-10"
-                    }`}
-                    style={{ transitionDelay: `${(index % 3) * 150}ms` }}
+                    className="min-w-[80%] max-w-xs snap-center transform transition-all duration-700 opacity-100 translate-y-0"
                     onMouseEnter={() => setHoveredFeature(feature.id)}
                     onMouseLeave={() => setHoveredFeature(null)}
                   >
@@ -269,7 +262,7 @@ export default function ManifestationFeatures() {
             </div>
           </div>
 
-          {/* Desktop: grid */}
+          {/* Desktop: grid with scroll animation */}
           <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => {
               const Icon = feature.icon;
@@ -385,7 +378,8 @@ export default function ManifestationFeatures() {
               </button>
 
               <div className="mt-6 text-gray-400 text-sm">
-                ✨ Free shipping on orders over $50 • 30-day money-back guarantee
+                ✨ Free shipping on orders over $50 • 30-day money-back
+                guarantee
               </div>
             </div>
           </div>

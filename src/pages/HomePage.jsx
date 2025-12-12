@@ -14,14 +14,20 @@ import { useHeader } from '../context/HeaderContext'
 
 const HomePage = () => {
 
-  
+  const { setCount, setList, setUnreadCount, wishlistCount } = useHeader();
 
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    fetchCartData();
-    fetchNotifications()
+    if (token) {
+      fetchCartData();
+      fetchNotifications()
+    } else {
+      setCount(localStorage.getItem("cart"))
+    }
+
   }, []);
-  const { setCount,setList ,setUnreadCount,wishlistCount } = useHeader();
+
   const fetchCartData = async () => {
     try {
       // setLoading(true)
@@ -84,14 +90,11 @@ const HomePage = () => {
   };
 
 
- 
-  const token = localStorage.getItem("token");
+
+
 
   useEffect(() => {
-    // if (!token) {
-    //   navigate("/homePage");
-    //   return;
-    // }
+
 
     const fetchWishlist = async () => {
       // setLoading(true);

@@ -249,6 +249,8 @@ export default function CartPage() {
       e.preventDefault();
       alert('Please select a delivery address');
     }
+    Navigate(`/payments?addressIndex=${selectedAddressIndex}`);
+    
   };
 
   const totalItems = cartItems.reduce((sum, item) => sum + Number(item.quantity), 0);
