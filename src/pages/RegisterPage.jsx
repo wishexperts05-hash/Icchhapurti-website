@@ -152,7 +152,7 @@ const Register = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    
+
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: "" }));
     }
@@ -246,6 +246,42 @@ const Register = () => {
     }
   };
 
+
+
+
+  const syncLocalCartToServer = async (token) => {
+    try {
+      const localCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+      if (localCart.length === 0) return; // nothing to sync
+
+      for (let item of localCart) {
+        await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/addToCart`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            productId: item.productId,
+            quantity: item.quantity,
+            totalAmount: item.totalAmount,
+          }),
+        });
+      }
+
+      // Clear localStorage after syncing
+      localStorage.removeItem("cartItems");
+
+      // Update header / cart count
+      window.dispatchEvent(new CustomEvent("cartUpdated"));
+
+    } catch (error) {
+      console.error("Error syncing local cart:", error);
+    }
+  };
+
+
   // Verify OTP and Register
   const handleVerifyOtp = async () => {
     if (!otp || otp.length !== 6) {
@@ -272,9 +308,16 @@ const Register = () => {
       const data = await response.json();
 
       if (data.success) {
+        localStorage.setItem("user", JSON.stringify(data.data))
+        localStorage.setItem("token", data.token)
+
+        syncLocalCartToServer(data.token)
+
+
+        setShowOtpModal(false);
         alert("Registration Successful! Welcome!");
         setShowOtpModal(false);
-        
+
         setFormData({
           name: "",
           email: "",
@@ -290,7 +333,7 @@ const Register = () => {
         });
 
         setOtp("");
-       Navigate("/login")
+        Navigate("/homePage")
       } else {
         setApiError(data.message || "Invalid OTP. Please try again.");
       }
@@ -308,9 +351,9 @@ const Register = () => {
       <div className="hidden lg:block w-1/2 h-screen sticky top-0 relative">
         {/* Logo positioned on top - centered */}
         <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-10">
-          <img 
-            src="/logo-white.png" 
-            alt="Logo" 
+          <img
+            src="/logo-white.png"
+            alt="Logo"
             className="h-24 w-auto"
           />
         </div>
@@ -530,6 +573,14 @@ const Register = () => {
                 Login here
               </Link>
             </p>
+
+             <button
+          type="button"
+          onClick={() => Navigate("/homePage")}
+          className="mt-3 w-full text-sm font-semibold text-gray-700 border border-gray-300 py-2 rounded-md hover:bg-gray-100 transition-colors"
+        >
+          Back to Home
+        </button>
           </div>
         </div>
       </div>
@@ -567,7 +618,7 @@ const Register = () => {
               <p className="text-lg font-semibold text-gray-800 mb-4">
                 {formData.countryCode} {formData.phoneNumber}
               </p>
-              
+
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Enter OTP
               </label>

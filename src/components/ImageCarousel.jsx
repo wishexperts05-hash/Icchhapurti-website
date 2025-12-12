@@ -43,13 +43,13 @@ const ImageCarousel = ({
 
   return (
     <div 
-      className={`relative w-full mx-auto overflow-hidden rounded-2xl shadow-lg ${className}`}
+      className={`relative w-full mx-auto overflow-hidden  shadow-lg ${className}`}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
 
       {/* Dots Indicator (TOP CENTER) */}
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30 flex gap-2 backdrop-blur-md bg-black/30 px-3 py-1 rounded-full">
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30 flex gap-2 backdrop-blur-md bg-black/30 px-3 py-1 ">
         {displayImages.map((_, idx) => (
           <button
             key={idx}

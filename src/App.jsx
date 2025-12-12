@@ -35,43 +35,9 @@ import FAQPage from "./pages/FAQPage";
 import SplashScreen from "./components/SplashScreen";
 import ContactUs from "./components/ContactUs";
 import { useEffect } from "react";
+import WishlistPage from "./components/WishlistPage";
 
 function App() {
-
-
-
-
-  useEffect(() => {
-    fetchCartData();
- 
-  }, []);
-
-  const fetchCartData = async () => {
-    try {
-      // setLoading(true)
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-
-      if (!response.ok) throw new Error('Failed to fetch cart data');
-
-      const data = await response.json();
-      if(data.cart){
-          localStorage.setItem("cart" ,0)
-      }
-      localStorage.setItem("cart" ,data.data.length)
-    
-    } catch (err) {
-      // setError(err.message);
-      console.error('Error fetching cart:', err);
-    } finally {
-      // setLoading(false);
-    }
-  };
 
 
   return (
@@ -99,6 +65,7 @@ function App() {
           <Route path="/address-form" element={<AddressForm />} />
           <Route path="/address-form/:id" element={<AddressForm />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/payments" element={<PaymentPage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/orders/:orderId" element={<OrderDetailsPage />} />

@@ -8,9 +8,44 @@ const Login = () => {
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-const Navigate = useNavigate()
+  const Navigate = useNavigate()
   const handleNavigate = (path) => {
-   Navigate(path) 
+    Navigate(path)
+  };
+
+
+
+
+  const syncLocalCartToServer = async (token) => {
+    try {
+      const localCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+      if (localCart.length === 0) return; // nothing to sync
+
+      for (let item of localCart) {
+        await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/addToCart`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            productId: item.productId,
+            quantity: item.quantity,
+            totalAmount: item.totalAmount,
+          }),
+        });
+      }
+
+      // Clear localStorage after syncing
+      localStorage.removeItem("cartItems");
+
+      // Update header / cart count
+      window.dispatchEvent(new CustomEvent("cartUpdated"));
+
+    } catch (error) {
+      console.error("Error syncing local cart:", error);
+    }
   };
 
   // Send OTP API call
@@ -78,11 +113,17 @@ const Navigate = useNavigate()
 
       if (data.success) {
         alert("Login Successful!");
-        localStorage.setItem("user", JSON.stringify(data.data))
-        localStorage.setItem("token", data.token)
+
+        localStorage.setItem("user", JSON.stringify(data.data));
+        localStorage.setItem("token", data.token);
+
+        // ⭐ Sync local cart → API cart
+        await syncLocalCartToServer(data.token);
+
         setShowOtpModal(false);
         setPhone("");
         setOtp("");
+
         handleNavigate("/homePage");
       } else {
         setError(data.message || "Invalid OTP. Please try again.");
@@ -125,45 +166,58 @@ const Navigate = useNavigate()
       </div>
 
       {/* FORM CONTAINER */}
-      <div className="relative md:static w-full md:w-1/2 flex items-center justify-center z-10">
-        {/* Semi-transparent background for mobile */}
-        <div className="w-[90%] max-w-md bg-white/95 md:bg-white backdrop-blur-sm shadow-xl rounded-lg p-8">
-          <h2 className="text-center text-xl font-bold mb-6 text-gray-800">
-            Enter Mobile Number
-          </h2>
+     <div className="relative md:static w-full md:w-1/2 flex items-center justify-center z-10">
+      <div className="w-[90%] max-w-md bg-white/95 md:bg-white backdrop-blur-sm shadow-xl rounded-lg p-8">
+        <h2 className="text-center text-xl font-bold mb-6 text-gray-800">
+          Enter Mobile Number
+        </h2>
 
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm">
-              {error}
-            </div>
-          )}
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm">
+            {error}
+          </div>
+        )}
 
-          <label className="text-sm font-medium text-gray-700">Mobile Number</label>
-          <input
-            type="text"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1 mb-4 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-            placeholder="Enter mobile number"
-            maxLength="10"
-          />
+        <label className="text-sm font-medium text-gray-700">
+          Mobile Number
+        </label>
+        <input
+          type="text"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1 mb-4 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+          placeholder="Enter mobile number"
+          maxLength="10"
+        />
 
-          <button
-            onClick={handleGetOtp}
-            disabled={loading}
-            className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+        <button
+          onClick={handleGetOtp}
+          disabled={loading}
+          className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+        >
+          {loading ? "Sending..." : "Get OTP"}
+        </button>
+
+        <p className="mt-4 text-center text-sm text-gray-700">
+          Don't have an account?
+          <Link
+            to="/register"
+            className="text-blue-600 font-semibold ml-1 hover:underline"
           >
-            {loading ? "Sending..." : "Get OTP"}
-          </button>
+            Register Now
+          </Link>
+        </p>
 
-          <p className="mt-4 text-center text-sm text-gray-700">
-            Don't have an account?
-            <Link to="/register" className="text-blue-600 font-semibold ml-1 hover:underline">
-              Register Now
-            </Link>
-          </p>
-        </div>
+        {/* Back to Home */}
+        <button
+          type="button"
+          onClick={() => Navigate("/homePage")}
+          className="mt-3 w-full text-sm font-semibold text-gray-700 border border-gray-300 py-2 rounded-md hover:bg-gray-100 transition-colors"
+        >
+          Back to Home
+        </button>
       </div>
+    </div>
 
       {/* OTP MODAL */}
       {showOtpModal && (

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useHeader } from '../context/HeaderContext';
 
 export default function Notification() {
     const [activeTab, setActiveTab] = useState('unread');
@@ -43,7 +44,7 @@ export default function Notification() {
             setLoading(false);
         }
     };
-
+  const { setCount,setList ,setUnreadCount,wishlistCount } = useHeader();
     const markAsRead = async (notificationId) => {
         try {
             setMarkingAsRead(prev => ({ ...prev, [notificationId]: true }));
@@ -71,7 +72,11 @@ export default function Notification() {
                         : notif
                 )
             );
-
+            const current = Number(localStorage.getItem("unreadCount")) || 0;
+            const newCount = Math.max(0, current - 1); // never negative
+            localStorage.setItem("unreadCount", newCount);
+            
+setUnreadCount(newCount)
         } catch (err) {
             console.error("Error marking notification as read:", err);
         } finally {

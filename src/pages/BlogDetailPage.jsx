@@ -173,11 +173,15 @@ export default function BlogDetailPage() {
             )}
 
             {/* Blog Body */}
-            <div className="prose prose-invert max-w-none">
-              <p className="text-white/90 text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
-                {blog.body}
-              </p>
-            </div>
+   <div
+  className="prose prose-invert max-w-none 
+             prose-p:my-3 prose-img:rounded-xl prose-img:w-full 
+             prose-headings:text-amber-400 
+             text-white/90 text-sm sm:text-base leading-relaxed"
+  dangerouslySetInnerHTML={{ __html: blog.body }}
+></div>
+
+
           </div>
         </div>
 
@@ -234,7 +238,7 @@ export default function BlogDetailPage() {
               {relatedBlogs.map((relatedBlog) => (
                 <div
                   key={relatedBlog._id}
-                  onClick={() => navigate(`/blog/${relatedBlog._id}`)}
+                  onClick={() => navigate(`/blogs/${relatedBlog._id}`)}
                   className="bg-white/10 backdrop-blur-sm rounded-xl overflow-hidden border border-white/20 hover:border-orange-300/50 transition-all duration-300 hover:scale-105 cursor-pointer group"
                 >
                   <div className="relative h-40 sm:h-48 overflow-hidden bg-white/5">

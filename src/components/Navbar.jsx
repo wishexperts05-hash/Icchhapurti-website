@@ -5,6 +5,7 @@ import { Wallet } from "lucide-react";
 import { MdAccountBox } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
+import { useHeader } from "../context/HeaderContext";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -13,7 +14,10 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const token = localStorage?.getItem("token");
-  const cart = localStorage.getItem("cart")
+  // const cart = localStorage.getItem("cart")
+
+
+
   const baseMenu = [
     { icon: MdAccountBox, label: t(`nav.account`), href: "/account", auth: true },
     { icon: Home, label: t(`nav.home`), href: "/homePage", auth: false },
@@ -47,11 +51,16 @@ export default function Navbar() {
     return location.pathname === href;
   };
 
- const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-    fetchCartData();
- 
+
+    if (token) {
+      fetchCartData();
+    }
+
+
+
   }, []);
 
   const fetchCartData = async () => {
@@ -78,6 +87,13 @@ export default function Navbar() {
     }
   };
 
+
+
+  // const unreadCount = localStorage.getItem("unreadCount")
+
+  // const { cartCount, unreadCount } = useHeader();
+    const { cartCount ,wishlistCount ,unreadCount} = useHeader();
+  console.log(wishlistCount, "wishlistCount")
   return (
     <>
       {/* Top Bar - Login/Account with Cart & Wishlist */}
@@ -118,11 +134,17 @@ export default function Navbar() {
                     className="relative p-2 rounded-full hover:bg-white/10 transition-colors group"
                     title="Wishlist"
                   >
-                    <Heart size={18} className="sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
-                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-purple-900 rounded-full text-[10px] flex items-center justify-center font-semibold">
-                      3
+                    <Heart
+                      size={18}
+                      className="sm:w-5 sm:h-5 group-hover:scale-110 transition-transform"
+                    />
+
+                    {/* FIXED BADGE */}
+                    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-purple-700 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
+                      {wishlistCount||0}
                     </span>
                   </Link>
+
 
                   {/* Cart */}
                   <Link
@@ -131,9 +153,13 @@ export default function Navbar() {
                     title="Shopping Cart"
                   >
                     <ShoppingCart size={18} className="sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
-                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-purple-900 rounded-full text-[10px] flex items-center justify-center font-semibold">
-                      {cart}
-                    </span>
+
+                    {/* FIXED BADGE */}
+                    {cartCount && (
+                      <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
+                        {cartCount}
+                      </span>
+                    )}
                   </Link>
 
                   {/* Notifications */}
@@ -143,7 +169,13 @@ export default function Navbar() {
                     title="Notifications"
                   >
                     <Bell size={18} className="sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
-                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                    <div className="absolute -top-1 -right-1 flex items-center gap-1">
+                      {/* <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span> */}
+                      <span className="text-xs bg-red-500 text-white px-1.5 py-0.5 rounded-full">
+                        {unreadCount || 0}
+                      </span>
+                    </div>
+
                   </Link>
                 </>
               ) : (
@@ -158,20 +190,25 @@ export default function Navbar() {
                   </Link>
 
                   {/* Guest Wishlist & Cart */}
-                  <Link
+                  {/* <Link
                     to="/wishlist"
                     className="p-2 rounded-full hover:bg-white/10 transition-colors"
                     title="Wishlist"
                   >
                     <Heart size={18} className="sm:w-5 sm:h-5" />
-                  </Link>
+                  </Link> */}
 
                   <Link
                     to="/cart"
-                    className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                    className="relative p-2 rounded-full hover:bg-white/10 transition-colors flex items-center"
                     title="Cart"
                   >
-                    <ShoppingCart size={18} className="sm:w-5 sm:h-5" />
+                    <ShoppingCart size={20} className="text-white sm:w-5 sm:h-5" />
+
+                    {/* Cart Count Badge */}
+                    <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] sm:text-xs px-1.5 py-0.5 rounded-full">
+                      {cartCount || 0}
+                    </span>
                   </Link>
                 </>
               )}
@@ -201,15 +238,13 @@ export default function Navbar() {
                 <Link
                   key={index}
                   to={link.href}
-                  className={`text-[16px] lg:text-[18px] cursor-pointer font-medium transition-all relative pb-1 group ${
-                    isActive(link.href) ? 'text-purple-900' : 'hover:text-purple-900'
-                  }`}
+                  className={`text-[16px] lg:text-[18px] cursor-pointer font-medium transition-all relative pb-1 group ${isActive(link.href) ? 'text-purple-900' : 'hover:text-purple-900'
+                    }`}
                 >
                   {link.label}
                   <span
-                    className={`absolute bottom-0 left-0 h-0.5 bg-purple-900 transition-all ${
-                      isActive(link.href) ? 'w-full' : 'w-0 group-hover:w-full'
-                    }`}
+                    className={`absolute bottom-0 left-0 h-0.5 bg-purple-900 transition-all ${isActive(link.href) ? 'w-full' : 'w-0 group-hover:w-full'
+                      }`}
                   ></span>
                 </Link>
               ))}
@@ -230,9 +265,8 @@ export default function Navbar() {
 
       {/* RIGHT SLIDING DRAWER */}
       <div
-        className={`fixed top-0 right-0 h-full w-full sm:w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
-          menuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 h-full w-full sm:w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         {/* User Profile Section */}
         <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden p-4 sm:p-6 text-white">
@@ -324,11 +358,10 @@ export default function Navbar() {
                 key={index}
                 to={item.href}
                 onClick={() => setMenuOpen(false)}
-                className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${
-                  isItemActive
-                    ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
-                    : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
-                }`}
+                className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isItemActive
+                  ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
+                  : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
+                  }`}
               >
                 <Icon size={20} className="group-hover:scale-110 transition-transform" />
                 <span className="font-medium flex-1 text-sm sm:text-base">{item.label}</span>
@@ -343,11 +376,10 @@ export default function Navbar() {
             <Link
               to="/about-us"
               onClick={() => setMenuOpen(false)}
-              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${
-                isActive('/about-us')
-                  ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
-                  : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
-              }`}
+              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isActive('/about-us')
+                ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
+                : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
+                }`}
             >
               <Info size={20} className="group-hover:scale-110 transition-transform" />
               <span className="font-medium flex-1 text-sm sm:text-base">{t("nav.about")}</span>
@@ -356,11 +388,10 @@ export default function Navbar() {
             <Link
               to="/blogs"
               onClick={() => setMenuOpen(false)}
-              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${
-                isActive('/blogs')
-                  ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
-                  : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
-              }`}
+              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isActive('/blogs')
+                ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
+                : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
+                }`}
             >
               <BookOpen size={20} className="group-hover:scale-110 transition-transform" />
               <span className="font-medium flex-1 text-sm sm:text-base">{t("nav.blogs")}</span>
@@ -374,6 +405,9 @@ export default function Navbar() {
               onClick={() => {
                 localStorage.removeItem("user");
                 localStorage.removeItem("token");
+                localStorage.removeItem("cartItems");
+                localStorage.removeItem("cart");
+                localStorage.removeItem("unreadCount");
                 navigate("/login");
                 setMenuOpen(false);
               }}

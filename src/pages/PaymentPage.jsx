@@ -3,49 +3,80 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BsCashCoin } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
+import { Loader2, AlertCircle, CheckCircle, Package, CreditCard, Wallet, ArrowLeft, ShieldCheck, Truck } from 'lucide-react';
 
 export default function PaymentPage() {
-  const [referralCode, setReferralCode] = useState();
+  const [referralCode, setReferralCode] = useState('');
   const [applyDefault, setApplyDefault] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState('Online');
   const [codeApplied, setCodeApplied] = useState(false);
   const [balance, setBalance] = useState(0);
   const [addresses, setAddresses] = useState([]);
   const [cartItems, setCartItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [checkoutDetails, setDetails] = useState(null);
+  const [referralDiscount, setDiscount] = useState(0);
+  
+  // Loading states
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [applyingCode, setApplyingCode] = useState(false);
+  
+  // Error and success states
   const [error, setError] = useState(null);
+  const [successMsg, setSuccessMsg] = useState('');
+  const [checkoutSuccess, setCheckoutSuccess] = useState(false);
 
-  // Mock translation function - replace with actual useTranslation hook
-  const { t } = useTranslation()
+  const { t } = useTranslation();
+  const Navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const searchParams = new URLSearchParams(window.location.search);
   const addressIndex = searchParams.get("addressIndex");
 
   const paymentMethods = [
-    { id: 'wallet', name: t('payment.methods.wallet'), balance: balance, icon: '👛' },
-    { id: 'Online', name: t('payment.methods.apple'), icon: '' },
-    { id: 'Online1', name: t('payment.methods.google'), icon: 'G' },
+    { id: 'wallet', name: t('payment.methods.wallet'), balance: balance, icon: 'wallet' },
+    { id: 'Online', name: t('payment.methods.apple'), icon: 'apple' },
+    { id: 'Online1', name: t('payment.methods.google'), icon: 'google' },
   ];
 
-  // const referralDiscount = 0;
-  // const shippingAmount = 50;
-
   useEffect(() => {
-    fetchBalance();
-    fetchCartData();
-    fetchAddresses();
-
+    initializePaymentPage();
   }, []);
 
-  const fetchBalance = async () => {
+  useEffect(() => {
+    if (cartItems.length > 0 && addresses.length > 0) {
+      fetchCheckOutDetails();
+    }
+  }, [cartItems, addresses]);
+
+  const initializePaymentPage = async () => {
+    setInitialLoading(true);
+    setError(null);
+
     try {
-      if (!localStorage.getItem("token")) {
-        setError("Please login to view wallet");
-        setLoading(false);
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("Please login to continue");
+        Navigate('/login');
         return;
       }
 
+      // Fetch all required data in parallel
+      await Promise.all([
+        fetchBalance(),
+        fetchCartData(),
+        fetchAddresses()
+      ]);
+    } catch (err) {
+      console.error("Initialization error:", err);
+      setError("Failed to load payment page. Please try again.");
+    } finally {
+      setInitialLoading(false);
+    }
+  };
+
+  const fetchBalance = async () => {
+    try {
       const headers = {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         'Content-Type': 'application/json'
@@ -56,20 +87,17 @@ export default function PaymentPage() {
         { headers }
       );
 
-      if (!balanceRes.ok) {
-        throw new Error('Failed to fetch balance');
-      }
+      if (!balanceRes.ok) throw new Error('Failed to fetch balance');
 
       const balanceData = await balanceRes.json();
       setBalance(balanceData.data || 0);
     } catch (err) {
-      console.log("Balance fetch failed:", err);
+      console.error("Balance fetch failed:", err);
     }
   };
 
   const fetchCartData = async () => {
     try {
-      setLoading(true);
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems`, {
         method: 'GET',
         headers: {
@@ -81,19 +109,21 @@ export default function PaymentPage() {
       if (!response.ok) throw new Error('Failed to fetch cart data');
 
       const data = await response.json();
+      
+      if (!data.data || data.data.length === 0) {
+        throw new Error('Your cart is empty');
+      }
+      
       setCartItems(data.data || []);
-      setError(null);
     } catch (err) {
       setError(err.message);
       console.error('Error fetching cart:', err);
-    } finally {
-      setLoading(false);
+      throw err;
     }
   };
 
   const fetchAddresses = async () => {
     try {
-      setLoading(true);
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/user/address/getAllAddress`,
         {
@@ -106,72 +136,20 @@ export default function PaymentPage() {
 
       const data = await res.json();
 
-      if (data.success) {
+      if (data.success && data.data && data.data.length > 0) {
         setAddresses(data.data);
+      } else {
+        throw new Error('No delivery address found. Please add an address.');
       }
     } catch (error) {
       console.error("Failed to fetch addresses:", error);
-    } finally {
-      setLoading(false);
+      setError(error.message);
+      throw error;
     }
   };
-
-  const totalItems = cartItems.reduce((sum, item) => sum + Number(item.quantity), 0);
-  // const totalPrice = cartItems.reduce((sum, item) => sum + Number(item.totalAmount), 0);
-  // const totalAmount = totalPrice - referralDiscount + shippingAmount;
-
-
-
-
-  const [referralDiscount, setDiscount] = useState()
-
-  const handleApply = async (referralCode) => {
-    if (!referralCode) {
-      setError("Please enter referral code");
-      return;
-    }
-
-    setLoading(true);
-    setError("");
-    // setSuccessMsg("");
-
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/user/orders/applyReferralCode`,
-        { referralCode },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,   // <-- Add token here
-            "Content-Type": "application/json"
-          }
-        }
-      );
-
-
-      if (res.data.success) {
-        // setDetails(res.data.data); // update checkout details
-        setDiscount(res.data.data.referralDiscountRate)
-        setCodeApplied(true);
-      } else {
-        setError(res.data.message || "Failed to apply referral code");
-      }
-    } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-
-  const Navigate = useNavigate()
-
-
-
-  const [checkoutDetails, setDetails] = useState(null);
 
   const fetchCheckOutDetails = async () => {
     try {
-
       const items = cartItems.map((item) => ({
         productId: item.product._id,
         quantity: item.quantity,
@@ -179,9 +157,9 @@ export default function PaymentPage() {
 
       const body = {
         items,
-        shippingAddress: addresses[addressIndex],
-
+        shippingAddress: addresses[addressIndex || 0],
       };
+
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/user/orders/checkout`,
         {
@@ -195,31 +173,82 @@ export default function PaymentPage() {
       );
 
       const data = await res.json();
+      
       if (data.success) {
-        setDetails(data.data); 
-        setReferralCode(data.data.referralCode)
-           // update state with checkout details
+        setDetails(data.data);
+        if (data.data.referralCode) {
+          setReferralCode(data.data.referralCode);
+        }
       } else {
-        console.error("Failed to load checkout details");
+        throw new Error(data.message || "Failed to load checkout details");
       }
     } catch (error) {
       console.error("Error fetching checkout details:", error);
+      setError(error.message);
     }
   };
 
-  // fetch on page load
-  useEffect(() => {
-    if (cartItems.length > 0) {
-      fetchCheckOutDetails();
+  const handleApply = async (code) => {
+    if (!code || code.trim() === '') {
+      setError("Please enter a referral code");
+      setTimeout(() => setError(null), 3000);
+      return;
     }
-  }, [cartItems])
 
+    setApplyingCode(true);
+    setError(null);
+    setSuccessMsg('');
+
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/user/orders/applyReferralCode`,
+        { referralCode: code },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+
+      if (res.data.success) {
+        setDiscount(res.data.data.referralDiscountRate);
+        setCodeApplied(true);
+        setSuccessMsg("Referral code applied successfully!");
+        setTimeout(() => setSuccessMsg(''), 3000);
+      } else {
+        throw new Error(res.data.message || "Failed to apply referral code");
+      }
+    } catch (err) {
+      const errorMsg = err.response?.data?.message || err.message || "Failed to apply code";
+      setError(errorMsg);
+      setCodeApplied(false);
+      setTimeout(() => setError(null), 4000);
+    } finally {
+      setApplyingCode(false);
+    }
+  };
 
   const handleCheckout = async () => {
     const token = localStorage.getItem("token");
-    if (!token) return alert(t('payment.alerts.login_first'));
+    if (!token) {
+      alert(t('payment.alerts.login_first'));
+      Navigate('/login');
+      return;
+    }
 
-    if (!cartItems.length) return alert(t('payment.alerts.cart_empty'));
+    if (!cartItems.length) {
+      alert(t('payment.alerts.cart_empty'));
+      return;
+    }
+
+    if (!addresses[addressIndex || 0]) {
+      alert('Please select a delivery address');
+      return;
+    }
+
+    setCheckoutLoading(true);
+    setError(null);
 
     const items = cartItems.map((item) => ({
       productId: item.product._id,
@@ -228,21 +257,19 @@ export default function PaymentPage() {
 
     const body = {
       items,
-      shippingAddress: addresses[addressIndex],
+      shippingAddress: addresses[addressIndex || 0],
       paymentMethod: selectedMethod,
-      shippingAmount: checkoutDetails.shippingCharge,
+      shippingAmount: checkoutDetails?.shippingCharge || 0,
       referralCode: applyDefault ? "" : referralCode
     };
 
     try {
-      setLoading(true);
-
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/user/orders/createOrder`,
         {
           method: 'POST',
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(body)
@@ -252,17 +279,26 @@ export default function PaymentPage() {
       const data = await res.json();
 
       if (data.success) {
-        alert(t('payment.alerts.order_success'));
-        Navigate('/orders')
+        setCheckoutSuccess(true);
+        setTimeout(() => {
+          Navigate('/orders');
+        }, 2000);
+      } else {
+        throw new Error(data.message || 'Failed to create order');
       }
     } catch (error) {
       console.error("Checkout Error:", error);
-      alert(error.response?.data?.message || t('payment.alerts.something_wrong'));
+      const errorMsg = error.response?.data?.message || error.message || t('payment.alerts.something_wrong');
+      setError(errorMsg);
+      setTimeout(() => setError(null), 4000);
     } finally {
-      setLoading(false);
+      setCheckoutLoading(false);
     }
   };
 
+  const totalItems = cartItems.reduce((sum, item) => sum + Number(item.quantity), 0);
+
+  // Icon Components
   const AppleIcon = () => (
     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
       <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
@@ -284,128 +320,272 @@ export default function PaymentPage() {
     </svg>
   );
 
+  // Initial Loading State
+  if (initialLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="relative">
+            <div className="w-24 h-24 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin mx-auto"></div>
+            <CreditCard className="w-10 h-10 text-amber-400 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+          </div>
+          <p className="text-white text-xl font-semibold mt-6">Loading Payment Details...</p>
+          <p className="text-gray-400 text-sm mt-2">Please wait while we prepare your checkout</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Checkout Success State
+  if (checkoutSuccess) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-6">
+        <div className="bg-slate-800/90 backdrop-blur-sm rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-green-500/30">
+          <div className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
+            <CheckCircle className="w-12 h-12 text-green-500" />
+          </div>
+          <h3 className="text-3xl font-bold text-white mb-3">Order Placed Successfully!</h3>
+          <p className="text-gray-400 mb-6">Thank you for your purchase. Redirecting to orders...</p>
+          <Loader2 className="w-8 h-8 animate-spin mx-auto text-amber-400" />
+        </div>
+      </div>
+    );
+  }
+
+  // Error State (Critical)
+  if (error && !checkoutDetails) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-6">
+        <div className="bg-slate-800/90 backdrop-blur-sm rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-red-500/30">
+          <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-10 h-10 text-red-500" />
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-3">Payment Error</h3>
+          <p className="text-gray-400 mb-6">{error}</p>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={initializePaymentPage}
+              className="px-6 py-3 rounded-lg text-white font-medium bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 transition-all shadow-lg"
+            >
+              Try Again
+            </button>
+            <button
+              onClick={() => Navigate('/cart')}
+              className="px-6 py-3 rounded-lg text-white font-medium bg-slate-700 hover:bg-slate-600 transition-all"
+            >
+              Back to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
       {/* Background glow */}
       <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-500 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-amber-400 rounded-full blur-2xl"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-500 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-amber-400 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '1s' }}></div>
       </div>
 
       <div className="relative z-10 p-4 md:p-6 max-w-5xl mx-auto">
-        <h1 className="text-xl font-bold text-white mb-6">{t('payment.title')}</h1>
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-6">
+          <button
+            onClick={() => Navigate('/cart')}
+            className="text-white hover:text-amber-400 transition-colors"
+          >
+            <ArrowLeft size={24} />
+          </button>
+          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+            <CreditCard size={28} className="text-amber-400" />
+            {t('payment.title')}
+          </h1>
+        </div>
+
+        {/* Alert Messages */}
+        {error && (
+          <div className="mb-4 bg-red-500/20 border border-red-500/50 rounded-xl p-4 flex items-start gap-3 animate-slide-down">
+            <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+            <p className="text-red-300 text-sm">{error}</p>
+          </div>
+        )}
+
+        {successMsg && (
+          <div className="mb-4 bg-green-500/20 border border-green-500/50 rounded-xl p-4 flex items-start gap-3 animate-slide-down">
+            <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+            <p className="text-green-300 text-sm">{successMsg}</p>
+          </div>
+        )}
+
+        {/* Trust Badges */}
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="bg-slate-800/60 backdrop-blur-sm rounded-xl p-4 text-center border border-slate-700">
+            <ShieldCheck className="w-8 h-8 text-green-400 mx-auto mb-2" />
+            <p className="text-white text-xs font-medium">Secure Payment</p>
+          </div>
+          <div className="bg-slate-800/60 backdrop-blur-sm rounded-xl p-4 text-center border border-slate-700">
+            <Truck className="w-8 h-8 text-blue-400 mx-auto mb-2" />
+            <p className="text-white text-xs font-medium">Fast Delivery</p>
+          </div>
+          <div className="bg-slate-800/60 backdrop-blur-sm rounded-xl p-4 text-center border border-slate-700">
+            <Package className="w-8 h-8 text-amber-400 mx-auto mb-2" />
+            <p className="text-white text-xs font-medium">{totalItems} Items</p>
+          </div>
+        </div>
 
         {/* Referral Code Input */}
-        <div className="mb-4">
-          <label className="block text-white text-sm mb-2">{t('payment.referral.label')}</label>
-          <div className="flex bg-white rounded-lg overflow-hidden">
-            <input
-              type="text"
-              value={referralCode}
-              disabled={checkoutDetails.referralCode}
-              onChange={(e) => { setReferralCode(e.target.value); setCodeApplied(false); }}
-              placeholder={t('payment.referral.placeholder')}
-              className="flex-1 px-4 py-3 text-gray-800 focus:outline-none"
-            />
-            <button
-              onClick={() => { handleApply(referralCode) }}
-              disabled={codeApplied}
-              className="px-6 py-3 text-amber-500 hover:text-amber-600 font-medium transition-colors"
-            >
-              {t('payment.referral.apply')}
-            </button>
+        <div className="mb-6">
+          <label className="block text-white text-sm font-semibold mb-3 flex items-center gap-2">
+            <span>{t('payment.referral.label')}</span>
+            {codeApplied && <CheckCircle size={16} className="text-green-400" />}
+          </label>
+          <div className="bg-slate-800/60 backdrop-blur-sm rounded-xl overflow-hidden border border-slate-700">
+            <div className="flex">
+              <input
+                type="text"
+                value={referralCode}
+                disabled={checkoutDetails?.referralCode || applyingCode}
+                onChange={(e) => { setReferralCode(e.target.value); setCodeApplied(false); }}
+                placeholder={t('payment.referral.placeholder')}
+                className="flex-1 px-4 py-4 bg-transparent text-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+              />
+              <button
+                onClick={() => handleApply(referralCode)}
+                disabled={codeApplied || applyingCode || !referralCode.trim()}
+                className="px-6 py-4 text-amber-400 hover:text-amber-300 font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {applyingCode ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    Applying...
+                  </>
+                ) : codeApplied ? (
+                  'Applied'
+                ) : (
+                  t('payment.referral.apply')
+                )}
+              </button>
+            </div>
           </div>
-          {codeApplied && (
-            <p className="text-green-400 text-xs mt-1">{t('payment.referral.success')}</p>
-          )}
         </div>
 
         {/* Apply Default Checkbox */}
-        <label className="flex items-center gap-3 mb-6 cursor-pointer">
+
+        {
+          !checkoutDetails?.referralCode  &&
+           <label className="flex items-center gap-3 mb-6 cursor-pointer group">
+
+
           <div
             onClick={() => {
               const code = "Default Referral";
               setReferralCode(code);
-              setApplyDefault(!applyDefault);
-              handleApply(code);   // pass new referral code
+              const newValue = !applyDefault;
+              setApplyDefault(newValue);
+              if (newValue) {
+                handleApply(code);
+              }
             }}
-            className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${applyDefault ? 'bg-amber-500 border-amber-500' : 'border-gray-400 bg-transparent'
-              }`}
+            className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${
+              applyDefault ? 'bg-amber-500 border-amber-500 scale-110' : 'border-gray-400 bg-slate-700 group-hover:border-amber-400'
+            }`}
           >
             {applyDefault && (
-              <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
               </svg>
             )}
           </div>
-          <span className="text-white text-sm">{t('payment.referral.default')}</span>
+          <span className="text-white text-sm font-medium">{t('payment.referral.default')}</span>
         </label>
+        }
+       
 
         {/* Payment Methods */}
-        <div className="bg-slate-800/60 backdrop-blur-sm rounded-xl overflow-hidden mb-4 border border-slate-700">
-          {paymentMethods.map((method, index) => (
-            <div
-              key={method.id}
-              onClick={() => setSelectedMethod(method.id)}
-              className={`flex items-center justify-between p-4 cursor-pointer transition-colors hover:bg-slate-700/50 ${index !== paymentMethods.length - 1 ? 'border-b border-slate-700' : ''
-                }`}
-            >
-              <div className="flex items-center gap-3">
-                <span className="text-amber-500">
-                  {method.id === 'wallet' && <WalletIcon />}
-                  {method.id === 'Online' && <AppleIcon />}
-                  {method.id === 'Online1' && <GoogleIcon />}
-                </span>
-                <span className="text-white text-sm">
-                  {method.name}
-                  {method.balance !== undefined && (
-                    <span className="text-gray-400"> ({t('payment.methods.balance')}: ₹ {(method.balance).toFixed(2)})</span>
-                  )}
-                </span>
-              </div>
-              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${selectedMethod === method.id ? 'border-amber-500' : 'border-gray-500'
+        <div className="mb-6">
+          <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+            <CreditCard size={20} className="text-amber-400" />
+            Payment Method
+          </h3>
+          <div className="bg-slate-800/60 backdrop-blur-sm rounded-xl overflow-hidden border border-slate-700">
+            {paymentMethods.map((method, index) => (
+              <div
+                key={method.id}
+                onClick={() => setSelectedMethod(method.id)}
+                className={`flex items-center justify-between p-5 cursor-pointer transition-all hover:bg-slate-700/50 ${
+                  index !== paymentMethods.length - 1 ? 'border-b border-slate-700' : ''
+                } ${selectedMethod === method.id ? 'bg-amber-500/10' : ''}`}
+              >
+                <div className="flex items-center gap-4">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                    selectedMethod === method.id ? 'bg-amber-500/20' : 'bg-slate-700'
+                  }`}>
+                    {method.icon === 'wallet' && <WalletIcon />}
+                    {method.icon === 'apple' && <AppleIcon />}
+                    {method.icon === 'google' && <GoogleIcon />}
+                  </div>
+                  <div>
+                    <span className="text-white font-medium block">{method.name}</span>
+                    {method.balance !== undefined && (
+                      <span className="text-gray-400 text-sm">
+                        {t('payment.methods.balance')}: ₹ {method.balance.toFixed(2)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
+                  selectedMethod === method.id ? 'border-amber-500 scale-110' : 'border-gray-500'
                 }`}>
-                {selectedMethod === method.id && (
-                  <div className="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
-                )}
+                  {selectedMethod === method.id && (
+                    <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* Price Details */}
-        <div className="bg-slate-800/60 backdrop-blur-sm rounded-xl p-4 mb-6 border border-slate-700">
-          <h3 className="text-white font-semibold mb-3">{t('payment.price_details.title')}</h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between text-gray-400 border-b border-slate-600 border-dashed pb-2">
+        <div className="bg-slate-800/60 backdrop-blur-sm rounded-xl p-6 mb-6 border border-slate-700">
+          <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+            <Package size={20} className="text-amber-400" />
+            {t('payment.price_details.title')}
+          </h3>
+          <div className="space-y-3">
+            <div className="flex justify-between text-gray-300 pb-3 border-b border-slate-600 border-dashed">
               <span>{t('payment.price_details.total_items')}</span>
-              <span className="text-white">{totalItems}</span>
+              <span className="text-white font-semibold">{totalItems}</span>
             </div>
-            <div className="flex justify-between text-gray-400 border-b border-slate-600 border-dashed pb-2">
+            <div className="flex justify-between text-gray-300 pb-3 border-b border-slate-600 border-dashed">
               <span>{t('payment.price_details.price')}</span>
-              <span className="text-white">₹ {checkoutDetails?.totalAmount}</span>
-            </div>
-            <div className="flex justify-between text-gray-400 border-b border-slate-600 border-dashed pb-2">
-              <span>Discount Off</span>
-              <span className="text-white">₹ {checkoutDetails?.discountOff}</span>
-            </div>
-            <div className="flex justify-between text-gray-400 border-b border-slate-600 border-dashed pb-2">
-              <span>Referral Discount</span>
-              <span className={referralDiscount > 0 ? 'text-green-400' : 'text-gray-400'}>
-
-                <p className="text-lg font-medium">
-                  ₹ {referralDiscount || checkoutDetails?.referralDiscount || 0}
-                </p>
-
+              <span className="text-white font-semibold">
+                ₹ {checkoutDetails?.totalAmount?.toLocaleString("en-IN") || 0}
               </span>
             </div>
-            <div className="flex justify-between text-gray-400 border-b border-slate-600 border-dashed pb-2">
-              <span>{t('payment.price_details.shipping')}</span>
-              <span className="text-white">₹ {checkoutDetails?.shippingCharge}</span>
+            <div className="flex justify-between text-gray-300 pb-3 border-b border-slate-600 border-dashed">
+              <span>Discount Off</span>
+              <span className="text-green-400 font-semibold">
+                - ₹ {checkoutDetails?.discountOff?.toLocaleString("en-IN") || 0}
+              </span>
             </div>
-            <div className="flex justify-between text-white font-semibold pt-1">
+            <div className="flex justify-between text-gray-300 pb-3 border-b border-slate-600 border-dashed">
+              <span>Referral Discount</span>
+              <span className={`font-semibold ${(referralDiscount || checkoutDetails?.referralDiscount) > 0 ? 'text-green-400' : 'text-gray-400'}`}>
+                {(referralDiscount || checkoutDetails?.referralDiscount) > 0 && '- '}
+                ₹ {(referralDiscount || checkoutDetails?.referralDiscount || 0).toLocaleString("en-IN")}
+              </span>
+            </div>
+            <div className="flex justify-between text-gray-300 pb-3 border-b border-slate-600 border-dashed">
+              <span>{t('payment.price_details.shipping')}</span>
+              <span className="text-white font-semibold">
+                ₹ {checkoutDetails?.shippingCharge?.toLocaleString("en-IN") || 0}
+              </span>
+            </div>
+            <div className="flex justify-between text-white font-bold text-lg pt-2">
               <span>{t('payment.price_details.total_amount')}</span>
-              <span className="text-amber-500">
+              <span className="text-amber-400 text-2xl">
                 ₹ {((checkoutDetails?.grandTotal || 0) - (referralDiscount || 0)).toLocaleString("en-IN")}
               </span>
             </div>
@@ -415,12 +595,43 @@ export default function PaymentPage() {
         {/* Checkout Button */}
         <button
           onClick={handleCheckout}
-          disabled={loading}
-          className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 px-20 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/30 w-full max-w-sm disabled:opacity-50 mx-auto block"
+          disabled={checkoutLoading}
+          className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/50 w-full max-w-lg disabled:opacity-50 disabled:cursor-not-allowed mx-auto block text-lg flex items-center justify-center gap-3"
         >
-          {loading ? "Processing..." : t('payment.checkout')}
+          {checkoutLoading ? (
+            <>
+              <Loader2 size={24} className="animate-spin" />
+              Processing Payment...
+            </>
+          ) : (
+            <>
+              <ShieldCheck size={24} />
+              {t('payment.checkout')}
+            </>
+          )}
         </button>
+
+        {/* Additional Info */}
+        <p className="text-center text-gray-400 text-sm mt-4">
+          By placing this order, you agree to our terms and conditions
+        </p>
       </div>
+
+      <style jsx>{`
+        @keyframes slide-down {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-slide-down {
+          animation: slide-down 0.3s ease-out;
+        }
+      `}</style>
     </div>
   );
 }
