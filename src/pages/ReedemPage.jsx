@@ -15,7 +15,7 @@ export default function RedeemPage() {
     }, []);
 
 
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MWYxNTQ5YmFjZmM4MGY0OGEzNzMwNiIsImlhdCI6MTc2MzY0NDc0NiwiZXhwIjoxNzY2MjM2NzQ2fQ.jDIJvr4OiTUhBOGuc_YAI7bFg29dw0Clah2z7XRZSwo"
+    const token = localStorage.getItem("token")
     const fetchBalance = async () => {
         try {
             //   const { data } = await axios.get(`/api/wallet/balance/${user._id}`);

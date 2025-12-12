@@ -111,10 +111,10 @@ export default function CartPage() {
       prevItems.map(cartItem =>
         cartItem._id === cartId
           ? {
-              ...cartItem,
-              quantity: newQuantity,
-              totalAmount: Number(price * newQuantity)
-            }
+            ...cartItem,
+            quantity: newQuantity,
+            totalAmount: Number(price * newQuantity)
+          }
           : cartItem
       )
     );
@@ -136,7 +136,7 @@ export default function CartPage() {
       if (!response.ok) throw new Error('Failed to update quantity');
 
       const result = await response.json();
-      
+
       if (!result.success) {
         setCartItems(previousItems);
         throw new Error('Failed to update quantity');
@@ -150,7 +150,7 @@ export default function CartPage() {
 
   const updateGuestQuantity = (productId, delta) => {
     const guestCart = JSON.parse(localStorage.getItem('cartItems') || '[]');
-    const itemIndex = guestCart.findIndex(item => 
+    const itemIndex = guestCart.findIndex(item =>
       (item.productId || item.product._id) === productId
     );
 
@@ -160,7 +160,7 @@ export default function CartPage() {
       guestCart[itemIndex].totalAmount = newQuantity * guestCart[itemIndex].product.price;
 
       localStorage.setItem('cartItems', JSON.stringify(guestCart));
-      
+
       // Update cart count
       const totalItems = guestCart.reduce((sum, item) => sum + item.quantity, 0);
       localStorage.setItem('cart', totalItems);
@@ -180,7 +180,7 @@ export default function CartPage() {
     // Logged-in user - remove via API
     const previousItems = [...cartItems];
     setCartItems(prevItems => prevItems.filter(item => item.product._id !== id));
-    
+
     const oldCount = Number(localStorage.getItem("cart")) || 0;
     const newCount = Math.max(oldCount - 1, 0);
     localStorage.setItem("cart", newCount);
@@ -198,7 +198,7 @@ export default function CartPage() {
       if (!response.ok) throw new Error('Failed to remove item');
 
       const result = await response.json();
-      
+
       if (!result.success) {
         setCartItems(previousItems);
         localStorage.setItem("cart", oldCount);
@@ -214,12 +214,12 @@ export default function CartPage() {
 
   const removeGuestItem = (productId) => {
     const guestCart = JSON.parse(localStorage.getItem('cartItems') || '[]');
-    const updatedCart = guestCart.filter(item => 
+    const updatedCart = guestCart.filter(item =>
       (item.productId || item.product._id) !== productId
     );
 
     localStorage.setItem('cartItems', JSON.stringify(updatedCart));
-    
+
     // Update cart count
     const totalItems = updatedCart.reduce((sum, item) => sum + item.quantity, 0);
     localStorage.setItem('cart', totalItems);
@@ -250,7 +250,7 @@ export default function CartPage() {
       alert('Please select a delivery address');
     }
     Navigate(`/payments?addressIndex=${selectedAddressIndex}`);
-    
+
   };
 
   const totalItems = cartItems.reduce((sum, item) => sum + Number(item.quantity), 0);
@@ -423,11 +423,10 @@ export default function CartPage() {
                         setSelectedAddressIndex(i);
                         setShowAddressModal(false);
                       }}
-                      className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                        selectedAddress?._id === address._id
+                      className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${selectedAddress?._id === address._id
                           ? 'border-amber-500 bg-slate-700/50'
                           : 'border-slate-700 hover:border-slate-600'
-                      }`}
+                        }`}
                     >
                       <p className="text-white text-sm">
                         <span className="font-semibold">{address.fullName}</span>
@@ -457,12 +456,12 @@ export default function CartPage() {
             <div key={item._id || index} className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 border border-slate-700">
               <div className="flex items-center gap-3 sm:gap-4">
                 {/* <PenIcon color={item.color || 'blue'} /> */}
-              <img
-  src={item?.product?.images?.[0]?.url || "/placeholder.png"}
-  alt={item?.product?.name || "Product"}
-  className="w-14 h-14 object-cover rounded-md"
-  loading="lazy"
-/>
+                <img
+                  src={token ? item?.product?.images?.[0]?.url : item?.product?.images?.[0] || "/placeholder.png"}
+                  alt={item?.product?.name || "Product"}
+                  className="w-14 h-14 object-cover rounded-md"
+                  loading="lazy"
+                />
 
                 <div className="flex-1 min-w-0">
                   <h3 className="text-white text-sm font-medium truncate">{item.product.name}</h3>
@@ -534,11 +533,10 @@ export default function CartPage() {
             )}
             <button
               onClick={handleCheckout}
-              className={`font-semibold py-3 px-12 sm:px-20 rounded-lg transition-all duration-300 w-full sm:w-auto ${
-                isGuest || (!isGuest && selectedAddress)
+              className={`font-semibold py-3 px-12 sm:px-20 rounded-lg transition-all duration-300 w-full sm:w-auto ${isGuest || (!isGuest && selectedAddress)
                   ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white hover:shadow-lg hover:shadow-amber-500/30 cursor-pointer'
                   : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-60'
-              }`}
+                }`}
             >
               {isGuest ? 'Login to Checkout' : 'Proceed to Checkout'}
             </button>

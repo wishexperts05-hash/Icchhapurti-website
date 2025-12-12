@@ -388,7 +388,7 @@ const { t } = useTranslation();
         </div>
 
         {/* Coin Earning History */}
-        <h2 className="text-white text-lg font-semibold mb-4">{t("referProgramme.coinEarningHostory")}</h2>
+        <h2 className="text-white text-lg font-semibold mb-4">Coin Earn History</h2>
 
         {loading ? (
           <div className="flex items-center justify-center py-12">
