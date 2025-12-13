@@ -395,7 +395,7 @@ export default function ProductsPage() {
   const [totalProducts, setTotalProducts] = useState(0);
   const [searchText, setSearchText] = useState("");
   const [debounceSearch, setDebounceSearch] = useState("");
-
+const { setCount ,setList} = useHeader();
   const Navigate = useNavigate();
   const { t } = useTranslation();
   const token = localStorage.getItem("token");
@@ -522,6 +522,7 @@ export default function ProductsPage() {
       const oldCount = Number(localStorage.getItem("cart")) || 0;
       if (result.success) {
         localStorage.setItem("cart", oldCount + 1);
+        setCount(oldCount + 1)
       }
 
       window.dispatchEvent(new CustomEvent("cartUpdated", { detail: result }));

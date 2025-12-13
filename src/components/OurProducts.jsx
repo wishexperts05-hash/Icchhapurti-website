@@ -523,6 +523,7 @@ export default function OurProducts() {
       const oldCount = Number(localStorage.getItem("cart")) || 0;
       if (result.success) {
         localStorage.setItem("cart", oldCount + 1);
+        setCount(oldCount + 1);
       }
 
       window.dispatchEvent(new CustomEvent("cartUpdated", { detail: result }));

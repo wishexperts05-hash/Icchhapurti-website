@@ -8,19 +8,19 @@ import { Loader2, AlertCircle, CheckCircle, Package, CreditCard, Wallet, ArrowLe
 export default function PaymentPage() {
   const [referralCode, setReferralCode] = useState('');
   const [applyDefault, setApplyDefault] = useState(false);
-  const [selectedMethod, setSelectedMethod] = useState('Online');
+  const [selectedMethod, setSelectedMethod] = useState('razorpay');
   const [codeApplied, setCodeApplied] = useState(false);
   const [balance, setBalance] = useState(0);
   const [addresses, setAddresses] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const [checkoutDetails, setDetails] = useState(null);
   const [referralDiscount, setDiscount] = useState(0);
-  
+
   // Loading states
   const [initialLoading, setInitialLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [applyingCode, setApplyingCode] = useState(false);
-  
+
   // Error and success states
   const [error, setError] = useState(null);
   const [successMsg, setSuccessMsg] = useState('');
@@ -35,8 +35,8 @@ export default function PaymentPage() {
 
   const paymentMethods = [
     { id: 'wallet', name: t('payment.methods.wallet'), balance: balance, icon: 'wallet' },
-    { id: 'Online', name: t('payment.methods.apple'), icon: 'apple' },
-    { id: 'Online1', name: t('payment.methods.google'), icon: 'google' },
+    { id: 'razorpay', name: 'Online (Card/UPI/Netbanking)', icon: 'razorpay' },
+    // { id: 'cod', name: 'Cash on Delivery', icon: 'cod' },
   ];
 
   useEffect(() => {
@@ -48,6 +48,22 @@ export default function PaymentPage() {
       fetchCheckOutDetails();
     }
   }, [cartItems, addresses]);
+
+  // Load Razorpay Script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  const [orderToken, setOrderToken] = useState()
+
+
 
   const initializePaymentPage = async () => {
     setInitialLoading(true);
@@ -109,11 +125,11 @@ export default function PaymentPage() {
       if (!response.ok) throw new Error('Failed to fetch cart data');
 
       const data = await response.json();
-      
+
       if (!data.data || data.data.length === 0) {
         throw new Error('Your cart is empty');
       }
-      
+
       setCartItems(data.data || []);
     } catch (err) {
       setError(err.message);
@@ -173,9 +189,10 @@ export default function PaymentPage() {
       );
 
       const data = await res.json();
-      
+
       if (data.success) {
         setDetails(data.data);
+        setOrderToken(data.orderToken)
         if (data.data.referralCode) {
           setReferralCode(data.data.referralCode);
         }
@@ -229,6 +246,212 @@ export default function PaymentPage() {
     }
   };
 
+  // Create Razorpay Order
+  const createRazorpayOrder = async () => {
+    // console.log(orderToken, "orderToken")
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/user/orders/createOrder`,
+        {
+          // amount: amount * 100, // Convert to paise
+          // currency: 'INR',
+          // receipt: `order_${Date.now()}`
+
+          orderToken,
+          paymentMethod: "Online"
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      console.log(res, "res")
+      if (res.data.success) {
+        return res.data.razorpayDetails;
+      } else {
+        throw new Error(res.data.message || "Failed to create Razorpay order");
+      }
+    } catch (error) {
+      console.error("Razorpay order creation failed:", error);
+      throw error;
+    }
+  };
+  const createWalletpayOrder = async () => {
+    // console.log(orderToken, "orderToken")
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/user/orders/createOrder`,
+        {
+          // amount: amount * 100, // Convert to paise
+          // currency: 'INR',
+          // receipt: `order_${Date.now()}`
+
+          orderToken,
+          paymentMethod: "Wallet"
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      console.log(res, "res")
+      if (res.data.success) {
+         setCheckoutSuccess(true);
+        setTimeout(() => {
+          Navigate('/orders');
+        }, 2000);
+       
+      } else {
+        throw new Error(res.data.message || "Failed to create  order");
+        setError(res.data.message )
+      }
+    } catch (error) {
+      console.error("Razorpay order creation failed:", error);
+      throw error;
+    }
+  };
+
+  // Verify Razorpay Payment
+  const verifyRazorpayPayment = async (paymentData) => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/user/orders/verifyPayment`,
+        paymentData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+
+      return res.data.success;
+    } catch (error) {
+      console.error("Payment verification failed:", error);
+      return false;
+    }
+  };
+
+  // Handle Razorpay Payment
+  const handleRazorpayPayment = async () => {
+    try {
+      const finalAmount = (checkoutDetails?.grandTotal || 0) - (referralDiscount || 0);
+
+      // Create Razorpay order
+      const razorpayOrder = await createRazorpayOrder();
+
+      console.log(razorpayOrder, "razorpayOrder")
+
+      const options = {
+        key: razorpayOrder.key_id, // Add your Razorpay Key ID in .env
+        amount: razorpayOrder.amount,
+        currency: razorpayOrder.currency,
+        name: 'ICHHAPURTI',
+        description: 'Order Payment',
+        image: "/logo-white.png",
+        order_id: razorpayOrder.razorpayOrderId,
+        handler: async function (response) {
+          // Payment successful
+          console.log(response, "resppo")
+          const isVerified = await verifyRazorpayPayment({
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            orderId: razorpayOrder.orderId
+          });
+
+          if (isVerified) {
+            setCheckoutLoading(false)
+              setCheckoutSuccess(true);
+        setTimeout(() => {
+          Navigate('/orders');
+        }, 2000);
+       
+            // Create order after successful payment
+            // await createOrderAfterPayment(response.razorpay_payment_id);
+          } else {
+            throw new Error('Payment verification failed');
+          }
+        },
+        prefill: {
+          name: user.name || '',
+          email: user.email || '',
+          contact: user.phone || ''
+        },
+        notes: {
+          address: addresses[addressIndex || 0]?.address || ''
+        },
+        theme: {
+          color: '#F59E0B' // Amber color
+        },
+        modal: {
+          ondismiss: function () {
+            setCheckoutLoading(false);
+            setError('Payment cancelled by user');
+            setTimeout(() => setError(null), 3000);
+          }
+        }
+      };
+
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } catch (error) {
+      console.error("Razorpay payment error:", error);
+      setError(error.message || 'Failed to initiate payment');
+      setTimeout(() => setError(null), 4000);
+      setCheckoutLoading(false);
+    }
+  };
+
+  // Create Order After Payment
+  const createOrderAfterPayment = async (paymentId = null) => {
+    const items = cartItems.map((item) => ({
+      productId: item.product._id,
+      quantity: item.quantity,
+    }));
+
+    const body = {
+      items,
+      shippingAddress: addresses[addressIndex || 0],
+      paymentMethod: selectedMethod,
+      shippingAmount: checkoutDetails?.shippingCharge || 0,
+      referralCode: applyDefault ? "" : referralCode,
+      ...(paymentId && { razorpayPaymentId: paymentId })
+    };
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/orders/createOrder`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body)
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.success) {
+        setCheckoutSuccess(true);
+        setTimeout(() => {
+          Navigate('/orders');
+        }, 2000);
+      } else {
+        throw new Error(data.message || 'Failed to create order');
+      }
+    } catch (error) {
+      console.error("Order creation error:", error);
+      throw error;
+    }
+  };
+
   const handleCheckout = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -250,48 +473,26 @@ export default function PaymentPage() {
     setCheckoutLoading(true);
     setError(null);
 
-    const items = cartItems.map((item) => ({
-      productId: item.product._id,
-      quantity: item.quantity,
-    }));
-
-    const body = {
-      items,
-      shippingAddress: addresses[addressIndex || 0],
-      paymentMethod: selectedMethod,
-      shippingAmount: checkoutDetails?.shippingCharge || 0,
-      referralCode: applyDefault ? "" : referralCode
-    };
-
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/user/orders/createOrder`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body)
+      if (selectedMethod === 'razorpay') {
+        // Handle Razorpay payment
+        await handleRazorpayPayment();
+      } else if (selectedMethod === 'wallet') {
+        // Check wallet balance
+        const finalAmount = (checkoutDetails?.grandTotal || 0) - (referralDiscount || 0);
+        if (balance < finalAmount) {
+          throw new Error('Insufficient wallet balance');
         }
-      );
-
-      const data = await res.json();
-
-      if (data.success) {
-        setCheckoutSuccess(true);
-        setTimeout(() => {
-          Navigate('/orders');
-        }, 2000);
+        await createWalletpayOrder();
       } else {
-        throw new Error(data.message || 'Failed to create order');
+        // COD or other methods
+        await createOrderAfterPayment();
       }
     } catch (error) {
       console.error("Checkout Error:", error);
       const errorMsg = error.response?.data?.message || error.message || t('payment.alerts.something_wrong');
       setError(errorMsg);
       setTimeout(() => setError(null), 4000);
-    } finally {
       setCheckoutLoading(false);
     }
   };
@@ -317,6 +518,18 @@ export default function PaymentPage() {
   const WalletIcon = () => (
     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
       <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
+    </svg>
+  );
+
+  const RazorpayIcon = () => (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="#3395FF">
+      <path d="M22.436 0l-11.91 7.773-1.174 4.276 6.625-4.297L11.65 24h4.391l6.395-24zM14.26 10.098L3.389 17.166 1.564 24h9.008l3.688-13.902z" />
+    </svg>
+  );
+
+  const CODIcon = () => (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M21 8V6H7v2h14zm0 8v-5H7v5h14zm0-12a2 2 0 012 2v10a2 2 0 01-2 2H7a2 2 0 01-2-2V6c0-1.11.89-2 2-2h14zM3 20h15v2H3a2 2 0 01-2-2V9h2v11z" />
     </svg>
   );
 
@@ -451,60 +664,55 @@ export default function PaymentPage() {
                 placeholder={t('payment.referral.placeholder')}
                 className="flex-1 px-4 py-4 bg-transparent text-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
-           {
-            !checkoutDetails?.referralCode &&
-               <button
-                onClick={() => handleApply(referralCode)}
-                disabled={codeApplied || applyingCode || !referralCode.trim()}
-                className="px-6 py-4 text-amber-400 hover:text-amber-300 font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-              >
-                {applyingCode ? (
-                  <>
-                    <Loader2 size={16} className="animate-spin" />
-                    Applying...
-                  </>
-                ) : codeApplied ? (
-                  'Applied'
-                ) : (
-                  t('payment.referral.apply')
-                )}
-              </button>
-           }
+              {
+                !checkoutDetails?.referralCode &&
+                <button
+                  onClick={() => handleApply(referralCode)}
+                  disabled={codeApplied || applyingCode || !referralCode.trim()}
+                  className="px-6 py-4 text-amber-400 hover:text-amber-300 font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {applyingCode ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      Applying...
+                    </>
+                  ) : codeApplied ? (
+                    'Applied'
+                  ) : (
+                    t('payment.referral.apply')
+                  )}
+                </button>
+              }
             </div>
           </div>
         </div>
 
         {/* Apply Default Checkbox */}
-
         {
-          !checkoutDetails?.referralCode  &&
-           <label className="flex items-center gap-3 mb-6 cursor-pointer group">
-
-
-          <div
-            onClick={() => {
-              const code = "Default Referral";
-              setReferralCode(code);
-              const newValue = !applyDefault;
-              setApplyDefault(newValue);
-              if (newValue) {
-                handleApply(code);
-              }
-            }}
-            className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${
-              applyDefault ? 'bg-amber-500 border-amber-500 scale-110' : 'border-gray-400 bg-slate-700 group-hover:border-amber-400'
-            }`}
-          >
-            {applyDefault && (
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-              </svg>
-            )}
-          </div>
-          <span className="text-white text-sm font-medium">{t('payment.referral.default')}</span>
-        </label>
+          !checkoutDetails?.referralCode &&
+          <label className="flex items-center gap-3 mb-6 cursor-pointer group">
+            <div
+              onClick={() => {
+                const code = "Default Referral";
+                setReferralCode(code);
+                const newValue = !applyDefault;
+                setApplyDefault(newValue);
+                if (newValue) {
+                  handleApply(code);
+                }
+              }}
+              className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${applyDefault ? 'bg-amber-500 border-amber-500 scale-110' : 'border-gray-400 bg-slate-700 group-hover:border-amber-400'
+                }`}
+            >
+              {applyDefault && (
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+            </div>
+            <span className="text-white text-sm font-medium">{t('payment.referral.default')}</span>
+          </label>
         }
-       
 
         {/* Payment Methods */}
         <div className="mb-6">
@@ -517,17 +725,15 @@ export default function PaymentPage() {
               <div
                 key={method.id}
                 onClick={() => setSelectedMethod(method.id)}
-                className={`flex items-center justify-between p-5 cursor-pointer transition-all hover:bg-slate-700/50 ${
-                  index !== paymentMethods.length - 1 ? 'border-b border-slate-700' : ''
-                } ${selectedMethod === method.id ? 'bg-amber-500/10' : ''}`}
+                className={`flex items-center justify-between p-5 cursor-pointer transition-all hover:bg-slate-700/50 ${index !== paymentMethods.length - 1 ? 'border-b border-slate-700' : ''
+                  } ${selectedMethod === method.id ? 'bg-amber-500/10' : ''}`}
               >
                 <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                    selectedMethod === method.id ? 'bg-amber-500/20' : 'bg-slate-700'
-                  }`}>
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${selectedMethod === method.id ? 'bg-amber-500/20' : 'bg-slate-700'
+                    }`}>
                     {method.icon === 'wallet' && <WalletIcon />}
-                    {method.icon === 'apple' && <AppleIcon />}
-                    {method.icon === 'google' && <GoogleIcon />}
+                    {method.icon === 'razorpay' && <RazorpayIcon />}
+                    {/* {method.icon === 'cod' && <CODIcon />} */}
                   </div>
                   <div>
                     <span className="text-white font-medium block">{method.name}</span>
@@ -538,9 +744,8 @@ export default function PaymentPage() {
                     )}
                   </div>
                 </div>
-                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
-                  selectedMethod === method.id ? 'border-amber-500 scale-110' : 'border-gray-500'
-                }`}>
+                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${selectedMethod === method.id ? 'border-amber-500 scale-110' : 'border-gray-500'
+                  }`}>
                   {selectedMethod === method.id && (
                     <div className="w-3 h-3 rounded-full bg-amber-500"></div>
                   )}
@@ -604,12 +809,12 @@ export default function PaymentPage() {
           {checkoutLoading ? (
             <>
               <Loader2 size={24} className="animate-spin" />
-              Processing Payment...
+              {selectedMethod === 'razorpay' ? 'Opening Payment Gateway...' : 'Processing Payment...'}
             </>
           ) : (
             <>
               <ShieldCheck size={24} />
-              {t('payment.checkout')}
+              {selectedMethod === 'razorpay' ? 'Pay with Razorpay' : t('payment.checkout')}
             </>
           )}
         </button>
@@ -618,6 +823,15 @@ export default function PaymentPage() {
         <p className="text-center text-gray-400 text-sm mt-4">
           By placing this order, you agree to our terms and conditions
         </p>
+
+        {selectedMethod === 'razorpay' && (
+          <div className="text-center mt-3 flex items-center justify-center gap-2">
+            <ShieldCheck size={16} className="text-green-400" />
+            <p className="text-gray-400 text-xs">
+              Secured by Razorpay - All major cards, UPI & Netbanking accepted
+            </p>
+          </div>
+        )}
       </div>
 
       <style jsx>{`

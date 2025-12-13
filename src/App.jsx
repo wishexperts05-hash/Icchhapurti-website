@@ -42,15 +42,15 @@ function App() {
 
   return (
     <>
-        <ScrollToTop />
+      <ScrollToTop />
       <Routes>
         {/* Public routes without layout */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-  <Route path="/" element={<SplashScreen />} />
+        <Route path="/" element={<SplashScreen />} />
         {/* Routes with layout */}
         <Route element={<Layout />}>
-        
+
           <Route path="/homePage" element={<HomePage />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />

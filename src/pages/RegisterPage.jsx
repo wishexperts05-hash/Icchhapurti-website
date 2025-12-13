@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Country, State, City } from 'country-state-city';
 import { Link, useNavigate } from "react-router-dom";
+import { MapPin, Loader } from 'lucide-react';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -23,12 +24,14 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState("");
   const [token, setToken] = useState("");
+  const [locationLoading, setLocationLoading] = useState(false);
+  const [locationError, setLocationError] = useState("");
 
   // Location data
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
-  const Navigate = useNavigate()
+  const Navigate = useNavigate();
 
   // Country codes with flags
   const countryCodes = [
@@ -77,7 +80,6 @@ const Register = () => {
       const countryStates = State.getStatesOfCountry(formData.countryIsoCode);
       setStates(countryStates);
       setCities([]);
-      setFormData(prev => ({ ...prev, stateIsoCode: "", state: "", city: "" }));
     }
   }, [formData.countryIsoCode]);
 
@@ -86,9 +88,414 @@ const Register = () => {
     if (formData.countryIsoCode && formData.stateIsoCode) {
       const stateCities = City.getCitiesOfState(formData.countryIsoCode, formData.stateIsoCode);
       setCities(stateCities);
-      setFormData(prev => ({ ...prev, city: "" }));
     }
   }, [formData.stateIsoCode]);
+
+  // Auto-detect location on component mount
+  useEffect(() => {
+    detectUserLocation();
+  }, [countries]);
+
+  // Helper function to find best matching state
+  const findBestMatchingState = (stateName, statesList) => {
+    if (!stateName || !statesList || statesList.length === 0) return null;
+
+    const normalizedSearchName = stateName.toLowerCase().trim();
+
+    // Try exact match first
+    let found = statesList.find(s => s.name.toLowerCase() === normalizedSearchName);
+    if (found) return found;
+
+    // Try contains match
+    found = statesList.find(s => 
+      s.name.toLowerCase().includes(normalizedSearchName) ||
+      normalizedSearchName.includes(s.name.toLowerCase())
+    );
+    if (found) return found;
+
+    // Try word-by-word match for compound names
+    const searchWords = normalizedSearchName.split(/[\s-]+/);
+    found = statesList.find(s => {
+      const stateWords = s.name.toLowerCase().split(/[\s-]+/);
+      return searchWords.some(word => stateWords.includes(word) && word.length > 3);
+    });
+
+    return found;
+  };
+
+  // Helper function to find best matching city
+  const findBestMatchingCity = (cityName, citiesList) => {
+    if (!cityName || !citiesList || citiesList.length === 0) return null;
+
+    const normalizedSearchName = cityName.toLowerCase().trim();
+
+    // Try exact match first
+    let found = citiesList.find(c => c.name.toLowerCase() === normalizedSearchName);
+    if (found) return found;
+
+    // Try starts with
+    found = citiesList.find(c => 
+      c.name.toLowerCase().startsWith(normalizedSearchName) ||
+      normalizedSearchName.startsWith(c.name.toLowerCase())
+    );
+    if (found) return found;
+
+    // Try contains
+    found = citiesList.find(c => 
+      c.name.toLowerCase().includes(normalizedSearchName) ||
+      normalizedSearchName.includes(c.name.toLowerCase())
+    );
+    if (found) return found;
+
+    // Try removing common suffixes/prefixes
+    const cleanSearch = normalizedSearchName
+      .replace(/\s+(city|town|district|municipality)$/i, '')
+      .trim();
+    
+    found = citiesList.find(c => {
+      const cleanCity = c.name.toLowerCase()
+        .replace(/\s+(city|town|district|municipality)$/i, '')
+        .trim();
+      return cleanCity === cleanSearch || 
+             cleanCity.includes(cleanSearch) || 
+             cleanSearch.includes(cleanCity);
+    });
+
+    return found;
+  };
+
+  // Function to detect user's location using IP (fallback method - no permission needed)
+  const detectLocationByIP = async () => {
+    try {
+      // Try multiple IP geolocation services for better accuracy
+      let data = null;
+      
+      // Try ipapi.co first (most reliable)
+      try {
+        const response1 = await fetch('https://ipapi.co/json/');
+        data = await response1.json();
+        console.log("📍 ipapi.co detected:", data);
+      } catch (e) {
+        console.log("ipapi.co failed, trying backup...");
+      }
+
+      // If first fails, try ip-api.com as backup
+      if (!data || data.error) {
+        try {
+          const response2 = await fetch('http://ip-api.com/json/');
+          const data2 = await response2.json();
+          console.log("📍 ip-api.com detected:", data2);
+          
+          // Convert ip-api.com format to match ipapi.co
+          data = {
+            country_code: data2.countryCode,
+            country_name: data2.country,
+            region: data2.regionName,
+            city: data2.city,
+            postal: data2.zip,
+            latitude: data2.lat,
+            longitude: data2.lon
+          };
+        } catch (e2) {
+          console.log("ip-api.com also failed");
+        }
+      }
+
+      if (!data || !data.country_code) {
+        console.error("❌ No location data available from any service");
+        return false;
+      }
+
+      const countryCode = data.country_code?.toUpperCase();
+      const countryName = data.country_name;
+      const stateName = data.region;
+      const cityName = data.city;
+      const postalCode = data.postal;
+
+      console.log("✅ Final Detected Location:", { 
+        countryCode, 
+        countryName, 
+        stateName, 
+        cityName, 
+        postalCode 
+      });
+
+      // Find country in the list
+      const foundCountry = countries.find(
+        c => c.isoCode === countryCode || c.name.toLowerCase() === countryName?.toLowerCase()
+      );
+
+      if (foundCountry) {
+        console.log("✅ Matched Country:", foundCountry.name, `(${foundCountry.isoCode})`);
+
+        // Load states for the country
+        const countryStates = State.getStatesOfCountry(foundCountry.isoCode);
+        console.log("📋 Available States in", foundCountry.name, ":", countryStates.map(s => s.name));
+
+        // Find and set state using improved matching
+        let foundState = null;
+        if (stateName) {
+          foundState = findBestMatchingState(stateName, countryStates);
+          
+          if (foundState) {
+            console.log("✅ Matched State:", foundState.name, `(${foundState.isoCode})`);
+          } else {
+            console.log("❌ Could not match state:", stateName);
+            console.log("💡 Available states:", countryStates.slice(0, 10).map(s => s.name).join(", "));
+          }
+        }
+
+        // Update form data
+        setFormData(prev => ({
+          ...prev,
+          countryIsoCode: foundCountry.isoCode,
+          country: foundCountry.name,
+          stateIsoCode: foundState?.isoCode || "",
+          state: foundState?.name || "",
+          pinCode: postalCode || prev.pinCode
+        }));
+
+        setStates(countryStates);
+
+        // Load and find city
+        if (foundState) {
+          const stateCities = City.getCitiesOfState(foundCountry.isoCode, foundState.isoCode);
+          console.log("📋 Available Cities in", foundState.name, ":", stateCities.length, "cities");
+          console.log("💡 Sample cities:", stateCities.slice(0, 20).map(c => c.name).join(", "));
+          setCities(stateCities);
+
+          if (cityName) {
+            const foundCity = findBestMatchingCity(cityName, stateCities);
+
+            if (foundCity) {
+              console.log("✅ Matched City:", foundCity.name);
+              setFormData(prev => ({
+                ...prev,
+                city: foundCity.name
+              }));
+            } else {
+              console.log("❌ Could not match city:", cityName);
+              console.log("💡 Setting detected city name anyway");
+              // If city not found in database, still set the detected name
+              setFormData(prev => ({
+                ...prev,
+                city: cityName
+              }));
+            }
+          }
+        } else if (cityName) {
+          console.log("⚠️ State not matched, but setting city anyway:", cityName);
+          // If state not found but we have city name, just set it
+          setFormData(prev => ({
+            ...prev,
+            city: cityName
+          }));
+        }
+
+        return true;
+      } else {
+        console.error("❌ Could not find country in database:", countryCode, countryName);
+      }
+      return false;
+    } catch (error) {
+      console.error("❌ IP-based location error:", error);
+      return false;
+    }
+  };
+
+  // Function to detect user's location with GPS (more accurate but requires permission)
+  const detectLocationByGPS = async () => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error("Geolocation not supported"));
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          
+          try {
+            // Using Nominatim (OpenStreetMap) - free, no API key required
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
+              {
+                headers: {
+                  'User-Agent': 'RegistrationApp/1.0' // Required by Nominatim
+                }
+              }
+            );
+            
+            const data = await response.json();
+            
+            console.log("GPS Location Data:", data); // Debug log
+            
+            if (data && data.address) {
+              const address = data.address;
+              
+              // Extract location data
+              const countryName = address.country;
+              const countryCode = address.country_code?.toUpperCase();
+              const stateName = address.state || address.state_district || address.region;
+              const cityName = address.city || address.town || address.village || address.municipality || address.suburb;
+              const postalCode = address.postcode;
+
+              console.log("GPS Detected Location:", { countryCode, countryName, stateName, cityName, postalCode }); // Debug log
+
+              // Find country in the list
+              const foundCountry = countries.find(
+                c => c.isoCode === countryCode || c.name.toLowerCase() === countryName?.toLowerCase()
+              );
+
+              if (foundCountry) {
+                console.log("GPS Found Country:", foundCountry); // Debug log
+
+                // Load states for the country
+                const countryStates = State.getStatesOfCountry(foundCountry.isoCode);
+                console.log("GPS Available States:", countryStates.map(s => s.name)); // Debug log
+
+                // Find and set state using improved matching
+                let foundState = null;
+                if (stateName) {
+                  foundState = findBestMatchingState(stateName, countryStates);
+                  console.log("GPS Found State:", foundState); // Debug log
+                }
+
+                // Update form data
+                setFormData(prev => ({
+                  ...prev,
+                  countryIsoCode: foundCountry.isoCode,
+                  country: foundCountry.name,
+                  stateIsoCode: foundState?.isoCode || "",
+                  state: foundState?.name || "",
+                  pinCode: postalCode || prev.pinCode
+                }));
+
+                setStates(countryStates);
+
+                // Load and find city
+                if (foundState) {
+                  const stateCities = City.getCitiesOfState(foundCountry.isoCode, foundState.isoCode);
+                  console.log("GPS Available Cities:", stateCities.map(c => c.name)); // Debug log
+                  setCities(stateCities);
+
+                  if (cityName) {
+                    const foundCity = findBestMatchingCity(cityName, stateCities);
+                    console.log("GPS Found City:", foundCity); // Debug log
+
+                    if (foundCity) {
+                      setFormData(prev => ({
+                        ...prev,
+                        city: foundCity.name
+                      }));
+                    } else {
+                      // If city not found in database, still set the detected name
+                      setFormData(prev => ({
+                        ...prev,
+                        city: cityName
+                      }));
+                    }
+                  }
+                } else if (cityName) {
+                  // If state not found but we have city name, just set it
+                  setFormData(prev => ({
+                    ...prev,
+                    city: cityName
+                  }));
+                }
+              }
+              resolve(true);
+            } else {
+              reject(new Error("No data received"));
+            }
+          } catch (error) {
+            console.error("Reverse geocoding error:", error);
+            reject(error);
+          }
+        },
+        (error) => {
+          reject(error);
+        },
+        {
+          enableHighAccuracy: false, // Changed to false for faster response
+          timeout: 5000, // Reduced timeout to 5 seconds
+          maximumAge: 300000 // Cache position for 5 minutes
+        }
+      );
+    });
+  };
+
+  // Main function to detect location (tries GPS first, falls back to IP)
+  const detectUserLocation = async () => {
+    if (countries.length === 0) return;
+
+    setLocationLoading(true);
+    setLocationError("");
+
+    try {
+      console.log("🎯 Starting location detection - GPS first, IP fallback");
+      
+      // First try GPS-based detection (most accurate, requires permission)
+      try {
+        console.log("🛰️ Trying GPS location...");
+        await detectLocationByGPS();
+        console.log("✅ GPS detection successful!");
+        setLocationLoading(false);
+        return;
+      } catch (gpsError) {
+        console.error("⚠️ GPS location failed:", gpsError);
+        
+        // Handle specific GPS errors
+        let errorMessage = "";
+        if (gpsError.code) {
+          switch(gpsError.code) {
+            case 1: // PERMISSION_DENIED
+              errorMessage = "GPS permission denied. Trying IP-based location...";
+              console.log("❌ GPS Permission Denied - Falling back to IP");
+              break;
+            case 2: // POSITION_UNAVAILABLE
+              errorMessage = "GPS unavailable. Trying IP-based location...";
+              console.log("❌ GPS Unavailable - Falling back to IP");
+              break;
+            case 3: // TIMEOUT
+              errorMessage = "GPS timed out. Trying IP-based location...";
+              console.log("❌ GPS Timeout - Falling back to IP");
+              break;
+            default:
+              errorMessage = "GPS failed. Trying IP-based location...";
+              console.log("❌ GPS Failed - Falling back to IP");
+          }
+        } else {
+          errorMessage = "GPS error. Trying IP-based location...";
+          console.log("❌ GPS Error - Falling back to IP");
+        }
+        
+        setLocationError(errorMessage);
+
+        // Fallback to IP-based detection
+        console.log("📡 Trying IP-based location as fallback...");
+        const ipSuccess = await detectLocationByIP();
+        
+        if (ipSuccess) {
+          console.log("✅ IP-based detection successful!");
+          setLocationError("Using approximate location (IP-based)");
+        } else {
+          console.log("❌ IP-based detection also failed");
+          setLocationError("Could not detect location. Please select manually.");
+        }
+      }
+    } catch (error) {
+      console.error("❌ Location detection error:", error);
+      setLocationError("Could not detect location automatically. Please select manually.");
+    } finally {
+      setLocationLoading(false);
+    }
+  };
+
+  // Manual location detection button
+  const handleDetectLocation = () => {
+    detectUserLocation();
+  };
 
   // Validation rules
   const validate = () => {
@@ -234,7 +641,7 @@ const Register = () => {
       if (data.success) {
         setToken(data.registrationToken);
         setShowOtpModal(true);
-        alert(data.otp)
+        alert(data.otp);
       } else {
         setApiError(data.message || "Failed to send OTP. Please try again.");
       }
@@ -246,14 +653,11 @@ const Register = () => {
     }
   };
 
-
-
-
   const syncLocalCartToServer = async (token) => {
     try {
       const localCart = JSON.parse(localStorage.getItem("cartItems")) || [];
 
-      if (localCart.length === 0) return; // nothing to sync
+      if (localCart.length === 0) return;
 
       for (let item of localCart) {
         await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/addToCart`, {
@@ -270,17 +674,12 @@ const Register = () => {
         });
       }
 
-      // Clear localStorage after syncing
       localStorage.removeItem("cartItems");
-
-      // Update header / cart count
       window.dispatchEvent(new CustomEvent("cartUpdated"));
-
     } catch (error) {
       console.error("Error syncing local cart:", error);
     }
   };
-
 
   // Verify OTP and Register
   const handleVerifyOtp = async () => {
@@ -308,15 +707,13 @@ const Register = () => {
       const data = await response.json();
 
       if (data.success) {
-        localStorage.setItem("user", JSON.stringify(data.data))
-        localStorage.setItem("token", data.token)
+        localStorage.setItem("user", JSON.stringify(data.data));
+        localStorage.setItem("token", data.token);
 
-        syncLocalCartToServer(data.token)
-
+        syncLocalCartToServer(data.token);
 
         setShowOtpModal(false);
         alert("Registration Successful! Welcome!");
-        setShowOtpModal(false);
 
         setFormData({
           name: "",
@@ -333,7 +730,7 @@ const Register = () => {
         });
 
         setOtp("");
-        Navigate("/homePage")
+        Navigate("/homePage");
       } else {
         setApiError(data.message || "Invalid OTP. Please try again.");
       }
@@ -349,7 +746,6 @@ const Register = () => {
     <div className="flex min-h-screen w-full">
       {/* LEFT SIDE - VIDEO WITH LOGO */}
       <div className="hidden lg:block w-1/2 h-screen sticky top-0 relative">
-        {/* Logo positioned on top - centered */}
         <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-10">
           <img
             src="/logo-white.png"
@@ -358,7 +754,6 @@ const Register = () => {
           />
         </div>
 
-        {/* Background Video */}
         <video
           autoPlay
           loop
@@ -372,7 +767,7 @@ const Register = () => {
       </div>
 
       {/* RIGHT SIDE - FORM */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50  px-4">
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50 px-4">
         <div className="w-full max-w-lg bg-white shadow-2xl rounded-2xl p-8 md:p-10 my-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-800 mb-2">
@@ -380,6 +775,20 @@ const Register = () => {
             </h2>
             <p className="text-gray-600 text-sm">Join us today and get started</p>
           </div>
+
+          {/* Location Detection Alert */}
+          {locationLoading && (
+            <div className="bg-blue-50 border-l-4 border-blue-500 text-blue-700 px-4 py-3 rounded mb-4 flex items-center">
+              <Loader className="animate-spin mr-2" size={18} />
+              <p className="text-sm">Detecting your location...</p>
+            </div>
+          )}
+
+          {locationError && (
+            <div className="bg-yellow-50 border-l-4 border-yellow-500 text-yellow-700 px-4 py-3 rounded mb-4">
+              <p className="text-sm">{locationError}</p>
+            </div>
+          )}
 
           {apiError && (
             <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded mb-6">
@@ -451,11 +860,22 @@ const Register = () => {
               {errors.phoneNumber && <p className="text-red-500 text-xs mt-1">{errors.phoneNumber}</p>}
             </div>
 
-            {/* Country */}
+            {/* Country with Auto-detect Button */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Country *
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-sm font-medium text-gray-700">
+                  Country *
+                </label>
+                <button
+                  type="button"
+                  onClick={handleDetectLocation}
+                  disabled={locationLoading}
+                  className="text-xs text-yellow-600 hover:text-yellow-700 font-semibold flex items-center gap-1 disabled:text-gray-400"
+                >
+                  <MapPin size={14} />
+                  {locationLoading ? 'Detecting...' : 'Auto-detect'}
+                </button>
+              </div>
               <select
                 value={formData.countryIsoCode}
                 onChange={handleCountryChange}
@@ -574,20 +994,20 @@ const Register = () => {
               </Link>
             </p>
 
-             <button
-          type="button"
-          onClick={() => Navigate("/homePage")}
-          className="mt-3 w-full text-sm font-semibold text-gray-700 border border-gray-300 py-2 rounded-md hover:bg-gray-100 transition-colors"
-        >
-          Back to Home
-        </button>
+            <button
+              type="button"
+              onClick={() => Navigate("/homePage")}
+              className="mt-3 w-full text-sm font-semibold text-gray-700 border border-gray-300 py-2 rounded-md hover:bg-gray-100 transition-colors"
+            >
+              Back to Home
+            </button>
           </div>
         </div>
       </div>
 
       {/* OTP MODAL */}
       {showOtpModal && (
-        <div className="fixed inset-0  bg-opacity-60  flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-opacity-60 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl transform transition-all">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-2xl font-bold text-gray-800">Verify OTP</h3>
