@@ -96,292 +96,85 @@ const Register = () => {
     detectUserLocation();
   }, [countries]);
 
-  // Helper function to find best matching state
-  const findBestMatchingState = (stateName, statesList) => {
-    if (!stateName || !statesList || statesList.length === 0) return null;
+  // Function to detect user's location
+  const detectUserLocation = async () => {
+    if (countries.length === 0) return;
 
-    const normalizedSearchName = stateName.toLowerCase().trim();
+    setLocationLoading(true);
+    setLocationError("");
 
-    // Try exact match first
-    let found = statesList.find(s => s.name.toLowerCase() === normalizedSearchName);
-    if (found) return found;
-
-    // Try contains match
-    found = statesList.find(s => 
-      s.name.toLowerCase().includes(normalizedSearchName) ||
-      normalizedSearchName.includes(s.name.toLowerCase())
-    );
-    if (found) return found;
-
-    // Try word-by-word match for compound names
-    const searchWords = normalizedSearchName.split(/[\s-]+/);
-    found = statesList.find(s => {
-      const stateWords = s.name.toLowerCase().split(/[\s-]+/);
-      return searchWords.some(word => stateWords.includes(word) && word.length > 3);
-    });
-
-    return found;
-  };
-
-  // Helper function to find best matching city
-  const findBestMatchingCity = (cityName, citiesList) => {
-    if (!cityName || !citiesList || citiesList.length === 0) return null;
-
-    const normalizedSearchName = cityName.toLowerCase().trim();
-
-    // Try exact match first
-    let found = citiesList.find(c => c.name.toLowerCase() === normalizedSearchName);
-    if (found) return found;
-
-    // Try starts with
-    found = citiesList.find(c => 
-      c.name.toLowerCase().startsWith(normalizedSearchName) ||
-      normalizedSearchName.startsWith(c.name.toLowerCase())
-    );
-    if (found) return found;
-
-    // Try contains
-    found = citiesList.find(c => 
-      c.name.toLowerCase().includes(normalizedSearchName) ||
-      normalizedSearchName.includes(c.name.toLowerCase())
-    );
-    if (found) return found;
-
-    // Try removing common suffixes/prefixes
-    const cleanSearch = normalizedSearchName
-      .replace(/\s+(city|town|district|municipality)$/i, '')
-      .trim();
-    
-    found = citiesList.find(c => {
-      const cleanCity = c.name.toLowerCase()
-        .replace(/\s+(city|town|district|municipality)$/i, '')
-        .trim();
-      return cleanCity === cleanSearch || 
-             cleanCity.includes(cleanSearch) || 
-             cleanSearch.includes(cleanCity);
-    });
-
-    return found;
-  };
-
-  // Function to detect user's location using IP (fallback method - no permission needed)
-  const detectLocationByIP = async () => {
-    try {
-      // Try multiple IP geolocation services for better accuracy
-      let data = null;
-      
-      // Try ipapi.co first (most reliable)
-      try {
-        const response1 = await fetch('https://ipapi.co/json/');
-        data = await response1.json();
-        console.log("📍 ipapi.co detected:", data);
-      } catch (e) {
-        console.log("ipapi.co failed, trying backup...");
-      }
-
-      // If first fails, try ip-api.com as backup
-      if (!data || data.error) {
-        try {
-          const response2 = await fetch('http://ip-api.com/json/');
-          const data2 = await response2.json();
-          console.log("📍 ip-api.com detected:", data2);
-          
-          // Convert ip-api.com format to match ipapi.co
-          data = {
-            country_code: data2.countryCode,
-            country_name: data2.country,
-            region: data2.regionName,
-            city: data2.city,
-            postal: data2.zip,
-            latitude: data2.lat,
-            longitude: data2.lon
-          };
-        } catch (e2) {
-          console.log("ip-api.com also failed");
-        }
-      }
-
-      if (!data || !data.country_code) {
-        console.error("❌ No location data available from any service");
-        return false;
-      }
-
-      const countryCode = data.country_code?.toUpperCase();
-      const countryName = data.country_name;
-      const stateName = data.region;
-      const cityName = data.city;
-      const postalCode = data.postal;
-
-      console.log("✅ Final Detected Location:", { 
-        countryCode, 
-        countryName, 
-        stateName, 
-        cityName, 
-        postalCode 
-      });
-
-      // Find country in the list
-      const foundCountry = countries.find(
-        c => c.isoCode === countryCode || c.name.toLowerCase() === countryName?.toLowerCase()
-      );
-
-      if (foundCountry) {
-        console.log("✅ Matched Country:", foundCountry.name, `(${foundCountry.isoCode})`);
-
-        // Load states for the country
-        const countryStates = State.getStatesOfCountry(foundCountry.isoCode);
-        console.log("📋 Available States in", foundCountry.name, ":", countryStates.map(s => s.name));
-
-        // Find and set state using improved matching
-        let foundState = null;
-        if (stateName) {
-          foundState = findBestMatchingState(stateName, countryStates);
-          
-          if (foundState) {
-            console.log("✅ Matched State:", foundState.name, `(${foundState.isoCode})`);
-          } else {
-            console.log("❌ Could not match state:", stateName);
-            console.log("💡 Available states:", countryStates.slice(0, 10).map(s => s.name).join(", "));
-          }
-        }
-
-        // Update form data
-        setFormData(prev => ({
-          ...prev,
-          countryIsoCode: foundCountry.isoCode,
-          country: foundCountry.name,
-          stateIsoCode: foundState?.isoCode || "",
-          state: foundState?.name || "",
-          pinCode: postalCode || prev.pinCode
-        }));
-
-        setStates(countryStates);
-
-        // Load and find city
-        if (foundState) {
-          const stateCities = City.getCitiesOfState(foundCountry.isoCode, foundState.isoCode);
-          console.log("📋 Available Cities in", foundState.name, ":", stateCities.length, "cities");
-          console.log("💡 Sample cities:", stateCities.slice(0, 20).map(c => c.name).join(", "));
-          setCities(stateCities);
-
-          if (cityName) {
-            const foundCity = findBestMatchingCity(cityName, stateCities);
-
-            if (foundCity) {
-              console.log("✅ Matched City:", foundCity.name);
-              setFormData(prev => ({
-                ...prev,
-                city: foundCity.name
-              }));
-            } else {
-              console.log("❌ Could not match city:", cityName);
-              console.log("💡 Setting detected city name anyway");
-              // If city not found in database, still set the detected name
-              setFormData(prev => ({
-                ...prev,
-                city: cityName
-              }));
-            }
-          }
-        } else if (cityName) {
-          console.log("⚠️ State not matched, but setting city anyway:", cityName);
-          // If state not found but we have city name, just set it
-          setFormData(prev => ({
-            ...prev,
-            city: cityName
-          }));
-        }
-
-        return true;
-      } else {
-        console.error("❌ Could not find country in database:", countryCode, countryName);
-      }
-      return false;
-    } catch (error) {
-      console.error("❌ IP-based location error:", error);
-      return false;
+    // Check if geolocation is supported
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation is not supported by your browser");
+      setLocationLoading(false);
+      return;
     }
-  };
 
-  // Function to detect user's location with GPS (more accurate but requires permission)
-  const detectLocationByGPS = async () => {
-    return new Promise((resolve, reject) => {
-      if (!navigator.geolocation) {
-        reject(new Error("Geolocation not supported"));
-        return;
-      }
-
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        console.log(latitude, longitude ,"latitude, longitude ")
+        try {
+          // Use OpenCage Geocoding API (free tier available)
+          // You can also use other services like Google Geocoding, Nominatim, etc.
+          const response = await fetch(
+            `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${import.meta.env.VITE_OPENCAGE_API_KEY || 'YOUR_API_KEY_HERE'}`
+          );
           
-          try {
-            // Using Nominatim (OpenStreetMap) - free, no API key required
-            const response = await fetch(
-              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
-              {
-                headers: {
-                  'User-Agent': 'RegistrationApp/1.0' // Required by Nominatim
-                }
-              }
+          const data = await response.json();
+          
+          if (data.results && data.results.length > 0) {
+            const result = data.results[0];
+            const components = result.components;
+            
+            // Extract location data
+            const countryName = components.country;
+            const countryCode = components.country_code?.toUpperCase();
+            const stateName = components.state || components.state_district;
+            const cityName = components.city || components.town || components.village || components.suburb;
+            const postalCode = components.postcode;
+
+            // Find country in the list
+            const foundCountry = countries.find(
+              c => c.isoCode === countryCode || c.name.toLowerCase() === countryName?.toLowerCase()
             );
-            
-            const data = await response.json();
-            
-            console.log("GPS Location Data:", data); // Debug log
-            
-            if (data && data.address) {
-              const address = data.address;
-              
-              // Extract location data
-              const countryName = address.country;
-              const countryCode = address.country_code?.toUpperCase();
-              const stateName = address.state || address.state_district || address.region;
-              const cityName = address.city || address.town || address.village || address.municipality || address.suburb;
-              const postalCode = address.postcode;
 
-              console.log("GPS Detected Location:", { countryCode, countryName, stateName, cityName, postalCode }); // Debug log
+            if (foundCountry) {
+              // Update country
+              setFormData(prev => ({
+                ...prev,
+                countryIsoCode: foundCountry.isoCode,
+                country: foundCountry.name,
+                pinCode: postalCode || prev.pinCode
+              }));
 
-              // Find country in the list
-              const foundCountry = countries.find(
-                c => c.isoCode === countryCode || c.name.toLowerCase() === countryName?.toLowerCase()
-              );
+              // Load states for the country
+              const countryStates = State.getStatesOfCountry(foundCountry.isoCode);
+              setStates(countryStates);
 
-              if (foundCountry) {
-                console.log("GPS Found Country:", foundCountry); // Debug log
+              // Find and set state
+              if (stateName) {
+                const foundState = countryStates.find(
+                  s => s.name.toLowerCase() === stateName.toLowerCase() ||
+                       s.name.toLowerCase().includes(stateName.toLowerCase())
+                );
 
-                // Load states for the country
-                const countryStates = State.getStatesOfCountry(foundCountry.isoCode);
-                console.log("GPS Available States:", countryStates.map(s => s.name)); // Debug log
-
-                // Find and set state using improved matching
-                let foundState = null;
-                if (stateName) {
-                  foundState = findBestMatchingState(stateName, countryStates);
-                  console.log("GPS Found State:", foundState); // Debug log
-                }
-
-                // Update form data
-                setFormData(prev => ({
-                  ...prev,
-                  countryIsoCode: foundCountry.isoCode,
-                  country: foundCountry.name,
-                  stateIsoCode: foundState?.isoCode || "",
-                  state: foundState?.name || "",
-                  pinCode: postalCode || prev.pinCode
-                }));
-
-                setStates(countryStates);
-
-                // Load and find city
                 if (foundState) {
+                  setFormData(prev => ({
+                    ...prev,
+                    stateIsoCode: foundState.isoCode,
+                    state: foundState.name
+                  }));
+
+                  // Load cities for the state
                   const stateCities = City.getCitiesOfState(foundCountry.isoCode, foundState.isoCode);
-                  console.log("GPS Available Cities:", stateCities.map(c => c.name)); // Debug log
                   setCities(stateCities);
 
+                  // Find and set city
                   if (cityName) {
-                    const foundCity = findBestMatchingCity(cityName, stateCities);
-                    console.log("GPS Found City:", foundCity); // Debug log
+                    const foundCity = stateCities.find(
+                      c => c.name.toLowerCase() === cityName.toLowerCase()
+                    );
 
                     if (foundCity) {
                       setFormData(prev => ({
@@ -389,107 +182,49 @@ const Register = () => {
                         city: foundCity.name
                       }));
                     } else {
-                      // If city not found in database, still set the detected name
+                      // If exact city not found, just set the name
                       setFormData(prev => ({
                         ...prev,
                         city: cityName
                       }));
                     }
                   }
-                } else if (cityName) {
-                  // If state not found but we have city name, just set it
-                  setFormData(prev => ({
-                    ...prev,
-                    city: cityName
-                  }));
                 }
               }
-              resolve(true);
-            } else {
-              reject(new Error("No data received"));
             }
-          } catch (error) {
-            console.error("Reverse geocoding error:", error);
-            reject(error);
           }
-        },
-        (error) => {
-          reject(error);
-        },
-        {
-          enableHighAccuracy: false, // Changed to false for faster response
-          timeout: 5000, // Reduced timeout to 5 seconds
-          maximumAge: 300000 // Cache position for 5 minutes
+        } catch (error) {
+          console.error("Reverse geocoding error:", error);
+          setLocationError("Could not detect location automatically");
+        } finally {
+          setLocationLoading(false);
         }
-      );
-    });
-  };
-
-  // Main function to detect location (tries GPS first, falls back to IP)
-  const detectUserLocation = async () => {
-    if (countries.length === 0) return;
-
-    setLocationLoading(true);
-    setLocationError("");
-
-    try {
-      console.log("🎯 Starting location detection - GPS first, IP fallback");
-      
-      // First try GPS-based detection (most accurate, requires permission)
-      try {
-        console.log("🛰️ Trying GPS location...");
-        await detectLocationByGPS();
-        console.log("✅ GPS detection successful!");
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+        let errorMsg = "Unable to get your location";
+        
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            errorMsg = "Location permission denied. Please enable location access.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMsg = "Location information unavailable";
+            break;
+          case error.TIMEOUT:
+            errorMsg = "Location request timed out";
+            break;
+        }
+        
+        setLocationError(errorMsg);
         setLocationLoading(false);
-        return;
-      } catch (gpsError) {
-        console.error("⚠️ GPS location failed:", gpsError);
-        
-        // Handle specific GPS errors
-        let errorMessage = "";
-        if (gpsError.code) {
-          switch(gpsError.code) {
-            case 1: // PERMISSION_DENIED
-              errorMessage = "GPS permission denied. Trying IP-based location...";
-              console.log("❌ GPS Permission Denied - Falling back to IP");
-              break;
-            case 2: // POSITION_UNAVAILABLE
-              errorMessage = "GPS unavailable. Trying IP-based location...";
-              console.log("❌ GPS Unavailable - Falling back to IP");
-              break;
-            case 3: // TIMEOUT
-              errorMessage = "GPS timed out. Trying IP-based location...";
-              console.log("❌ GPS Timeout - Falling back to IP");
-              break;
-            default:
-              errorMessage = "GPS failed. Trying IP-based location...";
-              console.log("❌ GPS Failed - Falling back to IP");
-          }
-        } else {
-          errorMessage = "GPS error. Trying IP-based location...";
-          console.log("❌ GPS Error - Falling back to IP");
-        }
-        
-        setLocationError(errorMessage);
-
-        // Fallback to IP-based detection
-        console.log("📡 Trying IP-based location as fallback...");
-        const ipSuccess = await detectLocationByIP();
-        
-        if (ipSuccess) {
-          console.log("✅ IP-based detection successful!");
-          setLocationError("Using approximate location (IP-based)");
-        } else {
-          console.log("❌ IP-based detection also failed");
-          setLocationError("Could not detect location. Please select manually.");
-        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
       }
-    } catch (error) {
-      console.error("❌ Location detection error:", error);
-      setLocationError("Could not detect location automatically. Please select manually.");
-    } finally {
-      setLocationLoading(false);
-    }
+    );
   };
 
   // Manual location detection button
