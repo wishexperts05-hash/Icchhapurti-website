@@ -502,39 +502,46 @@ const Register = () => {
       </div>
 
       {/* RIGHT SIDE - FORM */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50 px-4">
-        <div className="w-full max-w-lg bg-white shadow-2xl rounded-2xl p-8 md:p-10 my-8">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">
+     <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50 px-3 sm:px-4 py-6 sm:py-8">
+        <div className="w-full max-w-lg bg-white shadow-lg sm:shadow-2xl rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 lg:p-10">
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex justify-center mb-4">
+            <div className="h-16 w-24 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-lg">LOGO</span>
+            </div>
+          </div>
+
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
               Create Account
             </h2>
-            <p className="text-gray-600 text-sm">Join us today and get started</p>
+            <p className="text-gray-600 text-xs sm:text-sm">Join us today and get started</p>
           </div>
 
           {/* Location Detection Alert */}
           {locationLoading && (
-            <div className="bg-blue-50 border-l-4 border-blue-500 text-blue-700 px-4 py-3 rounded mb-4 flex items-center">
-              <Loader className="animate-spin mr-2" size={18} />
-              <p className="text-sm">Detecting your location...</p>
+            <div className="bg-blue-50 border-l-4 border-blue-500 text-blue-700 px-3 py-2 sm:px-4 sm:py-3 rounded mb-4 flex items-center text-xs sm:text-sm">
+              <Loader className="animate-spin mr-2 flex-shrink-0" size={16} />
+              <p>Detecting your location...</p>
             </div>
           )}
 
           {locationError && (
-            <div className="bg-yellow-50 border-l-4 border-yellow-500 text-yellow-700 px-4 py-3 rounded mb-4">
-              <p className="text-sm">{locationError}</p>
+            <div className="bg-yellow-50 border-l-4 border-yellow-500 text-yellow-700 px-3 py-2 sm:px-4 sm:py-3 rounded mb-4 text-xs sm:text-sm">
+              <p>{locationError}</p>
             </div>
           )}
 
           {apiError && (
-            <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded mb-6">
-              <p className="text-sm">{apiError}</p>
+            <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-3 py-2 sm:px-4 sm:py-3 rounded mb-4 text-xs sm:text-sm">
+              <p>{apiError}</p>
             </div>
           )}
 
-          <form onSubmit={handleGetOtp} className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {/* Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Full Name *
               </label>
               <input
@@ -542,7 +549,7 @@ const Register = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className={`w-full border ${errors.name ? 'border-red-500' : 'border-gray-300'} px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition`}
+                className={`w-full border ${errors.name ? 'border-red-500' : 'border-gray-300'} px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition`}
                 placeholder="Enter your full name"
               />
               {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
@@ -550,7 +557,7 @@ const Register = () => {
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Email Address *
               </label>
               <input
@@ -558,7 +565,7 @@ const Register = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={`w-full border ${errors.email ? 'border-red-500' : 'border-gray-300'} px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition`}
+                className={`w-full border ${errors.email ? 'border-red-500' : 'border-gray-300'} px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition`}
                 placeholder="your.email@example.com"
               />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
@@ -566,7 +573,7 @@ const Register = () => {
 
             {/* Phone Number with Country Code */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Phone Number *
               </label>
               <div className="flex gap-2">
@@ -574,7 +581,7 @@ const Register = () => {
                   name="countryCode"
                   value={formData.countryCode}
                   onChange={handleChange}
-                  className="w-32 border border-gray-300 px-3 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition"
+                  className="w-20 sm:w-28 border border-gray-300 px-2 py-2 sm:px-3 sm:py-2.5 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition"
                 >
                   {countryCodes.map((cc) => (
                     <option key={cc.code} value={cc.code}>
@@ -583,22 +590,22 @@ const Register = () => {
                   ))}
                 </select>
                 <input
-                  type="text"
+                  type="tel"
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleChange}
                   maxLength="10"
-                  className={`flex-1 border ${errors.phoneNumber ? 'border-red-500' : 'border-gray-300'} px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition`}
-                  placeholder="10-digit mobile number"
+                  className={`flex-1 border ${errors.phoneNumber ? 'border-red-500' : 'border-gray-300'} px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition`}
+                  placeholder="10-digit mobile"
                 />
               </div>
               {errors.phoneNumber && <p className="text-red-500 text-xs mt-1">{errors.phoneNumber}</p>}
             </div>
 
-            {/* Country with Auto-detect Button */}
+            {/* Country with Auto-detect */}
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700">
                   Country *
                 </label>
                 <button
@@ -607,14 +614,14 @@ const Register = () => {
                   disabled={locationLoading}
                   className="text-xs text-yellow-600 hover:text-yellow-700 font-semibold flex items-center gap-1 disabled:text-gray-400"
                 >
-                  <MapPin size={14} />
+                  <MapPin size={12} className="sm:w-3.5 sm:h-3.5" />
                   {locationLoading ? 'Detecting...' : 'Auto-detect'}
                 </button>
               </div>
               <select
                 value={formData.countryIsoCode}
                 onChange={handleCountryChange}
-                className={`w-full border ${errors.country ? 'border-red-500' : 'border-gray-300'} px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition`}
+                className={`w-full border ${errors.country ? 'border-red-500' : 'border-gray-300'} px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition`}
               >
                 <option value="">Select Country</option>
                 {countries.map((country) => (
@@ -627,16 +634,16 @@ const Register = () => {
             </div>
 
             {/* State and City */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-2 sm:gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   State *
                 </label>
                 <select
                   value={formData.stateIsoCode}
                   onChange={handleStateChange}
                   disabled={!formData.countryIsoCode}
-                  className={`w-full border ${errors.state ? 'border-red-500' : 'border-gray-300'} px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition disabled:bg-gray-100 disabled:cursor-not-allowed`}
+                  className={`w-full border ${errors.state ? 'border-red-500' : 'border-gray-300'} px-2 py-2 sm:px-4 sm:py-2.5 rounded-lg text-xs sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition disabled:bg-gray-100 disabled:cursor-not-allowed`}
                 >
                   <option value="">Select State</option>
                   {states.map((state) => (
@@ -649,14 +656,14 @@ const Register = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   City *
                 </label>
                 <select
                   value={formData.city}
                   onChange={handleCityChange}
                   disabled={!formData.stateIsoCode}
-                  className={`w-full border ${errors.city ? 'border-red-500' : 'border-gray-300'} px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition disabled:bg-gray-100 disabled:cursor-not-allowed`}
+                  className={`w-full border ${errors.city ? 'border-red-500' : 'border-gray-300'} px-2 py-2 sm:px-4 sm:py-2.5 rounded-lg text-xs sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition disabled:bg-gray-100 disabled:cursor-not-allowed`}
                 >
                   <option value="">Select City</option>
                   {cities.map((city) => (
@@ -670,9 +677,9 @@ const Register = () => {
             </div>
 
             {/* Pin Code and DOB */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-2 sm:gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Pin Code *
                 </label>
                 <input
@@ -681,14 +688,14 @@ const Register = () => {
                   value={formData.pinCode}
                   onChange={handleChange}
                   maxLength="6"
-                  className={`w-full border ${errors.pinCode ? 'border-red-500' : 'border-gray-300'} px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition`}
+                  className={`w-full border ${errors.pinCode ? 'border-red-500' : 'border-gray-300'} px-2 py-2 sm:px-4 sm:py-2.5 rounded-lg text-xs sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition`}
                   placeholder="6-digit PIN"
                 />
                 {errors.pinCode && <p className="text-red-500 text-xs mt-1">{errors.pinCode}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Date of Birth *
                 </label>
                 <input
@@ -696,20 +703,20 @@ const Register = () => {
                   name="dob"
                   value={formData.dob}
                   onChange={handleChange}
-                  className={`w-full border ${errors.dob ? 'border-red-500' : 'border-gray-300'} px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition`}
+                  className={`w-full border ${errors.dob ? 'border-red-500' : 'border-gray-300'} px-2 py-2 sm:px-4 sm:py-2.5 rounded-lg text-xs sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition`}
                 />
                 {errors.dob && <p className="text-red-500 text-xs mt-1">{errors.dob}</p>}
               </div>
             </div>
 
             <button
-              type="submit"
+              onClick={handleGetOtp}
               disabled={loading}
-              className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none"
+              className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-semibold py-2.5 sm:py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none text-sm sm:text-base"
             >
               {loading ? (
                 <span className="flex items-center justify-center">
-                  <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+                  <svg className="animate-spin h-4 w-4 sm:h-5 sm:w-5 mr-2" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
@@ -719,20 +726,19 @@ const Register = () => {
                 "Get OTP"
               )}
             </button>
-          </form>
+          </div>
 
-          <div className="mt-6 text-center">
-            <p className="text-gray-600 text-sm">
+          <div className="mt-4 sm:mt-6 text-center">
+            <p className="text-gray-600 text-xs sm:text-sm">
               Already have an account?
-              <Link to="/login" className="text-yellow-600 hover:text-yellow-700 font-semibold ml-1 transition">
+              <a href="#" className="text-yellow-600 hover:text-yellow-700 font-semibold ml-1 transition">
                 Login here
-              </Link>
+              </a>
             </p>
 
             <button
               type="button"
-              onClick={() => Navigate("/homePage")}
-              className="mt-3 w-full text-sm font-semibold text-gray-700 border border-gray-300 py-2 rounded-md hover:bg-gray-100 transition-colors"
+              className="mt-3 w-full text-xs sm:text-sm font-semibold text-gray-700 border border-gray-300 py-2 rounded-md hover:bg-gray-100 transition-colors"
             >
               Back to Home
             </button>
