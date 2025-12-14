@@ -505,11 +505,11 @@ const Register = () => {
      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50 px-3 sm:px-4 py-6 sm:py-8">
         <div className="w-full max-w-lg bg-white shadow-lg sm:shadow-2xl rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 lg:p-10">
           {/* Mobile Logo */}
-          <div className="lg:hidden flex justify-center mb-4">
+          {/* <div className="lg:hidden flex justify-center mb-4">
             <div className="h-16 w-24 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">LOGO</span>
             </div>
-          </div>
+          </div> */}
 
           <div className="text-center mb-6 sm:mb-8">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
