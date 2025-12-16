@@ -14,7 +14,7 @@ import { useHeader } from '../context/HeaderContext'
 
 const HomePage = () => {
 
-  const { setCount, setList, setUnreadCount, wishlistCount } = useHeader();
+  const { setCount, cartCount, setList, setUnreadCount, wishlistCount } = useHeader();
 
   const token = localStorage.getItem("token");
 
@@ -55,6 +55,7 @@ const HomePage = () => {
     }
   };
 
+console.log(cartCount,"cartCount")
 
   const fetchNotifications = async () => {
     try {

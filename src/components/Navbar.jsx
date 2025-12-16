@@ -93,8 +93,9 @@ export default function Navbar() {
   // const unreadCount = localStorage.getItem("unreadCount")
 
   // const { cartCount, unreadCount } = useHeader();
-    const { cartCount ,wishlistCount ,unreadCount} = useHeader();
+  const { cartCount, wishlistCount, unreadCount } = useHeader();
   console.log(wishlistCount, "wishlistCount")
+  console.log(cartCount, "v")
   return (
     <>
       {/* Top Bar - Login/Account with Cart & Wishlist */}
@@ -142,7 +143,7 @@ export default function Navbar() {
 
                     {/* FIXED BADGE */}
                     <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-purple-700 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
-                      {wishlistCount||0}
+                      {wishlistCount || 0}
                     </span>
                   </Link>
 
@@ -158,7 +159,7 @@ export default function Navbar() {
                     {/* FIXED BADGE */}
                     {cartCount && (
                       <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
-                        {cartCount}
+                        {cartCount||0}
                       </span>
                     )}
                   </Link>
@@ -388,27 +389,25 @@ export default function Navbar() {
             </Link>
 
             <Link
-  to="/contact"
-  onClick={() => setMenuOpen(false)}
-  className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${
-    isActive('/contact')
-      ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
-      : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
-  }`}
->
-  <Mail size={20} className="group-hover:scale-110 transition-transform" />
-  <span className="font-medium flex-1 text-sm sm:text-base">
- Contact Us
-  </span>
-  <ChevronRight
-    size={18}
-    className={`transition-all ${
-      isActive('/contact-us')
-        ? 'opacity-100'
-        : 'opacity-0 group-hover:opacity-100'
-    }`}
-  />
-</Link>
+              to="/contact"
+              onClick={() => setMenuOpen(false)}
+              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isActive('/contact')
+                  ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
+                  : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
+                }`}
+            >
+              <Mail size={20} className="group-hover:scale-110 transition-transform" />
+              <span className="font-medium flex-1 text-sm sm:text-base">
+                Contact Us
+              </span>
+              <ChevronRight
+                size={18}
+                className={`transition-all ${isActive('/contact-us')
+                    ? 'opacity-100'
+                    : 'opacity-0 group-hover:opacity-100'
+                  }`}
+              />
+            </Link>
 
             <Link
               to="/blogs"
@@ -431,7 +430,7 @@ export default function Navbar() {
                 localStorage.removeItem("user");
                 localStorage.removeItem("token");
                 localStorage.removeItem("cartItems");
-                localStorage.setItem("cart" ,0);
+                localStorage.setItem("cart", 0);
                 localStorage.removeItem("unreadCount");
                 navigate("/login");
                 setMenuOpen(false);

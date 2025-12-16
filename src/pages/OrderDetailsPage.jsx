@@ -84,6 +84,7 @@ const OrderDetailsPage = () => {
 
   } = order;
 
+
   return (
     <div className="min-h-screen  relative overflow-hidden">
       {/* Background elements omitted for brevity, keep same as your original code */}
@@ -105,7 +106,7 @@ const OrderDetailsPage = () => {
               className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-4 flex items-center justify-between hover:bg-slate-800/60 transition-all duration-300"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-slate-600 rounded flex items-center justify-center overflow-hidden">
+                <div onClick={() => Navigate(`/product/${item.productId}`)} className="w-12 h-12 bg-slate-600 rounded flex items-center justify-center overflow-hidden">
                   {item.images?.[0] ? (
                     <img
                       src={item.images[0]}
@@ -148,7 +149,7 @@ const OrderDetailsPage = () => {
     `}
                   title={status === "Delivered" ? "Write a review" : "Only delivered products can be reviewed"}
                 >
-                {t("orders.addReview")}
+                  {t("orders.addReview")}
                 </button>
 
                 {/* Return Button */}
@@ -196,7 +197,7 @@ const OrderDetailsPage = () => {
         {/* Delivery Address from API */}
         <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-4 mb-4">
           <h3 className="text-white font-semibold mb-3 text-sm border-b border-slate-700/50 pb-2">
-             {t("orders.deliveryAddress")}
+            {t("orders.deliveryAddress")}
           </h3>
           <div className="text-slate-300 text-sm">
             <p className="font-semibold text-white mb-1">{shippingAddress.label}</p>
@@ -209,7 +210,7 @@ const OrderDetailsPage = () => {
         {/* Price Details from API */}
         <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-4">
           <h3 className="text-white font-semibold mb-3 text-sm border-b border-slate-700/50 pb-2">
-                 {t("orders.price")}
+            {t("orders.price")}
           </h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between text-slate-300">
