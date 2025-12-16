@@ -6,6 +6,7 @@ import { MdAccountBox } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { useHeader } from "../context/HeaderContext";
+import { Mail } from "lucide-react";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -385,6 +386,30 @@ export default function Navbar() {
               <span className="font-medium flex-1 text-sm sm:text-base">{t("nav.about")}</span>
               <ChevronRight size={18} className={`transition-all ${isActive('/about-us') ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`} />
             </Link>
+
+            <Link
+  to="/contact"
+  onClick={() => setMenuOpen(false)}
+  className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${
+    isActive('/contact')
+      ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
+      : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
+  }`}
+>
+  <Mail size={20} className="group-hover:scale-110 transition-transform" />
+  <span className="font-medium flex-1 text-sm sm:text-base">
+ Contact Us
+  </span>
+  <ChevronRight
+    size={18}
+    className={`transition-all ${
+      isActive('/contact-us')
+        ? 'opacity-100'
+        : 'opacity-0 group-hover:opacity-100'
+    }`}
+  />
+</Link>
+
             <Link
               to="/blogs"
               onClick={() => setMenuOpen(false)}
