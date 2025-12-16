@@ -214,7 +214,7 @@ const Footer = () => {
                 <div>
                   <p className="text-xs text-gray-400">{t('footer.email')}</p>
                   <p className="text-sm text-white group-hover:text-yellow-400 transition-colors">
-                    example@icchhapurti.com
+                  Official@icchhapurti.com
                   </p>
                 </div>
               </a>

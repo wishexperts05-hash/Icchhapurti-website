@@ -88,7 +88,7 @@ export default function ContactUs() {
                   </div>
                   <div>
                     <p className="text-gray-400 text-sm">Email Us</p>
-                    <p className="text-white font-semibold">support@company.com</p>
+                    <p className="text-white font-semibold">Official@icchhapurti.com</p>
                   </div>
                 </div>
 
