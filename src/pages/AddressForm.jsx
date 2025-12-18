@@ -1,18 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { Country, State, City } from 'country-state-city';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Search, ChevronDown } from 'lucide-react';
 
 export default function AddressForm() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
 
   const [formData, setFormData] = useState({
     fullName: '',
     mobileNumber: '',
-    countryCode: '+91',
+    countryCode: '91',
     country: '',
     state: '',
     city: '',
@@ -61,7 +59,7 @@ export default function AddressForm() {
       setAddressId(id);
       loadAddress(id);
     }
-  }, []);
+  }, [id]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -90,7 +88,7 @@ export default function AddressForm() {
         setFormData({
           fullName: data.fullName || '',
           mobileNumber: data.phoneNumber || '',
-          countryCode: data.countryCode || '+91',
+          countryCode: data.countryCode || '91',
           country: data.country || '',
           state: data.state || '',
           city: data.city || '',
@@ -107,14 +105,61 @@ export default function AddressForm() {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.fullName.trim()) newErrors.fullName = t('addressForm.messages.required', { field: t('addressForm.labels.fullName') });
-    if (!formData.mobileNumber.trim()) newErrors.mobileNumber = t('addressForm.messages.required', { field: t('addressForm.labels.mobileNumber') });
-    else if (!/^\d{7,15}$/.test(formData.mobileNumber)) newErrors.mobileNumber = t('addressForm.messages.mobileInvalid');
-    if (!formData.country) newErrors.country = t('addressForm.messages.required', { field: t('addressForm.labels.country') });
-    if (!formData.state) newErrors.state = t('addressForm.messages.required', { field: t('addressForm.labels.state') });
-    if (!formData.city) newErrors.city = t('addressForm.messages.required', { field: t('addressForm.labels.city') });
-    if (!formData.street.trim()) newErrors.street = t('addressForm.messages.required', { field: t('addressForm.labels.street') });
-    if (!formData.pinCode) newErrors.pinCode = t('addressForm.messages.required', { field: t('addressForm.labels.pinCode') });
+    
+    // Full Name validation
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = 'Full name is required';
+    } else if (formData.fullName.trim().length < 2) {
+      newErrors.fullName = 'Full name must be at least 2 characters';
+    } else if (!/^[a-zA-Z\s]+$/.test(formData.fullName)) {
+      newErrors.fullName = 'Full name can only contain letters and spaces';
+    }
+    
+    // Country Code validation
+    if (!formData.countryCode) {
+      newErrors.countryCode = 'Country code is required';
+    }
+    
+    // Mobile Number validation
+    if (!formData.mobileNumber.trim()) {
+      newErrors.mobileNumber = 'Mobile number is required';
+    } else if (!/^\d+$/.test(formData.mobileNumber)) {
+      newErrors.mobileNumber = 'Mobile number must contain only digits';
+    } else if (formData.mobileNumber.length < 7 || formData.mobileNumber.length > 15) {
+      newErrors.mobileNumber = 'Mobile number must be between 7 and 15 digits';
+    }
+    
+    // Country validation
+    if (!formData.country) {
+      newErrors.country = 'Country is required';
+    }
+    
+    // State validation
+    if (!formData.state) {
+      newErrors.state = 'State is required';
+    }
+    
+    // City validation
+    if (!formData.city) {
+      newErrors.city = 'City is required';
+    }
+    
+    // Street validation
+    if (!formData.street.trim()) {
+      newErrors.street = 'Street address is required';
+    } else if (formData.street.trim().length < 5) {
+      newErrors.street = 'Street address must be at least 5 characters';
+    }
+    
+    // Pin Code validation
+    if (!formData.pinCode.trim()) {
+      newErrors.pinCode = 'PIN code is required';
+    } else if (!/^\d+$/.test(formData.pinCode)) {
+      newErrors.pinCode = 'PIN code must contain only digits';
+    } else if (formData.pinCode.length < 4 || formData.pinCode.length > 10) {
+      newErrors.pinCode = 'PIN code must be between 4 and 10 digits';
+    }
+    
     return newErrors;
   };
 
@@ -139,6 +184,7 @@ export default function AddressForm() {
     }
     setOpenDropdown(null);
     setSearchTerms(prev => ({ ...prev, countryCode: '' }));
+    if (errors.countryCode) setErrors(prev => ({ ...prev, countryCode: '' }));
   };
 
   const handleSelectCountry = (countryName) => {
@@ -152,24 +198,33 @@ export default function AddressForm() {
     }));
     setOpenDropdown(null);
     setSearchTerms(prev => ({ ...prev, country: '' }));
+    if (errors.country) setErrors(prev => ({ ...prev, country: '' }));
   };
 
   const handleSelectState = (stateName) => {
     setFormData(prev => ({ ...prev, state: stateName, city: '' }));
     setOpenDropdown(null);
     setSearchTerms(prev => ({ ...prev, state: '' }));
+    if (errors.state) setErrors(prev => ({ ...prev, state: '' }));
   };
 
   const handleSelectCity = (cityName) => {
     setFormData(prev => ({ ...prev, city: cityName }));
     setOpenDropdown(null);
     setSearchTerms(prev => ({ ...prev, city: '' }));
+    if (errors.city) setErrors(prev => ({ ...prev, city: '' }));
   };
 
   const handleSubmit = async () => {
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      // Scroll to first error
+      const firstErrorField = Object.keys(validationErrors)[0];
+      const errorElement = document.querySelector(`[name="${firstErrorField}"]`);
+      if (errorElement) {
+        errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       return;
     }
     setLoading(true);
@@ -177,6 +232,7 @@ export default function AddressForm() {
       const addressData = {
         fullName: formData.fullName,
         phoneNumber: formData.mobileNumber,
+        countryCode: formData.countryCode,
         country: formData.country,
         state: formData.state,
         city: formData.city,
@@ -199,11 +255,11 @@ export default function AddressForm() {
         setSubmitted(true);
       } else {
         const errorData = await response.json();
-        alert(`${t('addressForm.messages.networkError')}: ${errorData.message || ''}`);
+        alert(`Error: ${errorData.message || 'Failed to save address. Please try again.'}`);
       }
     } catch (error) {
       console.error('Error submitting:', error);
-      alert(t('addressForm.messages.networkError'));
+      alert('Network error. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -266,11 +322,20 @@ export default function AddressForm() {
     </div>
   );
 
-  if (loading && editMode) return <div className="min-h-screen flex items-center justify-center text-white">{t('addressForm.messages.loading')}</div>;
+  if (loading && editMode) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500 mx-auto mb-4"></div>
+          <p>Loading address...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (submitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <div className="bg-slate-800/90 backdrop-blur-sm rounded-xl p-8 text-center max-w-md">
           <div className="w-16 h-16 bg-amber-500 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -278,22 +343,29 @@ export default function AddressForm() {
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-white mb-2">
-            {editMode ? t('addressForm.messages.updatedSuccess') : t('addressForm.messages.savedSuccess')}
+            {editMode ? 'Address Updated!' : 'Address Saved!'}
           </h2>
           <p className="text-gray-400 mb-6">
-            {editMode ? t('addressForm.messages.updatedSuccess') : t('addressForm.messages.savedSuccess')}
+            {editMode ? 'Your address has been updated successfully.' : 'Your address has been saved successfully.'}
           </p>
           <div className="flex gap-3 justify-center">
-            <button onClick={() => navigate('/addresses')} className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-6 rounded-lg">
-              {t('addressForm.buttons.viewAll')}
+            <button 
+              onClick={() => navigate('/addresses')} 
+              className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
+            >
+              View All Addresses
             </button>
-            <button onClick={() => {
-              setSubmitted(false);
-              setEditMode(false);
-              setAddressId(null);
-              setFormData({ fullName: '', mobileNumber: '', countryCode: '', country: '', state: '', city: '', street: '', pinCode: '' });
-            }} className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-6 rounded-lg">
-              {t('addressForm.buttons.addAnother')}
+            <button 
+              onClick={() => {
+                setSubmitted(false);
+                setEditMode(false);
+                setAddressId(null);
+                setFormData({ fullName: '', mobileNumber: '', countryCode: '91', country: '', state: '', city: '', street: '', pinCode: '' });
+                setErrors({});
+              }} 
+              className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
+            >
+              Add Another Address
             </button>
           </div>
         </div>
@@ -302,23 +374,30 @@ export default function AddressForm() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
       <div className="relative z-10 p-6 max-w-5xl mx-auto">
         <h1 className="text-3xl font-bold text-white mb-6">
-          {editMode ? t('addressForm.buttons.update') : t('addressForm.buttons.save')}
+          {editMode ? 'Update Address' : 'Add New Address'}
         </h1>
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Full Name */}
             <div>
-              <label className="block text-white text-sm mb-2">{t('addressForm.labels.fullName')} *</label>
-              <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} placeholder={t('addressForm.placeholders.fullName')} className={inputClass('fullName')} />
+              <label className="block text-white text-sm mb-2">Full Name *</label>
+              <input 
+                type="text" 
+                name="fullName" 
+                value={formData.fullName} 
+                onChange={handleChange} 
+                placeholder="Enter your full name" 
+                className={inputClass('fullName')} 
+              />
               {errors.fullName && <p className="text-red-400 text-xs mt-1">{errors.fullName}</p>}
             </div>
 
             {/* Mobile Number */}
             <div>
-              <label className="block text-white text-sm mb-2">{t('addressForm.labels.mobileNumber')} *</label>
+              <label className="block text-white text-sm mb-2">Mobile Number *</label>
               <div className="flex gap-2">
                 <div ref={el => dropdownRefs.current['countryCode'] = el} className="relative w-32">
                   <div 
@@ -368,7 +447,14 @@ export default function AddressForm() {
                     </div>
                   )}
                 </div>
-                <input type="tel" name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} placeholder={t('addressForm.placeholders.mobileNumber')} className={`flex-1 ${inputClass('mobileNumber')}`} />
+                <input 
+                  type="tel" 
+                  name="mobileNumber" 
+                  value={formData.mobileNumber} 
+                  onChange={handleChange} 
+                  placeholder="Enter mobile number" 
+                  className={`flex-1 ${inputClass('mobileNumber')}`} 
+                />
               </div>
               {errors.mobileNumber && <p className="text-red-400 text-xs mt-1">{errors.mobileNumber}</p>}
               {errors.countryCode && <p className="text-red-400 text-xs mt-1">{errors.countryCode}</p>}
@@ -377,8 +463,8 @@ export default function AddressForm() {
             {/* Country */}
             <SearchableDropdown
               field="country"
-              label={t('addressForm.labels.country')}
-              placeholder={t('addressForm.labels.country')}
+              label="Country"
+              placeholder="Select country"
               options={filteredCountries}
               value={formData.country}
               onSelect={handleSelectCountry}
@@ -390,8 +476,8 @@ export default function AddressForm() {
             {/* State */}
             <SearchableDropdown
               field="state"
-              label={t('addressForm.labels.state')}
-              placeholder={t('addressForm.labels.state')}
+              label="State"
+              placeholder="Select state"
               options={filteredStates}
               value={formData.state}
               onSelect={handleSelectState}
@@ -403,8 +489,8 @@ export default function AddressForm() {
             {/* City */}
             <SearchableDropdown
               field="city"
-              label={t('addressForm.labels.city')}
-              placeholder={t('addressForm.labels.city')}
+              label="City"
+              placeholder="Select city"
               options={filteredCities}
               value={formData.city}
               onSelect={handleSelectCity}
@@ -415,23 +501,48 @@ export default function AddressForm() {
 
             {/* Street */}
             <div>
-              <label className="block text-white text-sm mb-2">{t('addressForm.labels.street')} *</label>
-              <input type="text" name="street" value={formData.street} onChange={handleChange} placeholder={t('addressForm.placeholders.street')} className={inputClass('street')} />
+              <label className="block text-white text-sm mb-2">Street Address *</label>
+              <input 
+                type="text" 
+                name="street" 
+                value={formData.street} 
+                onChange={handleChange} 
+                placeholder="Enter street address" 
+                className={inputClass('street')} 
+              />
               {errors.street && <p className="text-red-400 text-xs mt-1">{errors.street}</p>}
             </div>
 
             {/* Pin Code */}
             <div>
-              <label className="block text-white text-sm mb-2">{t('addressForm.labels.pinCode')} *</label>
-              <input type="text" name="pinCode" value={formData.pinCode} onChange={handleChange} placeholder={t('addressForm.placeholders.pinCode')} className={inputClass('pinCode')} />
+              <label className="block text-white text-sm mb-2">PIN Code *</label>
+              <input 
+                type="text" 
+                name="pinCode" 
+                value={formData.pinCode} 
+                onChange={handleChange} 
+                placeholder="Enter PIN code" 
+                className={inputClass('pinCode')} 
+              />
               {errors.pinCode && <p className="text-red-400 text-xs mt-1">{errors.pinCode}</p>}
             </div>
           </div>
 
           {/* Submit Button */}
           <div className="flex justify-center pt-4">
-            <button onClick={handleSubmit} disabled={loading} className="bg-amber-500 hover:bg-amber-600 disabled:bg-gray-500 text-white font-semibold py-3 px-16 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/30 disabled:cursor-not-allowed">
-              {loading ? t('addressForm.messages.loading') : editMode ? t('addressForm.buttons.update') : t('addressForm.buttons.save')}
+            <button 
+              onClick={handleSubmit} 
+              disabled={loading} 
+              className="bg-amber-500 hover:bg-amber-600 disabled:bg-gray-500 text-white font-semibold py-3 px-16 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/30 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  {editMode ? 'Updating...' : 'Saving...'}
+                </span>
+              ) : (
+                editMode ? 'Update Address' : 'Save Address'
+              )}
             </button>
           </div>
         </div>

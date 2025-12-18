@@ -11,6 +11,7 @@ export default function CosmicChatSupport() {
   const [currentUser, setCurrentUser] = useState(null);
   const chatAreaRef = useRef(null);
   const { t } = useTranslation();
+  
   // Get current user info from localStorage
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -23,8 +24,7 @@ export default function CosmicChatSupport() {
       setLoading(true);
 
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/user/chat/getPreviousConversation
-`,
+        `${import.meta.env.VITE_API_URL}/api/user/chat/getPreviousConversation`,
         {
           headers: {
             'Authorization': localStorage.getItem('token'),
@@ -54,7 +54,6 @@ export default function CosmicChatSupport() {
   const sendMessage = async () => {
     if (inputValue.trim() === '') return;
 
-    
     const messageToSend = inputValue;
     setInputValue('');
 
@@ -70,7 +69,6 @@ export default function CosmicChatSupport() {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            // conversationId: conversation._id,
             message: messageToSend
           })
         }
@@ -85,13 +83,8 @@ export default function CosmicChatSupport() {
       if (data.success) {
         fetchChatHistory()
       }
-
-     
     } catch (err) {
       console.error("Error sending message:", err);
-      // Remove temp message on error
-      setMessages(prev => prev.filter(msg => msg._id !== tempMessage._id));
-      // Restore input value
       setInputValue(messageToSend);
     } finally {
       setSending(false);
@@ -105,9 +98,9 @@ export default function CosmicChatSupport() {
     }
   }, [messages]);
 
-  // Load conversation on mount (you can pass conversationId as prop or get from route params)
+  // Load conversation on mount
   useEffect(() => {
-    const conversationId = '69117b01621a69e4dab6af3c'; // Replace with actual ID from props/params
+    const conversationId = '69117b01621a69e4dab6af3c';
     if (conversationId) {
       fetchChatHistory(conversationId);
     }
@@ -136,12 +129,12 @@ export default function CosmicChatSupport() {
   };
 
   return (
-    <div className="relative h-screen overflow-hidden ">
+    <div className="h-screen flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
       {/* Cosmic Background */}
-      <div className="absolute inset-0 bg-gradient-radial from-blue-800/30 via-transparent to-transparent"></div>
+      <div className="absolute inset-0 bg-gradient-radial from-blue-800/30 via-transparent to-transparent pointer-events-none"></div>
 
       {/* Stars */}
-      <div className="absolute inset-0 opacity-40">
+      <div className="absolute inset-0 opacity-40 pointer-events-none">
         <div className="absolute w-1 h-1 bg-white rounded-full top-[30%] left-[20%] animate-pulse"></div>
         <div className="absolute w-1 h-1 bg-white rounded-full top-[70%] left-[60%] animate-pulse" style={{ animationDelay: '0.5s' }}></div>
         <div className="absolute w-0.5 h-0.5 bg-white rounded-full top-[50%] left-[50%] animate-pulse" style={{ animationDelay: '1s' }}></div>
@@ -151,12 +144,12 @@ export default function CosmicChatSupport() {
       </div>
 
       {/* Spiral */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-gradient-radial from-orange-300/80 via-orange-400/60 to-transparent blur-sm animate-pulse"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-gradient-radial from-orange-300/80 via-orange-400/60 to-transparent blur-sm animate-pulse pointer-events-none"></div>
 
       {/* Main Container */}
-      <div className="relative z-10 h-full flex flex-col max-w-7xl mx-auto">
+ <div className="relative z-10 flex flex-col h-[80vh] overflow-y-auto max-w-7xl mx-auto w-full">
         {/* Header */}
-        <div className="px-10 py-5 bg-slate-900/50 backdrop-blur-sm">
+        <div className="flex-shrink-0 px-10 py-5 bg-slate-900/50 backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <h1 className="text-white text-2xl font-semibold">{t("chat.title")}</h1>
             {conversation && (
@@ -171,10 +164,11 @@ export default function CosmicChatSupport() {
         <div
           ref={chatAreaRef}
           className="flex-1 overflow-y-auto px-10 py-5 flex flex-col gap-4"
+          style={{ minHeight: 0 }}
         >
           {messages.length === 0 ? (
             <div className="flex items-center justify-center h-full text-white/50">
-            {t("chat.noChat")}
+              {t("chat.noChat")}
             </div>
           ) : (
             messages.map((message) => {
@@ -213,12 +207,11 @@ export default function CosmicChatSupport() {
                       )}
                     </div>
                     <div className={`flex items-center gap-2 text-xs text-white/70 ${isUser ? 'flex-row-reverse' : ''}`}>
-                  <span>
-  {message.sender.userType === "User"
-    ? t("chat.you")
-    : t("chat.admin")}
-</span>
-
+                      <span>
+                        {message.sender.userType === "User"
+                          ? t("chat.you")
+                          : t("chat.admin")}
+                      </span>
                       <span>•</span>
                       <span>{formatTime(message.createdAt)}</span>
                     </div>
@@ -230,14 +223,14 @@ export default function CosmicChatSupport() {
         </div>
 
         {/* Input Area */}
-        <div className="px-10 py-5 bg-slate-900/80 backdrop-blur-lg">
+        <div className="flex-shrink-0 px-10 py-5 bg-slate-900/80 backdrop-blur-lg">
           <div className="flex gap-3 bg-white/10 rounded-full px-5 py-3 border border-white/20">
             <input
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder=  {t("chat.msgType")}
+              placeholder={t("chat.msgType")}
               disabled={sending || loading}
               className="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder-white/50 disabled:opacity-50"
             />
@@ -249,7 +242,7 @@ export default function CosmicChatSupport() {
               {sending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                 {t("chat.sending")}
+                  {t("chat.sending")}
                 </>
               ) : (
                 <>

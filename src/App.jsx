@@ -36,10 +36,46 @@ import SplashScreen from "./components/SplashScreen";
 import ContactUs from "./components/ContactUs";
 import { useEffect } from "react";
 import WishlistPage from "./components/WishlistPage";
+import { useHeader } from "./context/HeaderContext";
 
 function App() {
+ const token = localStorage.getItem("token");
+  const { setList } = useHeader();
+useEffect(() => {
 
 
+    const fetchWishlist = async () => {
+      // setLoading(true);
+      // setError(null);
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/wishlist/getWishlist`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to fetch wishlist");
+        }
+
+        // adjust if your field is different
+        // setItems(data.data || []);
+
+        setList(data.data.length)
+      } catch (err) {
+        console.error("Error fetching wishlist:", err);
+        // setError(err.message);
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    fetchWishlist();
+  }, [token]);
   return (
     <>
       <ScrollToTop />

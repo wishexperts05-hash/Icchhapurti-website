@@ -15,9 +15,6 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const token = localStorage?.getItem("token");
-  // const cart = localStorage.getItem("cart")
-
-
 
   const baseMenu = [
     { icon: MdAccountBox, label: t(`nav.account`), href: "/account", auth: true },
@@ -55,18 +52,13 @@ export default function Navbar() {
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-
     if (token) {
       fetchCartData();
     }
-
-
-
   }, []);
 
   const fetchCartData = async () => {
     try {
-      // setLoading(true)
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems`, {
         method: 'GET',
         headers: {
@@ -79,196 +71,174 @@ export default function Navbar() {
 
       const data = await response.json();
       setCartItems(data.data || []);
-      // setError(null);
     } catch (err) {
-      // setError(err.message);
       console.error('Error fetching cart:', err);
-    } finally {
-      // setLoading(false);
     }
   };
 
-
-
-  // const unreadCount = localStorage.getItem("unreadCount")
-
-  // const { cartCount, unreadCount } = useHeader();
   const { cartCount, wishlistCount, unreadCount } = useHeader();
-  console.log(wishlistCount, "wishlistCount")
-  console.log(cartCount, "v")
+
   return (
     <>
-      {/* Top Bar - Login/Account with Cart & Wishlist */}
-      <div className="w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2">
-          <div className="flex items-center justify-between">
-            {/* Left - Trusted Users Badge */}
-            <div className="hidden sm:flex items-center gap-2 text-sm">
-              <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-white/80">1000+ {t(`nav.trustedUsers`)}</span>
+      {/* STICKY CONTAINER - Both top bar and nav together */}
+      <div className="sticky top-0 z-30">
+        {/* Top Bar - Login/Account with Cart & Wishlist */}
+        <div className="w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white border-b border-white/10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2">
+            <div className="flex items-center justify-between">
+              {/* Left - Trusted Users Badge */}
+              <div className="hidden sm:flex items-center gap-2 text-sm">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <span className="text-white/80">1000+ {t(`nav.trustedUsers`)}</span>
+                </div>
+              </div>
+
+              {/* Right - User Menu */}
+              <div className="flex items-center gap-2 sm:gap-4 ml-auto">
+                {user ? (
+                  <>
+                    {/* User Info - Desktop */}
+                    <Link
+                      to="/view-profile"
+                      className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 transition-all group"
+                    >
+                      <div className="w-7 h-7 rounded-full overflow-hidden bg-white/20">
+                        <img
+                          src={user?.profileImage || "https://via.placeholder.com/150"}
+                          alt="profile"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <span className="text-sm font-medium">{user?.name?.split(' ')[0]}</span>
+                      <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                    </Link>
+
+                    {/* Wishlist */}
+                    <Link
+                      to="/wishlist"
+                      className="relative p-2 rounded-full hover:bg-white/10 transition-colors group"
+                      title="Wishlist"
+                    >
+                      <Heart
+                        size={18}
+                        className="sm:w-5 sm:h-5 group-hover:scale-110 transition-transform"
+                      />
+                      <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-purple-700 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
+                        {wishlistCount || 0}
+                      </span>
+                    </Link>
+
+                    {/* Cart */}
+                    <Link
+                      to="/cart"
+                      className="relative p-2 rounded-full hover:bg-white/10 transition-colors group"
+                      title="Shopping Cart"
+                    >
+                      <ShoppingCart size={18} className="sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
+                      {cartCount && (
+                        <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
+                          {cartCount || 0}
+                        </span>
+                      )}
+                    </Link>
+
+                    {/* Notifications */}
+                    <Link
+                      to="/notification"
+                      className="relative p-2 rounded-full hover:bg-white/10 transition-colors group"
+                      title="Notifications"
+                    >
+                      <Bell size={18} className="sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
+                      <div className="absolute -top-1 -right-1 flex items-center gap-1">
+                        <span className="text-xs bg-red-500 text-white px-1.5 py-0.5 rounded-full">
+                          {unreadCount || 0}
+                        </span>
+                      </div>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    {/* Login Button */}
+                    <Link
+                      to="/login"
+                      className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-purple-900 rounded-full hover:bg-purple-900 transition-all font-medium text-xs sm:text-sm shadow-lg shadow-[#C9A227]/20"
+                    >
+                      <User size={16} className="sm:w-4 sm:h-4" />
+                      <span>Login</span>
+                    </Link>
+
+                    <Link
+                      to="/cart"
+                      className="relative p-2 rounded-full hover:bg-white/10 transition-colors flex items-center"
+                      title="Cart"
+                    >
+                      <ShoppingCart size={20} className="text-white sm:w-5 sm:h-5" />
+                      <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] sm:text-xs px-1.5 py-0.5 rounded-full">
+                        {cartCount || 0}
+                      </span>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
-
-            {/* Right - User Menu */}
-            <div className="flex items-center gap-2 sm:gap-4 ml-auto">
-              {user ? (
-                <>
-                  {/* User Info - Desktop */}
-                  <Link
-                    to="/view-profile"
-                    className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 transition-all group"
-                  >
-                    <div className="w-7 h-7 rounded-full overflow-hidden bg-white/20">
-                      <img
-                        src={user?.profileImage || "https://via.placeholder.com/150"}
-                        alt="profile"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <span className="text-sm font-medium">{user?.name?.split(' ')[0]}</span>
-                    <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
-                  </Link>
-
-                  {/* Wishlist */}
-                  <Link
-                    to="/wishlist"
-                    className="relative p-2 rounded-full hover:bg-white/10 transition-colors group"
-                    title="Wishlist"
-                  >
-                    <Heart
-                      size={18}
-                      className="sm:w-5 sm:h-5 group-hover:scale-110 transition-transform"
-                    />
-
-                    {/* FIXED BADGE */}
-                    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-purple-700 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
-                      {wishlistCount || 0}
-                    </span>
-                  </Link>
-
-
-                  {/* Cart */}
-                  <Link
-                    to="/cart"
-                    className="relative p-2 rounded-full hover:bg-white/10 transition-colors group"
-                    title="Shopping Cart"
-                  >
-                    <ShoppingCart size={18} className="sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
-
-                    {/* FIXED BADGE */}
-                    {cartCount && (
-                      <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
-                        {cartCount||0}
-                      </span>
-                    )}
-                  </Link>
-
-                  {/* Notifications */}
-                  <Link
-                    to="/notification"
-                    className="relative p-2 rounded-full hover:bg-white/10 transition-colors group"
-                    title="Notifications"
-                  >
-                    <Bell size={18} className="sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
-                    <div className="absolute -top-1 -right-1 flex items-center gap-1">
-                      {/* <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span> */}
-                      <span className="text-xs bg-red-500 text-white px-1.5 py-0.5 rounded-full">
-                        {unreadCount || 0}
-                      </span>
-                    </div>
-
-                  </Link>
-                </>
-              ) : (
-                <>
-                  {/* Login Button */}
-                  <Link
-                    to="/login"
-                    className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-purple-900 rounded-full hover:bg-purple-900 transition-all font-medium text-xs sm:text-sm shadow-lg shadow-[#C9A227]/20"
-                  >
-                    <User size={16} className="sm:w-4 sm:h-4" />
-                    <span>Login</span>
-                  </Link>
-
-                  {/* Guest Wishlist & Cart */}
-                  {/* <Link
-                    to="/wishlist"
-                    className="p-2 rounded-full hover:bg-white/10 transition-colors"
-                    title="Wishlist"
-                  >
-                    <Heart size={18} className="sm:w-5 sm:h-5" />
-                  </Link> */}
-
-                  <Link
-                    to="/cart"
-                    className="relative p-2 rounded-full hover:bg-white/10 transition-colors flex items-center"
-                    title="Cart"
-                  >
-                    <ShoppingCart size={20} className="text-white sm:w-5 sm:h-5" />
-
-                    {/* Cart Count Badge */}
-                    <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] sm:text-xs px-1.5 py-0.5 rounded-full">
-                      {cartCount || 0}
-                    </span>
-                  </Link>
-                </>
-              )}
-            </div>
           </div>
         </div>
-      </div>
 
-      {/* Main Navigation */}
-      <nav className="w-full bg-white border-b border-gray-200 shadow-sm sticky top-0 z-30 backdrop-blur-sm bg-white/95">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex items-center justify-between gap-4">
-            {/* Logo */}
-            <div className="flex-shrink-0">
-              <Link to="/homePage" className="flex items-center group">
-                <img
-                  src="/logo-black.png"
-                  alt="Logo"
-                  className="h-12 sm:h-16 w-auto object-contain transition-transform group-hover:scale-105"
-                />
-              </Link>
-            </div>
-
-            {/* Center Navigation Links - Desktop Only */}
-            <div className="hidden lg:flex items-center gap-8 flex-1 justify-center">
-              {navLinks.map((link, index) => (
-                <Link
-                  key={index}
-                  to={link.href}
-                  className={`text-[16px] lg:text-[18px] cursor-pointer font-medium transition-all relative pb-1 group ${isActive(link.href) ? 'text-purple-900' : 'hover:text-purple-900'
-                    }`}
-                >
-                  {link.label}
-                  <span
-                    className={`absolute bottom-0 left-0 h-0.5 bg-purple-900 transition-all ${isActive(link.href) ? 'w-full' : 'w-0 group-hover:w-full'
-                      }`}
-                  ></span>
+        {/* Main Navigation */}
+        <nav className="w-full bg-white border-b border-gray-200 shadow-sm backdrop-blur-sm bg-white/95">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+            <div className="flex items-center justify-between gap-4">
+              {/* Logo */}
+              <div className="flex-shrink-0">
+                <Link to="/homePage" className="flex items-center group">
+                  <img
+                    src="/logo-black.png"
+                    alt="Logo"
+                    className="h-12 sm:h-16 w-auto object-contain transition-transform group-hover:scale-105"
+                  />
                 </Link>
-              ))}
-            </div>
+              </div>
 
-            {/* Right Section - Menu Button */}
-            <div className="flex items-center gap-3 flex-shrink-0">
-              <button
-                onClick={() => setMenuOpen(true)}
-                className="p-2 rounded-full hover:bg-gray-100 transition-colors group"
-              >
-                <Menu size={22} className="text-purple-900 group-hover:scale-110 transition-transform sm:w-7 sm:h-7" />
-              </button>
+              {/* Center Navigation Links - Desktop Only */}
+              <div className="hidden lg:flex items-center gap-8 flex-1 justify-center">
+                {navLinks.map((link, index) => (
+                  <Link
+                    key={index}
+                    to={link.href}
+                    className={`text-[16px] lg:text-[18px] cursor-pointer font-medium transition-all relative pb-1 group ${
+                      isActive(link.href) ? 'text-purple-900' : 'hover:text-purple-900'
+                    }`}
+                  >
+                    {link.label}
+                    <span
+                      className={`absolute bottom-0 left-0 h-0.5 bg-purple-900 transition-all ${
+                        isActive(link.href) ? 'w-full' : 'w-0 group-hover:w-full'
+                      }`}
+                    ></span>
+                  </Link>
+                ))}
+              </div>
+
+              {/* Right Section - Menu Button */}
+              <div className="flex items-center gap-3 flex-shrink-0">
+                <button
+                  onClick={() => setMenuOpen(true)}
+                  className="p-2 rounded-full hover:bg-gray-100 transition-colors group"
+                >
+                  <Menu size={22} className="text-purple-900 group-hover:scale-110 transition-transform sm:w-7 sm:h-7" />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      </div>
 
       {/* RIGHT SLIDING DRAWER */}
       <div
-        className={`fixed top-0 right-0 h-full w-full sm:w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "translate-x-full"
-          }`}
+        className={`fixed top-0 right-0 h-full w-full sm:w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
+          menuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
       >
         {/* User Profile Section */}
         <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden p-4 sm:p-6 text-white">
@@ -360,10 +330,11 @@ export default function Navbar() {
                 key={index}
                 to={item.href}
                 onClick={() => setMenuOpen(false)}
-                className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isItemActive
-                  ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
-                  : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
-                  }`}
+                className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${
+                  isItemActive
+                    ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
+                    : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
+                }`}
               >
                 <Icon size={20} className="group-hover:scale-110 transition-transform" />
                 <span className="font-medium flex-1 text-sm sm:text-base">{item.label}</span>
@@ -378,10 +349,11 @@ export default function Navbar() {
             <Link
               to="/about-us"
               onClick={() => setMenuOpen(false)}
-              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isActive('/about-us')
-                ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
-                : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
-                }`}
+              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${
+                isActive('/about-us')
+                  ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
+                  : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
+              }`}
             >
               <Info size={20} className="group-hover:scale-110 transition-transform" />
               <span className="font-medium flex-1 text-sm sm:text-base">{t("nav.about")}</span>
@@ -391,31 +363,25 @@ export default function Navbar() {
             <Link
               to="/contact"
               onClick={() => setMenuOpen(false)}
-              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isActive('/contact')
+              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${
+                isActive('/contact')
                   ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
                   : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
-                }`}
+              }`}
             >
               <Mail size={20} className="group-hover:scale-110 transition-transform" />
-              <span className="font-medium flex-1 text-sm sm:text-base">
-                Contact Us
-              </span>
-              <ChevronRight
-                size={18}
-                className={`transition-all ${isActive('/contact-us')
-                    ? 'opacity-100'
-                    : 'opacity-0 group-hover:opacity-100'
-                  }`}
-              />
+              <span className="font-medium flex-1 text-sm sm:text-base">Contact Us</span>
+              <ChevronRight size={18} className={`transition-all ${isActive('/contact-us') ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`} />
             </Link>
 
             <Link
               to="/blogs"
               onClick={() => setMenuOpen(false)}
-              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isActive('/blogs')
-                ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
-                : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
-                }`}
+              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${
+                isActive('/blogs')
+                  ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
+                  : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
+              }`}
             >
               <BookOpen size={20} className="group-hover:scale-110 transition-transform" />
               <span className="font-medium flex-1 text-sm sm:text-base">{t("nav.blogs")}</span>
@@ -423,7 +389,7 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Logout Button - Only show if user is logged in */}
+          {/* Logout Button */}
           {user && (
             <button
               onClick={() => {

@@ -10,7 +10,7 @@ import { Zap } from 'lucide-react';
 import { useHeader } from '../context/HeaderContext';
 
 export default function ProductDetails() {
- const [product, setProduct] = useState(null);
+  const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [reviewData, setReviewsData] = useState();
   const [loading, setLoading] = useState(true);
@@ -137,9 +137,10 @@ export default function ProductDetails() {
     }
   };
 
- const handleAddToCart = async (product, redirectToCart = false) => {
-    // Set loading state based on action
-    if (redirectToCart) {
+  const handleAddToCart = async ({ product, e, isBuyNow }) => {
+    // e.stopPropagation();
+
+    if (isBuyNow) {
       setBuyingNow(true);
     } else {
       setAddingToCart(true);
@@ -147,7 +148,6 @@ export default function ProductDetails() {
 
     try {
       if (!token) {
-        // Guest user - store in localStorage
         const cartItem = {
           productId: product._id || product.id,
           product: {
@@ -158,47 +158,38 @@ export default function ProductDetails() {
             image: product.images?.[0],
           },
           quantity: 1,
-          totalAmount: product.price || 0
+          totalAmount: product.price || 0,
         };
 
-        // Get existing cart items
-        const existingCart = JSON.parse(localStorage.getItem("cartItems") || "[]");
-
-        // Check if product already exists in cart
+        const existingCart = JSON.parse(
+          localStorage.getItem("cartItems") || "[]"
+        );
         const existingItemIndex = existingCart.findIndex(
-          item => (item.productId || item.product._id) === cartItem.productId
+          (item) => (item.productId || item.product._id) === cartItem.productId
         );
 
         if (existingItemIndex > -1) {
-          // Update quantity if product already exists
           existingCart[existingItemIndex].quantity += 1;
           existingCart[existingItemIndex].totalAmount =
             existingCart[existingItemIndex].quantity * product.price;
         } else {
-          // Add new item
           existingCart.push(cartItem);
         }
 
-        // Save updated cart
         localStorage.setItem("cartItems", JSON.stringify(existingCart));
-
-        // Update cart count
-        const totalItems = existingCart.reduce((sum, item) => sum + item.quantity, 0);
+        const totalItems = existingCart.reduce(
+          (sum, item) => sum + item.quantity,
+          0
+        );
         localStorage.setItem("cart", totalItems);
-setCount(totalItems)
-        // Dispatch event for header update
-        window.dispatchEvent(new CustomEvent('cartUpdated', {
-          detail: { cart: existingCart, count: totalItems }
-        }));
+        setCount(totalItems);
+        window.dispatchEvent(
+          new CustomEvent("cartUpdated", {
+            detail: { cart: existingCart, count: totalItems },
+          })
+        );
+        Navigate("/cart");
 
-        if (redirectToCart) {
-          Navigate('/cart');
-        } else {
-          setCartSuccess(true);
-          setTimeout(() => {
-            setCartSuccess(false);
-          }, 2000);
-        }
       } else {
         const cartData = {
           productId: product._id || product.id,
@@ -216,46 +207,87 @@ setCount(totalItems)
         });
 
         const result = await response.json();
-
         if (!response.ok) {
           throw new Error(result.message || 'Failed to add to cart');
         }
 
-        const oldCount = Number(localStorage.getItem("cart")) || 0;
         if (result.success) {
-          localStorage.setItem("cart", oldCount + 1);
-          setCount(oldCount + 1)
+          setCount(prev=>prev + 1)
+          if (isBuyNow) {
+            Navigate("/payments")
+          } else {
+            setCartSuccess(true);
+            setTimeout(() => setCartSuccess(false), 2000);
+            Navigate("/cart")
+
+          }
         }
 
-        window.dispatchEvent(new CustomEvent('cartUpdated', { detail: result }));
 
-        if (redirectToCart) {
-          Navigate('/cart');
-        } else {
-          setCartSuccess(true);
-          setTimeout(() => {
-            setCartSuccess(false);
-          }, 2000);
-        }
+
+
       }
     } catch (error) {
-      console.error('Error adding to cart:', error);
-      // alert(error.message || 'Failed to add product to cart. Please try again.');
+      Navigate("/cart");
     } finally {
       setAddingToCart(false);
       setBuyingNow(false);
     }
   };
 
+
   const handleBuyNow = async (product) => {
-    if (!token) {
-      alert("Please login to buy this product");
-      Navigate('/login');
-      return;
+    // e.stopPropagation();
+    // alert("buy now")
+
+    if (token) {
+      await handleAddToCart({ product, isBuyNow: true });
+    } else {
+
+
+      const cartItem = {
+        productId: product._id || product.id,
+        product: {
+          _id: product._id || product.id,
+          name: product.name,
+          price: product.price,
+          images: product.images,
+          image: product.images?.[0],
+        },
+        quantity: 1,
+        totalAmount: product.price || 0,
+      };
+
+      const existingCart = JSON.parse(
+        localStorage.getItem("cartItems") || "[]"
+      );
+      const existingItemIndex = existingCart.findIndex(
+        (item) => (item.productId || item.product._id) === cartItem.productId
+      );
+
+      if (existingItemIndex > -1) {
+        existingCart[existingItemIndex].quantity += 1;
+        existingCart[existingItemIndex].totalAmount =
+          existingCart[existingItemIndex].quantity * product.price;
+      } else {
+        existingCart.push(cartItem);
+      }
+
+      localStorage.setItem("cartItems", JSON.stringify(existingCart));
+      const totalItems = existingCart.reduce(
+        (sum, item) => sum + item.quantity,
+        0
+      );
+      localStorage.setItem("cart", totalItems);
+      setCount(totalItems);
+      window.dispatchEvent(
+        new CustomEvent("cartUpdated", {
+          detail: { cart: existingCart, count: totalItems },
+        })
+      );
+      Navigate("/payments");
     }
 
-    await handleAddToCart(product, true);
-     Navigate('/cart');
   };
 
   if (loading) {
@@ -452,54 +484,54 @@ setCount(totalItems)
               </div>
 
               {/* Action Buttons */}
-          <div className="grid grid-cols-2 gap-2 sm:gap-4">
-  {/* Add to Cart Button */}
-  <button
-    onClick={() => handleAddToCart(product, false)}
-    disabled={addingToCart || cartSuccess || buyingNow}
-    className="flex items-center justify-center gap-1 sm:gap-2 bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 text-white py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-base"
-  >
-    {addingToCart ? (
-      <>
-        <Loader2 size={16} className="animate-spin sm:w-5 sm:h-5" />
-        <span className="hidden sm:inline">Adding...</span>
-        <span className="sm:hidden">...</span>
-      </>
-    ) : cartSuccess ? (
-      <>
-        <ShieldCheck size={16} className="sm:w-5 sm:h-5" />
-        Added!
-      </>
-    ) : (
-      <>
-        <ShoppingCart size={16} className="sm:w-5 sm:h-5" />
-        <span className="hidden sm:inline">Add to Cart</span>
-        <span className="sm:hidden">Add</span>
-      </>
-    )}
-  </button>
+              <div className="grid grid-cols-2 gap-2 sm:gap-4">
+                {/* Add to Cart Button */}
+                <button
+                  onClick={(e) => handleAddToCart({ product, e, isBuyNow: false })}
+                  disabled={addingToCart || cartSuccess || buyingNow}
+                  className="flex items-center justify-center gap-1 sm:gap-2 bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 text-white py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-base"
+                >
+                  {addingToCart ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin sm:w-5 sm:h-5" />
+                      <span className="hidden sm:inline">Adding...</span>
+                      <span className="sm:hidden">...</span>
+                    </>
+                  ) : cartSuccess ? (
+                    <>
+                      <ShieldCheck size={16} className="sm:w-5 sm:h-5" />
+                      Added!
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCart size={16} className="sm:w-5 sm:h-5" />
+                      <span className="hidden sm:inline">Add to Cart</span>
+                      <span className="sm:hidden">Add</span>
+                    </>
+                  )}
+                </button>
 
-  {/* Buy Now Button */}
-  <button
-    onClick={() => handleBuyNow(product)}
-    disabled={addingToCart || cartSuccess || buyingNow}
-    className="flex items-center justify-center gap-1 sm:gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-base"
-  >
-    {buyingNow ? (
-      <>
-        <Loader2 size={16} className="animate-spin sm:w-5 sm:h-5" />
-        <span className="hidden sm:inline">Processing...</span>
-        <span className="sm:hidden">...</span>
-      </>
-    ) : (
-      <>
-        <Zap size={16} className="sm:w-5 sm:h-5" />
-        <span className="hidden sm:inline">Buy Now</span>
-        <span className="sm:hidden">Buy</span>
-      </>
-    )}
-  </button>
-</div>
+                {/* Buy Now Button */}
+                <button
+                  onClick={() => handleBuyNow(product)}
+                  disabled={addingToCart || cartSuccess || buyingNow}
+                  className="flex items-center justify-center gap-1 sm:gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-base"
+                >
+                  {buyingNow ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin sm:w-5 sm:h-5" />
+                      <span className="hidden sm:inline">Processing...</span>
+                      <span className="sm:hidden">...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Zap size={16} className="sm:w-5 sm:h-5" />
+                      <span className="hidden sm:inline">Buy Now</span>
+                      <span className="sm:hidden">Buy</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 

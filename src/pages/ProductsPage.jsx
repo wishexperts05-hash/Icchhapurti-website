@@ -30,10 +30,10 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
     setLiked(product.isWishlisted || false);
   }, [product.isWishlisted]);
 
-  const handleAddToCart = async (e, redirectToCart = false) => {
+  const handleAddToCart = async ({e, isBuyNow}) => {
     e.stopPropagation();
 
-    if (redirectToCart) {
+    if (isBuyNow) {
       setBuyingNow(true);
     } else {
       setAddingToCart(true);
@@ -81,21 +81,18 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
             detail: { cart: existingCart, count: totalItems },
           })
         );
-
-        if (redirectToCart) {
-          navigate("/cart");
-        } else {
-          setAddedToCart(true);
-          setTimeout(() => setAddedToCart(false), 2000);
-        }
+        navigate("/cart");
+     
       } else {
         await onAddToCart(product);
 
-        if (redirectToCart) {
-          navigate("/cart");
+        if (isBuyNow) {
+          navigate("/payments")
         } else {
           setAddedToCart(true);
           setTimeout(() => setAddedToCart(false), 2000);
+          navigate("/cart")
+
         }
       }
     } catch (error) {
@@ -106,14 +103,60 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
     }
   };
 
-  const handleBuyNow = async (e) => {
+
+ const handleBuyNow = async (e) => {
     e.stopPropagation();
-    if (!token) {
-      alert("Please login to buy this product");
-      navigate("/login");
-      return;
+    // alert("buy now")
+
+    if (token) {
+      await handleAddToCart({ e, isBuyNow: true });
+    } else {
+
+
+      const cartItem = {
+        productId: product._id || product.id,
+        product: {
+          _id: product._id || product.id,
+          name: product.name,
+          price: product.price,
+          images: product.images,
+          image: product.images?.[0],
+        },
+        quantity: 1,
+        totalAmount: product.price || 0,
+      };
+
+      const existingCart = JSON.parse(
+        localStorage.getItem("cartItems") || "[]"
+      );
+      const existingItemIndex = existingCart.findIndex(
+        (item) => (item.productId || item.product._id) === cartItem.productId
+      );
+
+      if (existingItemIndex > -1) {
+        existingCart[existingItemIndex].quantity += 1;
+        existingCart[existingItemIndex].totalAmount =
+          existingCart[existingItemIndex].quantity * product.price;
+      } else {
+        existingCart.push(cartItem);
+      }
+
+      localStorage.setItem("cartItems", JSON.stringify(existingCart));
+      const totalItems = existingCart.reduce(
+        (sum, item) => sum + item.quantity,
+        0
+      );
+      localStorage.setItem("cart", totalItems);
+      setCount(totalItems);
+      window.dispatchEvent(
+        new CustomEvent("cartUpdated", {
+          detail: { cart: existingCart, count: totalItems },
+        })
+      );
+      navigate("/payments");
     }
-    await handleAddToCart(e, true);
+
+
   };
 
   const handleViewDetails = () => {
@@ -300,7 +343,7 @@ const res = await fetch(url, {
 
           <div className="flex gap-2 sm:gap-3 mt-auto">
             <button
-              onClick={(e) => handleAddToCart(e, false)}
+               onClick={(e) => handleAddToCart({e, isBuyNow:false})}
               disabled={addingToCart || addedToCart || buyingNow}
               className="flex-1 flex items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 border-2 border-purple-500 rounded-xl font-bold text-xs sm:text-sm text-white transition-all hover:bg-purple-500/20 disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
             >
@@ -523,6 +566,7 @@ const { setCount ,setList} = useHeader();
       if (result.success) {
         localStorage.setItem("cart", oldCount + 1);
         setCount(oldCount + 1)
+        Navigate("/cart");
       }
 
       window.dispatchEvent(new CustomEvent("cartUpdated", { detail: result }));

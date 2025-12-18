@@ -223,7 +223,7 @@ export default function CartPage() {
     // Update cart count
     const totalItems = updatedCart.reduce((sum, item) => sum + item.quantity, 0);
     localStorage.setItem('cart', totalItems);
-
+ setCount(totalItems)
     setCartItems(updatedCart);
     window.dispatchEvent(new CustomEvent('cartUpdated'));
   };
@@ -238,17 +238,17 @@ export default function CartPage() {
   };
 
   const handleCheckout = (e) => {
-    if (isGuest) {
-      e.preventDefault();
-      alert('Please login to proceed with checkout');
-      Navigate('/login');
-      return;
-    }
+    // if (isGuest) {
+    //   e.preventDefault();
+    //   alert('Please login to proceed with checkout');
+    //   Navigate('/login');
+    //   return;
+    // }
 
-    if (!selectedAddress) {
-      e.preventDefault();
-      alert('Please select a delivery address');
-    }
+    // if (!selectedAddress) {
+    //   e.preventDefault();
+    //   alert('Please select a delivery address');
+    // }
     Navigate(`/payments?addressIndex=${selectedAddressIndex}`);
 
   };
@@ -257,21 +257,10 @@ export default function CartPage() {
   const totalPrice = cartItems.reduce((sum, item) => sum + Number(item.totalAmount), 0);
   const totalAmount = totalPrice + shippingAmount;
 
-  const PenIcon = ({ color }) => (
-    <div className="w-12 h-12 sm:w-14 sm:h-14 bg-slate-700 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
-      <svg viewBox="0 0 40 40" className="w-8 h-8 sm:w-10 sm:h-10">
-        <defs>
-          <linearGradient id={`pen-${color}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={color === 'blue' ? '#1e3a5f' : color === 'gold' ? '#d4a853' : '#e07830'} />
-            <stop offset="100%" stopColor={color === 'blue' ? '#0f1f33' : color === 'gold' ? '#b8860b' : '#c45c1a'} />
-          </linearGradient>
-        </defs>
-        <rect x="8" y="5" width="6" height="30" rx="1" fill={`url(#pen-${color})`} transform="rotate(-30 20 20)" />
-        <polygon points="6,35 10,28 14,35" fill="#c0c0c0" transform="rotate(-30 20 20)" />
-        <rect x="8" y="5" width="6" height="4" rx="1" fill="#c0c0c0" transform="rotate(-30 20 20)" />
-      </svg>
-    </div>
-  );
+
+
+
+ 
 
   if (loading) {
     return (
@@ -308,18 +297,21 @@ export default function CartPage() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-500 rounded-full blur-3xl animate-pulse"></div>
       </div>
 
+
+
+
       <div className="relative z-10 p-4 md:p-6 max-w-5xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
+        {/* <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl sm:text-2xl font-bold text-white">{t('cart.title')}</h1>
           {isGuest && (
             <div className="bg-amber-500/20 border border-amber-500/50 px-3 sm:px-4 py-2 rounded-lg">
               <p className="text-amber-400 text-xs sm:text-sm font-medium">Guest Mode</p>
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Guest Login Banner */}
-        {isGuest && cartItems.length > 0 && (
+        {/* {isGuest && cartItems.length > 0 && (
           <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/50 rounded-xl p-4 mb-4 backdrop-blur-sm">
             <div className="flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
@@ -343,10 +335,10 @@ export default function CartPage() {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Delivery Address - Only for logged-in users */}
-        {!isGuest && (
+        {/* {!isGuest && (
           <>
             {selectedAddress ? (
               <div className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 mb-4 border border-slate-700">
@@ -386,7 +378,7 @@ export default function CartPage() {
               </div>
             )}
           </>
-        )}
+        )} */}
 
         {/* Address Selection Modal */}
         {showAddressModal && !isGuest && (
@@ -452,6 +444,15 @@ export default function CartPage() {
 
         {/* Cart Items */}
         <div className="space-y-3 mb-4">
+    <div className="mb-4">
+  <h2 className="text-white text-2xl sm:text-3xl font-bold">
+    Cart
+  </h2>
+  <p className="text-white/70 text-sm">
+    Review your selected items
+  </p>
+</div>
+
           {cartItems.map((item, index) => (
             <div key={item._id || index} className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 border border-slate-700">
               <div className="flex items-center gap-3 sm:gap-4">
@@ -538,7 +539,8 @@ export default function CartPage() {
                   : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-60'
                 }`}
             >
-              {isGuest ? 'Login to Checkout' : 'Proceed to Checkout'}
+              {/* {isGuest ? 'Login to Checkout' : 'Proceed to Checkout'} */}
+              { 'Proceed to Checkout'}
             </button>
           </div>
         )}
