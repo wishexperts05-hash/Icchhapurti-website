@@ -223,36 +223,36 @@ export default function CosmicChatSupport() {
         </div>
 
         {/* Input Area */}
-        <div className="flex-shrink-0 px-10 py-5 bg-slate-900/80 backdrop-blur-lg">
-          <div className="flex gap-3 bg-white/10 rounded-full px-5 py-3 border border-white/20">
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder={t("chat.msgType")}
-              disabled={sending || loading}
-              className="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder-white/50 disabled:opacity-50"
-            />
-            <button
-              onClick={sendMessage}
-              disabled={sending || loading || inputValue.trim() === ''}
-              className="bg-blue-500/80 hover:bg-blue-500 text-white px-5 py-2 rounded-full text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-            >
-              {sending ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  {t("chat.sending")}
-                </>
-              ) : (
-                <>
-                  <Send className="w-4 h-4" />
-                  {t("chat.send")}
-                </>
-              )}
-            </button>
-          </div>
-        </div>
+      <div className="flex-shrink-0 px-3 sm:px-6 md:px-10 py-3 sm:py-4 md:py-5 bg-slate-900/80 backdrop-blur-lg">
+  <div className="flex gap-2 sm:gap-3 bg-white/10 rounded-full px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 border border-white/20">
+    <input
+      type="text"
+      value={inputValue}
+      onChange={(e) => setInputValue(e.target.value)}
+      onKeyPress={handleKeyPress}
+      placeholder={t("chat.msgType")}
+      disabled={sending || loading}
+      className="flex-1 bg-transparent border-none outline-none text-white text-xs sm:text-sm placeholder-white/50 disabled:opacity-50 min-w-0"
+    />
+    <button
+      onClick={sendMessage}
+      disabled={sending || loading || inputValue.trim() === ''}
+      className="bg-blue-500/80 hover:bg-blue-500 text-white px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 sm:gap-2 whitespace-nowrap flex-shrink-0"
+    >
+      {sending ? (
+        <>
+          <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
+          <span className="hidden sm:inline">{t("chat.sending")}</span>
+        </>
+      ) : (
+        <>
+          <Send className="w-3 h-3 sm:w-4 sm:h-4" />
+          <span className="hidden sm:inline">{t("chat.send")}</span>
+        </>
+      )}
+    </button>
+  </div>
+</div>
       </div>
 
       <style>{`

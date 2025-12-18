@@ -180,7 +180,7 @@ const Footer = () => {
               <span className="w-8 h-0.5 bg-[#C9A227]"></span> {t('footer.contactInfo')}
             </h3>
 
-            <div className="space-y-4">
+            <div className="space-y-2">
               {/* Phone */}
               <a href="tel:+919876543210" className="flex items-center gap-3 group">
                 <div

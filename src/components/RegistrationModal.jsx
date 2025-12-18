@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Country, State, City } from 'country-state-city';
 import { MapPin, Loader, Search, ChevronDown, X } from 'lucide-react';
+import { createPortal } from "react-dom";
 
 const RegistrationModal = ({ isOpen, onClose ,setIsAuthenticated}) => {
     const [formData, setFormData] = useState({
@@ -465,10 +466,10 @@ useEffect(() => {
 
     if (!isOpen) return null;
 
-    return (
+    return createPortal(
         <>
             {/* Main Registration Modal */}
-            <div className="fixed inset-0 z-50 top-55 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div  className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
                 <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl">
                     {/* Close Button */}
                     <button 
@@ -494,11 +495,11 @@ useEffect(() => {
                         )}
 
                         {/* Location Error Alert */}
-                        {locationError && (
+                        {/* {locationError && (
                             <div className="bg-yellow-50 border-l-4 border-yellow-500 text-yellow-700 px-4 py-3 rounded mb-4 text-sm">
                                 <p>{locationError}</p>
                             </div>
-                        )}
+                        )} */}
 
                         {/* API Error Alert */}
                         {apiError && (
@@ -597,7 +598,7 @@ useEffect(() => {
 
                             {/* Country */}
                             <div>
-                                <div className="flex items-center justify-between mb-1">
+                                {/* <div className="flex items-center justify-between mb-1">
                                     <label className="block text-sm font-medium text-gray-700">Country *</label>
                                     <button 
                                         type="button" 
@@ -608,7 +609,7 @@ useEffect(() => {
                                         <MapPin size={12} />
                                         {locationLoading ? 'Detecting...' : 'Auto-detect'}
                                     </button>
-                                </div>
+                                </div> */}
                                 <SearchDropdown 
                                     field="country" 
                                     label="Country" 
@@ -698,7 +699,7 @@ useEffect(() => {
                         </form>
 
                         {/* Footer Links */}
-                        <div className="mt-6 text-center space-y-3">
+                        {/* <div className="mt-6 text-center space-y-3">
                             <p className="text-gray-600 text-sm">
                                 Already have an account?
                                 <button 
@@ -708,7 +709,7 @@ useEffect(() => {
                                     Login here
                                 </button>
                             </p>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
@@ -775,7 +776,8 @@ useEffect(() => {
                     </div>
                 </div>
             )}
-        </>
+        </>,
+        document.getElementById('root') || document.body
     );
 };
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useHeader } from '../context/HeaderContext';
 
@@ -11,6 +11,8 @@ export default function Notification() {
     const [loading, setLoading] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
     const [markingAsRead, setMarkingAsRead] = useState({});
+    const [selectedNotification, setSelectedNotification] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const { t } = useTranslation();
     const itemsPerPage = 5;
 
@@ -44,7 +46,9 @@ export default function Notification() {
             setLoading(false);
         }
     };
-  const { setCount,setList ,setUnreadCount,wishlistCount } = useHeader();
+    
+    const { setCount, setList, setUnreadCount, wishlistCount } = useHeader();
+    
     const markAsRead = async (notificationId) => {
         try {
             setMarkingAsRead(prev => ({ ...prev, [notificationId]: true }));
@@ -73,15 +77,30 @@ export default function Notification() {
                 )
             );
             const current = Number(localStorage.getItem("unreadCount")) || 0;
-            const newCount = Math.max(0, current - 1); // never negative
+            const newCount = Math.max(0, current - 1);
             localStorage.setItem("unreadCount", newCount);
-            
-setUnreadCount(newCount)
+
+            setUnreadCount(newCount)
         } catch (err) {
             console.error("Error marking notification as read:", err);
         } finally {
             setMarkingAsRead(prev => ({ ...prev, [notificationId]: false }));
         }
+    };
+
+    const handleNotificationClick = async (notification) => {
+        setSelectedNotification(notification);
+        setIsModalOpen(true);
+        
+        // If notification is unread, mark it as read
+        if (!notification.isRead) {
+            await markAsRead(notification._id);
+        }
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedNotification(null);
     };
 
     const markAllAsRead = async () => {
@@ -103,7 +122,6 @@ setUnreadCount(newCount)
                 throw new Error('Failed to mark all notifications as read');
             }
 
-            // Refresh notifications
             await fetchNotifications();
 
         } catch (err) {
@@ -113,9 +131,7 @@ setUnreadCount(newCount)
         }
     };
 
-    // Filter and paginate notifications whenever notifications, activeTab, or currentPage changes
     useEffect(() => {
-        // Filter by read/unread status
         const filtered = notifications.filter(notif => {
             if (activeTab === 'unread') {
                 return notif.isRead === false;
@@ -124,11 +140,9 @@ setUnreadCount(newCount)
             }
         });
 
-        // Calculate pagination
         const total = Math.ceil(filtered.length / itemsPerPage);
         setTotalPages(Math.max(total, 1));
 
-        // Get current page items
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         const paginatedNotifications = filtered.slice(startIndex, endIndex);
@@ -156,7 +170,7 @@ setUnreadCount(newCount)
     const unreadCount = notifications.filter(n => !n.isRead).length;
 
     return (
-        <div className="min-h-screen  relative overflow-hidden">
+        <div className="min-h-screen relative overflow-hidden">
             <div className="absolute inset-0 overflow-hidden">
                 <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-gradient-to-r from-amber-500/20 via-cyan-500/15 to-blue-500/20 rounded-full blur-3xl animate-pulse -translate-x-1/2 -translate-y-1/2"></div>
             </div>
@@ -164,16 +178,6 @@ setUnreadCount(newCount)
             <div className="relative z-10 max-w-7xl mx-auto p-4">
                 <div className="flex items-center justify-between mb-6">
                     <h1 className="text-white font-bold text-xl">{t("notification.title")}</h1>
-                    {/* {activeTab === 'unread' && unreadCount > 0 && (
-                        <button
-                            onClick={markAllAsRead}
-                            disabled={loading}
-                            className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                        >
-                            <Check size={16} />
-                            Mark All as Read
-                        </button>
-                    )} */}
                 </div>
 
                 {/* Tabs */}
@@ -212,12 +216,16 @@ setUnreadCount(newCount)
                         <div className="text-center py-10 text-gray-400">{t("home.loading")}</div>
                     ) : filteredNotifications.length > 0 ? (
                         filteredNotifications.map((item) => (
-                            <div key={item._id} className="flex items-center justify-between py-4 border-b border-slate-700/50 hover:bg-slate-800/20 transition-colors px-2 rounded group">
+                            <div 
+                                key={item._id} 
+                                onClick={() => handleNotificationClick(item)}
+                                className="flex items-center justify-between py-4 border-b border-slate-700/50 hover:bg-slate-800/20 transition-colors px-2 rounded group cursor-pointer"
+                            >
                                 <div className="flex-1 pr-4">
                                     <h3 className="text-white text-sm font-semibold">
                                         {item.title}
                                     </h3>
-                                    <p className="text-gray-400 text-xs mt-1">
+                                    <p className="text-gray-400 text-xs mt-1 line-clamp-2">
                                         {item.message}
                                     </p>
                                 </div>
@@ -229,7 +237,10 @@ setUnreadCount(newCount)
 
                                     {!item.isRead && (
                                         <button
-                                            onClick={() => markAsRead(item._id)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                markAsRead(item._id);
+                                            }}
                                             disabled={markingAsRead[item._id]}
                                             className="p-2 rounded-full bg-slate-700 hover:bg-amber-500 text-gray-300 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed opacity-0 group-hover:opacity-100"
                                             title="Mark as read"
@@ -279,6 +290,66 @@ setUnreadCount(newCount)
                     </div>
                 )}
             </div>
+
+            {/* Notification Details Modal */}
+            {isModalOpen && selectedNotification && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="bg-slate-800 rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-2xl border border-slate-700">
+                        {/* Modal Header */}
+                        <div className="flex items-center justify-between p-6 border-b border-slate-700">
+                            <h2 className="text-xl font-bold text-white">
+                                {selectedNotification.title}
+                            </h2>
+                            <button
+                                onClick={closeModal}
+                                className="p-2 rounded-full hover:bg-slate-700 text-gray-400 hover:text-white transition-colors"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        {/* Modal Content */}
+                        <div className="p-6 space-y-4">
+                            <div className="flex items-center justify-between text-sm text-gray-400">
+                                <span>
+                                    {new Date(selectedNotification.createdAt).toLocaleDateString('en-US', { 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric' 
+                                    })}
+                                </span>
+                                <span>
+                                    {new Date(selectedNotification.createdAt).toLocaleTimeString([], { 
+                                        hour: '2-digit', 
+                                        minute: '2-digit' 
+                                    })}
+                                </span>
+                            </div>
+
+                            <div className="text-gray-300 text-base leading-relaxed whitespace-pre-wrap">
+                                {selectedNotification.message}
+                            </div>
+
+                            {selectedNotification.isRead && (
+                                <div className="flex items-center gap-2 text-sm text-amber-400 bg-amber-500/10 px-3 py-2 rounded-lg">
+                                    <Check size={16} />
+                                    <span>Read</span>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="p-6 border-t border-slate-700 flex justify-end">
+                            <button
+                                onClick={closeModal}
+                                className="px-6 py-2 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-lg transition-colors"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Country, State, City } from 'country-state-city';
 import { useTranslation } from 'react-i18next';
 import { Search, ChevronDown, X, MapPin, Edit2, Trash2, Plus } from 'lucide-react';
+import { createPortal } from 'react-dom';
 
 const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) => {
   const { t } = useTranslation();
@@ -364,7 +365,7 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
       <div className="bg-white rounded-xl w-full max-w-4xl my-8 shadow-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
@@ -441,13 +442,16 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
                         <p className="text-gray-700">{address.country} - {address.pinCode}</p>
                       </div>
                       <div className="ml-7 flex gap-2">
-                        <button
-                          onClick={() => handleEditAddress(address._id)}
-                          className="flex items-center gap-1 text-blue-600 hover:text-blue-700 font-medium text-sm"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                          Edit
-                        </button>
+                      <button
+  onClick={(e) => {
+    e.stopPropagation(); // Add parentheses to actually call the function!
+    handleEditAddress(address._id);
+  }}
+  className="flex items-center gap-1 text-blue-600 hover:text-blue-700 font-medium text-sm"
+>
+  <Edit2 className="w-4 h-4" />
+  Edit
+</button>
                         <button
                           onClick={() => handleDeleteAddress(address._id)}
                           className="flex items-center gap-1 text-red-600 hover:text-red-700 font-medium text-sm"
@@ -631,7 +635,7 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
           )}
         </div>
       </div>
-    </div>
+    </div>,document.getElementById('root') || document.body
   );
 };
 

@@ -174,7 +174,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
 
     if (!token) {
       alert("Please login to manage wishlist");
-      navigate("/login");
+      // navigate("/login");
       return;
     }
 
@@ -315,17 +315,17 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
             </span>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3 mb-4">
+           <div className="flex items-center gap-2 sm:gap-3 mb-4">
             <span className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-500">
               ₹{product.price || 0}
             </span>
-            {product.originalPrice && (
+            {product.price && (
               <div className="flex flex-col">
                 <span className="text-xs sm:text-sm text-gray-500 line-through">
-                  ₹{product.originalPrice}
+                  ₹{((product.price)*1.1).toFixed(2)}
                 </span>
                 <span className="text-xs text-green-400 font-semibold">
-                  Save ₹{product.originalPrice - product.price}
+                  Save ₹{(((product.price)*1.1).toFixed(2) - (product.price)).toFixed(2)}
                 </span>
               </div>
             )}

@@ -398,7 +398,7 @@ export default function Navbar() {
                 localStorage.removeItem("cartItems");
                 localStorage.setItem("cart", 0);
                 localStorage.removeItem("unreadCount");
-                navigate("/login");
+                navigate("/homePage");
                 setMenuOpen(false);
               }}
               className="mt-6 flex items-center justify-center gap-3 bg-gradient-to-r from-red-600 to-red-700 text-white py-2.5 sm:py-3 px-4 rounded-lg font-medium hover:shadow-lg hover:shadow-red-600/30 transition-all group text-sm sm:text-base"

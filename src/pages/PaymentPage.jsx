@@ -9,6 +9,7 @@ import { ChevronRight } from 'lucide-react';
 import RegistrationModal from '../components/RegistrationModal';
 import LoginModal from '../components/LoginModal';
 import AddressModal from '../components/AddressModal';
+import { AlertTriangle } from 'lucide-react';
 
 export default function PaymentPage() {
   const { pathname } = useLocation();
@@ -245,7 +246,7 @@ export default function PaymentPage() {
       setError(error.message);
     }
   };
-const[firstDiscount ,setFirstDiscount] = useState(0)
+  const [firstDiscount, setFirstDiscount] = useState(0)
   const handleApply = async (code) => {
     if (!code || code.trim() === '') {
       setError("Please enter a referral code");
@@ -467,7 +468,7 @@ const[firstDiscount ,setFirstDiscount] = useState(0)
 
   const totalItems = cartItems.reduce((sum, item) => sum + Number(item.quantity), 0);
 
-
+  const [showWarning, setWarning] = useState()
 
   // Icon Components
   const WalletIcon = () => (
@@ -566,7 +567,7 @@ const[firstDiscount ,setFirstDiscount] = useState(0)
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
           <button
-            onClick={() => Navigate('/cart')}
+            onClick={() => setWarning(true)}
             className="text-white hover:text-amber-400 transition-colors"
           >
             <ArrowLeft size={24} />
@@ -577,13 +578,46 @@ const[firstDiscount ,setFirstDiscount] = useState(0)
           </h1>
         </div>
 
+        {showWarning && (
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                  <AlertTriangle className="w-6 h-6 text-amber-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">
+                    Leave Checkout?
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Your order is not complete yet. If you leave now, your items will remain in your cart.
+                  </p>
+                </div>
+              </div>
 
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => setWarning(false)}
+                  className="flex-1 px-4 py-2.5 bg-purple-900 text-white rounded-lg font-medium hover:bg-purple-800 transition-colors"
+                >
+                  Continue Checkout
+                </button>
+                <button
+                  onClick={() => Navigate("/cart")}
+                  className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Go to Cart
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
 
         <div className="min-h-screen p-3 rounded-lg bg-gray-50">
           {/* Header */}
           <div className="bg-white shadow-sm">
-            <div className="max-w-2xl mx-auto px-2 py-4 flex justify-center">
+            <div className="max-w-2xl mx-auto px-2 py-2 flex justify-center">
               <img
                 src="/logo.png"
                 alt="Ichhapurti"
@@ -695,7 +729,7 @@ const[firstDiscount ,setFirstDiscount] = useState(0)
                                 >
                                   {/* Product Image */}
                                   <img
-                                    src={item.product.image}
+                                    src={item.product?.image || item.product?.images[0].url}
                                     alt={item.name}
                                     className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-md"
                                   />
@@ -711,7 +745,7 @@ const[firstDiscount ,setFirstDiscount] = useState(0)
                                         Quantity: <span className="font-medium text-gray-900">{item.quantity}</span>
                                       </p>
                                       <p className="text-gray-600">
-                                        Price:   <span className="font-medium line-through text-gray-900">₹{((item?.product?.price || 0) * 1.1).toLocaleString("en-IN")}
+                                        Price:   <span className="font-medium line-through text-gray-500">₹{((item?.product?.price || 0) * 1.1).toLocaleString("en-IN")}
                                         </span> <span className="font-medium text-gray-900">₹{item?.product.price?.toLocaleString("en-IN")}</span>
 
                                       </p>
@@ -742,7 +776,7 @@ const[firstDiscount ,setFirstDiscount] = useState(0)
                                 <span className="line-through">₹₹{((Number(originalAmount) || 0) / 1.1).toLocaleString("en-IN")}
 
 
-</span>
+                                </span>
                               </div>
                               {referralDiscount > 0 && (
                                 <div className="flex justify-between text-sm text-green-600">
@@ -857,7 +891,7 @@ const[firstDiscount ,setFirstDiscount] = useState(0)
                     <div className="rounded-xl p-3 text-center border border-gray-200 bg-gray-50">
                       <Package className="w-7 h-7 text-amber-500 mx-auto mb-1" />
                       <p className="text-gray-800 text-xs font-medium">
-                        {totalItems} Items
+                        Quality Product
                       </p>
                     </div>
                   </div>
@@ -1090,7 +1124,7 @@ const[firstDiscount ,setFirstDiscount] = useState(0)
                       <div className="flex justify-between text-black font-bold text-lg pt-2">
                         <span>{t('payment.price_details.total_amount')}</span>
                         <span className="text-amber-400 text-2xl">
-                          ₹ {(checkoutDetails?.grandTotal || 0)-firstDiscount}
+                          ₹ {(checkoutDetails?.grandTotal || 0) - firstDiscount}
                         </span>
                       </div>
                     </div>
