@@ -245,7 +245,7 @@ export default function PaymentPage() {
       setError(error.message);
     }
   };
-
+const[firstDiscount ,setFirstDiscount] = useState(0)
   const handleApply = async (code) => {
     if (!code || code.trim() === '') {
       setError("Please enter a referral code");
@@ -271,6 +271,7 @@ export default function PaymentPage() {
 
       if (res.data.success) {
         setDiscount(res.data.data.referralDiscountRate);
+        setFirstDiscount(res.data.data.referralDiscountRate);
         setCodeApplied(true);
         setSuccessMsg("Referral code applied successfully!");
         setTimeout(() => setSuccessMsg(''), 3000);
@@ -1089,7 +1090,7 @@ export default function PaymentPage() {
                       <div className="flex justify-between text-black font-bold text-lg pt-2">
                         <span>{t('payment.price_details.total_amount')}</span>
                         <span className="text-amber-400 text-2xl">
-                          ₹ {(checkoutDetails?.grandTotal || 0)}
+                          ₹ {(checkoutDetails?.grandTotal || 0)-firstDiscount}
                         </span>
                       </div>
                     </div>

@@ -468,7 +468,7 @@ useEffect(() => {
     return (
         <>
             {/* Main Registration Modal */}
-            <div className="fixed inset-0 z-50 top-40 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className="fixed inset-0 z-50 top-55 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
                 <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl">
                     {/* Close Button */}
                     <button 
