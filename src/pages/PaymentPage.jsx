@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { BsCashCoin } from 'react-icons/bs';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Loader2, Lock, AlertCircle, CheckCircle, Package, CreditCard, Wallet, ArrowLeft, ShieldCheck, Truck } from 'lucide-react';
-import { X } from 'lucide-react';
+
 import { ChevronRight } from 'lucide-react';
 import RegistrationModal from '../components/RegistrationModal';
 import LoginModal from '../components/LoginModal';
@@ -12,7 +12,8 @@ import AddressModal from '../components/AddressModal';
 import { AlertTriangle } from 'lucide-react';
 import ErrorModal from '../components/ErrorModal';
 import { useHeader } from '../context/HeaderContext';
-
+import Confetti from "react-confetti";
+import { X, Copy, Gift } from "lucide-react";
 export default function PaymentPage() {
   const { pathname } = useLocation();
  const { setCount} = useHeader();
@@ -35,10 +36,27 @@ export default function PaymentPage() {
   const [cartItems, setCartItems] = useState([]);
   const [checkoutDetails, setDetails] = useState(null);
   const [referralDiscount, setDiscount] = useState(0);
+  const [firstDiscount, setFirstDiscount] = useState(0)
 
   console.log(cartItems, "cartItems")
   console.log(checkoutDetails, "checkoutDetails")
   console.log(referralDiscount, "referralDiscount")
+
+const [showReferralPopup, setShowReferralPopup] = useState(false);
+
+
+  useEffect(() => {
+  if (referralDiscount > 0 || firstDiscount > 0) {
+    setShowReferralPopup(true);
+
+    const timer = setTimeout(() => {
+      setShowReferralPopup(false);
+    }, 10000); // ⏱ 5 seconds
+
+    return () => clearTimeout(timer);
+  }
+}, [referralDiscount, firstDiscount]);
+
 
   // Auth state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -261,7 +279,7 @@ export default function PaymentPage() {
       setError(error.message);
     }
   };
-  const [firstDiscount, setFirstDiscount] = useState(0)
+
   const handleApply = async (code) => {
     if (!code || code.trim() === '') {
       setError("Please enter a referral code");
@@ -637,6 +655,54 @@ export default function PaymentPage() {
         )}
 
 
+
+{showReferralPopup && (
+  <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+    <Confetti numberOfPieces={250} recycle={false} />
+
+    <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 text-center animate-scaleIn">
+      
+      {/* Close button (manual close also works) */}
+      <button
+        onClick={() => setShowReferralPopup(false)}
+        className="absolute top-4 right-4 text-gray-500 hover:text-black"
+      >
+        <X />
+      </button>
+
+      {/* Icon */}
+      <div className="flex justify-center mb-4">
+        <div className="bg-green-100 text-green-600 p-4 rounded-full animate-bounce">
+          <Gift size={32} />
+        </div>
+      </div>
+
+      {/* Heading */}
+      <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        🎉 Referral Applied!
+      </h2>
+
+      <p className="text-gray-600 mb-4">
+        You just unlocked a special discount
+      </p>
+
+      {/* Discount */}
+      <div className="text-4xl font-extrabold text-green-600 mb-4">
+        ₹{referralDiscount || firstDiscount} OFF
+      </div>
+
+      {/* CTA */}
+      <button
+        onClick={() => setShowReferralPopup(false)}
+        className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition"
+      >
+        Continue Checkout 🚀
+      </button>
+    </div>
+  </div>
+)}
+
+
         <div className="min-h-screen p-3 rounded-lg bg-gray-50">
           {/* Header */}
           <div className="bg-white shadow-sm">
@@ -986,7 +1052,7 @@ export default function PaymentPage() {
 
 
                   {
-                    checkoutLoading ? "Processing" : "Checkout"
+                    checkoutLoading ? "Processing...." : "Checkout"
                   }
                 </button>
               }

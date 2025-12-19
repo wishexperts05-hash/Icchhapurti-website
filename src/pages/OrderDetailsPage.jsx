@@ -132,7 +132,7 @@ const OrderDetailsPage = () => {
               </div>
               <div className='flex gap-2'>
                 {/* Add Review Button */}
-                <button
+                {/* <button
                   onClick={(e) => {
                     if (status !== "Delivered") {
                       e.preventDefault();
@@ -150,7 +150,7 @@ const OrderDetailsPage = () => {
                   title={status === "Delivered" ? "Write a review" : "Only delivered products can be reviewed"}
                 >
                   {t("orders.addReview")}
-                </button>
+                </button> */}
 
                 {/* Return Button */}
                 {/* <Link

@@ -8,6 +8,8 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Zap } from 'lucide-react';
 import { useHeader } from '../context/HeaderContext';
+import AddReviewModal from '../components/AddReviewModal';
+import { Box } from 'lucide-react';
 
 export default function ProductDetails() {
   const [product, setProduct] = useState(null);
@@ -28,11 +30,11 @@ export default function ProductDetails() {
   const productId = id;
   const Navigate = useNavigate();
   const token = localStorage.getItem("token");
-
+  const [openReview, setOpenReview] = useState(false);
   useEffect(() => {
     fetchProductDetails();
     fetchProductReviews();
-  }, [productId]);
+  }, [productId, openReview]);
 
   useEffect(() => {
     if (product) {
@@ -212,7 +214,7 @@ export default function ProductDetails() {
         }
 
         if (result.success) {
-          setCount(prev=>prev + 1)
+          setCount(prev => prev + 1)
           if (isBuyNow) {
             Navigate("/payments")
           } else {
@@ -290,6 +292,19 @@ export default function ProductDetails() {
 
   };
 
+
+
+
+  // find current user's review (API gives isCurrentUser)
+  const currentUserReview = reviews?.find(r => r.isCurrentUser);
+  const hasReviewed = Boolean(currentUserReview);
+
+  const orderedReviews = hasReviewed
+    ? [currentUserReview, ...reviews.filter(r => !r.isCurrentUser)]
+    : reviews;
+
+
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center px-4">
@@ -362,7 +377,11 @@ export default function ProductDetails() {
         <div className="absolute bottom-1/4 right-1/4 w-48 h-48 sm:w-80 sm:h-80 bg-cyan-500 rounded-full filter blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
         <div className="absolute top-1/2 left-1/2 w-40 h-40 sm:w-64 sm:h-64 bg-indigo-500 rounded-full filter blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
       </div>
-
+      <AddReviewModal
+        isOpen={openReview}
+        onClose={() => setOpenReview(false)}
+        productId={productId}
+      />
       <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
         {/* Breadcrumb */}
         <div className="mb-4 sm:mb-6">
@@ -376,7 +395,7 @@ export default function ProductDetails() {
         </div>
 
         {/* Main Content */}
-        <div className="bg-slate-800/50 backdrop-blur-lg rounded-xl sm:rounded-2xl shadow-2xl border border-slate-700/50 overflow-hidden">
+        <div className=" backdrop-blur-lg rounded-xl sm:rounded-2xl shadow-2xl border border-slate-700/50 overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 p-3 sm:p-6 lg:p-8">
             {/* Left Column - Images */}
             <div className="space-y-3 sm:space-y-6">
@@ -409,22 +428,22 @@ export default function ProductDetails() {
 
               {/* Trust Badges */}
               <div className="grid grid-cols-3 gap-2 sm:gap-4">
-                <div className="bg-slate-700/50 rounded-lg sm:rounded-xl p-2 sm:p-4 text-center border border-slate-600/50">
+                <div className="bg-white rounded-lg sm:rounded-xl p-2 sm:p-4 text-center border border-slate-600/50">
                   <Truck className="w-5 h-5 sm:w-8 sm:h-8 text-cyan-400 mx-auto mb-1 sm:mb-2" />
-                  <p className="text-white text-[10px] sm:text-xs font-medium">
+                  <p className="text-black text-[10px] sm:text-xs font-medium">
                     Free Delivery
                   </p>
                 </div>
-                <div className="bg-slate-700/50 rounded-lg sm:rounded-xl p-2 sm:p-4 text-center border border-slate-600/50">
+                <div className="bg-white rounded-lg sm:rounded-xl p-2 sm:p-4 text-center border border-slate-600/50">
                   <ShieldCheck className="w-5 h-5 sm:w-8 sm:h-8 text-green-400 mx-auto mb-1 sm:mb-2" />
-                  <p className="text-white text-[10px] sm:text-xs font-medium">
+                  <p className="text-black text-[10px] sm:text-xs font-medium">
                     Secure Payment
                   </p>
                 </div>
-                <div className="bg-slate-700/50 rounded-lg sm:rounded-xl p-2 sm:p-4 text-center border border-slate-600/50">
-                  <RefreshCw className="w-5 h-5 sm:w-8 sm:h-8 text-blue-400 mx-auto mb-1 sm:mb-2" />
-                  <p className="text-white text-[10px] sm:text-xs font-medium">
-                    Easy Returns
+                <div className="bg-white rounded-lg sm:rounded-xl p-2 sm:p-4 text-center border border-slate-600/50">
+                  <Box className="w-5 h-5 sm:w-8 sm:h-8 text-blue-400 mx-auto mb-1 sm:mb-2" />
+                  <p className="text-black text-[10px] sm:text-xs font-medium">
+                    Quality Product
                   </p>
                 </div>
               </div>
@@ -473,12 +492,12 @@ export default function ProductDetails() {
               </div>
 
               {/* Description */}
-              <div className="bg-slate-700/30 rounded-xl p-3 sm:p-6 border border-slate-600/50">
+              <div className="bg-white rounded-xl p-3 sm:p-6 border border-slate-600/50">
                 <h2 className="text-amber-400 font-bold text-base sm:text-lg mb-2 sm:mb-3 flex items-center gap-2">
                   <Package size={18} className="sm:w-5 sm:h-5" />
                   Product Details
                 </h2>
-                <p className="text-gray-300 text-xs sm:text-sm leading-relaxed">
+                <p className="text-black text-xs sm:text-sm leading-relaxed">
                   {product.description || "No description available for this product."}
                 </p>
               </div>
@@ -545,14 +564,14 @@ export default function ProductDetails() {
 
             {/* Rating Bars */}
             {reviewData?.starDistribution && (
-              <div className="bg-slate-700/30 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 border border-slate-600/50">
+              <div className="bg-white rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 border border-slate-600/50">
                 <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
                   <div className="flex flex-col items-center justify-center text-center">
                     <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-2">
                       {reviewData?.overallRating || 0}
                     </div>
                     <StarRating rating={Math.round(reviewData?.overallRating || 0)} size={20} />
-                    <p className="text-gray-400 mt-2 text-xs sm:text-sm">
+                    <p className="text-black mt-2 text-xs sm:text-sm">
                       Based on {reviewData?.totalReviews || 0} reviews
                     </p>
                   </div>
@@ -561,14 +580,14 @@ export default function ProductDetails() {
                       const percent = reviewData?.starDistribution?.[stars] || 0;
                       return (
                         <div key={stars} className="flex items-center gap-2 sm:gap-3">
-                          <span className="text-gray-300 w-12 sm:w-16 text-xs sm:text-sm font-medium">{stars} Star</span>
+                          <span className="text-black w-12 sm:w-16 text-xs sm:text-sm font-medium">{stars} Star</span>
                           <div className="flex-1 h-2 sm:h-3 bg-slate-700 rounded-full overflow-hidden">
                             <div
                               className="h-full bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full transition-all duration-500"
                               style={{ width: `${percent}%` }}
                             ></div>
                           </div>
-                          <span className="text-gray-400 w-8 sm:w-12 text-xs sm:text-sm">{percent}%</span>
+                          <span className="text-Black w-8 sm:w-12 text-xs sm:text-sm">{percent}%</span>
                         </div>
                       );
                     })}
@@ -581,7 +600,7 @@ export default function ProductDetails() {
             {reviewsLoading ? (
               <div className="text-center py-8 sm:py-12">
                 <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 animate-spin mx-auto mb-3 sm:mb-4 text-cyan-400" />
-                <p className="text-gray-400 text-base sm:text-lg">Loading reviews...</p>
+                <p className="text-Black text-base sm:text-lg">Loading reviews...</p>
               </div>
             ) : reviewsError ? (
               <div className="bg-red-500/10 border border-red-500/50 rounded-xl p-4 sm:p-6 text-center">
@@ -595,47 +614,83 @@ export default function ProductDetails() {
                 </button>
               </div>
             ) : reviews.length === 0 ? (
-               <div className="w-full max-w-md mx-auto p-6 rounded-md bg-white">
-      <h2 className="text-xl font-semibold text-gray-800 text-center mb-3">
-        Customer Reviews
-      </h2>
-      
-      <div className="flex justify-center gap-1 mb-2">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <Star
-            key={star}
-            className="w-5 h-5 text-yellow-400 fill-yellow-400"
-          />
-        ))}
-      </div>
-      
-      <p className="text-sm text-gray-500 text-center mb-4">
-        Be the first to write a review
-      </p>
-      
-      <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-6 rounded-lg transition-colors">
-        Write a review
-      </button>
-    </div>
+              <div className="w-full max-w-md mx-auto p-6 rounded-md bg-white">
+                <h2 className="text-xl font-semibold text-gray-800 text-center mb-3">
+                  Customer Reviews
+                </h2>
+
+                <div className="flex justify-center gap-1 mb-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className="w-5 h-5 text-yellow-400 fill-yellow-400"
+                    />
+                  ))}
+                </div>
+
+                <p className="text-sm text-gray-500 text-center mb-4">
+                  Be the first to write a review
+                </p>
+
+
+
+                <button
+                  onClick={() => {
+                    const token = localStorage.getItem("token");
+                    if (!token) return alert("Please login first");
+                    setOpenReview(true);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                >
+                  Write Review
+                </button>
+
+
+
+
+              </div>
             ) : (
               <>
                 <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
-                  {reviews?.map((review, index) => (
+                  {!hasReviewed && (
+                    <div className="mb-6 flex justify-end">
+                      <button
+                        onClick={() => {
+                          if (!token) return alert("Please login first");
+                          setOpenReview(true);
+                          window.scrollTo({ top: 0, behavior: "smooth" });
+                        }}
+                        className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-lg font-semibold shadow-md transition"
+                      >
+                        ✍️ Write a Review
+                      </button>
+                    </div>
+                  )}
+
+                  {orderedReviews?.map((review, index) => (
                     <div
                       key={review.id || review._id || index}
-                      className="bg-slate-700/40 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-slate-600/50 hover:border-cyan-500/30 transition-all duration-300"
+                      className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 border border-slate-600/50 hover:border-cyan-500/30 transition-all duration-300"
                     >
+
+
                       <div className="flex items-start gap-3 sm:gap-4">
                         <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg flex-shrink-0 shadow-lg">
                           {(review.reviewerName || review.reviewerName || 'U')[0].toUpperCase()}
+                          {review.isCurrentUser && (
+                            <span className="ml-2 bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-semibold">
+                              Your Review
+                            </span>
+                          )}
+
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between flex-wrap gap-2 sm:gap-3 mb-2 sm:mb-3">
                             <div className="flex-1 min-w-0">
-                              <h4 className="text-white font-bold text-sm sm:text-base lg:text-lg truncate">
+                              <h4 className="text-black font-bold text-sm sm:text-base lg:text-sm truncate">
                                 {review.reviewerName || review.reviewerName || 'Anonymous'}
                               </h4>
-                              <p className="text-gray-400 text-xs sm:text-sm">
+                              <p className="text-black text-xs sm:text-xs">
                                 {review.date || review.createdAt
                                   ? new Date(review.date || review.createdAt).toLocaleDateString('en-US', {
                                     day: 'numeric',
@@ -645,11 +700,11 @@ export default function ProductDetails() {
                                   : 'Date not available'}
                               </p>
                             </div>
-                            <div className="bg-slate-600/50 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg">
+                            <div className="bg-white px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg">
                               <StarRating rating={review.stars || 0} size={14} />
                             </div>
                           </div>
-                          <p className="text-gray-300 leading-relaxed text-xs sm:text-sm">
+                          <p className="text-Black leading-relaxed text-xs sm:text-sm">
                             {review.text || review.comment || review.review || 'No review text provided'}
                           </p>
                         </div>

@@ -80,10 +80,10 @@ const AddReviewPage = () => {
     // if (loading) return <div className="text-white text-center mt-8">Loading...</div>;
 
     return (
-        <div className="min-h-screen  flex justify-center items-center px-4">
+        <div className="my-6  flex justify-center items-center px-4">
 
-            <div className="w-full max-w-3xl bg-white/10  border border-white/20 rounded-xl p-6">
-                <h2 className="text-white text-2xl font-semibold mb-4 text-center">Add Review</h2>
+            <div className="w-full max-w-3xl bg-white  border border-white/20 rounded-xl p-6">
+                <h2 className="text-black text-2xl font-semibold mb-4 text-center">Add Review</h2>
 
                 {/* Product info */}
                 <div className="flex justify-center items-center gap-4 mb-4">
@@ -93,10 +93,10 @@ const AddReviewPage = () => {
                         className="w-16 h-16 rounded-md object-cover border border-gray-300"
                     />
                     <div>
-                        <div className="text-white font-semibold">{product?.name}</div>
-                        <div className="text-xs text-gray-300">
+                        <div className="text-black font-semibold">{product?.name}</div>
+                        {/* <div className="text-xs text-gray-300">
                             Delivered on {new Date(product?.updatedAt).toDateString()}
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 
@@ -129,7 +129,7 @@ const AddReviewPage = () => {
 
                 {/* Review Input */}
                 <textarea
-                    className="w-full h-32 border border-white rounded-md p-4 text-white mb-6"
+                    className="w-full h-32 border border-black rounded-md p-4 text-black mb-6"
                     value={review}
                     onChange={(e) => setReview(e.target.value)}
                     placeholder="Share details about your experience"
