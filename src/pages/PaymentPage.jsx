@@ -11,13 +11,20 @@ import LoginModal from '../components/LoginModal';
 import AddressModal from '../components/AddressModal';
 import { AlertTriangle } from 'lucide-react';
 import ErrorModal from '../components/ErrorModal';
+import { useHeader } from '../context/HeaderContext';
 
 export default function PaymentPage() {
   const { pathname } = useLocation();
-
+ const { setCount} = useHeader();
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [pathname]);
+
+  const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });}
 
   const [referralCode, setReferralCode] = useState('');
   const [applyDefault, setApplyDefault] = useState(false);
@@ -391,11 +398,14 @@ export default function PaymentPage() {
           if (isVerified) {
             setCheckoutLoading(false);
             setCheckoutSuccess(true);
+            scrollToTop()
+            setCount(0)
             setTimeout(() => {
               Navigate('/orders');
             }, 2000);
           } else {
             throw new Error('Payment verification failed');
+            scrollToTop()
           }
         },
         prefill: {
@@ -425,6 +435,7 @@ export default function PaymentPage() {
       setError(error.message || 'Failed to initiate payment');
       setTimeout(() => setError(null), 4000);
       setCheckoutLoading(false);
+      scrollToTop()
     }
   };
 
@@ -436,11 +447,13 @@ export default function PaymentPage() {
 
     if (!cartItems.length) {
       alert(t('payment.alerts.cart_empty'));
+      
       return;
     }
 
     if (!addresses[addressIndex || 0]) {
       alert('Please select a delivery address');
+       scrollToTop()
       return;
     }
 
@@ -454,6 +467,7 @@ export default function PaymentPage() {
         const finalAmount = (checkoutDetails?.grandTotal || 0) - (referralDiscount || 0);
         if (balance < finalAmount) {
          setError('Insufficient wallet balance');
+          scrollToTop()
         }
         await createWalletpayOrder();
       }
@@ -463,6 +477,7 @@ export default function PaymentPage() {
       setError(errorMsg);
       setTimeout(() => setError(null), 4000);
       setCheckoutLoading(false);
+       scrollToTop()
     }
   };
 
@@ -636,8 +651,8 @@ export default function PaymentPage() {
           </div>
 
           {/* Order Summary Section */}
-          <div className="max-w-3xl mx-auto px-4 py-6">
-            <div className="bg-white rounded-lg px-3 shadow-sm overflow-hidden">
+          <div className="max-w-3xl mx-auto px-2 py-6">
+            <div className="bg-white rounded-lg px-1 shadow-sm overflow-hidden">
               {/* Order Summary Header */}
 
               {(() => {
@@ -811,7 +826,7 @@ export default function PaymentPage() {
                 if (isAuthenticated && checkoutDetails) {
                   savings =
                     (checkoutDetails.totalAmount || 0) * 0.1 +
-                    (checkoutDetails.referralDiscount || 0);
+                    (checkoutDetails.referralDiscount || 0) + (referralDiscount||0)
                 } else if (!isAuthenticated) {
                   savings =
                     localCartItems.reduce(
@@ -985,37 +1000,52 @@ export default function PaymentPage() {
                       <span>{t('payment.referral.label')}</span>
                       {codeApplied && <CheckCircle size={16} className="text-green-400" />}
                     </label>
-                    <div className=" backdrop-blur-sm rounded-xl overflow-hidden border border-slate-700">
-                      <div className="flex">
-                        <input
-                          type="text"
-                          value={referralCode}
-                          disabled={checkoutDetails?.referralCode || applyingCode}
-                          onChange={(e) => { setReferralCode(e.target.value); setCodeApplied(false); }}
-                          placeholder={t('payment.referral.placeholder')}
-                          className="flex-1 px-4 py-4 bg-transparent text-black focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-                        />
-                        {
-                          !checkoutDetails?.referralCode &&
-                          <button
-                            onClick={() => handleApply(referralCode)}
-                            disabled={codeApplied || applyingCode || !referralCode.trim()}
-                            className="px-6 py-4 text-amber-400 hover:text-amber-300 font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                          >
-                            {applyingCode ? (
-                              <>
-                                <Loader2 size={16} className="animate-spin" />
-                                Applying...
-                              </>
-                            ) : codeApplied ? (
-                              'Applied'
-                            ) : (
-                              t('payment.referral.apply')
-                            )}
-                          </button>
-                        }
-                      </div>
-                    </div>
+                    <div className="backdrop-blur-sm rounded-xl overflow-hidden border border-slate-700">
+  <div className="flex flex-col sm:flex-row">
+    
+    {/* Input */}
+    <input
+      type="text"
+      value={referralCode}
+      disabled={checkoutDetails?.referralCode || applyingCode}
+      onChange={(e) => {
+        setReferralCode(e.target.value);
+        setCodeApplied(false);
+      }}
+      placeholder={t('payment.referral.placeholder')}
+      className="w-full px-4 py-3 sm:py-4 bg-transparent text-black focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+    />
+
+    {/* Button */}
+    {!checkoutDetails?.referralCode && (
+      <button
+        onClick={() => handleApply(referralCode)}
+        disabled={codeApplied || applyingCode || !referralCode.trim()}
+        className="
+          w-full sm:w-auto
+          px-4 sm:px-6 py-3 sm:py-4
+          text-amber-400 hover:text-amber-300
+          font-semibold transition-colors
+          disabled:opacity-50 disabled:cursor-not-allowed
+          flex items-center justify-center gap-2
+          border-t sm:border-t-0 sm:border-l border-slate-700
+        "
+      >
+        {applyingCode ? (
+          <>
+            <Loader2 size={16} className="animate-spin" />
+            Applying...
+          </>
+        ) : codeApplied ? (
+          'Applied'
+        ) : (
+          t('payment.referral.apply')
+        )}
+      </button>
+    )}
+  </div>
+</div>
+
                   </div>
 
 

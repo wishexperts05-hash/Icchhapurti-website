@@ -130,18 +130,21 @@ export default function Navbar() {
                     </Link>
 
                     {/* Cart */}
-                    <Link
-                      to="/cart"
-                      className="relative p-2 rounded-full hover:bg-white/10 transition-colors group"
-                      title="Shopping Cart"
-                    >
-                      <ShoppingCart size={18} className="sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
-                      {cartCount && (
-                        <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
-                          {cartCount || 0}
-                        </span>
-                      )}
-                    </Link>
+                 <Link
+  to="/cart"
+  className="relative p-2 rounded-full hover:bg-white/10 transition-colors group"
+>
+  <div className="relative w-5 h-5 sm:w-6 sm:h-6">
+    <ShoppingCart className="w-full h-full transition-transform group-hover:scale-110" />
+
+    {cartCount > 0 && (
+      <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
+        {cartCount}
+      </span>
+    )}
+  </div>
+</Link>
+
 
                     {/* Notifications */}
                     <Link
@@ -169,15 +172,20 @@ export default function Navbar() {
                     </Link>
 
                     <Link
-                      to="/cart"
-                      className="relative p-2 rounded-full hover:bg-white/10 transition-colors flex items-center"
-                      title="Cart"
-                    >
-                      <ShoppingCart size={20} className="text-white sm:w-5 sm:h-5" />
-                      <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] sm:text-xs px-1.5 py-0.5 rounded-full">
-                        {cartCount || 0}
-                      </span>
-                    </Link>
+  to="/cart"
+  className="relative p-2 rounded-full hover:bg-white/10 transition-colors group"
+>
+  <div className="relative w-5 h-5 sm:w-6 sm:h-6">
+    <ShoppingCart className="w-full h-full transition-transform group-hover:scale-110" />
+
+    {cartCount > 0 && (
+      <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
+        {cartCount}
+      </span>
+    )}
+  </div>
+</Link>
+
                   </>
                 )}
               </div>

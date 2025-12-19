@@ -330,7 +330,7 @@ const ReferProgramPage = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-5xl mx-auto p-6">
+      <div className="relative z-10 max-w-3xl mx-auto p-6">
         <h1 className="text-3xl font-bold text-white mb-6">{t("referProgramme.title")}</h1>
 
         {error && (
