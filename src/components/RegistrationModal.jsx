@@ -297,9 +297,11 @@ const RegistrationModal = ({ isOpen, onClose ,setIsAuthenticated}) => {
 
       const data = await response.json();
       if (data.success) {
+       
         setToken(data.registrationToken);
         setShowOtpModal(true);
         alert(data.otp);
+        //  onClose()
       } else {
         setApiError(data.message || "Failed to send OTP");
       }
@@ -716,7 +718,7 @@ useEffect(() => {
 
             {/* OTP Verification Modal */}
             {showOtpModal && (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+                <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
                     <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl">
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-2xl font-bold text-gray-800">Verify OTP</h3>
