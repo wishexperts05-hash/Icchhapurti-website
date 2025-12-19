@@ -92,6 +92,13 @@ export default function PaymentPage() {
   //   }
   // }, [cartItems, addresses]);
 
+  useEffect(()=>{
+    if(isAuthenticated &&cartItems.length>0){
+      fetchCheckOutDetails();
+    }
+
+  },[isAuthenticated,cartItems])
+
   // Load Razorpay Script
   useEffect(() => {
     const script = document.createElement('script');
@@ -958,7 +965,7 @@ export default function PaymentPage() {
                       <p className="text-gray-800 text-xs sm:text-sm">{t('cart.deliveryAddress.mobileNumber')} {addresses[addressIndex].phoneNumber}</p>
                     </div>
                     {
-                      !checkoutDetails &&
+                      // !checkoutDetails &&
                       <button
                         onClick={() => setIsModalOpen(true)}
                         className="bg-amber-500 hover:bg-amber-600 text-white text-xs sm:text-sm font-medium px-4 py-2 rounded-lg transition-colors whitespace-nowrap"
