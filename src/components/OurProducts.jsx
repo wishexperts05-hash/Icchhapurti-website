@@ -438,7 +438,7 @@ export default function OurProducts() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
-  const [limit] = useState(3);
+  const [limit] = useState(2);
   const [totalPages, setTotalPages] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
   const [searchText, setSearchText] = useState("");
@@ -591,6 +591,18 @@ export default function OurProducts() {
     );
   };
 
+
+ const product = {
+    title: products[0]?.name,
+  features: [
+  "Intention-Infused Writing Technology",
+  "Goal-Focused Manifestation Alignment",
+  "High-Vibration Energy Balance"
+]
+,
+    image: "/api/placeholder/200/200" // Replace with your actual image path
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
@@ -642,7 +654,7 @@ export default function OurProducts() {
         </div>
 
         {products.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-6">
             {products.map((product) => (
               <ProductCard
                 key={product.id || product._id}
@@ -667,6 +679,50 @@ export default function OurProducts() {
             </div>
           </div>
         )}
+
+
+
+        <div className="  my-3 flex items-center justify-center ">
+      {/* Product Card */}
+      <div className=" w-full bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-xl overflow-hidden hover:border-amber-400/50 transition-all duration-300">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 md:p-10">
+          {/* Left Side - Product Description */}
+          <div className="flex flex-col justify-center">
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
+              {product.title}
+            </h2>
+            
+            <ul className="space-y-3">
+              {product.features.map((feature, index) => (
+                <li 
+                  key={index}
+                  className="flex items-start gap-3 text-slate-300"
+                >
+                  <span className="w-1.5 h-1.5 bg-amber-400 rounded-full mt-2 flex-shrink-0" />
+                  <span className="text-base">{feature}</span>
+                </li>
+              ))}
+            </ul>
+
+            <button onClick={()=>Navigate(`/product/${products[0]._id}`)} className="mt-8 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-amber-500/50 transform hover:scale-105 w-fit">
+             Buy Now
+            </button>
+          </div>
+
+          {/* Right Side - Product Image */}
+          <div className="flex items-center justify-center">
+            <div className="relative group">
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-400/20 to-orange-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+              <img
+                src={products[0]?.images[0]}
+                alt={product.title}
+                className="relative w-full max-w-sm h-auto object-contain rounded-xl transform group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
       </div>
     </div>
   );

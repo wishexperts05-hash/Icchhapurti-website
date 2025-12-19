@@ -392,7 +392,7 @@ export default function PaymentPage() {
         currency: razorpayOrder.currency,
         name: 'ICHHAPURTI',
         description: 'Order Payment',
-        image: "/logo-white.png",
+        image: "https://placehold.co/256x256/png",
         order_id: razorpayOrder.razorpayOrderId,
         handler: async function (response) {
           const isVerified = await verifyRazorpayPayment({

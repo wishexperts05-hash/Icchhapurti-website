@@ -41,6 +41,38 @@ const ImageCarousel = ({
 
   const goToSlide = (index) => setCurrentIndex(index);
 
+
+
+const [crousal, setCrousal] = useState([]);
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState("");
+
+
+const fetchCrousal = async () => {
+  try {
+    setLoading(true);
+    setError("");
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/crousal`
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to fetch carousel data");
+    }
+
+    setCrousal(data.data || []);
+  } catch (err) {
+    console.error("Fetch carousel error:", err);
+    setError(err.message || "Something went wrong");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
   return (
     <div 
       className={`relative w-full mx-auto overflow-hidden  shadow-lg ${className}`}

@@ -11,6 +11,10 @@ import ManifestationStory from '../components/ManifestationStory'
 import ImageCarousel from '../components/ImageCarousel'
 import { useEffect } from 'react'
 import { useHeader } from '../context/HeaderContext'
+import WhyChooseUs from '../components/WhyChooseUs'
+import StoryBanner from '../components/StoryBanner'
+import ProductVideoSection from '../components/ProductVideoSection'
+import FAQPage from './FAQPage'
 
 const HomePage = () => {
 
@@ -139,13 +143,18 @@ console.log(cartCount,"cartCount")
 
       {/* <HeroSection /> */}
       <ImageCarousel />
-      <ManifestationPenHero />
+      <WhyChooseUs/>
+      {/* <ManifestationPenHero /> */}
+      
       <OurProducts />
-      <ManifestationBenefits />
-      <HowToUseManifestationPen />
-      <ManifestationFeatures />
+      <StoryBanner/>
+      <ProductVideoSection/>
+      {/* <ManifestationBenefits /> */}
+      {/* <HowToUseManifestationPen /> */}
+      {/* <ManifestationFeatures /> */}
       <CustomerReviews />
-      <ManifestationStory />
+      <FAQPage/>
+      {/* <ManifestationStory /> */}
       {/* <OurProducts /> */}
       {/* <DownloadAppSection/> */}
     </div>

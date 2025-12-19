@@ -595,11 +595,28 @@ export default function ProductDetails() {
                 </button>
               </div>
             ) : reviews.length === 0 ? (
-              <div className="text-center py-8 sm:py-12 bg-slate-700/30 rounded-xl border border-slate-600/50">
-                <Star className="w-12 h-12 sm:w-16 sm:h-16 text-gray-500 mx-auto mb-3 sm:mb-4" />
-                <p className="text-gray-400 text-base sm:text-lg font-medium">No reviews yet for this product.</p>
-                <p className="text-gray-500 text-xs sm:text-sm mt-2">Be the first to review!</p>
-              </div>
+               <div className="w-full max-w-md mx-auto p-6 rounded-md bg-white">
+      <h2 className="text-xl font-semibold text-gray-800 text-center mb-3">
+        Customer Reviews
+      </h2>
+      
+      <div className="flex justify-center gap-1 mb-2">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <Star
+            key={star}
+            className="w-5 h-5 text-yellow-400 fill-yellow-400"
+          />
+        ))}
+      </div>
+      
+      <p className="text-sm text-gray-500 text-center mb-4">
+        Be the first to write a review
+      </p>
+      
+      <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-6 rounded-lg transition-colors">
+        Write a review
+      </button>
+    </div>
             ) : (
               <>
                 <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
