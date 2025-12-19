@@ -10,6 +10,7 @@ import RegistrationModal from '../components/RegistrationModal';
 import LoginModal from '../components/LoginModal';
 import AddressModal from '../components/AddressModal';
 import { AlertTriangle } from 'lucide-react';
+import ErrorModal from '../components/ErrorModal';
 
 export default function PaymentPage() {
   const { pathname } = useLocation();
@@ -452,7 +453,7 @@ export default function PaymentPage() {
       } else if (selectedMethod === 'wallet') {
         const finalAmount = (checkoutDetails?.grandTotal || 0) - (referralDiscount || 0);
         if (balance < finalAmount) {
-          throw new Error('Insufficient wallet balance');
+         setError('Insufficient wallet balance');
         }
         await createWalletpayOrder();
       }
@@ -525,7 +526,7 @@ export default function PaymentPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-6">
         <div className="bg-slate-800/90 backdrop-blur-sm rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-red-500/30">
-          <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-20 h-20 bg-red-800 rounded-full flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-10 h-10 text-red-500" />
           </div>
           <h3 className="text-2xl font-bold text-white mb-3">Payment Error</h3>
@@ -1178,12 +1179,10 @@ export default function PaymentPage() {
 
 
         {/* Alert Messages */}
-        {error && (
-          <div className="mb-4 bg-red-500/20 border border-red-500/50 rounded-xl p-4 flex items-start gap-3 animate-slide-down">
-            <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
-            <p className="text-red-300 text-sm">{error}</p>
-          </div>
-        )}
+        <ErrorModal
+          error={error}
+          onClose={() => setError("")}
+        />
 
         {successMsg && (
           <div className="mb-4 bg-green-500/20 border border-green-500/50 rounded-xl p-4 flex items-start gap-3 animate-slide-down">
