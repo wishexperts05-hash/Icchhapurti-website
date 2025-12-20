@@ -69,7 +69,7 @@ const ImageCarousel = ({
     >
       {/* ================= Dots ================= */}
       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex gap-2 bg-black/40 px-3 py-1 rounded-full backdrop-blur">
-        {displayImages.map((_, i) => (
+        {/* {displayImages.map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrentIndex(i)}
@@ -79,7 +79,7 @@ const ImageCarousel = ({
                 : "w-2 h-2 bg-gray-300"
             }`}
           />
-        ))}
+        ))} */}
       </div>
 
       {/* ================= SLIDES ================= */}
@@ -131,7 +131,7 @@ const ImageCarousel = ({
       </div>
 
       {/* ================= Arrows ================= */}
-      {showControls && (
+      {/* {showControls && (
         <>
           <button
             onClick={() =>
@@ -155,7 +155,7 @@ const ImageCarousel = ({
             <ChevronRight />
           </button>
         </>
-      )}
+      )} */}
     </div>
   );
 };
