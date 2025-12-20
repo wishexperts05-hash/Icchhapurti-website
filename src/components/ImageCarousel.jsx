@@ -18,11 +18,11 @@ const ImageCarousel = ({
   });
 
   const defaultImages = [
-    "/slider1.jpg",
-    "/slider2.jpeg",
-    "/slider3.jpeg",
-    "/slider4.jpeg",
-    "/slider5.png",
+    "/coming-soon-banner.jpg",
+    // "/slider2.jpeg",
+    // "/slider3.jpeg",
+    // "/slider4.jpeg",
+    // "/slider5.png",
   ];
 
   const displayImages = images.length ? images : defaultImages;
