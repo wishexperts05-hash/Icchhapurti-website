@@ -173,7 +173,7 @@ export default function AboutUsPage() {
         </div>
 
         {/* Our Team */}
-        <div className="px-4 sm:px-6 py-4 pb-8 sm:pb-12">
+        {/* <div className="px-4 sm:px-6 py-4 pb-8 sm:pb-12">
           <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 sm:p-8 border border-white/10">
             <h3 className="text-white text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-center">Our Team</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -193,7 +193,7 @@ export default function AboutUsPage() {
               ))}
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

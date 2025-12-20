@@ -54,7 +54,7 @@ const ImageCarousel = ({
 
     const timer = setInterval(() => {
       setCurrentIndex((p) =>
-        p === displayImages.length ? 0 : p + 1
+        p === displayImages.length - 1 ? 0 : p + 1
       );
     }, autoPlayInterval);
 
@@ -69,7 +69,7 @@ const ImageCarousel = ({
     >
       {/* ================= Dots ================= */}
       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex gap-2 bg-black/40 px-3 py-1 rounded-full backdrop-blur">
-        {[...Array(displayImages.length + 1)].map((_, i) => (
+        {displayImages.map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrentIndex(i)}
@@ -88,48 +88,44 @@ const ImageCarousel = ({
           className="flex h-full transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
-          {/* ================= COMING SOON ================= */}
-          <div className="w-full h-full flex-shrink-0 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 flex items-center justify-center relative">
-            <div className="absolute inset-0 opacity-20">
-              <div className="absolute top-8 left-10 w-28 h-28 bg-white rounded-full blur-3xl animate-pulse" />
-              <div className="absolute bottom-10 right-10 w-36 h-36 bg-yellow-300 rounded-full blur-3xl animate-pulse" />
-            </div>
+          {displayImages.map((img, i) => (
+            <div key={i} className="relative w-full h-full flex-shrink-0">
+              <img
+                src={img}
+                alt={`Slide ${i + 1}`}
+                className="w-full h-full object-cover"
+              />
 
-            <div className="relative text-center px-4">
-              <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-white mb-2">
-                COMING SOON
-              </h1>
+              {/* ===== COMING SOON OVERLAY (ONLY ON FIRST SLIDE) ===== */}
+              {i === 0 && (
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                  <div className="text-center px-4">
+                    <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-red-500 mb-2">
+                      COMING SOON
+                    </h1>
+                    <p className="text-white/90 text-sm sm:text-base mb-3">
+                      Launching in
+                    </p>
 
-              <p className="text-white/90 text-sm sm:text-base mb-3">
-                Launching in
-              </p>
-
-              <div className="flex justify-center gap-2 sm:gap-4">
-                {Object.entries(countdown).map(([label, value]) => (
-                  <div
-                    key={label}
-                    className="bg-white/20 backdrop-blur rounded-lg px-2 py-1 sm:px-3 sm:py-2 min-w-[55px]"
-                  >
-                    <div className="text-lg sm:text-xl md:text-2xl font-bold text-white">
-                      {value}
-                    </div>
-                    <div className="text-[10px] sm:text-xs text-white/80 uppercase">
-                      {label}
+                    <div className="flex justify-center gap-2 sm:gap-4">
+                      {Object.entries(countdown).map(([label, value]) => (
+                        <div
+                          key={label}
+                          className="bg-white/20 backdrop-blur rounded-lg px-2 py-1 sm:px-3 sm:py-2 min-w-[55px]"
+                        >
+                          <div className="text-lg sm:text-xl md:text-2xl font-bold text-white">
+                            {value}
+                          </div>
+                          <div className="text-[10px] sm:text-xs text-white/80 uppercase">
+                            {label}
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
             </div>
-          </div>
-
-          {/* ================= IMAGE SLIDES ================= */}
-          {displayImages.map((img, i) => (
-            <img
-              key={i}
-              src={img}
-              alt={`Slide ${i + 1}`}
-              className="w-full h-full object-cover flex-shrink-0"
-            />
           ))}
         </div>
       </div>
@@ -140,7 +136,7 @@ const ImageCarousel = ({
           <button
             onClick={() =>
               setCurrentIndex((p) =>
-                p === 0 ? displayImages.length : p - 1
+                p === 0 ? displayImages.length - 1 : p - 1
               )
             }
             className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow hover:scale-110 transition z-20"
@@ -151,7 +147,7 @@ const ImageCarousel = ({
           <button
             onClick={() =>
               setCurrentIndex((p) =>
-                p === displayImages.length ? 0 : p + 1
+                p === displayImages.length - 1 ? 0 : p + 1
               )
             }
             className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow hover:scale-110 transition z-20"
