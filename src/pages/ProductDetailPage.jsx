@@ -10,6 +10,8 @@ import { Zap } from 'lucide-react';
 import { useHeader } from '../context/HeaderContext';
 import AddReviewModal from '../components/AddReviewModal';
 import { Box } from 'lucide-react';
+import FAQPage from './FAQPage';
+import { ChevronDown } from 'lucide-react';
 
 export default function ProductDetails() {
   const [product, setProduct] = useState(null);
@@ -31,6 +33,14 @@ export default function ProductDetails() {
   const Navigate = useNavigate();
   const token = localStorage.getItem("token");
   const [openReview, setOpenReview] = useState(false);
+
+
+  const [faqs, setFaqs] = useState([]);
+  const [openFAQ, setOpenFAQ] = useState(null);
+  const toggleFAQ = (id) => {
+    setOpenFAQ(openFAQ === id ? null : id);
+  };
+
   useEffect(() => {
     fetchProductDetails();
     fetchProductReviews();
@@ -38,9 +48,41 @@ export default function ProductDetails() {
 
   useEffect(() => {
     if (product) {
-      fetchProductReviews(currentPage);
+      fetchProductReviews(currentPage)
+
     }
+
+    fetchFaqs();
   }, [currentPage]);
+
+
+
+
+  const fetchFaqs = async () => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/faq/list`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch FAQs");
+      }
+
+      const json = await res.json();
+      setFaqs(json.data || []);
+    } catch (err) {
+      console.error("Error fetching FAQs:", err);
+    } finally {
+      // setLoading(false);
+    }
+  };
 
   const fetchProductDetails = async () => {
     setLoading(true);
@@ -552,7 +594,53 @@ export default function ProductDetails() {
                 </button>
               </div>
             </div>
+
+              <div className="space-y-2  mb-10">
+            {faqs.map((faq) => (
+              <div
+                key={faq._id}
+                className={`bg-white rounded-xl overflow-hidden border transition-all ${openFAQ === faq._id
+                    ? "border-blue-500/50 shadow-md"
+                    : "border-slate-300 hover:border-slate-400"
+                  }`}
+              >
+                <button
+                  onClick={() => toggleFAQ(faq._id)}
+                  className="w-full px-4 py-2 flex items-center justify-between text-left"
+                >
+                  <h3 className="text-sm font-semibold text-black pr-3">
+                    {faq.question}
+                  </h3>
+
+                  <div
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center transition-transform ${openFAQ === faq._id
+                        ? "bg-blue-500 rotate-180"
+                        : "bg-slate-500"
+                      }`}
+                  >
+                    <ChevronDown className="w-4 h-4 text-white" />
+                  </div>
+                </button>
+
+                <div
+                  className={`overflow-hidden transition-all duration-300 ${openFAQ === faq._id ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
+                    }`}
+                >
+                  <div className="px-4 pb-3">
+                    <div className="bg-gray-100 rounded-lg p-3 text-sm text-black">
+                      {faq.answer}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
+          </div>
+          {/* faq section  */}
+
+
+        
+
 
 
           {/* Reviews Section */}
@@ -564,30 +652,42 @@ export default function ProductDetails() {
 
             {/* Rating Bars */}
             {reviewData?.starDistribution && (
-              <div className="bg-white rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 border border-slate-600/50">
-                <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
+              <div className="bg-white rounded-lg p-3 mb-3 border border-slate-300">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {/* Overall Rating */}
                   <div className="flex flex-col items-center justify-center text-center">
-                    <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-2">
+                    <div className="text-3xl font-bold text-black leading-none">
                       {reviewData?.overallRating || 0}
                     </div>
-                    <StarRating rating={Math.round(reviewData?.overallRating || 0)} size={20} />
-                    <p className="text-black mt-2 text-xs sm:text-sm">
-                      Based on {reviewData?.totalReviews || 0} reviews
+                    <StarRating
+                      rating={Math.round(reviewData?.overallRating || 0)}
+                      size={14}
+                    />
+                    <p className="text-black text-[11px] mt-1">
+                      {reviewData?.totalReviews || 0} reviews
                     </p>
                   </div>
-                  <div className="space-y-2 sm:space-y-3">
+
+                  {/* Distribution */}
+                  <div className="space-y-1.5">
                     {[5, 4, 3, 2, 1].map((stars) => {
                       const percent = reviewData?.starDistribution?.[stars] || 0;
                       return (
-                        <div key={stars} className="flex items-center gap-2 sm:gap-3">
-                          <span className="text-black w-12 sm:w-16 text-xs sm:text-sm font-medium">{stars} Star</span>
-                          <div className="flex-1 h-2 sm:h-3 bg-slate-700 rounded-full overflow-hidden">
+                        <div key={stars} className="flex items-center gap-2">
+                          <span className="w-8 text-[11px] text-black font-medium">
+                            {stars}★
+                          </span>
+
+                          <div className="flex-1 h-1.5 bg-slate-200 rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full transition-all duration-500"
+                              className="h-full bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full transition-all"
                               style={{ width: `${percent}%` }}
-                            ></div>
+                            />
                           </div>
-                          <span className="text-Black w-8 sm:w-12 text-xs sm:text-sm">{percent}%</span>
+
+                          <span className="w-8 text-[11px] text-black text-right">
+                            {percent}%
+                          </span>
                         </div>
                       );
                     })}
@@ -670,47 +770,49 @@ export default function ProductDetails() {
                   {orderedReviews?.map((review, index) => (
                     <div
                       key={review.id || review._id || index}
-                      className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 border border-slate-600/50 hover:border-cyan-500/30 transition-all duration-300"
+                      className="bg-white rounded-lg p-3 border border-slate-300 hover:border-cyan-400/40 transition"
                     >
-
-
-                      <div className="flex items-start gap-3 sm:gap-4">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg flex-shrink-0 shadow-lg">
-                          {(review.reviewerName || review.reviewerName || 'U')[0].toUpperCase()}
-                          {review.isCurrentUser && (
-                            <span className="ml-2 bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-semibold">
-                              Your Review
-                            </span>
-                          )}
-
+                      <div className="flex items-start gap-3">
+                        {/* Avatar */}
+                        <div className="w-9 h-9 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+                          {(review.reviewerName || 'U')[0].toUpperCase()}
                         </div>
+
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between flex-wrap gap-2 sm:gap-3 mb-2 sm:mb-3">
-                            <div className="flex-1 min-w-0">
-                              <h4 className="text-black font-bold text-sm sm:text-base lg:text-sm truncate">
-                                {review.reviewerName || review.reviewerName || 'Anonymous'}
+                          {/* Header */}
+                          <div className="flex items-center justify-between mb-1 gap-2">
+                            <div className="min-w-0">
+                              <h4 className="text-black font-semibold text-sm truncate">
+                                {review.reviewerName || 'Anonymous'}
+                                {review.isCurrentUser && (
+                                  <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">
+                                    You
+                                  </span>
+                                )}
                               </h4>
-                              <p className="text-black text-xs sm:text-xs">
+                              <p className="text-black text-[11px]">
                                 {review.date || review.createdAt
-                                  ? new Date(review.date || review.createdAt).toLocaleDateString('en-US', {
+                                  ? new Date(review.date || review.createdAt).toLocaleDateString('en-IN', {
                                     day: 'numeric',
-                                    month: 'long',
-                                    year: 'numeric'
+                                    month: 'short',
+                                    year: 'numeric',
                                   })
-                                  : 'Date not available'}
+                                  : '—'}
                               </p>
                             </div>
-                            <div className="bg-white px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg">
-                              <StarRating rating={review.stars || 0} size={14} />
-                            </div>
+
+                            <StarRating rating={review.stars || 0} size={12} />
                           </div>
-                          <p className="text-Black leading-relaxed text-xs sm:text-sm">
-                            {review.text || review.comment || review.review || 'No review text provided'}
+
+                          {/* Review text */}
+                          <p className="text-black text-xs leading-snug line-clamp-3">
+                            {review.text || review.comment || review.review || 'No review provided'}
                           </p>
                         </div>
                       </div>
                     </div>
                   ))}
+
                 </div>
 
                 {/* Pagination */}

@@ -1,135 +1,165 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const ImageCarousel = ({ 
-  images = [], 
-  autoPlay = true, 
+const ImageCarousel = ({
+  images = [],
+  autoPlay = true,
   autoPlayInterval = 3000,
   showControls = true,
-  className = ""
+  className = "",
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [isHovering, setIsHovering] = useState(false);
+  const [countdown, setCountdown] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
 
   const defaultImages = [
-    '/slider1.jpg',
-    '/slider2.jpeg',
-    '/slider3.jpeg',
-    '/slider4.jpeg',
-    '/slider5.png',
+    "/slider1.jpg",
+    "/slider2.jpeg",
+    "/slider3.jpeg",
+    "/slider4.jpeg",
+    "/slider5.png",
   ];
 
   const displayImages = images.length ? images : defaultImages;
 
-  // Auto Play
+  /* ================= Countdown ================= */
   useEffect(() => {
-    if (!isPlaying || isHovering) return;
+    const launchDate = new Date("2025-12-25T00:00:00").getTime();
 
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % displayImages.length);
+      const now = Date.now();
+      const diff = launchDate - now;
+
+      if (diff > 0) {
+        setCountdown({
+          days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((diff / (1000 * 60)) % 60),
+          seconds: Math.floor((diff / 1000) % 60),
+        });
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  /* ================= Autoplay ================= */
+  useEffect(() => {
+    if (!autoPlay || isHovering) return;
+
+    const timer = setInterval(() => {
+      setCurrentIndex((p) =>
+        p === displayImages.length ? 0 : p + 1
+      );
     }, autoPlayInterval);
 
     return () => clearInterval(timer);
-  }, [isPlaying, isHovering, currentIndex]);
-
-  const goToPrevious = () =>
-    setCurrentIndex((prev) => (prev === 0 ? displayImages.length - 1 : prev - 1));
-
-  const goToNext = () =>
-    setCurrentIndex((prev) => (prev === displayImages.length - 1 ? 0 : prev + 1));
-
-  const goToSlide = (index) => setCurrentIndex(index);
-
-
-
-const [crousal, setCrousal] = useState([]);
-const [loading, setLoading] = useState(false);
-const [error, setError] = useState("");
-
-
-const fetchCrousal = async () => {
-  try {
-    setLoading(true);
-    setError("");
-
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/crousal`
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to fetch carousel data");
-    }
-
-    setCrousal(data.data || []);
-  } catch (err) {
-    console.error("Fetch carousel error:", err);
-    setError(err.message || "Something went wrong");
-  } finally {
-    setLoading(false);
-  }
-};
-
+  }, [autoPlay, isHovering, autoPlayInterval, displayImages.length]);
 
   return (
-    <div 
-      className={`relative w-full mx-auto overflow-hidden  shadow-lg ${className}`}
+    <div
+      className={`relative w-full overflow-hidden ${className}`}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-
-      {/* Dots Indicator (TOP CENTER) */}
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30 flex gap-2 backdrop-blur-md bg-black/30 px-3 py-1 ">
-        {displayImages.map((_, idx) => (
+      {/* ================= Dots ================= */}
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex gap-2 bg-black/40 px-3 py-1 rounded-full backdrop-blur">
+        {[...Array(displayImages.length + 1)].map((_, i) => (
           <button
-            key={idx}
-            onClick={() => goToSlide(idx)}
-            className={`transition-all rounded-full ${
-              idx === currentIndex
-                ? "w-3 h-3 bg-blue-500 scale-125 shadow"
-                : "w-2 h-2 bg-gray-300 opacity-70"
+            key={i}
+            onClick={() => setCurrentIndex(i)}
+            className={`rounded-full transition-all ${
+              currentIndex === i
+                ? "w-3 h-3 bg-blue-500"
+                : "w-2 h-2 bg-gray-300"
             }`}
           />
         ))}
       </div>
 
-      {/* Slide Wrapper */}
-      <div className="relative   ">
+      {/* ================= SLIDES ================= */}
+      <div className="relative h-[220px] sm:h-[320px] md:h-[420px] lg:h-[700px]">
         <div
-          className="flex transition-transform duration-700 ease-in-out"
+          className="flex h-full transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
+          {/* ================= COMING SOON ================= */}
+          <div className="w-full h-full flex-shrink-0 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 flex items-center justify-center relative">
+            <div className="absolute inset-0 opacity-20">
+              <div className="absolute top-8 left-10 w-28 h-28 bg-white rounded-full blur-3xl animate-pulse" />
+              <div className="absolute bottom-10 right-10 w-36 h-36 bg-yellow-300 rounded-full blur-3xl animate-pulse" />
+            </div>
+
+            <div className="relative text-center px-4">
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-white mb-2">
+                COMING SOON
+              </h1>
+
+              <p className="text-white/90 text-sm sm:text-base mb-3">
+                Launching in
+              </p>
+
+              <div className="flex justify-center gap-2 sm:gap-4">
+                {Object.entries(countdown).map(([label, value]) => (
+                  <div
+                    key={label}
+                    className="bg-white/20 backdrop-blur rounded-lg px-2 py-1 sm:px-3 sm:py-2 min-w-[55px]"
+                  >
+                    <div className="text-lg sm:text-xl md:text-2xl font-bold text-white">
+                      {value}
+                    </div>
+                    <div className="text-[10px] sm:text-xs text-white/80 uppercase">
+                      {label}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* ================= IMAGE SLIDES ================= */}
           {displayImages.map((img, i) => (
             <img
               key={i}
               src={img}
+              alt={`Slide ${i + 1}`}
               className="w-full h-full object-cover flex-shrink-0"
-              alt={`Slide ${i}`}
             />
           ))}
         </div>
       </div>
 
-      {/* Navigation Arrows */}
-      {/* {showControls && (
+      {/* ================= Arrows ================= */}
+      {showControls && (
         <>
           <button
-            onClick={goToPrevious}
-            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/80 hover:bg-white rounded-full shadow hover:scale-110 transition z-20"
+            onClick={() =>
+              setCurrentIndex((p) =>
+                p === 0 ? displayImages.length : p - 1
+              )
+            }
+            className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow hover:scale-110 transition z-20"
           >
             <ChevronLeft />
           </button>
 
           <button
-            onClick={goToNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/80 hover:bg-white rounded-full shadow hover:scale-110 transition z-20"
+            onClick={() =>
+              setCurrentIndex((p) =>
+                p === displayImages.length ? 0 : p + 1
+              )
+            }
+            className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow hover:scale-110 transition z-20"
           >
             <ChevronRight />
           </button>
         </>
-      )} */}
+      )}
     </div>
   );
 };

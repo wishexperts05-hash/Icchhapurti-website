@@ -30,7 +30,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
     setLiked(product.isWishlisted || false);
   }, [product.isWishlisted]);
 
-  const handleAddToCart = async ({e, isBuyNow}) => {
+  const handleAddToCart = async ({ e, isBuyNow }) => {
     e.stopPropagation();
 
     if (isBuyNow) {
@@ -315,17 +315,17 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
             </span>
           </div>
 
-           <div className="flex items-center gap-2 sm:gap-3 mb-4">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4">
             <span className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-500">
               ₹{product.price || 0}
             </span>
             {product.price && (
               <div className="flex flex-col">
                 <span className="text-xs sm:text-sm text-gray-500 line-through">
-                  ₹{((product.price)*1.1).toFixed(2)}
+                  ₹{((product.price) * 1.1).toFixed(2)}
                 </span>
                 <span className="text-xs text-green-400 font-semibold">
-                  Save ₹{(((product.price)*1.1).toFixed(2) - (product.price)).toFixed(2)}
+                  Save ₹{(((product.price) * 1.1).toFixed(2) - (product.price)).toFixed(2)}
                 </span>
               </div>
             )}
@@ -348,7 +348,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
 
           <div className="flex gap-2 sm:gap-3 mt-auto">
             <button
-              onClick={(e) => handleAddToCart({e, isBuyNow:false})}
+              onClick={(e) => handleAddToCart({ e, isBuyNow: false })}
               disabled={addingToCart || addedToCart || buyingNow}
               className="flex-1 flex items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 border-2 border-purple-500 rounded-xl font-bold text-xs sm:text-sm text-white transition-all hover:bg-purple-500/20 disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
             >
@@ -592,14 +592,14 @@ export default function OurProducts() {
   };
 
 
- const product = {
+  const product = {
     title: products[0]?.name,
-  features: [
-  "Intention-Infused Writing Technology",
-  "Goal-Focused Manifestation Alignment",
-  "High-Vibration Energy Balance"
-]
-,
+    features: [
+      "Intention-Infused Writing Technology",
+      "Goal-Focused Manifestation Alignment",
+      "High-Vibration Energy Balance"
+    ]
+    ,
     image: "/api/placeholder/200/200" // Replace with your actual image path
   };
 
@@ -640,9 +640,9 @@ export default function OurProducts() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">
-              {t("common.ourProducts")}
+              Manifestation Tool
             </h2>
-            <p className="text-gray-400 text-sm">{t("home.tagline")}</p>
+            {/* <p className="text-gray-400 text-sm">{t("home.tagline")}</p> */}
           </div>
 
           <button
@@ -683,46 +683,49 @@ export default function OurProducts() {
 
 
         <div className="  my-3 flex items-center justify-center ">
-      {/* Product Card */}
-      <div className=" w-full bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-xl overflow-hidden hover:border-amber-400/50 transition-all duration-300">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 md:p-10">
-          {/* Left Side - Product Description */}
-          <div className="flex flex-col justify-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
-              {product.title}
-            </h2>
-            
-            <ul className="space-y-3">
-              {product.features.map((feature, index) => (
-                <li 
-                  key={index}
-                  className="flex items-start gap-3 text-slate-300"
-                >
-                  <span className="w-1.5 h-1.5 bg-amber-400 rounded-full mt-2 flex-shrink-0" />
-                  <span className="text-base">{feature}</span>
-                </li>
-              ))}
-            </ul>
+          {/* Product Card */}
+          <div className=" w-full bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-xl overflow-hidden hover:border-amber-400/50 transition-all duration-300">
+            <div className="grid grid-cols-1 md:grid-cols-2  gap-8 p-8 md:p-10">
+              {/* Left Side - Product Description */}
 
-            <button onClick={()=>Navigate(`/product/${products[0]._id}`)} className="mt-8 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-amber-500/50 transform hover:scale-105 w-fit">
-             Buy Now
-            </button>
-          </div>
 
-          {/* Right Side - Product Image */}
-          <div className="flex items-center justify-center">
-            <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-400/20 to-orange-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
-              <img
-                src={products[0]?.images[0]}
-                alt={product.title}
-                className="relative w-full max-w-sm h-auto object-contain rounded-xl transform group-hover:scale-105 transition-transform duration-300"
-              />
+
+              <div className="flex items-center justify-center">
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-400/20 to-orange-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+                  <img
+                    src={products[0]?.images[0]}
+                    alt={product.title}
+                    className="relative w-full max-w-sm h-auto object-contain rounded-xl transform group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+              </div>
+
+              {/* Right Side - Product Image */}
+              <div className="flex flex-col justify-center">
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
+                  Manifestation kit
+                </h2>
+
+                <ul className="space-y-3">
+                  {product.features.map((feature, index) => (
+                    <li
+                      key={index}
+                      className="flex items-start gap-3 text-slate-300"
+                    >
+                      <span className="w-1.5 h-1.5 bg-amber-400 rounded-full mt-2 flex-shrink-0" />
+                      <span className="text-base">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <button onClick={() => Navigate(`/product/${products[0]._id}`)} className="mt-8 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-amber-500/50 transform hover:scale-105 w-fit">
+                  Buy Now
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
       </div>
     </div>
   );
