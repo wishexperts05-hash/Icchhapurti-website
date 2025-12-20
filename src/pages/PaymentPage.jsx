@@ -16,16 +16,17 @@ import Confetti from "react-confetti";
 import { X, Copy, Gift } from "lucide-react";
 export default function PaymentPage() {
   const { pathname } = useLocation();
- const { setCount} = useHeader();
+  const { setCount } = useHeader();
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [pathname]);
 
   const scrollToTop = () => {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });}
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }
 
   const [referralCode, setReferralCode] = useState('');
   const [applyDefault, setApplyDefault] = useState(false);
@@ -42,20 +43,20 @@ export default function PaymentPage() {
   console.log(checkoutDetails, "checkoutDetails")
   console.log(referralDiscount, "referralDiscount")
 
-const [showReferralPopup, setShowReferralPopup] = useState(false);
+  const [showReferralPopup, setShowReferralPopup] = useState(false);
 
 
   useEffect(() => {
-  if (referralDiscount > 0 || firstDiscount > 0) {
-    setShowReferralPopup(true);
+    if (referralDiscount > 0 || firstDiscount > 0) {
+      setShowReferralPopup(true);
 
-    const timer = setTimeout(() => {
-      setShowReferralPopup(false);
-    }, 10000); // ⏱ 5 seconds
+      const timer = setTimeout(() => {
+        setShowReferralPopup(false);
+      }, 10000); // ⏱ 5 seconds
 
-    return () => clearTimeout(timer);
-  }
-}, [referralDiscount, firstDiscount]);
+      return () => clearTimeout(timer);
+    }
+  }, [referralDiscount, firstDiscount]);
 
 
   // Auth state
@@ -110,12 +111,12 @@ const [showReferralPopup, setShowReferralPopup] = useState(false);
   //   }
   // }, [cartItems, addresses]);
 
-  useEffect(()=>{
-    if(isAuthenticated &&cartItems.length>0){
+  useEffect(() => {
+    if (isAuthenticated && cartItems.length > 0) {
       fetchCheckOutDetails();
     }
 
-  },[isAuthenticated,cartItems])
+  }, [isAuthenticated, cartItems])
 
   // Load Razorpay Script
   useEffect(() => {
@@ -472,13 +473,13 @@ const [showReferralPopup, setShowReferralPopup] = useState(false);
 
     if (!cartItems.length) {
       alert(t('payment.alerts.cart_empty'));
-      
+
       return;
     }
 
     if (!addresses[addressIndex || 0]) {
       alert('Please select a delivery address');
-       scrollToTop()
+      scrollToTop()
       return;
     }
 
@@ -491,7 +492,7 @@ const [showReferralPopup, setShowReferralPopup] = useState(false);
       } else if (selectedMethod === 'wallet') {
         const finalAmount = (checkoutDetails?.grandTotal || 0) - (referralDiscount || 0);
         if (balance < finalAmount) {
-         setError('Insufficient wallet balance');
+          setError('Insufficient wallet balance');
           scrollToTop()
         }
         await createWalletpayOrder();
@@ -502,7 +503,7 @@ const [showReferralPopup, setShowReferralPopup] = useState(false);
       setError(errorMsg);
       setTimeout(() => setError(null), 4000);
       setCheckoutLoading(false);
-       scrollToTop()
+      scrollToTop()
     }
   };
 
@@ -656,51 +657,51 @@ const [showReferralPopup, setShowReferralPopup] = useState(false);
 
 
 
-{showReferralPopup && (
-  <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-    <Confetti numberOfPieces={250} recycle={false} />
+        {showReferralPopup && (
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+            <Confetti numberOfPieces={250} recycle={false} />
 
-    <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 text-center animate-scaleIn">
-      
-      {/* Close button (manual close also works) */}
-      <button
-        onClick={() => setShowReferralPopup(false)}
-        className="absolute top-4 right-4 text-gray-500 hover:text-black"
-      >
-        <X />
-      </button>
+            <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 text-center animate-scaleIn">
 
-      {/* Icon */}
-      <div className="flex justify-center mb-4">
-        <div className="bg-green-100 text-green-600 p-4 rounded-full animate-bounce">
-          <Gift size={32} />
-        </div>
-      </div>
+              {/* Close button (manual close also works) */}
+              <button
+                onClick={() => setShowReferralPopup(false)}
+                className="absolute top-4 right-4 text-gray-500 hover:text-black"
+              >
+                <X />
+              </button>
 
-      {/* Heading */}
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">
-        🎉 Referral Applied!
-      </h2>
+              {/* Icon */}
+              <div className="flex justify-center mb-4">
+                <div className="bg-green-100 text-green-600 p-4 rounded-full animate-bounce">
+                  <Gift size={32} />
+                </div>
+              </div>
 
-      <p className="text-gray-600 mb-4">
-        You just unlocked a special discount
-      </p>
+              {/* Heading */}
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                🎉 Referral Applied!
+              </h2>
 
-      {/* Discount */}
-      <div className="text-4xl font-extrabold text-green-600 mb-4">
-        ₹{referralDiscount || firstDiscount} OFF
-      </div>
+              <p className="text-gray-600 mb-4">
+                You just unlocked a special discount
+              </p>
 
-      {/* CTA */}
-      <button
-        onClick={() => setShowReferralPopup(false)}
-        className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition"
-      >
-        Continue Checkout 🚀
-      </button>
-    </div>
-  </div>
-)}
+              {/* Discount */}
+              <div className="text-4xl font-extrabold text-green-600 mb-4">
+                ₹{referralDiscount || firstDiscount} OFF
+              </div>
+
+              {/* CTA */}
+              <button
+                onClick={() => setShowReferralPopup(false)}
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition"
+              >
+                Continue Checkout 🚀
+              </button>
+            </div>
+          </div>
+        )}
 
 
         <div className="min-h-screen p-3 rounded-lg bg-gray-50">
@@ -899,7 +900,7 @@ const [showReferralPopup, setShowReferralPopup] = useState(false);
                 if (isAuthenticated && checkoutDetails) {
                   savings =
                     (checkoutDetails.totalAmount || 0) * 0.1 +
-                    (checkoutDetails.referralDiscount || 0) + (referralDiscount||0)
+                    (checkoutDetails.referralDiscount || 0) + (referralDiscount || 0)
                 } else if (!isAuthenticated) {
                   savings =
                     localCartItems.reduce(
@@ -1074,27 +1075,27 @@ const [showReferralPopup, setShowReferralPopup] = useState(false);
                       {codeApplied && <CheckCircle size={16} className="text-green-400" />}
                     </label>
                     <div className="backdrop-blur-sm rounded-xl overflow-hidden border border-slate-700">
-  <div className="flex flex-col sm:flex-row">
-    
-    {/* Input */}
-    <input
-      type="text"
-      value={referralCode}
-      disabled={checkoutDetails?.referralCode || applyingCode}
-      onChange={(e) => {
-        setReferralCode(e.target.value);
-        setCodeApplied(false);
-      }}
-      placeholder={t('payment.referral.placeholder')}
-      className="w-full px-4 py-3 sm:py-4 bg-transparent text-black focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-    />
+                      <div className="flex flex-col sm:flex-row">
 
-    {/* Button */}
-    {!checkoutDetails?.referralCode && (
-      <button
-        onClick={() => handleApply(referralCode)}
-        disabled={codeApplied || applyingCode || !referralCode.trim()}
-        className="
+                        {/* Input */}
+                        <input
+                          type="text"
+                          value={referralCode}
+                          disabled={checkoutDetails?.referralCode || applyingCode}
+                          onChange={(e) => {
+                            setReferralCode(e.target.value);
+                            setCodeApplied(false);
+                          }}
+                          placeholder={t('payment.referral.placeholder')}
+                          className="w-full px-4 py-3 sm:py-4 bg-transparent text-black focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                        />
+
+                        {/* Button */}
+                        {!checkoutDetails?.referralCode && (
+                          <button
+                            onClick={() => handleApply(referralCode)}
+                            disabled={codeApplied || applyingCode || !referralCode.trim()}
+                            className="
           w-full sm:w-auto
           px-4 sm:px-6 py-3 sm:py-4
           text-amber-400 hover:text-amber-300
@@ -1103,21 +1104,21 @@ const [showReferralPopup, setShowReferralPopup] = useState(false);
           flex items-center justify-center gap-2
           border-t sm:border-t-0 sm:border-l border-slate-700
         "
-      >
-        {applyingCode ? (
-          <>
-            <Loader2 size={16} className="animate-spin" />
-            Applying...
-          </>
-        ) : codeApplied ? (
-          'Applied'
-        ) : (
-          t('payment.referral.apply')
-        )}
-      </button>
-    )}
-  </div>
-</div>
+                          >
+                            {applyingCode ? (
+                              <>
+                                <Loader2 size={16} className="animate-spin" />
+                                Applying...
+                              </>
+                            ) : codeApplied ? (
+                              'Applied'
+                            ) : (
+                              t('payment.referral.apply')
+                            )}
+                          </button>
+                        )}
+                      </div>
+                    </div>
 
                   </div>
 
@@ -1225,10 +1226,19 @@ const [showReferralPopup, setShowReferralPopup] = useState(false);
                           ₹ {checkoutDetails?.shippingCharge?.toLocaleString("en-IN") || 0}
                         </span>
                       </div>
+                      <div className="flex justify-between text-gray-500 pb-3 border-b border-slate-600 border-dashed">
+                        <span>Gst(18%)</span>
+                        <span className="text-black font-semibold">
+                  
+                   ₹ {(((checkoutDetails?.grandTotal || 0) - firstDiscount) * 0.18).toFixed(2)}
+
+
+                        </span>
+                      </div>
                       <div className="flex justify-between text-black font-bold text-lg pt-2">
                         <span>{t('payment.price_details.total_amount')}</span>
                         <span className="text-amber-400 text-2xl">
-                          ₹ {(checkoutDetails?.grandTotal || 0) - firstDiscount}
+                         ₹ {(((checkoutDetails?.grandTotal || 0) - firstDiscount) * 1.18).toFixed(2)}
                         </span>
                       </div>
                     </div>
