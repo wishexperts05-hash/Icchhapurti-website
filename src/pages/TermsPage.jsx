@@ -54,9 +54,11 @@ const TermsPage = () => {
           {loading ? (
             <p className="text-gray-200 text-sm">Loading...</p>
           ) : (
-            <div className="text-gray-200 whitespace-pre-line leading-relaxed text-sm">
-              {content}
-            </div>
+           <div
+  className="text-gray-200 leading-relaxed text-sm policy-content"
+  dangerouslySetInnerHTML={{ __html: content }}
+/>
+
           )}
         </div>
       </div>
