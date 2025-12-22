@@ -102,3 +102,34 @@ html, body {
     display: none; /* Chrome, Safari */
   }
 }
+
+
+.policy-content p {
+  margin-bottom: 14px;
+}
+
+.policy-content h1,
+.policy-content h2,
+.policy-content h3 {
+  margin: 18px 0 10px;
+  font-weight: 600;
+}
+
+.policy-content ol,
+.policy-content ul {
+  margin-left: 20px;
+  margin-bottom: 14px;
+}
+
+.policy-content li {
+  margin-bottom: 8px;
+}
+
+.policy-content span {
+  font-size: inherit !important;
+  font-family: inherit !important;
+}
+
+.policy-content * {
+  background: transparent !important;
+}
