@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import DOMPurify from "dompurify";
 
 const PrivacyPage = () => {
   const [policy, setPolicy] = useState("");
@@ -27,10 +28,14 @@ const PrivacyPage = () => {
     fetchPrivacyPolicy();
   }, []);
 
+  const cleanHtml = DOMPurify.sanitize(policy, {
+    FORBID_ATTR: ["style", "class"], // removes Word styles
+  });
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Background effects */}
-  <div className="absolute inset-0 opacity-20">
+      <div className="absolute inset-0 opacity-20">
         <div className="absolute top-20 left-1/4 w-96 h-96 border border-blue-400/30 rounded-full"></div>
         <div className="absolute top-40 left-1/3 w-64 h-64 border border-blue-300/20 rounded-full"></div>
         <div className="absolute bottom-32 right-1/4 w-80 h-80 border border-amber-400/30 rounded-full"></div>
@@ -51,26 +56,21 @@ const PrivacyPage = () => {
         ))}
       </div>
 
-      <div className="min-h-screen flex flex-col items-center px-4 py-10">
+      <div className="min-h-screen flex flex-col items-center px-4 py-10 relative z-10">
         <div className="w-full max-w-5xl bg-black/40 backdrop-blur-lg rounded-lg p-8">
           <h2 className="text-white font-bold text-lg mb-2">Privacy & Policy</h2>
-          <div className="text-gray-100 text-sm mb-4">
+          <div className="text-gray-300 text-sm mb-4">
             Effective Date: 1st January, 2025
           </div>
 
-          {/* Loading, Error & Data Display */}
-          {loading && (
-            <div className="text-gray-300 text-sm">Loading...</div>
-          )}
-
-          {error && (
-            <div className="text-red-400 text-sm">{error}</div>
-          )}
+          {loading && <div className="text-gray-300 text-sm">Loading...</div>}
+          {error && <div className="text-red-400 text-sm">{error}</div>}
 
           {!loading && !error && (
-            <div className="text-gray-200 whitespace-pre-line leading-relaxed text-sm">
-              {policy}
-            </div>
+            <div
+              className="policy-content text-gray-200 text-sm leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: cleanHtml }}
+            />
           )}
         </div>
       </div>
