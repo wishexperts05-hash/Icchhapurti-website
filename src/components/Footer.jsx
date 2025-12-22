@@ -12,6 +12,7 @@ const Footer = () => {
     { label: t('footer.links.blogs'), href: "/blogs" },
     { label: t('footer.links.privacyPolicy'), href: "/privacy" },
     { label: t('footer.links.termsConditions'), href: "/terms" },
+    { label: "shipping Policy", href: "/shipping-policy" },
     { label: "Faq", href: "/faq" },
   ];
 

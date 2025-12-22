@@ -141,10 +141,11 @@ const StoryBanner = () => {
             <ChevronRight className="text-white" />
           </button>
 
-          <div
-            ref={sliderRef}
-            className="flex gap-6 overflow-x-auto scrollbar-hide px-4"
-          >
+         <div
+  ref={sliderRef}
+  className="flex gap-6 overflow-x-auto hide-scrollbar-desktop px-4"
+>
+
             {productVideos.map((story) => (
               <div
                 key={story.id}

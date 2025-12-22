@@ -37,6 +37,8 @@ import ContactUs from "./components/ContactUs";
 import { useEffect } from "react";
 import WishlistPage from "./components/WishlistPage";
 import { useHeader } from "./context/HeaderContext";
+import ShippingPolicy from "./pages/ShippingPolicy";
+
 
 function App() {
  const token = localStorage.getItem("token");
@@ -79,6 +81,7 @@ useEffect(() => {
   return (
     <>
       <ScrollToTop />
+      
       <Routes>
         {/* Public routes without layout */}
         <Route path="/login" element={<Login />} />
@@ -119,6 +122,7 @@ useEffect(() => {
           <Route path="/blogs/:id" element={<BlogDetailPage />} />
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/contact" element={<ContactUs />} />
+          <Route path="/shipping-policy" element={<ShippingPolicy />} />
         </Route>
       </Routes>
     </>

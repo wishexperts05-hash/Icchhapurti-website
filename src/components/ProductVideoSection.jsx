@@ -128,7 +128,7 @@ const ProductVideoSection = () => {
 
         <div
   ref={sliderRef}
-  className="flex gap-6 overflow-x-auto scrollbar-hide px-8 py-6"
+  className="flex gap-6 overflow-x-auto hide-scrollbar-desktop px-8 py-6"
 >
 
             {productVideos.map((video, index) => (
@@ -170,11 +170,11 @@ const ProductVideoSection = () => {
       {/* Reel Modal */}
       {isModalOpen && selectedVideo && (
         <div
-          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center"
+          className="fixed  inset-0 bg-black/95 z-50 flex items-center justify-center"
           onClick={closeModal}
         >
           <div
-            className="relative w-full max-w-[420px] aspect-[9/16] bg-black rounded-2xl overflow-hidden"
+            className="relative w-full max-w-[420px] aspect-9/15 bg-black rounded-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <button
