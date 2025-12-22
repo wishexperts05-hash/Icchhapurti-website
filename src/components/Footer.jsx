@@ -13,6 +13,7 @@ const Footer = () => {
     { label: t('footer.links.privacyPolicy'), href: "/privacy" },
     { label: t('footer.links.termsConditions'), href: "/terms" },
     { label: "shipping Policy", href: "/shipping-policy" },
+    { label: "refund cancellation Policy", href: "/refund-cancellation-policy" },
     { label: "Faq", href: "/faq" },
   ];
 

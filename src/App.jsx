@@ -38,6 +38,7 @@ import { useEffect } from "react";
 import WishlistPage from "./components/WishlistPage";
 import { useHeader } from "./context/HeaderContext";
 import ShippingPolicy from "./pages/ShippingPolicy";
+import RefundCancellationPolicy from "./components/RefundCancellationPolicy";
 
 
 function App() {
@@ -123,6 +124,7 @@ useEffect(() => {
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/shipping-policy" element={<ShippingPolicy />} />
+          <Route path="/refund-cancellation-policy" element={<RefundCancellationPolicy />} />
         </Route>
       </Routes>
     </>
