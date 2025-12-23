@@ -900,7 +900,7 @@ export default function PaymentPage() {
                 if (isAuthenticated && checkoutDetails) {
                   savings =
                     (checkoutDetails.totalAmount || 0) * 0.1 +
-                    (checkoutDetails.referralDiscount || 0) + (referralDiscount || 0)
+                    (checkoutDetails.referralDiscount || 0) 
                 } else if (!isAuthenticated) {
                   savings =
                     localCartItems.reduce(
@@ -1230,7 +1230,8 @@ export default function PaymentPage() {
                         <span>Gst(18%)</span>
                         <span className="text-black font-semibold">
                   
-                   ₹ {(((checkoutDetails?.grandTotal || 0) - firstDiscount) * 0.18).toFixed(2)}
+                   {/* ₹ {(((checkoutDetails?.grandTotal || 0) - firstDiscount) * 0.18).toFixed(2)} */}
+                    ₹{(checkoutDetails?.gstAmount).toFixed(2) ||0}
 
 
                         </span>
@@ -1238,7 +1239,8 @@ export default function PaymentPage() {
                       <div className="flex justify-between text-black font-bold text-lg pt-2">
                         <span>{t('payment.price_details.total_amount')}</span>
                         <span className="text-amber-400 text-2xl">
-                         ₹ {(((checkoutDetails?.grandTotal || 0) - firstDiscount) * 1.18).toFixed(2)}
+                         {/* ₹ {(((checkoutDetails?.grandTotal || 0) - firstDiscount) * 1.18).toFixed(2)} */}
+                            ₹{(checkoutDetails?.grandTotal).toFixed(2) ||0}
                         </span>
                       </div>
                     </div>

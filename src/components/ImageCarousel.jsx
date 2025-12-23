@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const ImageCarousel = ({
-  images = [],
   autoPlay = true,
   autoPlayInterval = 3000,
   showControls = true,
@@ -10,6 +9,9 @@ const ImageCarousel = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [countdown, setCountdown] = useState({
     days: 0,
     hours: 0,
@@ -17,15 +19,36 @@ const ImageCarousel = ({
     seconds: 0,
   });
 
-  const defaultImages = [
-    "/coming-soon-banner.jpg",
-    // "/slider2.jpeg",
-    // "/slider3.jpeg",
-    // "/slider4.jpeg",
-    // "/slider5.png",
-  ];
+  /* ================= Default Images ================= */
+  const defaultImages = ["/coming-soon-banner.jpg"];
 
-  const displayImages = images.length ? images : defaultImages;
+  const displayImages = images.length > 0 ? images : defaultImages;
+
+  /* ================= Fetch Banners ================= */
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/user/banners/getBanner/Home`
+        );
+        const data = await res.json();
+
+        if (data?.success && Array.isArray(data.data)) {
+          const bannerImages = data.data
+            .map(b => b.image || b.imageUrl)
+            .filter(Boolean);
+
+          setImages(bannerImages);
+        }
+      } catch (err) {
+        console.error("Failed to fetch banners", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBanners();
+  }, []);
 
   /* ================= Countdown ================= */
   useEffect(() => {
@@ -50,10 +73,10 @@ const ImageCarousel = ({
 
   /* ================= Autoplay ================= */
   useEffect(() => {
-    if (!autoPlay || isHovering) return;
+    if (!autoPlay || isHovering || displayImages.length <= 1) return;
 
     const timer = setInterval(() => {
-      setCurrentIndex((p) =>
+      setCurrentIndex(p =>
         p === displayImages.length - 1 ? 0 : p + 1
       );
     }, autoPlayInterval);
@@ -61,27 +84,14 @@ const ImageCarousel = ({
     return () => clearInterval(timer);
   }, [autoPlay, isHovering, autoPlayInterval, displayImages.length]);
 
+  if (loading) return null;
+
   return (
     <div
       className={`relative w-full overflow-hidden ${className}`}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      {/* ================= Dots ================= */}
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex gap-2 bg-black/40 px-3 py-1 rounded-full backdrop-blur">
-        {/* {displayImages.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrentIndex(i)}
-            className={`rounded-full transition-all ${
-              currentIndex === i
-                ? "w-3 h-3 bg-blue-500"
-                : "w-2 h-2 bg-gray-300"
-            }`}
-          />
-        ))} */}
-      </div>
-
       {/* ================= SLIDES ================= */}
       <div className="relative h-[220px] sm:h-[320px] md:h-[420px] lg:h-[700px]">
         <div
@@ -96,7 +106,7 @@ const ImageCarousel = ({
                 className="w-full h-full object-cover"
               />
 
-              {/* ===== COMING SOON OVERLAY (ONLY ON FIRST SLIDE) ===== */}
+              {/* ===== COMING SOON OVERLAY (ONLY FIRST SLIDE) ===== */}
               {i === 0 && (
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                   <div className="text-center px-4">
@@ -128,14 +138,24 @@ const ImageCarousel = ({
             </div>
           ))}
         </div>
+
+        {/* ================= Decorative Bottom Edge ================= */}
+        <div className="absolute bottom-0 left-0 right-0 w-full z-10 pointer-events-none">
+          <img 
+            src="/shape1.png" 
+            alt="" 
+            className="w-full h-auto block"
+            style={{ display: 'block', verticalAlign: 'bottom' }}
+          />
+        </div>
       </div>
 
       {/* ================= Arrows ================= */}
-      {/* {showControls && (
+      {showControls && displayImages.length > 1 && (
         <>
           <button
             onClick={() =>
-              setCurrentIndex((p) =>
+              setCurrentIndex(p =>
                 p === 0 ? displayImages.length - 1 : p - 1
               )
             }
@@ -146,7 +166,7 @@ const ImageCarousel = ({
 
           <button
             onClick={() =>
-              setCurrentIndex((p) =>
+              setCurrentIndex(p =>
                 p === displayImages.length - 1 ? 0 : p + 1
               )
             }
@@ -155,7 +175,7 @@ const ImageCarousel = ({
             <ChevronRight />
           </button>
         </>
-      )} */}
+      )}
     </div>
   );
 };
