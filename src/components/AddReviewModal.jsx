@@ -1,6 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { Upload, X } from "lucide-react";
+
+const MAX_FILES = 5;
+const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/jpg"];
+const ALLOWED_VIDEO_TYPES = ["video/mp4"];
 
 const AddReviewModal = ({ isOpen, onClose, productId }) => {
   const [rating, setRating] = useState(0);
@@ -11,19 +15,86 @@ const AddReviewModal = ({ isOpen, onClose, productId }) => {
 
   if (!isOpen) return null;
 
+  const token = localStorage.getItem("token");
+
+  // 📤 Media Upload Validation
+  const handleMediaChange = (e) => {
+    const files = Array.from(e.target.files);
+
+    if (files.length + mediaFiles.length > MAX_FILES) {
+      alert("You can upload a maximum of 5 files.");
+      return;
+    }
+
+    const invalidFile = files.find(
+      (file) =>
+        ![...ALLOWED_IMAGE_TYPES, ...ALLOWED_VIDEO_TYPES].includes(file.type)
+    );
+
+    if (invalidFile) {
+      alert("Only PNG, JPG, JPEG images and MP4 videos are allowed.");
+      return;
+    }
+
+    setMediaFiles((prev) => [...prev, ...files]);
+  };
+
+  // ❌ Remove Media
+  const removeMedia = (index) => {
+    setMediaFiles(mediaFiles.filter((_, i) => i !== index));
+  };
+
+  // 📩 Submit Review
+  const handleSubmit = async () => {
+    if (!rating || !title.trim() || !review.trim()) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("stars", rating);
+    formData.append("title", title);
+    formData.append("comment", review);
+    formData.append("productId", productId);
+
+    mediaFiles.forEach((file) => {
+      formData.append("images", file);
+    });
+
+    try {
+      setLoading(true);
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/user/reviews/createOrUpdate`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("Review submitted successfully!");
+      onClose();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to submit review.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-black/60 flex justify-center items-start overflow-y-auto px-4 py-6">
       <div className="bg-white w-full max-w-md rounded-2xl shadow-xl relative max-h-[90vh] overflow-y-auto">
-
-        {/* ❌ Close Button (Always Visible) */}
+        {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 z-10 bg-black/80 hover:bg-black text-white rounded-full p-2"
+          className="absolute top-3 right-3 bg-black/80 hover:bg-black text-white rounded-full p-2"
         >
           <X size={18} />
         </button>
 
-        {/* Content Wrapper */}
         <div className="p-6">
           <h2 className="text-xl font-bold text-center mb-6">
             Write a Review
@@ -50,67 +121,71 @@ const AddReviewModal = ({ isOpen, onClose, productId }) => {
           </div>
 
           {/* Title */}
-          <div className="mb-4">
-            <input
-              type="text"
-              placeholder="Review title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full border rounded-full px-4 py-2.5 text-sm"
-            />
-          </div>
+          <input
+            type="text"
+            placeholder="Review title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full border rounded-full px-4 py-2.5 text-sm mb-4"
+          />
 
           {/* Review */}
-          <div className="mb-4">
-            <textarea
-              rows={4}
-              className="w-full border rounded-xl p-3 text-sm resize-none"
-              placeholder="Write your review..."
-              value={review}
-              onChange={(e) => setReview(e.target.value)}
-            />
-          </div>
+          <textarea
+            rows={4}
+            className="w-full border rounded-xl p-3 text-sm resize-none mb-4"
+            placeholder="Write your review..."
+            value={review}
+            onChange={(e) => setReview(e.target.value)}
+          />
 
           {/* Upload */}
-          <div className="mb-4">
-            <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer text-gray-500 hover:bg-gray-50">
-              <Upload size={28} />
-              <span className="text-xs mt-1">Add image or video</span>
-              <input
-                type="file"
-                accept="image/*,video/*"
-                multiple
-                onChange={(e) => setMediaFiles([...e.target.files])}
-                className="hidden"
-              />
-            </label>
-          </div>
+          <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed rounded-xl cursor-pointer text-gray-500 hover:bg-gray-50 mb-4">
+            <Upload size={28} />
+            <span className="text-xs mt-1">PNG / JPG / MP4 (Max 5)</span>
+            <input
+              type="file"
+              multiple
+              accept=".png,.jpg,.jpeg,.mp4"
+              onChange={handleMediaChange}
+              className="hidden"
+            />
+          </label>
 
           {/* Media Preview */}
           {mediaFiles.length > 0 && (
-            <div className="flex gap-2 mb-4 overflow-x-auto">
-              {mediaFiles.map((file, i) =>
-                file.type.startsWith("image") ? (
-                  <img
-                    key={i}
-                    src={URL.createObjectURL(file)}
-                    className="w-16 h-16 rounded-lg object-cover"
-                  />
-                ) : (
-                  <video
-                    key={i}
-                    src={URL.createObjectURL(file)}
-                    className="w-16 h-16 rounded-lg"
-                    controls
-                  />
-                )
-              )}
+            <div className="flex gap-3 mb-4 overflow-x-auto">
+              {mediaFiles.map((file, i) => (
+                <div key={i} className="relative">
+                  <button
+                    type="button"
+                    onClick={() => removeMedia(i)}
+                    className="absolute -top-2 -right-2 bg-black text-white rounded-full p-1"
+                  >
+                    <X size={12} />
+                  </button>
+
+                  {file.type.startsWith("image") ? (
+                    <img
+                      src={URL.createObjectURL(file)}
+                      className="w-16 h-16 rounded-lg object-cover"
+                      alt="preview"
+                    />
+                  ) : (
+                    <video
+                      src={URL.createObjectURL(file)}
+                      className="w-16 h-16 rounded-lg"
+                      controls
+                    />
+                  )}
+                </div>
+              ))}
             </div>
           )}
 
           {/* Submit */}
           <button
             disabled={loading}
+            onClick={handleSubmit}
             className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-3 rounded-full"
           >
             {loading ? "Submitting..." : "Submit Review"}

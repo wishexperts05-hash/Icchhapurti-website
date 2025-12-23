@@ -184,7 +184,7 @@ const Footer = () => {
 
             <div className="space-y-2">
               {/* Phone */}
-              <a href="tel:+919876543210" className="flex items-center gap-3 group">
+              {/* <a href="tel:+919876543210" className="flex items-center gap-3 group">
                 <div
                   className="w-10 h-10 rounded-lg flex items-center justify-center transition-all group-hover:scale-110"
                   style={{
@@ -200,7 +200,7 @@ const Footer = () => {
                     +91 9876543210
                   </p>
                 </div>
-              </a>
+              </a> */}
 
               {/* Email */}
               <a href="mailto:example@icchhapurti.com" className="flex items-center gap-3 group">

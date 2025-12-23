@@ -69,7 +69,7 @@ const WhyChooseUs = () => {
             Why Choose Us?
           </h2>
           <p className="text-slate-300 text-lg max-w-2xl mx-auto">
-            We provide the most reliable and efficient platform for purchasing coins with unmatched service quality and customer satisfaction.
+            We provide the most reliable and efficient platform for purchasing Coins with unmatched service quality and customer satisfaction.
           </p>
         </div>
 

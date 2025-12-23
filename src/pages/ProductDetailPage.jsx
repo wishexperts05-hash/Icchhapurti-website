@@ -125,14 +125,17 @@ export default function ProductDetails() {
     setReviewsError(null);
 
     try {
+      const baseUrl = `${import.meta.env.VITE_API_URL}/api/user`;
+      const apiPath = token ? "" : "/v1";
+
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/user/v1/reviews/getProductReviews/${productId}?page=${page}&limit=10`,
+        `${baseUrl}${apiPath}/reviews/getProductReviews/${productId}?page=${page}&limit=10`,
         {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          }
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
         }
       );
 
@@ -473,7 +476,7 @@ export default function ProductDetails() {
                 <div className="bg-white rounded-lg sm:rounded-xl p-2 sm:p-4 text-center border border-slate-600/50">
                   <Truck className="w-5 h-5 sm:w-8 sm:h-8 text-cyan-400 mx-auto mb-1 sm:mb-2" />
                   <p className="text-black text-[10px] sm:text-xs font-medium">
-                    Free Delivery
+                    Fast Delivery
                   </p>
                 </div>
                 <div className="bg-white rounded-lg sm:rounded-xl p-2 sm:p-4 text-center border border-slate-600/50">
@@ -595,51 +598,51 @@ export default function ProductDetails() {
               </div>
             </div>
 
-              <div className="space-y-2  mb-10">
-            {faqs.map((faq) => (
-              <div
-                key={faq._id}
-                className={`bg-white rounded-xl overflow-hidden border transition-all ${openFAQ === faq._id
+            <div className="space-y-2  mb-10">
+              {faqs.map((faq) => (
+                <div
+                  key={faq._id}
+                  className={`bg-white rounded-xl overflow-hidden border transition-all ${openFAQ === faq._id
                     ? "border-blue-500/50 shadow-md"
                     : "border-slate-300 hover:border-slate-400"
-                  }`}
-              >
-                <button
-                  onClick={() => toggleFAQ(faq._id)}
-                  className="w-full px-4 py-2 flex items-center justify-between text-left"
-                >
-                  <h3 className="text-sm font-semibold text-black pr-3">
-                    {faq.question}
-                  </h3>
-
-                  <div
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center transition-transform ${openFAQ === faq._id
-                        ? "bg-blue-500 rotate-180"
-                        : "bg-slate-500"
-                      }`}
-                  >
-                    <ChevronDown className="w-4 h-4 text-white" />
-                  </div>
-                </button>
-
-                <div
-                  className={`overflow-hidden transition-all duration-300 ${openFAQ === faq._id ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
                     }`}
                 >
-                  <div className="px-4 pb-3">
-                    <div className="bg-gray-100 rounded-lg p-3 text-sm text-black">
-                      {faq.answer}
+                  <button
+                    onClick={() => toggleFAQ(faq._id)}
+                    className="w-full px-4 py-2 flex items-center justify-between text-left"
+                  >
+                    <h3 className="text-sm font-semibold text-black pr-3">
+                      {faq.question}
+                    </h3>
+
+                    <div
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center transition-transform ${openFAQ === faq._id
+                        ? "bg-blue-500 rotate-180"
+                        : "bg-slate-500"
+                        }`}
+                    >
+                      <ChevronDown className="w-4 h-4 text-white" />
+                    </div>
+                  </button>
+
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ${openFAQ === faq._id ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
+                      }`}
+                  >
+                    <div className="px-4 pb-3">
+                      <div className="bg-gray-100 rounded-lg p-3 text-sm text-black">
+                        {faq.answer}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
           </div>
           {/* faq section  */}
 
 
-        
+
 
 
 
@@ -767,51 +770,87 @@ export default function ProductDetails() {
                     </div>
                   )}
 
-                  {orderedReviews?.map((review, index) => (
-                    <div
-                      key={review.id || review._id || index}
-                      className="bg-white rounded-lg p-3 border border-slate-300 hover:border-cyan-400/40 transition"
-                    >
-                      <div className="flex items-start gap-3">
-                        {/* Avatar */}
-                        <div className="w-9 h-9 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
-                          {(review.reviewerName || 'U')[0].toUpperCase()}
-                        </div>
+                  {orderedReviews?.map((review, index) => {
+                    const media =
+                      review.images ||
 
-                        <div className="flex-1 min-w-0">
-                          {/* Header */}
-                          <div className="flex items-center justify-between mb-1 gap-2">
-                            <div className="min-w-0">
-                              <h4 className="text-black font-semibold text-sm truncate">
-                                {review.reviewerName || 'Anonymous'}
-                                {review.isCurrentUser && (
-                                  <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">
-                                    You
-                                  </span>
-                                )}
-                              </h4>
-                              <p className="text-black text-[11px]">
-                                {review.date || review.createdAt
-                                  ? new Date(review.date || review.createdAt).toLocaleDateString('en-IN', {
-                                    day: 'numeric',
-                                    month: 'short',
-                                    year: 'numeric',
-                                  })
-                                  : '—'}
-                              </p>
-                            </div>
+                      [];
 
-                            <StarRating rating={review.stars || 0} size={12} />
+                    return (
+                      <div
+                        key={review.id || review._id || index}
+                        className="bg-white rounded-lg p-3 border border-slate-300 hover:border-cyan-400/40 transition"
+                      >
+                        <div className="flex items-start gap-3">
+                          {/* Avatar */}
+                          <div className="w-9 h-9 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+                            {(review.reviewerName || "U")[0].toUpperCase()}
                           </div>
 
-                          {/* Review text */}
-                          <p className="text-black text-xs leading-snug line-clamp-3">
-                            {review.text || review.comment || review.review || 'No review provided'}
-                          </p>
+                          <div className="flex-1 min-w-0">
+                            {/* Header */}
+                            <div className="flex items-center justify-between mb-1 gap-2">
+                              <div className="min-w-0">
+                                <h4 className="text-black font-semibold text-sm truncate">
+                                  {review.reviewerName || "Anonymous"}
+                                  {/* {review.isCurrentUser && (
+                                    <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">
+                                      You
+                                    </span>
+                                  )} */}
+                                </h4>
+                                <p className="text-black text-[11px]">
+                                  {review.date || review.createdAt
+                                    ? new Date(
+                                      review.date || review.createdAt
+                                    ).toLocaleDateString("en-IN", {
+                                      day: "numeric",
+                                      month: "short",
+                                      year: "numeric",
+                                    })
+                                    : "—"}
+                                </p>
+                              </div>
+
+                              <StarRating rating={review.stars || 0} size={12} />
+                            </div>
+
+                            {/* Review text */}
+                            <p className="text-black text-xs leading-snug mb-2">
+                              {review.text ||
+                                review.comment ||
+                                review.review ||
+                                "No review provided"}
+                            </p>
+
+                            {/* 🖼️ Media Section (Images / Videos) */}
+                            {media.length > 0 && (
+                              <div className="flex gap-2 mt-2 overflow-x-auto">
+                                {media.map((url, i) =>
+                                  url.endsWith(".mp4") ? (
+                                    <video
+                                      key={i}
+                                      src={url}
+                                      className="w-20 h-20 rounded-lg border object-cover"
+                                      controls
+                                    />
+                                  ) : (
+                                    <img
+                                      key={i}
+                                      src={url}
+                                      alt="review"
+                                      className="w-20 h-20 rounded-lg border object-cover cursor-pointer hover:scale-105 transition"
+                                    />
+                                  )
+                                )}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
+
 
                 </div>
 
