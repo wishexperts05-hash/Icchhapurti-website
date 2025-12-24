@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { User, Mail, Phone, ChevronDown } from 'lucide-react';
+import axios from 'axios';
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -10,7 +11,7 @@ const ContactUs = () => {
     message: '',
     agreed: false
   });
-
+const [loading, setLoading] = useState(false);
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
@@ -19,18 +20,58 @@ const ContactUs = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    if (!formData.fullName || !formData.email || !formData.phone || !formData.subject || !formData.message) {
-      alert('Please fill in all fields');
-      return;
-    }
-    if (!formData.agreed) {
-      alert('Please accept our Terms of Service and Privacy Policy');
-      return;
-    }
-    console.log('Form submitted:', formData);
-    alert('Message sent successfully!');
-  };
+const handleSubmit = async () => {
+  const { fullName, email, phone, subject, message, agreed } = formData;
+
+  if (!fullName || !email || !phone || !subject || !message) {
+    alert("Please fill in all fields");
+    return;
+  }
+
+  if (!agreed) {
+    alert("Please accept our Terms of Service and Privacy Policy");
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/user/contactRoutes/create`,
+      {
+        fullName,
+        email,
+        phone,
+        subject,
+        message,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    alert("Message sent successfully!");
+
+    setFormData({
+      fullName: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: "",
+      agreed: false,
+    });
+  } catch (error) {
+    console.error(error);
+    alert(
+      error?.response?.data?.message ||
+        "Failed to send message. Please try again."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
@@ -137,9 +178,10 @@ const ContactUs = () => {
           <div className="flex justify-center pt-4">
             <button
               onClick={handleSubmit}
-              className="px-16 py-3 bg-black text-white font-semibold tracking-wider hover:bg-gray-800 transition-colors"
+              disabled={loading}
+              className="px-16 py-3 bg-black text-white font-semibold tracking-wider hover:bg-gray-800 disabled:opacity-50"
             >
-              SUBMIT
+              {loading ? "SENDING..." : "SUBMIT"}
             </button>
           </div>
         </div>

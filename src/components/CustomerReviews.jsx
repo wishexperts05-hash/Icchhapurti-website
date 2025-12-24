@@ -4,8 +4,9 @@ import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 export default function CustomerReviews() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [animatingCards, setAnimatingCards] = useState(new Set());
+  const [cardsPerView, setCardsPerView] = useState(4);
 
   const scrollRef = useRef(null);
 
@@ -36,38 +37,57 @@ export default function CustomerReviews() {
     fetchReviews();
   }, []);
 
-  // Check scroll position
-  const checkScroll = () => {
-    if (!scrollRef.current) return;
-
-    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-    setCanScrollLeft(scrollLeft > 0);
-    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
-  };
-
+  // Calculate cards per view based on screen size
   useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-
-    checkScroll();
-    el.addEventListener('scroll', checkScroll);
-    window.addEventListener('resize', checkScroll);
-
-    return () => {
-      el.removeEventListener('scroll', checkScroll);
-      window.removeEventListener('resize', checkScroll);
+    const updateCardsPerView = () => {
+      if (window.innerWidth < 640) {
+        setCardsPerView(1);
+      } else if (window.innerWidth < 1024) {
+        setCardsPerView(2);
+      } else {
+        setCardsPerView(4);
+      }
     };
-  }, [reviews]);
 
-  const scroll = (direction) => {
+    updateCardsPerView();
+    window.addEventListener('resize', updateCardsPerView);
+    return () => window.removeEventListener('resize', updateCardsPerView);
+  }, []);
+
+  const scrollToIndex = (index) => {
     if (!scrollRef.current) return;
 
-    const scrollAmount = scrollRef.current.clientWidth * 0.8;
-    scrollRef.current.scrollBy({
-      left: direction === 'left' ? -scrollAmount : scrollAmount,
+    const container = scrollRef.current;
+    const cardWidth = container.scrollWidth / reviews.length;
+    const scrollPosition = cardWidth * index;
+
+    // Trigger animation
+    setAnimatingCards(new Set([index]));
+    setTimeout(() => {
+      setAnimatingCards(new Set());
+    }, 1000);
+
+    container.scrollTo({
+      left: scrollPosition,
       behavior: 'smooth'
     });
   };
+
+  const handlePrevious = () => {
+    const newIndex = Math.max(0, currentIndex - cardsPerView);
+    setCurrentIndex(newIndex);
+    scrollToIndex(newIndex);
+  };
+
+  const handleNext = () => {
+    const maxIndex = Math.max(0, reviews.length - cardsPerView);
+    const newIndex = Math.min(maxIndex, currentIndex + cardsPerView);
+    setCurrentIndex(newIndex);
+    scrollToIndex(newIndex);
+  };
+
+  const canScrollLeft = currentIndex > 0;
+  const canScrollRight = currentIndex < reviews.length - cardsPerView;
 
   if (loading || !reviews.length) return null;
 
@@ -76,7 +96,7 @@ export default function CustomerReviews() {
       {/* Top Wave */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none rotate-180">
         <svg
-          className="relative block w-full h-24 sm:h-32"
+          className="relative block w-full h-20 sm:h-32"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1200 120"
           preserveAspectRatio="none"
@@ -88,71 +108,65 @@ export default function CustomerReviews() {
         </svg>
       </div>
 
-      <div className="relative pt-32 pb-24 px-6">
+      <div className="relative pt-24 sm:pt-32 pb-20 sm:pb-24 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-14">
-            <div className="flex justify-center gap-2 mb-4">
+          <div className="text-center mb-10 sm:mb-14">
+            <div className="flex justify-center gap-1.5 sm:gap-2 mb-3 sm:mb-4">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-8 h-8 text-yellow-500 fill-yellow-500" />
+                <Star key={i} className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 fill-yellow-500" />
               ))}
             </div>
-            <h2 className="text-5xl font-black mb-4">Testimonials</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl sm:text-5xl font-black mb-2 sm:mb-4">Testimonials</h2>
+            <p className="text-base sm:text-xl text-gray-600">
               Real stories from real customers
             </p>
           </div>
 
           {/* Slider */}
-          <div className="relative">
-            {/* Scrollable container */}
+          <div className="relative px-10 sm:px-12">
+            {/* Scrollable container - NO SCROLLBAR */}
             <div
               ref={scrollRef}
-              className="flex gap-4 overflow-x-auto overflow-y-hidden scroll-smooth pb-8 snap-x snap-mandatory scrollbar-hide"
+              className="flex gap-3 sm:gap-4 overflow-hidden pb-6 sm:pb-8"
               style={{
                 scrollbarWidth: 'none',
                 msOverflowStyle: 'none',
-                WebkitOverflowScrolling: 'touch'
               }}
             >
               {reviews.map((review, index) => (
                 <div
                   key={review.id}
-                  className="flex-shrink-0 w-80 sm:w-[calc(50%-1rem)] lg:w-[calc(25%-0.75rem)] snap-start min-w-[320px] sm:min-w-0"
-                  style={{ scrollSnapAlign: 'start' }}
+                  data-review-card
+                  className="flex-shrink-0 w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)]"
                 >
                   <div 
                     className={`
-                      bg-white rounded-3xl p-6 shadow-xl h-full border-2 border-gray-200
-                      opacity-0 translate-y-10
-                      animate-slide-up
+                      bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-xl h-full border-2 border-gray-200
                       hover:scale-105 hover:shadow-2xl hover:border-purple-400 transition-all duration-300
-                      md:opacity-100 md:translate-y-0 md:hover:scale-105
+                      ${animatingCards.has(index) ? 'animate-slide-down' : ''}
                     `}
-                    style={{
-                      animationDelay: `${index * 100}ms`
-                    }}
                   >
-                    <Quote className="w-8 h-8 text-purple-400 mb-4" fill="currentColor" />
+                    <Quote className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400 mb-3 sm:mb-4" fill="currentColor" />
 
-                    <div className="flex gap-1 mb-3">
+                    <div className="flex gap-1 mb-2 sm:mb-3">
                       {[...Array(review.rating)].map((_, i) => (
                         <Star
                           key={i}
-                          className="w-4 h-4 text-yellow-500 fill-yellow-500"
+                          className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-500 fill-yellow-500"
                         />
                       ))}
                     </div>
 
-                    <p className="text-gray-800 text-sm mb-4 leading-relaxed">
+                    <p className="text-gray-800 text-sm sm:text-base mb-3 sm:mb-4 leading-relaxed">
                       "{review.text}"
                     </p>
 
-                    <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
+                    <div className="flex items-center gap-3 pt-3 sm:pt-4 border-t border-gray-100">
                       <img
                         src={review.image}
                         alt={review.name}
-                        className="w-10 h-10 rounded-full ring-2 ring-white shadow-md"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-full ring-2 ring-white shadow-md"
                       />
                       <div>
                         <div className="font-bold text-sm text-gray-900">{review.name}</div>
@@ -166,25 +180,45 @@ export default function CustomerReviews() {
               ))}
             </div>
 
-            {/* Arrows - Desktop only */}
+            {/* Navigation Arrows */}
             {canScrollLeft && (
               <button
-                onClick={() => scroll('left')}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 bg-white p-3 rounded-full shadow-lg hover:bg-gray-50 transition-all z-10 hidden sm:block"
-                aria-label="Scroll left"
+                onClick={handlePrevious}
+                className="absolute left-0 sm:-left-2 top-1/2 -translate-y-1/2 bg-white p-2 sm:p-3 rounded-full shadow-lg hover:bg-gray-50 hover:scale-110 active:scale-95 transition-all z-10 border border-gray-200"
+                aria-label="Previous reviews"
               >
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
               </button>
             )}
             {canScrollRight && (
               <button
-                onClick={() => scroll('right')}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 bg-white p-3 rounded-full shadow-lg hover:bg-gray-50 transition-all z-10 hidden sm:block"
-                aria-label="Scroll right"
+                onClick={handleNext}
+                className="absolute right-0 sm:-right-2 top-1/2 -translate-y-1/2 bg-white p-2 sm:p-3 rounded-full shadow-lg hover:bg-gray-50 hover:scale-110 active:scale-95 transition-all z-10 border border-gray-200"
+                aria-label="Next reviews"
               >
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
               </button>
             )}
+          </div>
+
+          {/* Dots Indicator */}
+          <div className="flex justify-center gap-2 mt-6">
+            {Array.from({ length: Math.ceil(reviews.length / cardsPerView) }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  const newIndex = i * cardsPerView;
+                  setCurrentIndex(newIndex);
+                  scrollToIndex(newIndex);
+                }}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  Math.floor(currentIndex / cardsPerView) === i
+                    ? 'w-8 bg-purple-500'
+                    : 'w-2 bg-gray-300 hover:bg-gray-400'
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -192,7 +226,7 @@ export default function CustomerReviews() {
       {/* Bottom Wave */}
       <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
         <svg
-          className="relative block w-full h-24 sm:h-32"
+          className="relative block w-full h-20 sm:h-32"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1200 120"
           preserveAspectRatio="none"
@@ -204,27 +238,23 @@ export default function CustomerReviews() {
         </svg>
       </div>
 
-      {/* Hide scrollbar + Mobile Animation */}
+      {/* Styles */}
       <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
+        div[data-review-card]::-webkit-scrollbar {
           display: none;
         }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        @keyframes slide-up {
-          from {
-            opacity: 0;
-            transform: translateY(40px);
+        @keyframes slide-down {
+          0% {
+            opacity: 0.3;
+            transform: translateY(-30px);
           }
-          to {
+          100% {
             opacity: 1;
             transform: translateY(0);
           }
         }
-        .animate-slide-up {
-          animation: slide-up 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        .animate-slide-down {
+          animation: slide-down 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
       `}</style>
     </section>

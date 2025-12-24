@@ -283,7 +283,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
           </div>
         </div>
 
-        <div className="relative p-6  flex-1 flex flex-col">
+        <div className="relative p-6 bg-[#f8f8f8] flex-1 flex flex-col">
           <h3 className="text-base sm:text-lg font-bold text-black leading-snug mb-2 line-clamp-2 min-h-[3rem] sm:min-h-[3.5rem]   transition-all">
             {product.name || "Untitled Product"}
           </h3>

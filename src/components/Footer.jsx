@@ -66,7 +66,7 @@ const Footer = () => {
       </div> */}
 
       {/* Decorative gradient shapes */}
-      <div
+      {/* <div
         className="absolute top-0 left-0 w-64 h-64 rounded-full opacity-10"
         style={{
           background: "radial-gradient(circle, #C9A227 0%, transparent 70%)",
@@ -79,7 +79,7 @@ const Footer = () => {
           background: "radial-gradient(circle, #C9A227 0%, transparent 70%)",
           transform: "translate(30%, 30%)",
         }}
-      />
+      /> */}
 
       {/* Content Wrapper */}
       <div className="relative max-w-7xl mx-auto px-6 py-12">
