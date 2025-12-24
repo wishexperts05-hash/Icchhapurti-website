@@ -6,7 +6,7 @@ const MAX_FILES = 5;
 const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/jpg"];
 const ALLOWED_VIDEO_TYPES = ["video/mp4"];
 
-const AddReviewModal = ({ isOpen, onClose, productId }) => {
+const AddReviewModal = ({ isOpen, onClose,fetchProductReviews, productId }) => {
   const [rating, setRating] = useState(0);
   const [title, setTitle] = useState("");
   const [review, setReview] = useState("");
@@ -45,44 +45,51 @@ const AddReviewModal = ({ isOpen, onClose, productId }) => {
   };
 
   // 📩 Submit Review
-  const handleSubmit = async () => {
-    if (!rating || !title.trim() || !review.trim()) {
-      alert("Please fill in all required fields.");
-      return;
-    }
+ const handleSubmit = async () => {
+  const hasRating = !!rating;
+  const hasTitle = title?.trim().length > 0;
+  const hasReview = review?.trim().length > 0;
+  const hasImages = mediaFiles && mediaFiles.length > 0;
 
-    const formData = new FormData();
-    formData.append("stars", rating);
-    formData.append("title", title);
-    formData.append("comment", review);
-    formData.append("productId", productId);
+  if (!hasRating && !hasTitle && !hasReview && !hasImages) {
+    alert("Please fill at least one field (rating, title, review, or image).");
+    return;
+  }
 
-    mediaFiles.forEach((file) => {
-      formData.append("images", file);
-    });
+  const formData = new FormData();
+  if (rating) formData.append("stars", rating);
+  if (title) formData.append("title", title);
+  if (review) formData.append("comment", review);
+  formData.append("productId", productId);
 
-    try {
-      setLoading(true);
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/user/reviews/createOrUpdate`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  mediaFiles.forEach((file) => {
+    formData.append("images", file);
+  });
 
-      alert("Review submitted successfully!");
-      onClose();
-    } catch (error) {
-      console.error(error);
-      alert("Failed to submit review.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+    await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/user/reviews/createOrUpdate`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    alert("Review submitted successfully!");
+    fetchProductReviews()
+    onClose();
+  } catch (error) {
+    console.error(error);
+    alert("Failed to submit review.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 flex justify-center items-start overflow-y-auto px-4 py-6">

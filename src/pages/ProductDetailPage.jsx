@@ -45,7 +45,7 @@ export default function ProductDetails() {
   useEffect(() => {
     fetchProductDetails();
     fetchProductReviews();
-  }, [productId, openReview]);
+  }, [productId]);
 
   useEffect(() => {
     if (product) {
@@ -430,6 +430,7 @@ export default function ProductDetails() {
         isOpen={openReview}
         onClose={() => setOpenReview(false)}
         productId={productId}
+        fetchProductReviews={fetchProductReviews}
       />
       <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
         {/* Breadcrumb */}
@@ -444,7 +445,7 @@ export default function ProductDetails() {
         </div>
 
         {/* Main Content */}
-        <div className=" backdrop-blur-lg rounded-xl sm:rounded-2xl shadow-2xl border border-slate-700/50 overflow-hidden">
+        <div className=" backdrop-blur-lg rounded-xl bg-white sm:rounded-2xl shadow-2xl border border-slate-700/50 overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 p-3 sm:p-6 lg:p-8">
             {/* Left Column - Images */}
             <div className="space-y-3 sm:space-y-6">
@@ -503,7 +504,7 @@ export default function ProductDetails() {
             {/* Right Column - Product Info */}
             <div className="space-y-4 sm:space-y-6">
               <div>
-                <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold text-white mb-2 sm:mb-3">
+                <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold text-black mb-2 sm:mb-3">
                   {product.name || "Untitled Product"}
                 </h1>
 
@@ -522,7 +523,7 @@ export default function ProductDetails() {
 
                 {/* Price */}
                 <div className="flex items-baseline gap-2 sm:gap-4 mb-4 sm:mb-6 flex-wrap">
-                  <span className="text-xl sm:text-3xl lg:text-4xl font-bold text-cyan-400">
+                  <span className="text-xl sm:text-3xl lg:text-4xl font-bold text-black">
                     ₹{product.price || 0}
                   </span>
                   {product.originalPrice && (
@@ -548,9 +549,10 @@ export default function ProductDetails() {
                   <Package size={18} className="sm:w-5 sm:h-5" />
                   Product Details
                 </h2>
-                <p className="text-black text-xs sm:text-sm leading-relaxed">
-                  {product.description || "No description available for this product."}
-                </p>
+               <p className="text-black text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
+  {product.description || "No description available for this product."}
+</p>
+
               </div>
 
               {/* Action Buttons */}

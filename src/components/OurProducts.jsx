@@ -222,10 +222,10 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
     <div className="relative group h-full">
       <div
         onClick={handleViewDetails}
-        className="relative bg-gradient-to-br cursor-pointer from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
- rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50 transition-all duration-500 hover:scale-[1.02] border border-purple-500/30 flex flex-col h-full "
+        className="relative  bg-white
+ rounded-3xl overflow-hidden shadow-2xl  transition-all duration-500 hover:scale-[1.02] border border-purple-500/30 flex flex-col h-full "
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/0 via-pink-600/0 to-yellow-600/0 group-hover:from-purple-600/20 group-hover:via-pink-600/20 group-hover:to-yellow-600/20 transition-all duration-500" />
+        <div className="absolute inset-0  transition-all duration-500" />
 
         <div className="absolute top-4 right-4 text-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-pulse">
           <Sparkles className="w-5 h-5" />
@@ -255,24 +255,24 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
         <button
           onClick={toggleWishlist}
           disabled={wishlistLoading}
-          className="  cursor-pointer top-3 right-3 z-10 w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 hover:bg-white/20 border border-white/20 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="  cursor-pointer top-3 right-3 z-10 w-10 h-10  backdrop-blur-md rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110  disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {wishlistLoading ? (
-            <Loader2 size={18} className="animate-spin text-white" />
+            <Loader2 size={18} className="animate-spin text-black" />
           ) : (
             <Heart
               size={18}
               fill={liked ? "#ef4444" : "none"}
-              stroke={liked ? "#ef4444" : "#ffffff"}
+              stroke={liked ? "#ef4444" : "black"}
               className="transition-all duration-300"
             />
           )}
         </button>
 
 
-        <div className="relative bg-gradient-to-br from-purple-800/30 to-slate-800/30 p-6">
+        <div className="relative   p-6">
           <div className="h-48 sm:h-56 flex items-center justify-center relative">
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent" />
+            <div className="absolute inset-0  to-transparent" />
             <img
               src={
                 product.images?.[0] ||
@@ -288,13 +288,13 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
           </div>
         </div>
 
-        <div className="relative p-6 bg-gradient-to-b from-slate-900/80 to-slate-900 flex-1 flex flex-col">
-          <h3 className="text-base sm:text-lg font-bold text-white leading-snug mb-2 line-clamp-2 min-h-[3rem] sm:min-h-[3.5rem] group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-300 group-hover:to-pink-300 transition-all">
+        <div className="relative p-6  flex-1 flex flex-col">
+          <h3 className="text-base sm:text-lg font-bold text-black leading-snug mb-2 line-clamp-2 min-h-[3rem] sm:min-h-[3.5rem]  transition-all">
             {product.name || "Untitled Product"}
           </h3>
 
           {product.description && (
-            <p className="text-xs sm:text-sm text-gray-400 mb-3 line-clamp-2 leading-relaxed">
+            <p className="text-xs sm:text-sm text-gray-500 mb-3 line-clamp-2 leading-relaxed">
               {product.description}
             </p>
           )}
@@ -317,7 +317,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 mb-4">
-            <span className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-500">
+            <span className="text-2xl sm:text-3xl text-black font-black  bg-clip-text 0">
               ₹{product.price || 0}
             </span>
             {product.price && (
@@ -332,7 +332,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
             )}
           </div>
 
-          <div className="flex items-center gap-4 mb-4 text-xs text-gray-300 border-t border-white/10 pt-3">
+          <div className="flex items-center gap-4 mb-4 text-xs text-black border-t border-white/10 pt-3">
             <div className="flex items-center gap-1.5">
               <div className="w-4 h-4 bg-green-500/20 rounded-full flex items-center justify-center">
                 <Check size={10} className="text-green-400" />
@@ -351,7 +351,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
             <button
               onClick={(e) => handleAddToCart({ e, isBuyNow: false })}
               disabled={addingToCart || addedToCart || buyingNow}
-              className="flex-1 cursor-pointer flex items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 border-2 border-purple-500 rounded-xl font-bold text-xs sm:text-sm text-white transition-all hover:bg-purple-500/20 disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
+              className="flex-1 cursor-pointer flex items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 border-2 border-purple-500 rounded-xl font-bold text-xs sm:text-sm text-black transition-all hover:bg-purple-500/20 disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
             >
               {addingToCart ? (
                 <>
@@ -638,7 +638,7 @@ export default function OurProducts() {
   }
 
   return (
-    <div  className="min-h-screen bg-cover bg-center bg-no-repeat relative py-2"
+    <div  className="min-h-screen bg-cover bg-center bg-no-repeat relative py-2 px-3"
       style={{ backgroundImage: "url('/product-bg.jpg')" }}>
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
@@ -688,7 +688,7 @@ export default function OurProducts() {
 
         <div className="  my-3 flex items-center justify-center ">
           {/* Product Card */}
-          <div className=" w-full bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-xl overflow-hidden hover:border-amber-400/50 transition-all duration-300">
+          <div className=" w-full bg-white rounded-xl overflow-hidden hover:border-amber-400/50 transition-all duration-300">
             <div className="grid grid-cols-1 md:grid-cols-2  gap-8 p-8 md:p-10">
               {/* Left Side - Product Description */}
 
@@ -707,7 +707,7 @@ export default function OurProducts() {
 
               {/* Right Side - Product Image */}
               <div className="flex flex-col justify-center">
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
+                <h2 className="text-2xl md:text-3xl font-bold text-black mb-6">
                   Manifestation kit
                 </h2>
 
@@ -715,7 +715,7 @@ export default function OurProducts() {
                   {product.features.map((feature, index) => (
                     <li
                       key={index}
-                      className="flex items-start gap-3 text-slate-300"
+                      className="flex items-start gap-3 text-slate-600"
                     >
                       <span className="w-1.5 h-1.5 bg-amber-400 rounded-full mt-2 flex-shrink-0" />
                       <span className="text-base">{feature}</span>

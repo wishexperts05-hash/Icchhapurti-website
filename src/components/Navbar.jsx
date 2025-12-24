@@ -82,6 +82,7 @@ export default function Navbar() {
     <>
       {/* STICKY CONTAINER - Both top bar and nav together */}
       <div className="sticky top-0 z-30">
+        {/* bg-[#e4baba] */}
         {/* Top Bar - Login/Account with Cart & Wishlist */}
         <div className="w-full bg-gradient-to-br 
 from-[#020516] 

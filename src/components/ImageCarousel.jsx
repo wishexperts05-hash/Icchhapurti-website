@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const ImageCarousel = ({
@@ -10,7 +10,9 @@ const ImageCarousel = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
   const [images, setImages] = useState([]);
+  const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const videoRef = useRef(null);
 
   const [countdown, setCountdown] = useState({
     days: 0,
@@ -22,7 +24,13 @@ const ImageCarousel = ({
   /* ================= Default Images ================= */
   const defaultImages = ["/coming-soon-banner.jpg"];
 
-  const displayImages = images.length > 0 ? images : defaultImages;
+  // Combine images and videos into one array with type identifier
+  const allMedia = [
+    ...images.map(img => ({ type: 'image', src: img })),
+    ...videos.map(vid => ({ type: 'video', src: vid }))
+  ];
+
+  const displayMedia = allMedia.length > 0 ? allMedia : defaultImages.map(img => ({ type: 'image', src: img }));
 
   /* ================= Fetch Banners ================= */
   useEffect(() => {
@@ -33,12 +41,9 @@ const ImageCarousel = ({
         );
         const data = await res.json();
 
-        if (data?.success && Array.isArray(data.data)) {
-          const bannerImages = data.data
-            .map(b => b.image || b.imageUrl)
-            .filter(Boolean);
-
-          setImages(bannerImages);
+        if (data?.success && data.data) {
+          setImages(data.data.images || []);
+          setVideos(data.data.videos || []);
         }
       } catch (err) {
         console.error("Failed to fetch banners", err);
@@ -73,16 +78,25 @@ const ImageCarousel = ({
 
   /* ================= Autoplay ================= */
   useEffect(() => {
-    if (!autoPlay || isHovering || displayImages.length <= 1) return;
+    if (!autoPlay || isHovering || displayMedia.length <= 1) return;
 
     const timer = setInterval(() => {
       setCurrentIndex(p =>
-        p === displayImages.length - 1 ? 0 : p + 1
+        p === displayMedia.length - 1 ? 0 : p + 1
       );
     }, autoPlayInterval);
 
     return () => clearInterval(timer);
-  }, [autoPlay, isHovering, autoPlayInterval, displayImages.length]);
+  }, [autoPlay, isHovering, autoPlayInterval, displayMedia.length]);
+
+  /* ================= Video Control ================= */
+  useEffect(() => {
+    const currentMedia = displayMedia[currentIndex];
+    
+    if (currentMedia?.type === 'video' && videoRef.current) {
+      videoRef.current.play().catch(err => console.log('Video autoplay failed:', err));
+    }
+  }, [currentIndex, displayMedia]);
 
   if (loading) return null;
 
@@ -98,43 +112,52 @@ const ImageCarousel = ({
           className="flex h-full transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
-          {displayImages.map((img, i) => (
+          {displayMedia.map((media, i) => (
             <div key={i} className="relative w-full h-full flex-shrink-0">
-              <img
-                src={img}
-                alt={`Slide ${i + 1}`}
-                className="w-full h-full object-cover"
-              />
+              {media.type === 'image' ? (
+                <img
+                  src={media.src}
+                  alt={`Slide ${i + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <video
+                  ref={i === currentIndex ? videoRef : null}
+                  src={media.src}
+                  className="w-full h-full object-cover"
+                  muted
+                  loop
+                  playsInline
+                />
+              )}
 
-              {/* ===== COMING SOON OVERLAY (ONLY FIRST SLIDE) ===== */}
-              {i === 0 && (
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                  <div className="text-center px-4">
-                    <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-red-500 mb-2">
-                      COMING SOON
-                    </h1>
-                    <p className="text-white/90 text-sm sm:text-base mb-3">
-                      Launching in
-                    </p>
+              {/* ===== COMING SOON OVERLAY (ON EVERY SLIDE) ===== */}
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                <div className="text-center px-4">
+                  <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-red-500 mb-2 sm:mb-4 drop-shadow-lg">
+                    COMING SOON
+                  </h1>
+                  <p className="text-white text-sm sm:text-base md:text-lg mb-3 sm:mb-4 drop-shadow-md">
+                    Launching in
+                  </p>
 
-                    <div className="flex justify-center gap-2 sm:gap-4">
-                      {Object.entries(countdown).map(([label, value]) => (
-                        <div
-                          key={label}
-                          className="bg-white/20 backdrop-blur rounded-lg px-2 py-1 sm:px-3 sm:py-2 min-w-[55px]"
-                        >
-                          <div className="text-lg sm:text-xl md:text-2xl font-bold text-white">
-                            {value}
-                          </div>
-                          <div className="text-[10px] sm:text-xs text-white/80 uppercase">
-                            {label}
-                          </div>
+                  <div className="flex justify-center gap-2 sm:gap-3 md:gap-4">
+                    {Object.entries(countdown).map(([label, value]) => (
+                      <div
+                        key={label}
+                        className="bg-white/20 backdrop-blur-md rounded-lg sm:rounded-xl px-2 py-1 sm:px-3 sm:py-2 md:px-4 md:py-3 min-w-[50px] sm:min-w-[60px] md:min-w-[70px] border border-white/30"
+                      >
+                        <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white drop-shadow-md">
+                          {String(value).padStart(2, '0')}
                         </div>
-                      ))}
-                    </div>
+                        <div className="text-[10px] sm:text-xs md:text-sm text-white/90 uppercase font-medium">
+                          {label}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              )}
+              </div>
             </div>
           ))}
         </div>
@@ -151,30 +174,50 @@ const ImageCarousel = ({
       </div>
 
       {/* ================= Arrows ================= */}
-      {showControls && displayImages.length > 1 && (
+      {showControls && displayMedia.length > 1 && (
         <>
           <button
             onClick={() =>
               setCurrentIndex(p =>
-                p === 0 ? displayImages.length - 1 : p - 1
+                p === 0 ? displayMedia.length - 1 : p - 1
               )
             }
-            className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow hover:scale-110 transition z-20"
+            className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 sm:p-3 rounded-full shadow-lg hover:scale-110 transition-all z-20"
+            aria-label="Previous slide"
           >
-            <ChevronLeft />
+            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
 
           <button
             onClick={() =>
               setCurrentIndex(p =>
-                p === displayImages.length - 1 ? 0 : p + 1
+                p === displayMedia.length - 1 ? 0 : p + 1
               )
             }
-            className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow hover:scale-110 transition z-20"
+            className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 sm:p-3 rounded-full shadow-lg hover:scale-110 transition-all z-20"
+            aria-label="Next slide"
           >
-            <ChevronRight />
+            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </>
+      )}
+
+      {/* ================= Dots Indicator ================= */}
+      {displayMedia.length > 1 && (
+        <div className="absolute bottom-16 sm:bottom-20 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+          {displayMedia.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentIndex(i)}
+              className={`transition-all rounded-full ${
+                i === currentIndex
+                  ? 'w-8 h-2 bg-white'
+                  : 'w-2 h-2 bg-white/50 hover:bg-white/75'
+              }`}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
+        </div>
       )}
     </div>
   );
