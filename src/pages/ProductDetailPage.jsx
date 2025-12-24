@@ -12,6 +12,7 @@ import AddReviewModal from '../components/AddReviewModal';
 import { Box } from 'lucide-react';
 import FAQPage from './FAQPage';
 import { ChevronDown } from 'lucide-react';
+import ProductImageGallery from '../components/ProductImageGallery';
 
 export default function ProductDetails() {
   const [product, setProduct] = useState(null);
@@ -352,7 +353,8 @@ export default function ProductDetails() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+ flex items-center justify-center px-4">
         <div className="text-center">
           <div className="relative">
             <div className="w-16 h-16 sm:w-20 sm:h-20 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin mx-auto"></div>
@@ -367,7 +369,8 @@ export default function ProductDetails() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4 sm:p-6">
+      <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+ flex items-center justify-center p-4 sm:p-6">
         <div className="bg-slate-800/90 backdrop-blur-sm rounded-2xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl border border-red-500/30">
           <div className="w-16 h-16 sm:w-20 sm:h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
             <AlertCircle className="w-8 h-8 sm:w-10 sm:h-10 text-red-500" />
@@ -415,7 +418,8 @@ export default function ProductDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden py-4 sm:py-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+ relative overflow-hidden py-4 sm:py-8">
       {/* Animated background */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-blue-500 rounded-full filter blur-3xl animate-pulse"></div>
@@ -445,7 +449,7 @@ export default function ProductDetails() {
             {/* Left Column - Images */}
             <div className="space-y-3 sm:space-y-6">
               <div className="bg-white rounded-lg sm:rounded-2xl p-2 sm:p-6 shadow-xl">
-                <Swiper
+                {/* <Swiper
                   modules={[Navigation, Pagination, Autoplay]}
                   navigation
                   pagination={{ clickable: true }}
@@ -468,7 +472,9 @@ export default function ProductDetails() {
                       </SwiperSlide>
                     )
                   )}
-                </Swiper>
+                </Swiper> */}
+
+                <ProductImageGallery images={product.images || [product.image]} />
               </div>
 
               {/* Trust Badges */}
@@ -553,7 +559,7 @@ export default function ProductDetails() {
                 <button
                   onClick={(e) => handleAddToCart({ product, e, isBuyNow: false })}
                   disabled={addingToCart || cartSuccess || buyingNow}
-                  className="flex items-center justify-center gap-1 sm:gap-2 bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 text-white py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-base"
+                  className="flex items-center cursor-pointer justify-center gap-1 sm:gap-2 bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 text-white py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-base"
                 >
                   {addingToCart ? (
                     <>
@@ -579,7 +585,7 @@ export default function ProductDetails() {
                 <button
                   onClick={() => handleBuyNow(product)}
                   disabled={addingToCart || cartSuccess || buyingNow}
-                  className="flex items-center justify-center gap-1 sm:gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-base"
+                  className="flex items-center cursor-pointer justify-center gap-1 sm:gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-base"
                 >
                   {buyingNow ? (
                     <>
@@ -609,7 +615,7 @@ export default function ProductDetails() {
                 >
                   <button
                     onClick={() => toggleFAQ(faq._id)}
-                    className="w-full px-4 py-2 flex items-center justify-between text-left"
+                    className="w-full px-4 py-2 flex items-center cursor-pointer justify-between text-left"
                   >
                     <h3 className="text-sm font-semibold text-black pr-3">
                       {faq.question}
@@ -738,6 +744,7 @@ export default function ProductDetails() {
 
 
                 <button
+                className='cursor-pointer'
                   onClick={() => {
                     const token = localStorage.getItem("token");
                     if (!token) return alert("Please login first");
@@ -763,7 +770,7 @@ export default function ProductDetails() {
                           setOpenReview(true);
                           window.scrollTo({ top: 0, behavior: "smooth" });
                         }}
-                        className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-lg font-semibold shadow-md transition"
+                        className="bg-amber-500 cursor-pointer hover:bg-amber-600 text-white px-6 py-2 rounded-lg font-semibold shadow-md transition"
                       >
                         ✍️ Write a Review
                       </button>

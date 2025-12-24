@@ -107,14 +107,14 @@ const { t } = useTranslation();
 
                 <Link
                   to={`/address-form/${addr._id}`}
-                  className="text-yellow-400 text-sm mr-4 hover:underline"
+                  className="text-yellow-400 cursor-pointer text-sm mr-4 hover:underline"
                 >
                   Edit
                 </Link>
 
                 <button
                   onClick={() => handleDelete(addr._id)}
-                  className="text-red-400 text-sm hover:underline"
+                  className="text-red-400 cursor-pointer text-sm hover:underline"
                   disabled={deleteLoading === addr._id}
                 >
                   {deleteLoading === addr._id ? "Removing..." : "Remove"}

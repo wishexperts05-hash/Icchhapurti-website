@@ -100,7 +100,8 @@ export default function WishlistPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+ text-white">
         Loading wishlist...
       </div>
     );
@@ -116,7 +117,8 @@ export default function WishlistPage() {
 
   if (!items.length) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white px-4">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+ text-white px-4">
         <Heart className="w-12 h-12 text-pink-500 mb-4" />
         <h1 className="text-2xl font-bold mb-2">Your wishlist is empty</h1>
         <p className="text-gray-400 mb-6 text-center max-w-md">
@@ -133,7 +135,8 @@ export default function WishlistPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+ text-white">
       <div className="max-w-6xl mx-auto px-4 py-10">
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -158,7 +161,7 @@ export default function WishlistPage() {
                 <button
                   onClick={() => handleRemove(id)}
                   disabled={removingId === id}
-                  className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-black/60 flex items-center justify-center text-red-400 hover:bg-black/80 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="absolute top-3 right-3 z-10 w-9 h-9 cursor-pointer rounded-full bg-black/60 flex items-center justify-center text-red-400 hover:bg-black/80 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -202,7 +205,7 @@ export default function WishlistPage() {
 
                 <button
                   onClick={() => handleGoToProduct(item)}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-500 text-sm font-semibold transition-colors"
+                  className="w-full cursor-pointer flex items-center justify-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-500 text-sm font-semibold transition-colors"
                 >
                   <ShoppingCart className="w-4 h-4" />
                   View Product

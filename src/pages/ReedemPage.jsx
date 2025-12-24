@@ -113,7 +113,7 @@ export default function RedeemPage() {
                     <button
                         disabled={loading}
                         onClick={handleRedeem}
-                        className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-10 py-2 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-amber-500/25"
+                        className="bg-gradient-to-r cursor-pointer from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-10 py-2 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-amber-500/25"
                     >
                         {loading ? "Processing..." : "Redeem"}
                     </button>
@@ -138,7 +138,7 @@ export default function RedeemPage() {
                 <button
                     onClick={handleRedeem}
                     disabled={loading}
-                    className="bg-[#C8AC5B] mt-5 hover:bg-yellow-600 text-white font-semibold rounded-md px-10 py-3 transition"
+                    className="bg-[#C8AC5B] mt-5 cursor-pointer hover:bg-yellow-600 text-white font-semibold rounded-md px-10 py-3 transition"
                 >
                     {loading ? "Loading..." : "Redeem Now"}
                 </button>

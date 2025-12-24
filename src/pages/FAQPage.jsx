@@ -41,7 +41,8 @@ export default function FAQPage() {
   }
 
   return (
-    <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900  text-white">
+    <div className="bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+  text-white">
       <div className="max-w-4xl mx-auto px-4 py-8">
 
         {/* Header */}

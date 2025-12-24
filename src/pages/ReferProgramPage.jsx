@@ -356,14 +356,14 @@ const ReferProgramPage = () => {
             <button
               onClick={() => Navigate(`/buy-coins?totalCoins=${referAc?.coins || 0}&coins=${coinsRate.coins || 0}&rate=${coinsRate.rate || 0}`)}
               // disabled={buyingCoins}
-              className="bg-amber-400 hover:bg-amber-500 text-amber-900 font-semibold py-2.5 px-4 rounded transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="bg-amber-400 cursor-pointer hover:bg-amber-500 text-amber-900 font-semibold py-2.5 px-4 rounded transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               Buy Coins
             </button>
             <button
               onClick={handleConvertToMoney}
               disabled={converting || availableCoins === 0}
-              className="bg-amber-400 hover:bg-amber-500 text-amber-900 font-semibold py-2.5 px-4 rounded transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="bg-amber-400 hover:bg-amber-500 cursor-pointer text-amber-900 font-semibold py-2.5 px-4 rounded transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {converting ? (
                 <>
@@ -482,7 +482,7 @@ const ReferProgramPage = () => {
         )}
 
         {/* Refer Now Button */}
-        <button onClick={handleShare} className="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 rounded-lg transition-all duration-300 shadow-lg text-lg">
+        <button onClick={handleShare} className="w-full cursor-pointer bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 rounded-lg transition-all duration-300 shadow-lg text-lg">
           Refer Now
         </button>
 

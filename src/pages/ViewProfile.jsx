@@ -380,7 +380,7 @@ export default function ViewProfile() {
           />
 
           <button
-            className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:opacity-90"
+            className="w-full mt-4 bg-gradient-to-r cursor-pointer from-amber-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:opacity-90"
           >
             {loading ? t("profile.buttons.saving") : t("profile.buttons.save")}
           </button>

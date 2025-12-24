@@ -237,7 +237,7 @@ export default function CosmicChatSupport() {
     <button
       onClick={sendMessage}
       disabled={sending || loading || inputValue.trim() === ''}
-      className="bg-blue-500/80 hover:bg-blue-500 text-white px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 sm:gap-2 whitespace-nowrap flex-shrink-0"
+      className="bg-blue-500/80 cursor-pointer hover:bg-blue-500 text-white px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 sm:gap-2 whitespace-nowrap flex-shrink-0"
     >
       {sending ? (
         <>

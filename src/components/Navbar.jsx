@@ -83,7 +83,12 @@ export default function Navbar() {
       {/* STICKY CONTAINER - Both top bar and nav together */}
       <div className="sticky top-0 z-30">
         {/* Top Bar - Login/Account with Cart & Wishlist */}
-        <div className="w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white border-b border-white/10">
+        <div className="w-full bg-gradient-to-br 
+from-[#020516] 
+via-[#020A1E] 
+to-[#02081B]
+shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+ text-white border-b border-white/10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2">
             <div className="flex items-center justify-between">
               {/* Left - Trusted Users Badge */}
@@ -249,7 +254,8 @@ export default function Navbar() {
         }`}
       >
         {/* User Profile Section */}
-        <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden p-4 sm:p-6 text-white">
+        <div className="bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+ relative overflow-hidden p-4 sm:p-6 text-white">
           <div className="flex items-center justify-between mb-4">
             {user ? (
               <div className="flex items-center gap-3 flex-1">

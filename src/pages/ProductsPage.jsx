@@ -23,14 +23,14 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const { setCount ,setList} = useHeader();
+  const { setCount, setList } = useHeader();
 
   // Keep local liked in sync with backend flag
   useEffect(() => {
     setLiked(product.isWishlisted || false);
   }, [product.isWishlisted]);
 
-  const handleAddToCart = async ({e, isBuyNow}) => {
+  const handleAddToCart = async ({ e, isBuyNow }) => {
     e.stopPropagation();
 
     if (isBuyNow) {
@@ -82,7 +82,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
           })
         );
         navigate("/cart");
-     
+
       } else {
         await onAddToCart(product);
 
@@ -104,7 +104,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
   };
 
 
- const handleBuyNow = async (e) => {
+  const handleBuyNow = async (e) => {
     e.stopPropagation();
     // alert("buy now")
 
@@ -180,25 +180,25 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
     setWishlistLoading(true);
 
     try {
-    const url = nextLiked
-  ? `${import.meta.env.VITE_API_URL}/api/user/wishlist/addToWishlist`
-  : `${import.meta.env.VITE_API_URL}/api/user/wishlist/removeFromWishlist/${productId}`;
+      const url = nextLiked
+        ? `${import.meta.env.VITE_API_URL}/api/user/wishlist/addToWishlist`
+        : `${import.meta.env.VITE_API_URL}/api/user/wishlist/removeFromWishlist/${productId}`;
 
-const res = await fetch(url, {
-  method: nextLiked ? "POST" : "DELETE", // Use DELETE for remove
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  },
-  // Only send body for POST; DELETE usually does not require a body
-  body: nextLiked ? JSON.stringify({ productId }) : undefined,
-});
+      const res = await fetch(url, {
+        method: nextLiked ? "POST" : "DELETE", // Use DELETE for remove
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        // Only send body for POST; DELETE usually does not require a body
+        body: nextLiked ? JSON.stringify({ productId }) : undefined,
+      });
 
       const result = await res.json();
       if (!res.ok || !result.success) {
         throw new Error(result.message || "Failed to update wishlist");
       }
-  setList((prev) => (nextLiked ? prev + 1 : prev - 1));
+      setList((prev) => (nextLiked ? prev + 1 : prev - 1));
       setLiked(nextLiked);
 
       // if parent passed onWishlistUpdate, keep product.isWishlisted in sync
@@ -217,7 +217,8 @@ const res = await fetch(url, {
     <div className="relative group h-full">
       <div
         onClick={handleViewDetails}
-        className="relative bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50 transition-all duration-500 hover:scale-[1.02] border border-purple-500/30 flex flex-col h-full "
+        className="relative bg-gradient-to-br cursor-pointer from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+ rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50 transition-all duration-500 hover:scale-[1.02] border border-purple-500/30 flex flex-col h-full "
       >
         <div className="absolute inset-0 bg-gradient-to-br from-purple-600/0 via-pink-600/0 to-yellow-600/0 group-hover:from-purple-600/20 group-hover:via-pink-600/20 group-hover:to-yellow-600/20 transition-all duration-500" />
 
@@ -310,17 +311,17 @@ const res = await fetch(url, {
             </span>
           </div>
 
-         <div className="flex items-center gap-2 sm:gap-3 mb-4">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4">
             <span className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-500">
               ₹{product.price || 0}
             </span>
             {product.price && (
               <div className="flex flex-col">
                 <span className="text-xs sm:text-sm text-gray-500 line-through">
-                  ₹{((product.price)*1.1).toFixed(2)}
+                  ₹{((product.price) * 1.1).toFixed(2)}
                 </span>
                 <span className="text-xs text-green-400 font-semibold">
-                  Save ₹{(((product.price)*1.1).toFixed(2) - (product.price)).toFixed(2)}
+                  Save ₹{(((product.price) * 1.1).toFixed(2) - (product.price)).toFixed(2)}
                 </span>
               </div>
             )}
@@ -343,9 +344,9 @@ const res = await fetch(url, {
 
           <div className="flex gap-2 sm:gap-3 mt-auto">
             <button
-               onClick={(e) => handleAddToCart({e, isBuyNow:false})}
+              onClick={(e) => handleAddToCart({ e, isBuyNow: false })}
               disabled={addingToCart || addedToCart || buyingNow}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 border-2 border-purple-500 rounded-xl font-bold text-xs sm:text-sm text-white transition-all hover:bg-purple-500/20 disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
+              className="flex-1 flex cursor-pointer items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 border-2 border-purple-500 rounded-xl font-bold text-xs sm:text-sm text-white transition-all hover:bg-purple-500/20 disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
             >
               {addingToCart ? (
                 <>
@@ -380,7 +381,7 @@ const res = await fetch(url, {
             <button
               onClick={handleBuyNow}
               disabled={addingToCart || addedToCart || buyingNow}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl font-bold text-xs sm:text-sm text-white transition-all bg-gradient-to-r from-purple-600 via-pink-600 to-yellow-500 hover:from-purple-500 hover:via-pink-500 hover:to-yellow-400 hover:scale-105 hover:shadow-lg hover:shadow-pink-500/50 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="flex-1 flex cursor-pointer items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl font-bold text-xs sm:text-sm text-white transition-all bg-gradient-to-r from-purple-600 via-pink-600 to-yellow-500 hover:from-purple-500 hover:via-pink-500 hover:to-yellow-400 hover:scale-105 hover:shadow-lg hover:shadow-pink-500/50 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {buyingNow ? (
                 <>
@@ -438,7 +439,7 @@ export default function ProductsPage() {
   const [totalProducts, setTotalProducts] = useState(0);
   const [searchText, setSearchText] = useState("");
   const [debounceSearch, setDebounceSearch] = useState("");
-const { setCount ,setList} = useHeader();
+  const { setCount, setList } = useHeader();
   const Navigate = useNavigate();
   const { t } = useTranslation();
   const token = localStorage.getItem("token");
@@ -586,7 +587,7 @@ const { setCount ,setList} = useHeader();
     );
   };
 
-    const handlePrev = () => {
+  const handlePrev = () => {
     if (page > 1) setPage(page - 1);
   };
 
@@ -597,7 +598,8 @@ const { setCount ,setList} = useHeader();
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+ flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-cyan-400" />
           <p className="text-white text-lg">Loading products...</p>
@@ -608,7 +610,8 @@ const { setCount ,setList} = useHeader();
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+ flex items-center justify-center p-4">
         <div className="bg-slate-800/90 backdrop-blur-sm rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-red-500/30">
           <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
           <h3 className="text-2xl font-bold text-white mb-3">
@@ -627,12 +630,13 @@ const { setCount ,setList} = useHeader();
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+ p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
-       
 
 
-         <div className="flex flex-col md:flex-row justify-between  gap-4 mb-8">
+
+        <div className="flex flex-col md:flex-row justify-between  gap-4 mb-8">
           <div>
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">{t("common.ourProducts")}</h2>
             <p className="text-gray-400 text-sm">{t("home.tagline")}</p>
@@ -691,7 +695,7 @@ const { setCount ,setList} = useHeader();
             </div>
           </div>
         )}
- {/* Pagination */}
+        {/* Pagination */}
         <div className="mt-10 flex items-center justify-center gap-4">
           <button
             disabled={page === 1}

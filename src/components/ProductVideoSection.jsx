@@ -93,7 +93,8 @@ const ProductVideoSection = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-16 relative overflow-hidden">
+    <div className="bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+ py-16 relative overflow-hidden">
       <div className="relative max-w-7xl mx-auto px-4">
         <div className="text-center mb-10">
           <h2 className="text-4xl font-bold text-white mb-3">

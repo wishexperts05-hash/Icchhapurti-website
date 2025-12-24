@@ -222,7 +222,8 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
     <div className="relative group h-full">
       <div
         onClick={handleViewDetails}
-        className="relative bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50 transition-all duration-500 hover:scale-[1.02] border border-purple-500/30 flex flex-col h-full "
+        className="relative bg-gradient-to-br cursor-pointer from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+ rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50 transition-all duration-500 hover:scale-[1.02] border border-purple-500/30 flex flex-col h-full "
       >
         <div className="absolute inset-0 bg-gradient-to-br from-purple-600/0 via-pink-600/0 to-yellow-600/0 group-hover:from-purple-600/20 group-hover:via-pink-600/20 group-hover:to-yellow-600/20 transition-all duration-500" />
 
@@ -350,7 +351,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
             <button
               onClick={(e) => handleAddToCart({ e, isBuyNow: false })}
               disabled={addingToCart || addedToCart || buyingNow}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 border-2 border-purple-500 rounded-xl font-bold text-xs sm:text-sm text-white transition-all hover:bg-purple-500/20 disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
+              className="flex-1 cursor-pointer flex items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 border-2 border-purple-500 rounded-xl font-bold text-xs sm:text-sm text-white transition-all hover:bg-purple-500/20 disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
             >
               {addingToCart ? (
                 <>
@@ -376,7 +377,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
                     size={16}
                     className="sm:w-[18px] sm:h-[18px]"
                   />
-                  <span className="hidden sm:inline">Add to Cart</span>
+                  <span className="hidden cursor-pointer sm:inline">Add to Cart</span>
                   <span className="sm:hidden">Add</span>
                 </>
               )}
@@ -385,7 +386,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
             <button
               onClick={handleBuyNow}
               disabled={addingToCart || addedToCart || buyingNow}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl font-bold text-xs sm:text-sm text-white transition-all bg-gradient-to-r from-purple-600 via-pink-600 to-yellow-500 hover:from-purple-500 hover:via-pink-500 hover:to-yellow-400 hover:scale-105 hover:shadow-lg hover:shadow-pink-500/50 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="flex-1 flex cursor-pointer items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl font-bold text-xs sm:text-sm text-white transition-all bg-gradient-to-r from-purple-600 via-pink-600 to-yellow-500 hover:from-purple-500 hover:via-pink-500 hover:to-yellow-400 hover:scale-105 hover:shadow-lg hover:shadow-pink-500/50 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {buyingNow ? (
                 <>
@@ -605,7 +606,8 @@ export default function OurProducts() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+ flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-cyan-400" />
           <p className="text-white text-lg">Loading products...</p>
@@ -616,7 +618,8 @@ export default function OurProducts() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+ flex items-center justify-center p-4">
         <div className="bg-slate-800/90 backdrop-blur-sm rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-red-500/30">
           <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
           <h3 className="text-2xl font-bold text-white mb-3">
@@ -635,7 +638,8 @@ export default function OurProducts() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4 md:p-8">
+    <div  className="min-h-screen bg-cover bg-center bg-no-repeat relative py-2"
+      style={{ backgroundImage: "url('/product-bg.jpg')" }}>
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
@@ -647,14 +651,14 @@ export default function OurProducts() {
 
           <button
             onClick={() => Navigate("/products")}
-            className="text-white px-6 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 transition-all font-semibold shadow-lg hover:shadow-purple-500/50"
+            className="text-white px-6 py-2 cursor-pointer rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 transition-all font-semibold shadow-lg hover:shadow-purple-500/50"
           >
             View All
           </button>
         </div>
 
         {products.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-6">
+          <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-6">
             {products.map((product) => (
               <ProductCard
                 key={product.id || product._id}
@@ -719,7 +723,7 @@ export default function OurProducts() {
                   ))}
                 </ul>
 
-                <button onClick={() => Navigate(`/product/${products[0]._id}`)} className="mt-8 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-amber-500/50 transform hover:scale-105 w-fit">
+                <button onClick={() => Navigate(`/product/${products[0]._id}`)} className="mt-8 cursor-pointer bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-amber-500/50 transform hover:scale-105 w-fit">
                   Buy Now
                 </button>
               </div>

@@ -119,7 +119,7 @@ export default function AccountPage() {
               </p>
               <button 
                 onClick={handleShare}
-                className="mt-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1.5 rounded flex items-center gap-1 transition-colors"
+                className="mt-2 bg-slate-700 cursor-pointer hover:bg-slate-600 text-white text-xs px-3 py-1.5 rounded flex items-center gap-1 transition-colors"
               >
                 Refer Now
                 <ArrowRight size={12} />
