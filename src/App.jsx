@@ -39,6 +39,7 @@ import WishlistPage from "./components/WishlistPage";
 import { useHeader } from "./context/HeaderContext";
 import ShippingPolicy from "./pages/ShippingPolicy";
 import RefundCancellationPolicy from "./components/RefundCancellationPolicy";
+import AboutUs from "./pages/AboutUs";
 
 
 function App() {
@@ -118,7 +119,8 @@ useEffect(() => {
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/chat-support" element={<CosmicChatSupport />} />
-          <Route path="/about-us" element={<AboutUsPage />} />
+          <Route path="/about-us" element={<AboutUs />} />
+          {/* <Route path="/about-us" element={<AboutUsPage />} /> */}
           <Route path="/blogs" element={<BlogsPage />} />
           <Route path="/blogs/:id" element={<BlogDetailPage />} />
           <Route path="/faq" element={<FAQPage />} />

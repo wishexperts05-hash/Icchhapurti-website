@@ -22,7 +22,7 @@ const ImageCarousel = ({
   });
 
   /* ================= Default Images ================= */
-  const defaultImages = ["/coming-soon-banner.jpg"];
+  const defaultImages = ["/new-banner.jpg"];
 
   // Combine images and videos into one array with type identifier
   const allMedia = [
@@ -92,7 +92,7 @@ const ImageCarousel = ({
   /* ================= Video Control ================= */
   useEffect(() => {
     const currentMedia = displayMedia[currentIndex];
-    
+
     if (currentMedia?.type === 'video' && videoRef.current) {
       videoRef.current.play().catch(err => console.log('Video autoplay failed:', err));
     }
@@ -106,8 +106,47 @@ const ImageCarousel = ({
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
+
+      {/* <div className="relative w-full overflow-hidden">
+
+        
+        <img
+          src="/new-banner.jpg"
+          alt="Banner"
+          className="w-full h-[200px] sm:h-[280px] md:h-[360px] lg:h-[420px] object-cover"
+        />
+
+       
+        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent"></div>
+
+       
+        <div className="absolute top-1/2 right-4 sm:right-8 md:right-16 transform -translate-y-1/2 z-20">
+          <div className="relative w-[200px] sm:w-[260px] md:w-[320px] lg:w-[380px]
+                    h-[130px] sm:h-[170px] md:h-[210px] lg:h-[420px]
+                    rounded-2xl overflow-hidden shadow-2xl border border-white/20">
+
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-full object-cover"
+            >
+              <source src="/animation.mov" type="video/mp4" />
+            </video>
+
+          
+            <div className="absolute inset-0 bg-black/20"></div>
+          </div>
+        </div>
+
+      </div> */}
+
+
+
+
       {/* ================= SLIDES ================= */}
-      <div className="relative h-[220px] sm:h-[320px] md:h-[420px] lg:h-[700px]">
+      <div className="relative h-[220px] sm:h-[420px] md:h-[520px] lg:h-[1100px]">
         <div
           className="flex h-full transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
@@ -164,9 +203,9 @@ const ImageCarousel = ({
 
         {/* ================= Decorative Bottom Edge ================= */}
         <div className="absolute bottom-0 left-0 right-0 w-full z-10 pointer-events-none">
-          <img 
-            src="/shape1.png" 
-            alt="" 
+          <img
+            src="/shape1.png"
+            alt=""
             className="w-full h-auto block"
             style={{ display: 'block', verticalAlign: 'bottom' }}
           />
@@ -209,11 +248,10 @@ const ImageCarousel = ({
             <button
               key={i}
               onClick={() => setCurrentIndex(i)}
-              className={`transition-all rounded-full ${
-                i === currentIndex
-                  ? 'w-8 h-2 bg-white'
-                  : 'w-2 h-2 bg-white/50 hover:bg-white/75'
-              }`}
+              className={`transition-all rounded-full ${i === currentIndex
+                ? 'w-8 h-2 bg-white'
+                : 'w-2 h-2 bg-white/50 hover:bg-white/75'
+                }`}
               aria-label={`Go to slide ${i + 1}`}
             />
           ))}
