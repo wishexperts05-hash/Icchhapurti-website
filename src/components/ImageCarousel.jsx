@@ -132,7 +132,7 @@ const ImageCarousel = ({
               )}
 
               {/* ===== COMING SOON OVERLAY (ON EVERY SLIDE) ===== */}
-              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+              {/* <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                 <div className="text-center px-4">
                   <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-red-500 mb-2 sm:mb-4 drop-shadow-lg">
                     COMING SOON
@@ -157,7 +157,7 @@ const ImageCarousel = ({
                     ))}
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           ))}
         </div>

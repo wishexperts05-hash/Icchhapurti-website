@@ -349,6 +349,15 @@ export default function ProductDetails() {
     ? [currentUserReview, ...reviews.filter(r => !r.isCurrentUser)]
     : reviews;
 
+  const parsedDescription = (() => {
+    try {
+      return typeof product?.description === "string"
+        ? JSON.parse(product.description)
+        : product?.description;
+    } catch {
+      return [];
+    }
+  })();
 
 
   if (loading) {
@@ -544,16 +553,52 @@ export default function ProductDetails() {
               </div>
 
               {/* Description */}
-              <div className="bg-white rounded-xl p-3 sm:p-6 border border-slate-600/50">
-                <h2 className="text-amber-400 font-bold text-base sm:text-lg mb-2 sm:mb-3 flex items-center gap-2">
-                  <Package size={18} className="sm:w-5 sm:h-5" />
-                  Product Details
-                </h2>
-               <p className="text-black text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
-  {product.description || "No description available for this product."}
-</p>
+                  <div className="space-y-2 mb-10 hidden lg:block">
+  {parsedDescription.map((faq, index) => {
+    const faqId = faq._id || index;
 
-              </div>
+    return (
+      <div
+        key={faqId}
+        className={`bg-white rounded-xl overflow-hidden border transition-all ${
+          openFAQ === faqId
+            ? "border-blue-500/50 shadow-md"
+            : "border-slate-300 hover:border-slate-400"
+        }`}
+      >
+        <button
+          onClick={() => toggleFAQ(faqId)}
+          className="w-full px-4 py-2 flex items-center justify-between text-left cursor-pointer"
+        >
+          <h3 className="text-sm font-semibold text-black pr-3">
+            {faq.title}
+          </h3>
+
+          <div
+            className={`w-8 h-8 rounded-lg flex items-center justify-center transition-transform ${
+              openFAQ === faqId ? "bg-blue-500 rotate-180" : "bg-slate-500"
+            }`}
+          >
+            <ChevronDown className="w-4 h-4 text-white" />
+          </div>
+        </button>
+
+        <div
+          className={`overflow-hidden transition-all duration-300 ${
+            openFAQ === faqId ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
+          <div className="px-4 pb-3">
+            <div
+              className="bg-gray-100 rounded-lg p-3 text-sm text-black prose prose-sm max-w-none"
+              dangerouslySetInnerHTML={{ __html: faq.content }}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  })}
+</div>
 
               {/* Action Buttons */}
               <div className="grid grid-cols-2 gap-2 sm:gap-4">
@@ -606,45 +651,48 @@ export default function ProductDetails() {
               </div>
             </div>
 
-            <div className="space-y-2  mb-10">
-              {faqs.map((faq) => (
-                <div
-                  key={faq._id}
-                  className={`bg-white rounded-xl overflow-hidden border transition-all ${openFAQ === faq._id
-                    ? "border-blue-500/50 shadow-md"
-                    : "border-slate-300 hover:border-slate-400"
-                    }`}
-                >
-                  <button
-                    onClick={() => toggleFAQ(faq._id)}
-                    className="w-full px-4 py-2 flex items-center cursor-pointer justify-between text-left"
-                  >
-                    <h3 className="text-sm font-semibold text-black pr-3">
-                      {faq.question}
-                    </h3>
+            <div className="space-y-2 mb-10 lg:hidden block">
+              {parsedDescription.map((faq, index) => {
+                const faqId = faq._id || index;
 
-                    <div
-                      className={`w-8 h-8 rounded-lg flex items-center justify-center transition-transform ${openFAQ === faq._id
-                        ? "bg-blue-500 rotate-180"
-                        : "bg-slate-500"
-                        }`}
-                    >
-                      <ChevronDown className="w-4 h-4 text-white" />
-                    </div>
-                  </button>
-
+                return (
                   <div
-                    className={`overflow-hidden transition-all duration-300 ${openFAQ === faq._id ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
+                    key={faqId}
+                    className={`bg-white rounded-xl overflow-hidden border transition-all ${openFAQ === faqId
+                        ? "border-blue-500/50 shadow-md"
+                        : "border-slate-300 hover:border-slate-400"
                       }`}
                   >
-                    <div className="px-4 pb-3">
-                      <div className="bg-gray-100 rounded-lg p-3 text-sm text-black">
-                        {faq.answer}
+                    <button
+                      onClick={() => toggleFAQ(faqId)}
+                      className="w-full px-4 py-2 flex items-center justify-between text-left cursor-pointer"
+                    >
+                      <h3 className="text-sm font-semibold text-black pr-3">
+                        {faq.title}
+                      </h3>
+
+                      <div
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center transition-transform ${openFAQ === faqId ? "bg-blue-500 rotate-180" : "bg-slate-500"
+                          }`}
+                      >
+                        <ChevronDown className="w-4 h-4 text-white" />
+                      </div>
+                    </button>
+
+                    <div
+                      className={`overflow-hidden transition-all duration-300 ${openFAQ === faqId ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+                        }`}
+                    >
+                      <div className="px-4 pb-3">
+                        <div
+                          className="bg-gray-100 rounded-lg p-3 text-sm text-black prose prose-sm max-w-none"
+                          dangerouslySetInnerHTML={{ __html: faq.content }}
+                        />
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
           {/* faq section  */}
@@ -725,7 +773,7 @@ export default function ProductDetails() {
                 </button>
               </div>
             ) : reviews.length === 0 ? (
-              <div className="w-full max-w-md mx-auto p-6 rounded-md bg-white">
+              <div className="w-full max-w-md mx-auto p-6 rounded-md bg-gray-200 text-center">
                 <h2 className="text-xl font-semibold text-gray-800 text-center mb-3">
                   Customer Reviews
                 </h2>
@@ -746,7 +794,7 @@ export default function ProductDetails() {
 
 
                 <button
-                className='cursor-pointer'
+                  className='cursor-pointer'
                   onClick={() => {
                     const token = localStorage.getItem("token");
                     if (!token) return alert("Please login first");

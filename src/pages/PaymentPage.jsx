@@ -784,9 +784,9 @@ export default function PaymentPage() {
                         className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-colors"
                         onClick={() => setShowPopup(true)}
                       >
-                        <span className="text-xs sm:text-sm text-gray-400 line-through">
+                        {/* <span className="text-xs sm:text-sm text-gray-400 line-through">
                           ₹{originalAmount.toLocaleString("en-IN")}
-                        </span>
+                        </span> */}
 
                         <span className="text-lg sm:text-2xl font-bold text-gray-900">
                           ₹{totalAmount.toLocaleString("en-IN")}
@@ -1235,7 +1235,11 @@ export default function PaymentPage() {
                         <span className="text-black font-semibold">
                   
                    {/* ₹ {(((checkoutDetails?.grandTotal || 0) - firstDiscount) * 0.18).toFixed(2)} */}
-                    ₹{(checkoutDetails?.gstAmount).toFixed(2) ||0}
+                   ₹{Number(checkoutDetails?.gstAmount || 0).toLocaleString("en-IN", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+})}
+
 
 
                         </span>
@@ -1244,7 +1248,11 @@ export default function PaymentPage() {
                         <span>{t('payment.price_details.total_amount')}</span>
                         <span className="text-amber-400 text-2xl">
                          {/* ₹ {(((checkoutDetails?.grandTotal || 0) - firstDiscount) * 1.18).toFixed(2)} */}
-                            ₹{(checkoutDetails?.grandTotal).toFixed(2) ||0}
+                           ₹{Number(checkoutDetails?.grandTotal || 0).toLocaleString("en-IN", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+})}
+
                         </span>
                       </div>
                     </div>

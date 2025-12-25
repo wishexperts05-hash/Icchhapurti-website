@@ -293,11 +293,26 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
             {product.name || "Untitled Product"}
           </h3>
 
-          {product.description && (
-            <p className="text-xs sm:text-sm text-gray-500 mb-3 line-clamp-2 leading-relaxed">
-              {product.description}
-            </p>
-          )}
+       {product.description && (() => {
+  try {
+    const parsed = JSON.parse(product.description);
+    const firstContent = parsed?.[0]?.content || "";
+
+    const cleanText = firstContent
+      .replace(/<[^>]*>/g, "") // remove HTML tags
+      .replace(/&nbsp;/g, " ")
+      .trim();
+
+    return (
+      <p className="text-xs sm:text-sm text-gray-500 mb-3 line-clamp-2 leading-relaxed">
+        {cleanText}
+      </p>
+    );
+  } catch (e) {
+    return null;
+  }
+})()}
+
 
           <div className="flex items-center gap-2 mb-3">
             <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-yellow-500/20 border border-yellow-500/30">
@@ -318,9 +333,9 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
 
           <div className="flex items-center gap-2 sm:gap-3 mb-4">
             <span className="text-2xl sm:text-3xl text-black font-black  bg-clip-text 0">
-              ₹{product.price || 0}
+              {product.price || 0}
             </span>
-            {product.price && (
+            {/* {product.price && (
               <div className="flex flex-col">
                 <span className="text-xs sm:text-sm text-gray-500 line-through">
                   ₹{((product.price) * 1.1).toFixed(2)}
@@ -329,7 +344,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
                   Save ₹{(((product.price) * 1.1).toFixed(2) - (product.price)).toFixed(2)}
                 </span>
               </div>
-            )}
+            )} */}
           </div>
 
           <div className="flex items-center gap-4 mb-4 text-xs text-black border-t border-white/10 pt-3">
