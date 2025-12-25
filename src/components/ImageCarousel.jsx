@@ -146,7 +146,7 @@ const ImageCarousel = ({
 
 
       {/* ================= SLIDES ================= */}
-      <div className="relative h-[220px] sm:h-[420px] md:h-[520px] lg:h-[1100px]">
+      <div className="relative h-[320px] sm:h-[420px] md:h-[520px] lg:h-[1100px]">
         <div
           className="flex h-full transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
