@@ -904,7 +904,7 @@ export default function PaymentPage() {
                 if (isAuthenticated && checkoutDetails) {
                   savings =
                     (checkoutDetails.totalAmount || 0) * 0.1 +
-                    (checkoutDetails.referralDiscount || 0) 
+                    (checkoutDetails.referralDiscount || 0)
                 } else if (!isAuthenticated) {
                   savings =
                     localCartItems.reduce(
@@ -1208,50 +1208,40 @@ export default function PaymentPage() {
                       <div className="flex justify-between text-gray-500 pb-3 border-b border-slate-600 border-dashed">
                         <span>{t('payment.price_details.price')}</span>
                         <span className="text-black font-semibold">
-                          ₹ {checkoutDetails?.totalAmount?.toLocaleString("en-IN") || 0}
+                          {checkoutDetails?.totalAmount?.toLocaleString("en-IN") || 0}
                         </span>
                       </div>
                       <div className="flex justify-between text-gray-500 pb-3 border-b border-slate-600 border-dashed">
                         <span>Discount Off</span>
                         <span className="text-green-400 font-semibold">
-                          - ₹ {checkoutDetails?.discountOff?.toLocaleString("en-IN") || 0}
+                          -{checkoutDetails?.discountOff?.toLocaleString("en-IN") || 0}
                         </span>
                       </div>
                       <div className="flex justify-between text-gray-500 pb-3 border-b border-slate-600 border-dashed">
                         <span>Referral Discount</span>
                         <span className={`font-semibold ${(referralDiscount || checkoutDetails?.referralDiscount) > 0 ? 'text-green-400' : 'text-gray-400'}`}>
                           {(referralDiscount || checkoutDetails?.referralDiscount) > 0 && '- '}
-                          ₹ {(referralDiscount || checkoutDetails?.referralDiscount || 0).toLocaleString("en-IN")}
+                          {(referralDiscount || checkoutDetails?.referralDiscount || 0).toLocaleString("en-IN")}
                         </span>
                       </div>
                       <div className="flex justify-between text-gray-500 pb-3 border-b border-slate-600 border-dashed">
                         <span>{t('payment.price_details.shipping')}</span>
                         <span className="text-black font-semibold">
-                          ₹ {checkoutDetails?.shippingCharge?.toLocaleString("en-IN") || 0}
+                          {checkoutDetails?.shippingCharge?.toLocaleString("en-IN") || 0}
                         </span>
                       </div>
                       <div className="flex justify-between text-gray-500 pb-3 border-b border-slate-600 border-dashed">
                         <span>Gst(18%)</span>
                         <span className="text-black font-semibold">
-                  
-                   {/* ₹ {(((checkoutDetails?.grandTotal || 0) - firstDiscount) * 0.18).toFixed(2)} */}
-                   ₹{Number(checkoutDetails?.gstAmount || 0).toLocaleString("en-IN", {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2
-})}
 
-
-
+                           {checkoutDetails?.gstAmount?.toLocaleString("en-IN") || 0}
                         </span>
                       </div>
                       <div className="flex justify-between text-black font-bold text-lg pt-2">
                         <span>{t('payment.price_details.total_amount')}</span>
                         <span className="text-amber-400 text-2xl">
-                         {/* ₹ {(((checkoutDetails?.grandTotal || 0) - firstDiscount) * 1.18).toFixed(2)} */}
-                           ₹{Number(checkoutDetails?.grandTotal || 0).toLocaleString("en-IN", {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2
-})}
+                          {/* ₹ {(((checkoutDetails?.grandTotal || 0) - firstDiscount) * 1.18).toFixed(2)} */}
+                      {checkoutDetails?.grandTotal?.toLocaleString("en-IN") || 0}
 
                         </span>
                       </div>

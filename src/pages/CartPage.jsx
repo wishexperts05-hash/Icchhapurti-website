@@ -469,7 +469,7 @@ export default function CartPage() {
 
                 <div className="flex-1 min-w-0">
                   <h3 className="text-white text-sm font-medium truncate">{item.product.name}</h3>
-                  <p className="text-amber-500 font-semibold mt-1">₹ {item.product.price}</p>
+                  <p className="text-amber-500 font-semibold mt-1"> {item.product.price}</p>
                 </div>
                 <div className="flex flex-col items-end gap-2">
                   <div className="flex items-center gap-2">
