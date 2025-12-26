@@ -35,14 +35,14 @@ const StoryBanner = () => {
     },
     {
       id: 4,
-      video: "/story2.mp4",
+      video: "/story4.mov",
       title: "Manifestation Pen in Daily Routine",
       description: "Create focus, clarity, and abundance every day",
       type: "video"
     },
     {
       id: 5,
-      video: "/story2.mp4",
+      video: "/story5.mov",
       title: "Manifestation Pen in Daily Routine",
       description: "Create focus, clarity, and abundance every day",
       type: "video"
