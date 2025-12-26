@@ -9,7 +9,7 @@ const WhyChooseUs = () => {
       }}
     >
       {/* 🔹 Dark overlay for readability */}
-      <div className="absolute inset-0 " />
+      <div className="absolute inset-0" />
 
       {/* 🔹 Decorative background effects */}
       <div className="absolute inset-0 opacity-20 pointer-events-none">
@@ -21,17 +21,54 @@ const WhyChooseUs = () => {
       </div>
 
       {/* 🔹 Content */}
-      <div className="relative z-10 max-w-6xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-5xl font-bold text-black mb-4">
-            Why Choose Us?
-          </h2>
+      <div className="relative z-10 max-w-6xl mx-auto text-center">
+        <h2 className="text-3xl md:text-5xl font-bold text-black mb-8">
+          WHY WE ARE SPECIAL......
+        </h2>
 
-          <p className="text-gray-700 text-sm md:text-base max-w-2xl mx-auto">
-            We provide the most reliable and efficient platform for purchasing
-            coins with unmatched service quality and customer satisfaction.
-          </p>
-        </div>
+        <div className="max-w-5xl mx-auto text-black text-base md:text-lg leading-relaxed space-y-4">
+  <p className="font-bold">
+    We Don’t Sell a Pen. We Offer a Powerpack Tool To Unlock Your Dreams.
+  </p>
+
+  <p>
+    <span className="font-bold">Icchhapurti</span> is a status symbol for your daily life.
+    It’s not just about writing, it's about rewriting your destiny.
+  </p>
+
+  <p>
+    A normal pen can be bought from anywhere, but a tool made to change your life
+    can only be found here Only.
+  </p>
+
+  <p>
+    <span className="font-bold">Icchhapurti</span> products are heavily charged and activated
+    with multiple processes and rituals like{" "}
+    <span className="font-bold">
+      Havans, Mantras Jaaps, Mantras Chanting, Moon Charging
+    </span>{" "}
+    and many more rituals are performed to maximize your goal achievement to
+    10x power& faster through manifestation.
+  </p>
+
+  <p>
+    Through Icchhapurti, we encourage people to start their manifestation journey
+    using their own{" "}
+    <span className="font-bold">Icchhapurti Manifestation Pen.</span>
+  </p>
+
+  <p>
+    That is why we say don’t question it, just take it, write it and start the
+    manifestation then see the magic happens……
+  </p>
+
+  <div className="text-center mt-8 space-y-2">
+    <p className="font-bold text-xl">Don’t Just Dream It,</p>
+    <p className="font-bold text-xl">“ Own It ”</p>
+    <p className="font-bold text-xl">“ Write It ” &nbsp; “ Manifest It ”</p>
+  </div>
+</div>
+
       </div>
 
       {/* Animations */}

@@ -533,7 +533,7 @@ export default function ProductDetails() {
                 {/* Price */}
                 <div className="flex items-baseline gap-2 sm:gap-4 mb-4 sm:mb-6 flex-wrap">
                   <span className="text-xl sm:text-3xl lg:text-4xl font-bold text-black">
-                    ₹{product.price || 0}
+                    {product.price || 0}
                   </span>
                   {product.originalPrice && (
                     <>

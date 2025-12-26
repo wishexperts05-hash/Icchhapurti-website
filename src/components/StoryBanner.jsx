@@ -14,49 +14,49 @@ const StoryBanner = () => {
   const productVideos = [
     {
       id: 1,
-      video: "https://www.instagram.com/reel/DRuhFMykktO/embed",
+      video: "/story1.mp4",
       title: "Manifestation Pen Unboxing",
       description: "Unlock intention-powered writing from the first touch",
-      type: "instagram"
+      type: "video"
     },
     {
       id: 2,
-      video: "https://www.instagram.com/reel/DRuhFMykktO/embed",
+      video: "/story2.mp4",
       title: "How the Manifestation Pen Works",
       description: "Align your thoughts, goals, and daily intentions",
-      type: "instagram"
+      type: "video"
     },
     {
       id: 3,
-      video: "https://www.w3schools.com/html/mov_bbb.mp4",
+      video: "/story3.mp4",
       title: "Daily Affirmation Writing",
       description: "Turn positive thoughts into written reality",
       type: "video"
     },
     {
       id: 4,
-      video: "https://www.w3schools.com/html/movie.mp4",
+      video: "/story2.mp4",
       title: "Manifestation Pen in Daily Routine",
       description: "Create focus, clarity, and abundance every day",
       type: "video"
     },
     {
       id: 5,
-      video: "https://www.w3schools.com/html/movie.mp4",
+      video: "/story2.mp4",
       title: "Manifestation Pen in Daily Routine",
       description: "Create focus, clarity, and abundance every day",
       type: "video"
     },
     {
       id: 6,
-      video: "https://www.w3schools.com/html/movie.mp4",
+      video: "/story3.mp4",
       title: "Manifestation Pen in Daily Routine",
       description: "Create focus, clarity, and abundance every day",
       type: "video"
     },
     {
       id: 7,
-      video: "https://www.w3schools.com/html/movie.mp4",
+      video: "/story2.mp4",
       title: "Manifestation Pen in Daily Routine",
       description: "Create focus, clarity, and abundance every day",
       type: "video"
