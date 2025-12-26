@@ -739,30 +739,38 @@ export default function PaymentPage() {
                 let originalAmount = 0;
                 let items = []
                 console.log(items, "items")
+                const parseAmount = (amount) => {
+                  if (!amount) return 0;
+                  return Number(String(amount).replace(/[^0-9.]/g, ""));
+                };
+
                 if (isAuthenticated && checkoutDetails) {
                   items = cartItems
                   itemsCount = checkoutDetails.quantity || 1;
-                  totalAmount = (checkoutDetails.totalAmount - referralDiscount) || 0;
-                  originalAmount =
-                    (checkoutDetails.totalAmount) * 1.1;
+                  const amountNumber = parseAmount(checkoutDetails?.totalAmount);
+                  const referral = Number(referralDiscount) || 0;
+
+                  totalAmount = Math.max(amountNumber - referral, 0);
+                  originalAmount = amountNumber 
                 }
                 else if (!isAuthenticated && !checkoutDetails) {
                   items = localCartItems
                   itemsCount = localCartItems?.length || 0;
-                  totalAmount = localCartItems.reduce(
-                    (sum, item) => sum + Number(item.totalAmount || 0),
+                   totalAmount = localCartItems.reduce(
+                    (sum, item) => sum + parseAmount(item.totalAmount),
                     0
                   );
-                  originalAmount = totalAmount * 1.1;
+
+                  originalAmount = totalAmount 
                 }
                 else if (isAuthenticated) {
                   items = cartItems
                   itemsCount = cartItems?.length || 0;
                   totalAmount = cartItems.reduce(
-                    (sum, item) => sum + Number(item.totalAmount || 0),
+                    (sum, item) => sum + parseAmount(item.totalAmount),
                     0
                   );
-                  originalAmount = totalAmount * 1.1;
+                  originalAmount = totalAmount 
                 }
 
                 if (!itemsCount) return null;
@@ -823,7 +831,7 @@ export default function PaymentPage() {
                                 >
                                   {/* Product Image */}
                                   <img
-                                    src={item.product?.image || item.product?.images[0].url}
+                                    src={item.product?.image || item.product?.images[0]}
                                     alt={item.name}
                                     className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-md"
                                   />
@@ -839,8 +847,8 @@ export default function PaymentPage() {
                                         Quantity: <span className="font-medium text-gray-900">{item.quantity}</span>
                                       </p>
                                       <p className="text-gray-600">
-                                        Price:   <span className="font-medium line-through text-gray-500">₹{((item?.product?.price || 0) * 1.1).toLocaleString("en-IN")}
-                                        </span> <span className="font-medium text-gray-900">₹{item?.product.price?.toLocaleString("en-IN")}</span>
+                                        Price:
+                                        <span className="font-medium text-gray-900">{item?.product.price?.toLocaleString("en-IN")}</span>
 
                                       </p>
                                       {item?.discount > 0 && (
@@ -854,7 +862,7 @@ export default function PaymentPage() {
                                   {/* Total Amount */}
                                   <div className="text-right">
                                     <p className="text-lg font-bold text-gray-900">
-                                      ₹{item?.totalAmount.toLocaleString("en-IN")}
+                                      {item?.totalAmount.toLocaleString("en-IN")}
                                     </p>
                                   </div>
                                 </div>
@@ -865,13 +873,13 @@ export default function PaymentPage() {
                           {/* Footer with Total */}
                           <div className="border-t border-gray-200 p-4 sm:p-6 bg-gray-50">
                             <div className="space-y-2">
-                              <div className="flex justify-between text-sm text-gray-600">
+                              {/* <div className="flex justify-between text-sm text-gray-600">
                                 <span>Subtotal ({itemsCount} items)</span>
-                                <span className="line-through">₹₹{((Number(originalAmount) || 0) / 1.1).toLocaleString("en-IN")}
+                                <span className="line-through">{((Number(originalAmount) || 0) / 1.1).toLocaleString("en-IN")}
 
 
                                 </span>
-                              </div>
+                              </div> */}
                               {referralDiscount > 0 && (
                                 <div className="flex justify-between text-sm text-green-600">
                                   <span>Discount</span>
@@ -900,23 +908,35 @@ export default function PaymentPage() {
 
               {(() => {
                 let savings = 0;
+                const parseAmount = (amount) => {
+                  if (!amount) return 0;
+                  return Number(String(amount).replace(/[^0-9.]/g, ""));
+                };
 
+                const formatCurrency = (value) => `₹${value.toFixed(2)}`;
                 if (isAuthenticated && checkoutDetails) {
-                  savings =
-                    (checkoutDetails.totalAmount || 0) * 0.1 +
-                    (checkoutDetails.referralDiscount || 0)
+                  const total = parseAmount(checkoutDetails.totalAmount);
+                  const referral = parseAmount(checkoutDetails.referralDiscount);
+
+                  savings =  referral;
+
                 } else if (!isAuthenticated) {
-                  savings =
-                    localCartItems.reduce(
-                      (sum, item) => sum + Number(item.totalAmount || 0),
-                      0
-                    ) * 0.1;
-                } else if (isAuthenticated && !checkoutDetails) {
-                  savings = cartItems.reduce(
-                    (sum, item) => sum + Number(item.totalAmount || 0),
+                  const cartTotal = localCartItems.reduce(
+                    (sum, item) => sum + parseAmount(item.totalAmount),
                     0
-                  ) * 0.1;
+                  );
+
+                  savings = 0
+
+                } else if (isAuthenticated && !checkoutDetails) {
+                  const cartTotal = cartItems.reduce(
+                    (sum, item) => sum + parseAmount(item.totalAmount),
+                    0
+                  );
+
+                  savings = 0
                 }
+
 
                 if (savings <= 0) return null;
 
@@ -925,7 +945,7 @@ export default function PaymentPage() {
                     <p className="text-green-800 font-semibold text-sm sm:text-base">
                       🎉 Yay! You’ve saved{" "}
                       <span className="font-bold">
-                        ₹{savings.toLocaleString("en-IN")}
+                        {formatCurrency(savings)}
                       </span>{" "}
                       so far
                     </p>
@@ -1234,14 +1254,14 @@ export default function PaymentPage() {
                         <span>Gst(18%)</span>
                         <span className="text-black font-semibold">
 
-                           {checkoutDetails?.gstAmount?.toLocaleString("en-IN") || 0}
+                          {checkoutDetails?.gstAmount?.toLocaleString("en-IN") || 0}
                         </span>
                       </div>
                       <div className="flex justify-between text-black font-bold text-lg pt-2">
                         <span>{t('payment.price_details.total_amount')}</span>
                         <span className="text-amber-400 text-2xl">
                           {/* ₹ {(((checkoutDetails?.grandTotal || 0) - firstDiscount) * 1.18).toFixed(2)} */}
-                      {checkoutDetails?.grandTotal?.toLocaleString("en-IN") || 0}
+                          {checkoutDetails?.grandTotal?.toLocaleString("en-IN") || 0}
 
                         </span>
                       </div>

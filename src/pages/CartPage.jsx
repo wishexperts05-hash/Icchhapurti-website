@@ -461,7 +461,7 @@ export default function CartPage() {
               <div className="flex items-center gap-3 sm:gap-4">
                 {/* <PenIcon color={item.color || 'blue'} /> */}
                 <img
-                  src={token ? item?.product?.images?.[0]?.url : item?.product?.images?.[0] || "/placeholder.png"}
+                  src={token ? item?.product?.images?.[0] : item?.product?.images?.[0] || "/placeholder.png"}
                   alt={item?.product?.name || "Product"}
                   className="w-14 h-14 object-cover rounded-md"
                   loading="lazy"
