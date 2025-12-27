@@ -63,7 +63,7 @@ export default function FAQPage() {
           {faqs.map((faq, index) => (
             <div
               key={faq._id}
-              className={`rounded-xl border transition ${
+              className={`rounded-xl  border transition ${
                 openFAQ === faq._id
                   ? "border-blue-500/50 bg-slate-800"
                   : "border-slate-700 bg-slate-800/60"
@@ -71,7 +71,7 @@ export default function FAQPage() {
             >
               <button
                 onClick={() => toggleFAQ(faq._id)}
-                className="w-full px-4 py-3 flex items-center justify-between text-left"
+                className="w-full px-4 py-3 flex items-center cursor-pointer justify-between text-left"
               >
                 <div className="flex items-center gap-3">
                   <span className="w-6 h-6 rounded-md bg-blue-500/20 text-blue-400 text-xs font-semibold flex items-center justify-center">
