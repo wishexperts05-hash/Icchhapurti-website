@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const ImageCarousel = ({
   autoPlay = true,
-  autoPlayInterval = 3000,
+  autoPlayInterval = 5000,
   showControls = true,
   className = "",
 }) => {
