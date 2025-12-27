@@ -111,7 +111,7 @@ const ProductVideoSection = () => {
           {/* Navigation Buttons */}
           <button
             onClick={handlePrevious}
-            className="absolute left-0 sm:left-2 top-1/2 -translate-y-1/2 z-20 bg-black/70 hover:bg-black/90 p-2 sm:p-3 rounded-full transition-all shadow-lg"
+            className="absolute left-0 sm:left-2 top-1/2 -translate-y-1/2 z-20 bg-black/70 hover:bg-black/90 p-2 sm:p-3 rounded-full transition-all shadow-lg hover:scale-110"
             aria-label="Previous video"
           >
             <ChevronLeft className="text-white w-4 h-4 sm:w-5 sm:h-5" />
@@ -119,7 +119,7 @@ const ProductVideoSection = () => {
 
           <button
             onClick={handleNext}
-            className="absolute right-0 sm:right-2 top-1/2 -translate-y-1/2 z-20 bg-black/70 hover:bg-black/90 p-2 sm:p-3 rounded-full transition-all shadow-lg"
+            className="absolute right-0 sm:right-2 top-1/2 -translate-y-1/2 z-20 bg-black/70 hover:bg-black/90 p-2 sm:p-3 rounded-full transition-all shadow-lg hover:scale-110"
             aria-label="Next video"
           >
             <ChevronRight className="text-white w-4 h-4 sm:w-5 sm:h-5" />
@@ -139,13 +139,19 @@ const ProductVideoSection = () => {
               <div
                 key={video.id}
                 onClick={() => openVideo(video)}
-                className={`flex-shrink-0 w-[200px] sm:w-[240px] md:w-[280px] transition-all duration-300 cursor-pointer snap-center ${
+                className={`flex-shrink-0 w-[200px] sm:w-[240px] md:w-[280px] cursor-pointer snap-center group ${
                   index === currentSlide 
-                    ? 'scale-100 sm:scale-105 opacity-100' 
-                    : 'scale-90 sm:scale-95 opacity-60'
+                    ? 'opacity-100' 
+                    : 'opacity-60'
                 }`}
               >
-                <div className="relative aspect-[9/16] rounded-xl sm:rounded-2xl overflow-hidden bg-black shadow-2xl">
+                <div className={`relative aspect-[9/16] rounded-xl sm:rounded-2xl overflow-hidden bg-black shadow-2xl
+                              transition-all duration-300 ease-out
+                              ${index === currentSlide ? 'scale-100 sm:scale-105' : 'scale-90 sm:scale-95'}
+                              md:hover:scale-110 md:hover:-translate-y-3
+                              md:hover:shadow-2xl md:hover:shadow-amber-500/50
+                              md:hover:ring-2 md:hover:ring-amber-500/70
+                              md:hover:z-10`}>
                   <video
                     src={video.video}
                     className="w-full h-full object-cover"
@@ -155,22 +161,54 @@ const ProductVideoSection = () => {
                     playsInline
                   />
 
-                  {/* Hover Overlay */}
-                  <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 bg-amber-500 rounded-full flex items-center justify-center shadow-lg">
+                  {/* Enhanced Hover Overlay */}
+                  <div className="absolute inset-0 bg-black/0 md:group-hover:bg-black/40 
+                                flex items-center justify-center transition-all duration-300">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 bg-amber-500 rounded-full 
+                                  flex items-center justify-center shadow-lg
+                                  scale-0 md:group-hover:scale-100
+                                  opacity-0 md:group-hover:opacity-100
+                                  transition-all duration-300
+                                  md:group-hover:animate-pulse">
                       <Play className="text-white ml-1 w-5 h-5 sm:w-6 sm:h-6" fill="white" />
                     </div>
                   </div>
 
+                  {/* Shine effect on hover */}
+                  <div className="absolute inset-0 opacity-0 md:group-hover:opacity-100 
+                                transition-opacity duration-500 pointer-events-none"
+                       style={{
+                         background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%)',
+                         backgroundSize: '200% 200%',
+                         animation: 'shine 1.5s infinite'
+                       }}>
+                  </div>
+
                   {/* Video Info */}
-                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 bg-gradient-to-t from-black/90 via-black/60 to-transparent pointer-events-none">
-                    <h3 className="text-white font-semibold text-xs sm:text-sm mb-1">
+                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 
+                                bg-gradient-to-t from-black/95 via-black/70 to-transparent 
+                                pointer-events-none
+                                transition-all duration-300
+                                md:group-hover:from-black/100 md:group-hover:via-black/90">
+                    <h3 className="text-white font-semibold text-xs sm:text-sm mb-1
+                                 transition-all duration-300
+                                 md:group-hover:text-amber-400">
                       {video.title}
                     </h3>
-                    <p className="text-slate-300 text-[10px] sm:text-xs line-clamp-2">
+                    <p className="text-slate-300 text-[10px] sm:text-xs line-clamp-2
+                                transition-all duration-300
+                                md:group-hover:text-white">
                       {video.description}
                     </p>
                   </div>
+
+                  {/* Corner badge for active slide */}
+                  {index === currentSlide && (
+                    <div className="absolute top-2 right-2 bg-amber-500 text-white 
+                                  text-[10px] font-bold px-2 py-1 rounded-full shadow-lg">
+                      NOW PLAYING
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -184,7 +222,7 @@ const ProductVideoSection = () => {
                 onClick={() => setCurrentSlide(index)}
                 className={`h-1.5 sm:h-2 rounded-full transition-all ${
                   index === currentSlide 
-                    ? 'w-6 sm:w-8 bg-amber-500' 
+                    ? 'w-6 sm:w-8 bg-amber-500 shadow-lg shadow-amber-500/50' 
                     : 'w-1.5 sm:w-2 bg-slate-600 hover:bg-slate-500'
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
@@ -197,7 +235,7 @@ const ProductVideoSection = () => {
       {/* Reel Modal */}
       {isModalOpen && selectedVideo && (
         <div
-          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/95 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           onClick={closeModal}
         >
           <div
@@ -207,7 +245,7 @@ const ProductVideoSection = () => {
             {/* Close Button */}
             <button
               onClick={closeModal}
-              className="absolute top-3 right-3 z-50 bg-red-500 hover:bg-red-600 p-2 sm:p-2.5 rounded-full transition-colors shadow-lg"
+              className="absolute top-3 right-3 z-50 bg-red-500 hover:bg-red-600 p-2 sm:p-2.5 rounded-full transition-all shadow-lg hover:scale-110"
               aria-label="Close video"
             >
               <X className="text-white w-4 h-4 sm:w-5 sm:h-5" />
@@ -235,6 +273,11 @@ const ProductVideoSection = () => {
       )}
 
       <style jsx>{`
+        @keyframes shine {
+          0% { background-position: 200% 200%; }
+          100% { background-position: -200% -200%; }
+        }
+        
         .hide-scrollbar::-webkit-scrollbar {
           display: none;
         }

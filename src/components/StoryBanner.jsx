@@ -49,18 +49,19 @@ const StoryBanner = () => {
     },
     {
       id: 6,
-      video: "/story3.mp4",
+      video: "/story6.mp4",
       title: "Manifestation Pen in Daily Routine",
       description: "Create focus, clarity, and abundance every day",
       type: "video"
     },
     {
-      id: 7,
-      video: "/story2.mp4",
+      id: 1,
+      video: "/story6.mp4",
       title: "Manifestation Pen in Daily Routine",
       description: "Create focus, clarity, and abundance every day",
       type: "video"
-    }
+    },
+   
   ];
 
   /* ------------------ MOBILE CHECK ------------------ */
@@ -110,8 +111,7 @@ const StoryBanner = () => {
 
   /* ------------------ RENDER ------------------ */
   return (
-    <div className="bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
- py-16 px-4 relative overflow-hidden">
+    <div className="bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] py-16 px-4 relative overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-4xl font-bold text-white text-center mb-4">
           Our Stories
@@ -128,7 +128,7 @@ const StoryBanner = () => {
                 (p) => (p - 1 + productVideos.length) % productVideos.length
               )
             }
-            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-black/70 p-3 rounded-full"
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-black/70 hover:bg-black/90 p-3 rounded-full transition-all hover:scale-110"
           >
             <ChevronLeft className="text-white" />
           </button>
@@ -137,23 +137,27 @@ const StoryBanner = () => {
             onClick={() =>
               setCurrentSlide((p) => (p + 1) % productVideos.length)
             }
-            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-black/70 p-3 rounded-full"
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-black/70 hover:bg-black/90 p-3 rounded-full transition-all hover:scale-110"
           >
             <ChevronRight className="text-white" />
           </button>
 
-         <div
-  ref={sliderRef}
-  className="flex gap-6 overflow-x-auto hide-scrollbar-desktop px-4"
->
-
+          <div
+            ref={sliderRef}
+            className="flex gap-6 overflow-x-auto hide-scrollbar-desktop px-4 py-4"
+          >
             {productVideos.map((story) => (
               <div
                 key={story.id}
-                className="w-32 md:w-40 flex-shrink-0 cursor-pointer"
+                className="w-32 md:w-40 flex-shrink-0 cursor-pointer group"
                 onClick={() => handleVideoClick(story)}
               >
-                <div className="relative aspect-[9/16] rounded-xl overflow-hidden bg-black">
+                <div className="relative aspect-[9/16] rounded-xl overflow-hidden bg-black 
+                              transition-all duration-300 ease-out
+                              md:hover:scale-110 md:hover:-translate-y-2
+                              md:hover:shadow-2xl md:hover:shadow-purple-500/50
+                              md:hover:ring-2 md:hover:ring-purple-500/70
+                              md:hover:z-10">
                   {story.type === "instagram" ? (
                     <iframe
                       src={story.video}
@@ -170,7 +174,39 @@ const StoryBanner = () => {
                       autoPlay
                     />
                   )}
+                  
+                  {/* Hover overlay with play icon */}
+                  <div className="absolute inset-0 bg-black/0 md:group-hover:bg-black/30 
+                                transition-all duration-300 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-white/0 md:group-hover:bg-white/90 
+                                  flex items-center justify-center transform scale-0 md:group-hover:scale-100 
+                                  transition-all duration-300">
+                      <svg 
+                        className="w-6 h-6 text-purple-600 ml-1" 
+                        fill="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
+                  </div>
+                  
+                  {/* Shine effect on hover */}
+                  <div className="absolute inset-0 opacity-0 md:group-hover:opacity-100 
+                                transition-opacity duration-500 pointer-events-none"
+                       style={{
+                         background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%)',
+                         backgroundSize: '200% 200%',
+                         animation: 'shine 1.5s infinite'
+                       }}>
+                  </div>
                 </div>
+                
+                {/* Title appears on hover */}
+                <p className="text-white text-xs mt-2 text-center opacity-0 md:group-hover:opacity-100 
+                            transition-opacity duration-300 font-medium truncate px-1">
+                  {story.title}
+                </p>
               </div>
             ))}
           </div>
@@ -180,16 +216,16 @@ const StoryBanner = () => {
       {/* MODAL */}
       {isModalOpen && selectedVideo && (
         <div
-          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
           onClick={closeModal}
         >
           <div
-            className="relative w-full max-w-4xl bg-black rounded-xl overflow-hidden"
+            className="relative w-full max-w-4xl bg-black rounded-xl overflow-hidden shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={closeModal}
-              className="absolute top-3 right-3 bg-red-500 p-2 rounded-full z-10"
+              className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 p-2 rounded-full z-10 transition-all hover:scale-110"
             >
               <X className="text-white" />
             </button>
@@ -224,6 +260,22 @@ const StoryBanner = () => {
           </div>
         </div>
       )}
+
+      <style jsx>{`
+        @keyframes shine {
+          0% { background-position: 200% 200%; }
+          100% { background-position: -200% -200%; }
+        }
+        
+        .hide-scrollbar-desktop::-webkit-scrollbar {
+          display: none;
+        }
+        
+        .hide-scrollbar-desktop {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
 };

@@ -132,36 +132,40 @@ const ImageCarousel = ({
                 />
               )}
 
-              {/* ===== COMING SOON OVERLAY (Commented out) ===== */}
-              {/* <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                <div className="text-center px-4">
-                  <h1 className="text-xl xs:text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-red-500 mb-2 sm:mb-4 md:mb-6 drop-shadow-lg">
-                    COMING SOON
-                  </h1>
-                  <p className="text-white text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl mb-3 sm:mb-4 md:mb-6 drop-shadow-md">
-                    Launching in
-                  </p>
-
-                  <div className="flex justify-center gap-1.5 xs:gap-2 sm:gap-3 md:gap-4 lg:gap-5">
-                    {Object.entries(countdown).map(([label, value]) => (
-                      <div
-                        key={label}
-                        className="bg-white/20 backdrop-blur-md rounded-md xs:rounded-lg sm:rounded-xl 
-                                   px-1.5 py-1 xs:px-2 xs:py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-3 lg:px-5 lg:py-4
-                                   min-w-[40px] xs:min-w-[50px] sm:min-w-[60px] md:min-w-[70px] lg:min-w-[90px]
-                                   border border-white/30"
+              {/* ===== ANIMATION VIDEO OVERLAY (Only on first slide) ===== */}
+              {i === 0 && (
+                <>
+                  {/* Multi-layer gradient for seamless blending */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent pointer-events-none z-[5]"></div>
+                  
+                  {/* Full-height 9:16 video on right side */}
+                  <div className="absolute top-0 right-0 h-full z-[8] flex items-center">
+                    <div className="relative h-full overflow-hidden" 
+                         style={{ aspectRatio: '9/16' }}>
+                      <video
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className="w-full h-full object-cover"
                       >
-                        <div className="text-base xs:text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white drop-shadow-md">
-                          {String(value).padStart(2, '0')}
-                        </div>
-                        <div className="text-[8px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base text-white/90 uppercase font-medium">
-                          {label}
-                        </div>
+                        <source src="/animation.mov" type="video/mp4" />
+                      </video>
+                      
+                      {/* Left edge fade to blend with banner */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent pointer-events-none"></div>
+                      
+                      {/* Soft vignette on video edges */}
+                      <div className="absolute inset-0 pointer-events-none"
+                           style={{
+                             background: 'linear-gradient(to right, rgba(0,0,0,0.5) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.3) 100%), linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 10%, transparent 90%, rgba(0,0,0,0.3) 100%)'
+                           }}>
                       </div>
-                    ))}
+                    </div>
                   </div>
-                </div>
-              </div> */}
+                </>
+              )}
+
             </div>
           ))}
         </div>
