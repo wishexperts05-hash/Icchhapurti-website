@@ -51,7 +51,11 @@ export default function AboutUs() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+      <div className="relative overflow-hidden bg-gradient-to-br 
+from-[#020516] 
+via-[#020A1E] 
+to-[#02081B]
+shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] text-white">
         <div className="absolute inset-0 bg-black opacity-10"></div>
         <div className="relative max-w-6xl mx-auto px-6 py-20 text-center">
           <h1
@@ -144,7 +148,11 @@ export default function AboutUs() {
 
       {/* Philosophy Section */}
       <div className="max-w-6xl mx-auto px-6 py-16">
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl shadow-xl p-8 md:p-12 text-white">
+        <div className="bg-gradient-to-br 
+from-[#020516] 
+via-[#020A1E] 
+to-[#02081B]
+shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] rounded-2xl shadow-xl p-8 md:p-12 text-white">
           <h2 className="text-3xl md:text-4xl text-[#D3AF37] font-bold mb-6 text-center">
             Our Philosophy
           </h2>
@@ -195,7 +203,11 @@ export default function AboutUs() {
 
       {/* Closing Section */}
       <div className="max-w-6xl mx-auto px-6 py-16">
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl shadow-2xl p-8 md:p-12 text-white text-center">
+        <div className="bg-gradient-to-br 
+from-[#020516] 
+via-[#020A1E] 
+to-[#02081B]
+shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] rounded-2xl shadow-2xl p-8 md:p-12 text-white text-center">
           <h2 className="text-3xl md:text-4xl text-[#D3AF37] font-bold mb-6">
             Your Journey Begins Here
           </h2>

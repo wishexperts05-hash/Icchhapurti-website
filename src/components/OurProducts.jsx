@@ -260,7 +260,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
         </button>
 
 
-            <div className="relative w-full aspect-[3/4] bg-gradient-to-b from-purple-50 to-transparent">
+        <div className="relative w-full aspect-[3/4] bg-gradient-to-b from-purple-50 to-transparent">
           <img
             src={
               product.images?.[0] ||
@@ -725,10 +725,10 @@ export default function OurProducts() {
                 </ul>
 
                 <button
-                //  onClick={() => Navigate(`/product/${products[0]._id}`)} 
+                  //  onClick={() => Navigate(`/product/${products[0]._id}`)} 
 
-                 className="mt-8  bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-amber-500/50 transform hover:scale-105 w-fit">
-               Coming Soon
+                  className="mt-8  bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-amber-500/50 transform hover:scale-105 w-fit">
+                  Coming Soon
                 </button>
               </div>
             </div>
