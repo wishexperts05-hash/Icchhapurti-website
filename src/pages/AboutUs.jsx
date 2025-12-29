@@ -86,7 +86,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] text-white">
             Our Mission
           </h2>
           <p className="text-lg text-gray-700 leading-relaxed mb-6">
-            We (Wish experts private limited) with the brand name <span className="font-semibold text-purple-600">Icchhapurti</span> believe that intentions become powerful when combined with clarity, focus, and mindful action. Our mission is to create meaningful manifestation tools that help individuals align their thoughts, energy, and efforts towards achieving their goals—whether personal, professional, or spiritual.
+            We (Wish experts private limited) with the brand name <span className="font-semibold text-[#a17b0a]">Icchhapurti</span> believe that intentions become powerful when combined with clarity, focus, and mindful action. Our mission is to create meaningful manifestation tools that help individuals align their thoughts, energy, and efforts towards achieving their goals—whether personal, professional, or spiritual.
           </p>
           <p className="text-lg text-gray-700 leading-relaxed">
             Icchhapurti was born from the idea that everyone deserves the right tools to manifest their dreams, regardless of where they are in life. From students and professionals to spiritual seekers, our products are thoughtfully designed to support focus, confidence, abundance, and positive thinking in everyday routines.
@@ -102,7 +102,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] text-white">
           </h2>
           <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 mb-8">
             <div className="flex items-start gap-4 mb-6">
-              <Package className="w-10 h-10 text-purple-600 flex-shrink-0 mt-1" />
+              <Package className="w-10 h-10 text-[#a17b0a] flex-shrink-0 mt-1" />
               <div>
                 <h3 className="text-2xl font-bold text-[#a17b0a] mb-4">
                   The Power Pack Tool
@@ -114,7 +114,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] text-white">
                   That is why this pen is something magical for everyone only if you show trust and believe in it.
                 </p>
                 <div className="mt-6 bg-purple-50 border-l-4 border-purple-600 p-4 rounded">
-                  <p className="text-purple-900 font-semibold italic">
+                  <p className="text-[#a17b0a] font-semibold italic">
                     "Don't question it, just own it, write it and start manifestation then see the magic happens."
                   </p>
                 </div>
@@ -138,7 +138,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] text-white">
                   {product.description}
                 </p>
                 <div className="flex justify-center mt-4">
-                  <ChevronDown className={`w-5 h-5 text-purple-600 transition-transform ${expandedProduct === product.id ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-5 h-5 text-[#a17b0a] transition-transform ${expandedProduct === product.id ? 'rotate-180' : ''}`} />
                 </div>
               </div>
             ))}
@@ -174,7 +174,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] rounded-2xl shadow-xl p-8 md:p-12 
                 key={index}
                 className="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
               >
-                <div className="flex justify-center text-purple-600 mb-4">
+                <div className="flex justify-center text-[#a17b0a] mb-4">
                   {value.icon}
                 </div>
                 <h3 className="text-xl font-bold text-[#a17b0a] mb-3">
