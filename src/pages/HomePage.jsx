@@ -15,6 +15,7 @@ import WhyChooseUs from '../components/WhyChooseUs'
 import StoryBanner from '../components/StoryBanner'
 import ProductVideoSection from '../components/ProductVideoSection'
 import FAQPage from './FAQPage'
+import Testimonials from '../components/Testimonials'
 
 const HomePage = () => {
 
@@ -152,8 +153,9 @@ console.log(cartCount,"cartCount")
       {/* <ManifestationBenefits /> */}
       {/* <HowToUseManifestationPen /> */}
       {/* <ManifestationFeatures /> */}
-      <CustomerReviews />
-      <FAQPage/>
+      <Testimonials />
+      <CustomerReviews/>
+      {/* <FAQPage/> */}
       {/* <ManifestationStory /> */}
       {/* <OurProducts /> */}
       {/* <DownloadAppSection/> */}

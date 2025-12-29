@@ -241,17 +241,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
           </div>
         )}
 
-        {/* {product.badge && (
-          <div className="absolute top-3 right-14 z-10">
-            <div className="bg-gradient-to-r from-yellow-500 to-amber-600 px-3 py-1 rounded-full shadow-lg">
-              <span className="text-white text-xs font-bold">
-                ✨ {product.badge}
-              </span>
-            </div>
-          </div>
-        )} */}
 
-        {/* Heart button (fixed, no navigation) */}
         <button
           onClick={toggleWishlist}
           disabled={wishlistLoading}
@@ -270,26 +260,22 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
         </button>
 
 
-        <div className="relative   p-6">
-          <div className="h-48 sm:h-56 flex items-center justify-center relative">
-            <div className="absolute inset-0  to-transparent" />
-            <img
-              src={
-                product.images?.[0] ||
-                "https://images.unsplash.com/photo-1585409677983-0f6c41ca9c3b?w=400&h=400&fit=crop"
-              }
-              alt={product.name}
-              className="w-full h-full object-contain relative z-10 group-hover:scale-110 transition-transform duration-500"
-              onError={(e) => {
-                e.target.src =
-                  "https://via.placeholder.com/300x200?text=No+Image";
-              }}
-            />
-          </div>
+            <div className="relative w-full aspect-[3/4] bg-gradient-to-b from-purple-50 to-transparent">
+          <img
+            src={
+              product.images?.[0] ||
+              "https://images.unsplash.com/photo-1585409677983-0f6c41ca9c3b?w=400"
+            }
+            alt={product.name}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            onError={(e) => {
+              e.target.src = "https://via.placeholder.com/400x532?text=No+Image";
+            }}
+          />
         </div>
 
         <div className="relative p-6 bg-[#f8f8f8] flex-1 flex flex-col">
-          <h3 className="text-base sm:text-lg font-bold text-black leading-snug mb-2 line-clamp-2 min-h-[3rem] sm:min-h-[3.5rem]  transition-all">
+          <h3 className=" sm:text-2xl font-bold text-[#041049] leading-snug mb-2 text-2xl line-clamp-2 min-h-[3rem] sm:min-h-[3.5rem]  transition-all">
             {product.name || "Untitled Product"}
           </h3>
 
@@ -738,8 +724,11 @@ export default function OurProducts() {
                   ))}
                 </ul>
 
-                <button onClick={() => Navigate(`/product/${products[0]._id}`)} className="mt-8 cursor-pointer bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-amber-500/50 transform hover:scale-105 w-fit">
-                  Buy Now
+                <button
+                //  onClick={() => Navigate(`/product/${products[0]._id}`)} 
+
+                 className="mt-8  bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-amber-500/50 transform hover:scale-105 w-fit">
+               Coming Soon
                 </button>
               </div>
             </div>

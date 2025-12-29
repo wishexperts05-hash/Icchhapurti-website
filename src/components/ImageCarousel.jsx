@@ -114,7 +114,7 @@ const ImageCarousel = ({
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
           {displayMedia.map((media, i) => (
-            <div key={i} className="relative w-full h-full flex-shrink-0">
+            <div key={i} className="relative w-full mb-10 h-full flex-shrink-0">
               {media.type === 'image' ? (
                 <img
                   src={media.src}
@@ -137,11 +137,11 @@ const ImageCarousel = ({
                 <>
                   {/* Multi-layer gradient for seamless blending */}
                   <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent pointer-events-none z-[5]"></div>
-                  
+
                   {/* Full-height 9:16 video on right side */}
                   <div className="absolute top-0 right-0 h-full z-[8] flex items-center">
-                    <div className="relative h-full overflow-hidden" 
-                         style={{ aspectRatio: '9/16' }}>
+                    <div className="relative h-full overflow-hidden"
+                      style={{ aspectRatio: '9/16' }}>
                       <video
                         autoPlay
                         muted
@@ -151,15 +151,15 @@ const ImageCarousel = ({
                       >
                         <source src="/animation.mov" type="video/mp4" />
                       </video>
-                      
+
                       {/* Left edge fade to blend with banner */}
                       <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent pointer-events-none"></div>
-                      
+
                       {/* Soft vignette on video edges */}
                       <div className="absolute inset-0 pointer-events-none"
-                           style={{
-                             background: 'linear-gradient(to right, rgba(0,0,0,0.5) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.3) 100%), linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 10%, transparent 90%, rgba(0,0,0,0.3) 100%)'
-                           }}>
+                        style={{
+                          background: 'linear-gradient(to right, rgba(0,0,0,0.5) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.3) 100%), linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 10%, transparent 90%, rgba(0,0,0,0.3) 100%)'
+                        }}>
                       </div>
                     </div>
                   </div>
@@ -171,14 +171,14 @@ const ImageCarousel = ({
         </div>
 
         {/* ================= Decorative Bottom Edge ================= */}
-        <div className="absolute bottom-0 left-0 right-0 w-full z-10 pointer-events-none">
+        <div className="absolute  -bottom-2 md:-bottom-8 left-0 right-0 w-full z-10 pointer-events-none">
           <img
             src="/shape1.png"
             alt=""
-            className="w-full h-auto block"
-            style={{ display: 'block', verticalAlign: 'bottom' }}
+            className="w-full block"
           />
         </div>
+
       </div>
 
       {/* ================= Navigation Arrows ================= */}
@@ -226,11 +226,10 @@ const ImageCarousel = ({
             <button
               key={i}
               onClick={() => setCurrentIndex(i)}
-              className={`transition-all rounded-full focus:outline-none focus:ring-2 focus:ring-white/50 ${
-                i === currentIndex
+              className={`transition-all rounded-full focus:outline-none focus:ring-2 focus:ring-white/50 ${i === currentIndex
                   ? 'w-6 xs:w-8 sm:w-10 md:w-12 lg:w-14 h-1.5 xs:h-2 sm:h-2.5 md:h-3 bg-white shadow-lg'
                   : 'w-1.5 xs:w-2 sm:w-2.5 md:w-3 h-1.5 xs:h-2 sm:h-2.5 md:h-3 bg-white/50 hover:bg-white/75'
-              }`}
+                }`}
               aria-label={`Go to slide ${i + 1}`}
             />
           ))}

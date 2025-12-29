@@ -89,19 +89,18 @@ export default function ManifestationStory() {
       <div
         key={point.id}
         ref={(el) => (pointsRef.current[index] = el)}
-        className={`transform transition-all duration-700 ${
-          animated
+        className={`transform transition-all duration-700 ${animated
             ? isVisible
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-20"
             : "opacity-100 translate-y-0"
-        }`}
+          }`}
       >
         <div className="relative group h-full">
+     
           <div
-            className={`relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl ${
-              compact ? "p-6" : "p-8"
-            } border border-white/20 hover:border-white/40 transition-all duration-300 h-full group-hover:scale-105`}
+            className={`relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl ${compact ? "p-6" : "p-8"
+              } border border-white/20 hover:border-white/40 transition-all duration-300 h-full group-hover:scale-105`}
           >
             <div
               className={`absolute inset-0 bg-gradient-to-br ${point.color} opacity-0 group-hover:opacity-20 rounded-3xl blur-xl transition-opacity duration-300 -z-10`}
@@ -114,9 +113,8 @@ export default function ManifestationStory() {
             </div>
 
             <div
-              className={`${
-                compact ? "w-16 h-16 mb-4" : "w-20 h-20 mb-6"
-              } bg-gradient-to-br ${point.color} rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg`}
+              className={`${compact ? "w-16 h-16 mb-4" : "w-20 h-20 mb-6"
+                } bg-gradient-to-br ${point.color} rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg`}
             >
               <Icon
                 className={compact ? "w-8 h-8 text-white" : "w-10 h-10 text-white"}
@@ -125,17 +123,15 @@ export default function ManifestationStory() {
             </div>
 
             <h3
-              className={`${
-                compact ? "text-xl" : "text-2xl"
-              } font-black text-white mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-yellow-300 group-hover:to-pink-300 transition-all duration-300`}
+              className={`${compact ? "text-xl" : "text-2xl"
+                } font-black text-white mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-yellow-300 group-hover:to-pink-300 transition-all duration-300`}
             >
               {point.title}
             </h3>
 
             <p
-              className={`text-gray-300 ${
-                compact ? "text-sm" : "text-base"
-              } leading-relaxed`}
+              className={`text-gray-300 ${compact ? "text-sm" : "text-base"
+                } leading-relaxed`}
             >
               {point.description}
             </p>

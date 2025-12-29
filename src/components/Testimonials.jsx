@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 
-export default function CustomerReviews() {
+export default function Testimonials() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -118,7 +118,7 @@ export default function CustomerReviews() {
                 <Star key={i} className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 fill-yellow-500" />
               ))}
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black mb-2 sm:mb-4">Customer Reviews</h2>
+            <h2 className="text-3xl sm:text-5xl font-black mb-2 sm:mb-4">Testimonials</h2>
             <p className="text-base sm:text-xl text-gray-600">
               Real stories from real customers
             </p>
