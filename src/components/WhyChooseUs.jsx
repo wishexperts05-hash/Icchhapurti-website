@@ -22,7 +22,7 @@ const WhyChooseUs = () => {
 
       {/* 🔹 Content */}
       <div className="relative z-10 max-w-6xl mx-auto text-center">
-        <h2 className="text-3xl md:text-5xl font-bold text-black mb-8">
+        <h2 className="text-3xl text-[#041049] md:text-5xl font-bold  mb-8">
           WHY WE ARE SPECIAL......
         </h2>
 

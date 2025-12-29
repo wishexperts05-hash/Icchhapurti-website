@@ -484,7 +484,7 @@ export default function ProductDetails() {
                   )}
                 </Swiper> */}
 
-                <ProductImageGallery images={product.images || [product.image]} />
+              <ProductImageGallery images={product.images || [product.image]} videos={product.videos || []} />
               </div>
 
               {/* Trust Badges */}
@@ -650,7 +650,7 @@ export default function ProductDetails() {
               </div>
             </div>
 
-            <div className="space-y-2 mb-10 hidden lg:block">
+            <div className="space-y-2 mb-10 lg:hidden block">
                 {product?.productDetails?.map((faq, index) => {
                   const faqId = faq._id || index;
 
