@@ -93,6 +93,7 @@ export default function CustomerReviews() {
 
   return (
     <section className="relative bg-gradient-to-br from-purple-50 via-pink-100 to-yellow-50">
+      
       {/* Top Wave */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none rotate-180">
         <svg

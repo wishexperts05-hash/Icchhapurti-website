@@ -553,51 +553,57 @@ export default function ProductDetails() {
               </div>
 
               {/* Description */}
-              <div className="space-y-2 mb-10 hidden lg:block">
-                {product?.productDetails?.map((faq, index) => {
-                  const faqId = faq._id || index;
+             <div className="space-y-2 mb-10 hidden lg:block">
+  {product?.productDetails?.map((faq, index) => {
+    const faqId = faq._id || index;
+    const isOpen = openFAQ === faqId;
 
-                  return (
-                    <div
-                      key={faqId}
-                      className={`bg-white rounded-xl overflow-hidden border transition-all ${openFAQ === faqId
-                          ? "border-blue-500/50 shadow-md"
-                          : "border-slate-300 hover:border-slate-400"
-                        }`}
-                    >
-                      <button
-                        onClick={() => toggleFAQ(faqId)}
-                        className="w-full px-4 py-2 flex items-center justify-between text-left cursor-pointer"
-                      >
-                        <h3
-                          className="text-sm font-semibold text-black pr-3"
-                          dangerouslySetInnerHTML={{ __html: faq.title }}
-                        />
+    return (
+      <div
+        key={faqId}
+        className={`bg-white rounded-xl overflow-hidden border transition-colors ${
+          isOpen
+            ? "border-blue-500/50 shadow-md"
+            : "border-slate-300 hover:border-slate-400"
+        }`}
+      >
+        <button
+          onClick={() => toggleFAQ(faqId)}
+          className="w-full px-4 py-3 flex items-center justify-between text-left cursor-pointer hover:bg-gray-50 transition-colors"
+        >
+          <h3
+            className="text-sm font-semibold text-black pr-3"
+            dangerouslySetInnerHTML={{ __html: faq.title }}
+          />
+          <div
+            className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${
+              isOpen ? "bg-blue-500 rotate-180" : "bg-slate-500"
+            }`}
+          >
+            <ChevronDown className="w-4 h-4 text-white" />
+          </div>
+        </button>
 
-
-                        <div
-                          className={`w-8 h-8 rounded-lg flex items-center justify-center transition-transform ${openFAQ === faqId ? "bg-blue-500 rotate-180" : "bg-slate-500"
-                            }`}
-                        >
-                          <ChevronDown className="w-4 h-4 text-white" />
-                        </div>
-                      </button>
-
-                      <div
-                        className={`overflow-hidden transition-all duration-300 ${openFAQ === faqId ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-                          }`}
-                      >
-                        <div className="px-4 pb-3">
-                          <div
-                            className="bg-gray-100 rounded-lg p-3 text-sm text-black prose prose-sm max-w-none"
-                            dangerouslySetInnerHTML={{ __html: faq.detail }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+        {/* Grid-based animation - Most performant */}
+        <div
+          className="grid transition-all duration-200 ease-in-out"
+          style={{
+            gridTemplateRows: isOpen ? '1fr' : '0fr'
+          }}
+        >
+          <div className="overflow-hidden">
+            <div className="px-4 pb-3">
+              <div
+                className="bg-gray-100 rounded-lg p-3 text-sm text-black"
+                dangerouslySetInnerHTML={{ __html: faq.detail }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  })}
+</div>
 
               {/* Action Buttons */}
               <div className="grid grid-cols-2 gap-2 sm:gap-4">
@@ -649,52 +655,57 @@ export default function ProductDetails() {
                 </button>
               </div>
             </div>
+<div className="space-y-2 mb-10 lg:hidden block">
+  {product?.productDetails?.map((faq, index) => {
+    const faqId = faq._id || index;
+    const isOpen = openFAQ === faqId;
 
-            <div className="space-y-2 mb-10 lg:hidden block">
-                {product?.productDetails?.map((faq, index) => {
-                  const faqId = faq._id || index;
+    return (
+      <div
+        key={faqId}
+        className={`bg-white rounded-xl overflow-hidden border transition-colors ${
+          isOpen
+            ? "border-blue-500/50 shadow-md"
+            : "border-slate-300 hover:border-slate-400"
+        }`}
+      >
+        <button
+          onClick={() => toggleFAQ(faqId)}
+          className="w-full px-4 py-2 flex items-center justify-between text-left cursor-pointer hover:bg-gray-50 transition-colors"
+        >
+          <h3
+            className="text-sm font-semibold text-black pr-3"
+            dangerouslySetInnerHTML={{ __html: faq.title }}
+          />
+          <div
+            className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${
+              isOpen ? "bg-blue-500 rotate-180" : "bg-slate-500"
+            }`}
+          >
+            <ChevronDown className="w-4 h-4 text-white" />
+          </div>
+        </button>
 
-                  return (
-                    <div
-                      key={faqId}
-                      className={`bg-white rounded-xl overflow-hidden border transition-all ${openFAQ === faqId
-                          ? "border-blue-500/50 shadow-md"
-                          : "border-slate-300 hover:border-slate-400"
-                        }`}
-                    >
-                      <button
-                        onClick={() => toggleFAQ(faqId)}
-                        className="w-full px-4 py-2 flex items-center justify-between text-left cursor-pointer"
-                      >
-                        <h3
-                          className="text-sm font-semibold text-black pr-3"
-                          dangerouslySetInnerHTML={{ __html: faq.title }}
-                        />
-
-
-                        <div
-                          className={`w-8 h-8 rounded-lg flex items-center justify-center transition-transform ${openFAQ === faqId ? "bg-blue-500 rotate-180" : "bg-slate-500"
-                            }`}
-                        >
-                          <ChevronDown className="w-4 h-4 text-white" />
-                        </div>
-                      </button>
-
-                      <div
-                        className={`overflow-hidden transition-all duration-300 ${openFAQ === faqId ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-                          }`}
-                      >
-                        <div className="px-4 pb-3">
-                          <div
-                            className="bg-gray-100 rounded-lg p-3 text-sm text-black prose prose-sm max-w-none"
-                            dangerouslySetInnerHTML={{ __html: faq.detail }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+        {/* Grid-based animation - Most performant */}
+        <div
+          className="grid transition-all duration-200 ease-in-out"
+          style={{
+            gridTemplateRows: isOpen ? '1fr' : '0fr'
+          }}
+        >
+          <div className="overflow-hidden">
+            <div className="px-4 pb-3">
+              <div
+                className="bg-gray-100 rounded-lg p-3 text-sm text-black"
+                dangerouslySetInnerHTML={{ __html: faq.detail }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  })}
+</div>
           </div>
           {/* faq section  */}
 

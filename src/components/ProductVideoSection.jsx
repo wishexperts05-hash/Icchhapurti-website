@@ -94,7 +94,7 @@ const ProductVideoSection = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] py-8 sm:py-12 md:py-16 relative overflow-hidden">
+    <div className="bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] py-8 sm:py-12  relative overflow-hidden">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8 md:mb-5">
@@ -105,7 +105,7 @@ const ProductVideoSection = () => {
             Experience the Manifestation Pen in short, powerful reels
           </p>
         </div>
-
+      
         {/* Slider Container */}
         <div className="relative">
           {/* Navigation Buttons */}
@@ -139,11 +139,10 @@ const ProductVideoSection = () => {
               <div
                 key={video.id}
                 onClick={() => openVideo(video)}
-                className={`flex-shrink-0 w-[200px] sm:w-[240px] md:w-[280px] cursor-pointer snap-center group ${
-                  index === currentSlide 
-                    ? 'opacity-100' 
+                className={`flex-shrink-0 w-[200px] sm:w-[240px] md:w-[280px] cursor-pointer snap-center group ${index === currentSlide
+                    ? 'opacity-100'
                     : 'opacity-60'
-                }`}
+                  }`}
               >
                 <div className={`relative aspect-[9/16] rounded-xl sm:rounded-2xl overflow-hidden bg-black shadow-2xl
                               transition-all duration-300 ease-out
@@ -177,11 +176,11 @@ const ProductVideoSection = () => {
                   {/* Shine effect on hover */}
                   <div className="absolute inset-0 opacity-0 md:group-hover:opacity-100 
                                 transition-opacity duration-500 pointer-events-none"
-                       style={{
-                         background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%)',
-                         backgroundSize: '200% 200%',
-                         animation: 'shine 1.5s infinite'
-                       }}>
+                    style={{
+                      background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%)',
+                      backgroundSize: '200% 200%',
+                      animation: 'shine 1.5s infinite'
+                    }}>
                   </div>
 
                   {/* Video Info */}
@@ -215,16 +214,15 @@ const ProductVideoSection = () => {
           </div>
 
           {/* Slide Indicators */}
-          <div className="flex justify-center gap-2 mt-4 sm:mt-6">
+          <div className="flex justify-center gap-2 my-4 sm:mt-6">
             {productVideos.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
-                className={`h-1.5 sm:h-2 rounded-full transition-all ${
-                  index === currentSlide 
-                    ? 'w-6 sm:w-8 bg-amber-500 shadow-lg shadow-amber-500/50' 
+                className={`h-1.5 sm:h-2 rounded-full transition-all ${index === currentSlide
+                    ? 'w-6 sm:w-8 bg-amber-500 shadow-lg shadow-amber-500/50'
                     : 'w-1.5 sm:w-2 bg-slate-600 hover:bg-slate-500'
-                }`}
+                  }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
             ))}
@@ -271,7 +269,13 @@ const ProductVideoSection = () => {
           </div>
         </div>
       )}
-
+  <div className="absolute bottom-0 left-0 right-0 w-full z-10 pointer-events-none">
+      <img
+        src="/shape1.png"
+        alt=""
+        className="w-full h-auto block"
+      />
+    </div>
       <style jsx>{`
         @keyframes shine {
           0% { background-position: 200% 200%; }

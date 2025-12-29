@@ -41,9 +41,21 @@ export default function FAQPage() {
   }
 
   return (
-    <div className="bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
-  text-white">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="relative overflow-hidden bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] text-white shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]">
+
+      {/* 🔷 TOP SHAPE */}
+      <div className="absolute top-0 left-0 w-full z-10 pointer-events-none">
+        <img
+          src="/shape.png"
+          alt="top-shape"
+          className="w-full h-auto block"
+        />
+      </div>
+
+   
+
+      {/* CONTENT */}
+      <div className="relative z-20 max-w-4xl mx-auto px-4 pt-24 pb-20">
 
         {/* Header */}
         <div className="text-center mb-8">
@@ -63,7 +75,7 @@ export default function FAQPage() {
           {faqs.map((faq, index) => (
             <div
               key={faq._id}
-              className={`rounded-xl  border transition ${
+              className={`rounded-xl border transition ${
                 openFAQ === faq._id
                   ? "border-blue-500/50 bg-slate-800"
                   : "border-slate-700 bg-slate-800/60"
@@ -71,7 +83,7 @@ export default function FAQPage() {
             >
               <button
                 onClick={() => toggleFAQ(faq._id)}
-                className="w-full px-4 py-3 flex items-center cursor-pointer justify-between text-left"
+                className="w-full px-4 py-3 flex items-center justify-between text-left"
               >
                 <div className="flex items-center gap-3">
                   <span className="w-6 h-6 rounded-md bg-blue-500/20 text-blue-400 text-xs font-semibold flex items-center justify-center">
@@ -84,12 +96,13 @@ export default function FAQPage() {
 
                 <ChevronDown
                   className={`w-4 h-4 transition-transform ${
-                    openFAQ === faq._id ? "rotate-180 text-blue-400" : "text-slate-400"
+                    openFAQ === faq._id
+                      ? "rotate-180 text-blue-400"
+                      : "text-slate-400"
                   }`}
                 />
               </button>
 
-              {/* Answer */}
               {openFAQ === faq._id && (
                 <div className="px-4 pb-4 text-slate-300 text-sm leading-relaxed">
                   {faq.answer}
@@ -99,7 +112,7 @@ export default function FAQPage() {
           ))}
         </div>
 
-        {/* Empty */}
+        {/* Empty State */}
         {faqs.length === 0 && (
           <p className="text-center text-slate-400 text-sm mt-12">
             No FAQs available

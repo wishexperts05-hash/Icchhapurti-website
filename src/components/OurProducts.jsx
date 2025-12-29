@@ -293,25 +293,25 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
             {product.name || "Untitled Product"}
           </h3>
 
-       {product.description && (() => {
-  try {
-    const parsed = JSON.parse(product.description);
-    const firstContent = parsed?.[0]?.content || "";
+          {product.description && (() => {
+            try {
+              const parsed = JSON.parse(product.description);
+              const firstContent = parsed?.[0]?.content || "";
 
-    const cleanText = firstContent
-      .replace(/<[^>]*>/g, "") // remove HTML tags
-      .replace(/&nbsp;/g, " ")
-      .trim();
+              const cleanText = firstContent
+                .replace(/<[^>]*>/g, "") // remove HTML tags
+                .replace(/&nbsp;/g, " ")
+                .trim();
 
-    return (
-      <p className="text-xs sm:text-sm text-gray-500 mb-3 line-clamp-2 leading-relaxed">
-        {cleanText}
-      </p>
-    );
-  } catch (e) {
-    return null;
-  }
-})()}
+              return (
+                <p className="text-xs sm:text-sm text-gray-500 mb-3 line-clamp-2 leading-relaxed">
+                  {cleanText}
+                </p>
+              );
+            } catch (e) {
+              return null;
+            }
+          })()}
 
 
           <div className="flex items-center gap-2 mb-3">
@@ -653,7 +653,7 @@ export default function OurProducts() {
   }
 
   return (
-    <div  className="min-h-screen bg-cover bg-center bg-no-repeat relative py-2 px-3"
+    <div className="min-h-screen bg-cover bg-center bg-no-repeat relative py-2 px-3"
       style={{ backgroundImage: "url('/product-bg.jpg')" }}>
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">

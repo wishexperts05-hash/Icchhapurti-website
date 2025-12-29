@@ -3,7 +3,7 @@ import React from "react";
 const WhyChooseUs = () => {
   return (
     <section
-      className="relative overflow-hidden py-12 px-4 md:px-6 bg-cover bg-center"
+      className="relative overflow-hidden py-6 px-4 md:px-6 bg-cover bg-center"
       style={{
         backgroundImage: "url('/why-choose-bg.jpg')",
       }}
@@ -27,47 +27,47 @@ const WhyChooseUs = () => {
         </h2>
 
         <div className="max-w-5xl mx-auto text-black text-base md:text-lg leading-relaxed space-y-4">
-  <p className="font-bold">
-    We Don’t Sell a Pen. We Offer a Powerpack Tool To Unlock Your Dreams.
-  </p>
+          <p className="font-bold">
+            We Don’t Sell a Pen. We Offer a Powerpack Tool To Unlock Your Dreams.
+          </p>
 
-  <p>
-    <span className="font-bold">Icchhapurti</span> is a status symbol for your daily life.
-    It’s not just about writing, it's about rewriting your destiny.
-  </p>
+          <p>
+            <span className="font-bold">Icchhapurti</span> is a status symbol for your daily life.
+            It’s not just about writing, it's about rewriting your destiny.
+          </p>
 
-  <p>
-    A normal pen can be bought from anywhere, but a tool made to change your life
-    can only be found here Only.
-  </p>
+          <p>
+            A normal pen can be bought from anywhere, but a tool made to change your life
+            can only be found here Only.
+          </p>
 
-  <p>
-    <span className="font-bold">Icchhapurti</span> products are heavily charged and activated
-    with multiple processes and rituals like{" "}
-    <span className="font-bold">
-      Havans, Mantras Jaaps, Mantras Chanting, Moon Charging
-    </span>{" "}
-    and many more rituals are performed to maximize your goal achievement to
-    10x power& faster through manifestation.
-  </p>
+          <p>
+            <span className="font-bold">Icchhapurti</span> products are heavily charged and activated
+            with multiple processes and rituals like{" "}
+            <span className="font-bold">
+              Havans, Mantras Jaaps, Mantras Chanting, Moon Charging
+            </span>{" "}
+            and many more rituals are performed to maximize your goal achievement to
+            10x power& faster through manifestation.
+          </p>
 
-  <p>
-    Through Icchhapurti, we encourage people to start their manifestation journey
-    using their own{" "}
-    <span className="font-bold">Icchhapurti Manifestation Pen.</span>
-  </p>
+          <p>
+            Through Icchhapurti, we encourage people to start their manifestation journey
+            using their own{" "}
+            <span className="font-bold">Icchhapurti Manifestation Pen.</span>
+          </p>
 
-  <p>
-    That is why we say don’t question it, just take it, write it and start the
-    manifestation then see the magic happens……
-  </p>
+          <p>
+            That is why we say don’t question it, just take it, write it and start the
+            manifestation then see the magic happens……
+          </p>
 
-  <div className="text-center mt-8 space-y-2">
-    <p className="font-bold text-xl">Don’t Just Dream It,</p>
-    <p className="font-bold text-xl">“ Own It ”</p>
-    <p className="font-bold text-xl">“ Write It ” &nbsp; “ Manifest It ”</p>
-  </div>
-</div>
+          <div className="text-center mt-8 space-y-2">
+            <p className="font-bold text-xl">Don’t Just Dream It,</p>
+            <p className="font-bold text-xl">“ Own It ”</p>
+            <p className="font-bold text-xl">“ Write It ” &nbsp; “ Manifest It ”</p>
+          </div>
+        </div>
 
       </div>
 
