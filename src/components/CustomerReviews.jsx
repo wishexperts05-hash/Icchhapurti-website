@@ -95,7 +95,7 @@ export default function CustomerReviews() {
     <section className="relative bg-gradient-to-br from-purple-50 via-pink-100 to-yellow-50">
       
       {/* Top Wave */}
-      <div className="absolute top-0 left-0 w-full overflow-hidden leading-none rotate-180">
+      {/* <div className="absolute top-0 left-0 w-full overflow-hidden leading-none rotate-180">
         <svg
           className="relative block w-full h-20 sm:h-32"
           xmlns="http://www.w3.org/2000/svg"
@@ -107,7 +107,7 @@ export default function CustomerReviews() {
             className="fill-white"
           />
         </svg>
-      </div>
+      </div> */}
 
       <div className="relative pt-24 sm:pt-32 pb-20 sm:pb-24 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
@@ -119,9 +119,9 @@ export default function CustomerReviews() {
               ))}
             </div>
             <h2 className="text-3xl sm:text-5xl font-black mb-2 sm:mb-4">Customer Reviews</h2>
-            <p className="text-base sm:text-xl text-gray-600">
+            {/* <p className="text-base sm:text-xl text-gray-600">
               Real stories from real customers
-            </p>
+            </p> */}
           </div>
 
           {/* Slider */}
@@ -225,7 +225,7 @@ export default function CustomerReviews() {
       </div>
 
       {/* Bottom Wave */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
+      {/* <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
         <svg
           className="relative block w-full h-20 sm:h-32"
           xmlns="http://www.w3.org/2000/svg"
@@ -237,7 +237,7 @@ export default function CustomerReviews() {
             className="fill-white"
           />
         </svg>
-      </div>
+      </div> */}
 
       {/* Styles */}
       <style jsx>{`

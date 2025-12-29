@@ -54,11 +54,20 @@ export default function AboutUs() {
       <div className="relative overflow-hidden bg-gradient-to-r from-purple-600 to-blue-600 text-white">
         <div className="absolute inset-0 bg-black opacity-10"></div>
         <div className="relative max-w-6xl mx-auto px-6 py-20 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 animate-fade-in">
+          <h1
+            className="text-5xl md:text-6xl font-extrabold mb-6 animate-fade-in bg-clip-text text-transparent"
+            style={{
+              backgroundImage:
+                "linear-gradient(120deg, #7a5c00 0%, #f6e27a 15%, #fff6b0 30%, #d4af37 45%, #fff6b0 60%, #f6e27a 75%, #7a5c00 100%)",
+              backgroundSize: "200% 200%",
+              animation: "goldShine 3s linear infinite",
+            }}
+          >
             About Icchhapurti
           </h1>
+
           <p className="text-xl md:text-2xl mb-4 opacity-90">
-            Where Intentions Meet Manifestation
+            Where dreams turns into Reality
           </p>
           <div className="flex justify-center mt-8">
             <Sparkles className="w-12 h-12 animate-pulse" />
@@ -69,7 +78,7 @@ export default function AboutUs() {
       {/* Mission Section */}
       <div className="max-w-6xl mx-auto px-6 py-16">
         <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#a17b0a] mb-6 text-center">
             Our Mission
           </h2>
           <p className="text-lg text-gray-700 leading-relaxed mb-6">
@@ -84,18 +93,18 @@ export default function AboutUs() {
       {/* What We Create Section */}
       <div className="bg-gradient-to-r from-purple-100 to-blue-100 py-16">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#a17b0a] mb-6 text-center">
             What We Create
           </h2>
           <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 mb-8">
             <div className="flex items-start gap-4 mb-6">
               <Package className="w-10 h-10 text-purple-600 flex-shrink-0 mt-1" />
               <div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                <h3 className="text-2xl font-bold text-[#a17b0a] mb-4">
                   The Power Pack Tool
                 </h3>
                 <p className="text-gray-700 leading-relaxed mb-4">
-                  We are the best in the market who create The Power Pack Tool for achieving your goals. Our products are heavily charged and activated with multiple processes and rituals like <span className="font-semibold">Havans, Mantra Jaap, Mantra Chanting, Moon Charging</span> and many more rituals are performed on the pen to maximize your goal achievement to 10x power/faster through manifestation.
+                  We are the best in the market who create The Power Pack Tool for achieving your goals. Our products are heavily charged and activated with multiple processes and rituals like <span className="font-semibold text-[#a17b0a]">Havans, Mantra Jaap, Mantra Chanting, Moon Charging</span> and many more rituals are performed on the pen to maximize your goal achievement to 10x power/faster through manifestation.
                 </p>
                 <p className="text-gray-700 leading-relaxed font-medium">
                   That is why this pen is something magical for everyone only if you show trust and believe in it.
@@ -118,7 +127,7 @@ export default function AboutUs() {
                 onClick={() => setExpandedProduct(expandedProduct === product.id ? null : product.id)}
               >
                 <div className="text-5xl mb-4 text-center">{product.icon}</div>
-                <h3 className="text-xl font-bold text-gray-800 mb-3 text-center">
+                <h3 className="text-xl font-bold text-[#a17b0a] mb-3 text-center">
                   {product.name}
                 </h3>
                 <p className={`text-gray-600 leading-relaxed ${expandedProduct === product.id ? '' : 'line-clamp-3'}`}>
@@ -136,7 +145,7 @@ export default function AboutUs() {
       {/* Philosophy Section */}
       <div className="max-w-6xl mx-auto px-6 py-16">
         <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl shadow-xl p-8 md:p-12 text-white">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">
+          <h2 className="text-3xl md:text-4xl text-[#D3AF37] font-bold mb-6 text-center">
             Our Philosophy
           </h2>
           <p className="text-lg leading-relaxed text-center max-w-4xl mx-auto">
@@ -148,7 +157,7 @@ export default function AboutUs() {
       {/* Values Section */}
       <div className="bg-gray-50 py-16">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-12 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#a17b0a] mb-12 text-center">
             Our Promise
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
@@ -160,7 +169,7 @@ export default function AboutUs() {
                 <div className="flex justify-center text-purple-600 mb-4">
                   {value.icon}
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-3">
+                <h3 className="text-xl font-bold text-[#a17b0a] mb-3">
                   {value.title}
                 </h3>
                 <p className="text-gray-600">
@@ -171,7 +180,7 @@ export default function AboutUs() {
           </div>
 
           <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-            <h3 className="text-2xl font-bold text-gray-800 mb-4">
+            <h3 className="text-2xl font-bold text-[#a17b0a] mb-4">
               Crafted With Purpose
             </h3>
             <p className="text-gray-700 leading-relaxed mb-4">
@@ -187,16 +196,16 @@ export default function AboutUs() {
       {/* Closing Section */}
       <div className="max-w-6xl mx-auto px-6 py-16">
         <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl shadow-2xl p-8 md:p-12 text-white text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <h2 className="text-3xl md:text-4xl text-[#D3AF37] font-bold mb-6">
             Your Journey Begins Here
           </h2>
           <p className="text-lg leading-relaxed mb-4 max-w-3xl mx-auto">
             At Icchhapurti, our commitment goes beyond creating products—we aim to support transformation. We believe that when intention meets the right tools and consistent effort, goals become clearer, energy becomes aligned, and progress becomes visible.
           </p>
           <div className="mt-8 space-y-2">
-            <p className="text-xl font-semibold">Your intentions matter.</p>
-            <p className="text-xl font-semibold">Your energy matters.</p>
-            <p className="text-xl font-semibold">And with the right tools, your goals move closer to reality.</p>
+            <p className="text-xl font-semibold text-[#D3AF37]">Your intentions matter.</p>
+            <p className="text-xl font-semibold text-[#D3AF37]">Your energy matters.</p>
+            <p className="text-xl font-semibold text-[#D3AF37]">And with the right tools, your goals move closer to reality.</p>
           </div>
           <div className="mt-8">
             <Sparkles className="w-16 h-16 mx-auto animate-pulse" />

@@ -27,12 +27,12 @@ const WhyChooseUs = () => {
         </h2>
 
         <div className="max-w-5xl mx-auto  text-base md:text-lg leading-relaxed space-y-4">
-          <p className="font-bold text-[#D3AF37]">
+          <p className="font-bold text-[#a17b0a]">
             We Don’t Sell a Pen. We Offer a Powerpack Tool To Unlock Your Dreams.
           </p>
 
           <p>
-            <span className="font-bold text-[#D3AF37] ">Icchhapurti</span> is a status symbol for your daily life.
+            <span className="font-bold text-[#a17b0a] ">Icchhapurti</span> is a status symbol for your daily life.
             It’s not just about writing, it's about rewriting your destiny.
           </p>
 
@@ -42,9 +42,9 @@ const WhyChooseUs = () => {
           </p>
 
           <p>
-            <span className="font-bold text-[#D3AF37]">Icchhapurti</span> products are heavily charged and activated
+            <span className="font-bold text-[#a17b0a]">Icchhapurti</span> products are heavily charged and activated
             with multiple processes and rituals like{" "}
-            <span className="font-bold text-[#D3AF37]">
+            <span className="font-bold text-[#a17b0a]">
               Havans, Mantras Jaaps, Mantras Chanting, Moon Charging
             </span>{" "}
             and many more rituals are performed to maximize your goal achievement to
@@ -54,7 +54,7 @@ const WhyChooseUs = () => {
           <p>
             Through Icchhapurti, we encourage people to start their manifestation journey
             using their own{" "}
-            <span className="font-bold text-[#D3AF37]">Icchhapurti Manifestation Pen.</span>
+            <span className="font-bold text-[#a17b0a]">Icchhapurti Manifestation Pen.</span>
           </p>
 
           <p>
@@ -63,9 +63,9 @@ const WhyChooseUs = () => {
           </p>
 
           <div className="text-center mt-8 space-y-2">
-            <p className="font-bold text-xl">Don’t Just Dream It,</p>
-            <p className="font-bold text-xl">“ Own It ”</p>
-            <p className="font-bold text-xl">“ Write It ” &nbsp; “ Manifest It ”</p>
+            <p className="font-bold text-xl text-[#a17b0a]">Don’t Just Dream It,</p>
+            <p className="font-bold text-xl text-[#a17b0a]">“ Own It ”</p>
+            <p className="font-bold text-xl text-[#a17b0a]">“ Write It ” &nbsp; “ Manifest It ”</p>
           </div>
         </div>
 
