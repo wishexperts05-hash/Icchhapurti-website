@@ -237,26 +237,22 @@ export default function CartPage() {
     Navigate("/address-form");
   };
 
-  const handleCheckout = (e) => {
-    // if (isGuest) {
-    //   e.preventDefault();
-    //   alert('Please login to proceed with checkout');
-    //   Navigate('/login');
-    //   return;
-    // }
+  const handleViewDetails = (product) => {
+  // alert('Navigating to product details page');
+    Navigate(`/product/${product.id || product._id}`);
+  };
 
-    // if (!selectedAddress) {
-    //   e.preventDefault();
-    //   alert('Please select a delivery address');
-    // }
+
+
+  const handleCheckout = (e) => {
+ 
     Navigate(`/payments?addressIndex=${selectedAddressIndex}`);
 
   };
 
-  const totalItems = cartItems.reduce((sum, item) => sum + Number(item.quantity), 0);
+  // const totalItems = cartItems.reduce((sum, item) => sum + Number(item.quantity), 0);
   const totalPrice = cartItems.reduce((sum, item) => sum + Number(item.totalAmount), 0);
-  const totalAmount = totalPrice + shippingAmount;
-
+  
 
 
 
@@ -456,60 +452,80 @@ export default function CartPage() {
   </p>
 </div>
 
-          {cartItems.map((item, index) => (
-            <div key={item._id || index} className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 border border-slate-700">
-              <div className="flex items-center gap-3 sm:gap-4">
-                {/* <PenIcon color={item.color || 'blue'} /> */}
-                <img
-                  src={token ? item?.product?.images?.[0] : item?.product?.images?.[0] || "/placeholder.png"}
-                  alt={item?.product?.name || "Product"}
-                  className="w-14 h-14 object-cover rounded-md"
-                  loading="lazy"
-                />
+{cartItems.map((item, index) => (
+  <div
+    onClick={() => handleViewDetails(item.product)}
+    key={item._id || index}
+    className="bg-slate-800/80 cursor-pointer backdrop-blur-sm rounded-xl p-4 border border-slate-700 hover:border-slate-600 transition-all"
+  >
+    <div className="flex items-center gap-3 sm:gap-4">
+      <img
+        src={token ? item?.product?.images?.[0] : item?.product?.images?.[0] || "/placeholder.png"}
+        alt={item?.product?.name || "Product"}
+        className="w-14 h-14 object-cover rounded-md pointer-events-none"
+        loading="lazy"
+      />
 
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-white text-sm font-medium truncate">{item.product.name}</h3>
-                  <p className="text-amber-500 font-semibold mt-1"> {item.product.price}</p>
-                </div>
-                <div className="flex flex-col items-end gap-2">
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => updateQuantity({
-                        id: isGuest ? (item.productId || item.product._id) : item.product._id,
-                        cartId: item._id,
-                        delta: -1,
-                        price: item.product.price
-                      })}
-                      className="w-7 h-7 bg-slate-700 hover:bg-slate-600 text-white rounded flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      disabled={item.quantity <= 1}
-                    >
-                      −
-                    </button>
-                    <span className="w-8 h-7 bg-white text-slate-800 rounded flex items-center justify-center text-sm font-medium">
-                      {item.quantity}
-                    </span>
-                    <button
-                      onClick={() => updateQuantity({
-                        id: isGuest ? (item.productId || item.product._id) : item.product._id,
-                        cartId: item._id,
-                        delta: 1,
-                        price: item.product.price
-                      })}
-                      className="w-7 h-7 bg-slate-700 hover:bg-slate-600 text-white rounded flex items-center justify-center transition-colors"
-                    >
-                      +
-                    </button>
-                  </div>
-                  <button
-                    onClick={() => removeItem(isGuest ? (item.productId || item.product._id) : item.product._id)}
-                    className="text-red-400 hover:text-red-300 text-xs transition-colors"
-                  >
-                    {t('cart.product.remove')}
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+      <div className="flex-1 min-w-0 pointer-events-none">
+        <h3 className="text-white text-sm font-medium truncate">{item.product.name}</h3>
+        <p className="text-amber-500 font-semibold mt-1">{item.product.price}</p>
+      </div>
+
+      <div className="flex flex-col items-end gap-2">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              updateQuantity({
+                id: isGuest ? (item.productId || item.product._id) : item.product._id,
+                cartId: item._id,
+                delta: -1,
+                price: item.product.price,
+              });
+            }}
+            className="w-7 h-7 bg-slate-700 hover:bg-slate-600 text-white rounded flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={item.quantity <= 1}
+          >
+            −
+          </button>
+
+          <span 
+            onClick={(e) => e.stopPropagation()}
+            className="w-8 h-7 bg-white text-slate-800 rounded flex items-center justify-center text-sm font-medium"
+          >
+            {item.quantity}
+          </span>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              updateQuantity({
+                id: isGuest ? (item.productId || item.product._id) : item.product._id,
+                cartId: item._id,
+                delta: 1,
+                price: item.product.price,
+              });
+            }}
+            className="w-7 h-7 bg-slate-700 hover:bg-slate-600 text-white rounded flex items-center justify-center transition-colors"
+          >
+            +
+          </button>
+        </div>
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            removeItem(isGuest ? (item.productId || item.product._id) : item.product._id);
+          }}
+          className="text-red-400 hover:text-red-300 text-xs transition-colors"
+        >
+          {t('cart.product.remove')}
+        </button>
+      </div>
+    </div>
+  </div>
+))}
+
         </div>
 
         {/* Empty Cart State */}
