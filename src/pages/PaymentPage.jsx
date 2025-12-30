@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BsCashCoin } from 'react-icons/bs';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Loader2, Lock, AlertCircle, CheckCircle, Package, CreditCard, Wallet, ArrowLeft, ShieldCheck, Truck } from 'lucide-react';
+import { Loader2, Lock, AlertCircle, CheckCircle, Package, CreditCard, Wallet, ArrowLeft, ArrowRight, ShieldCheck, Truck } from 'lucide-react';
 
 import { ChevronRight } from 'lucide-react';
 import RegistrationModal from '../components/RegistrationModal';
@@ -14,6 +14,8 @@ import ErrorModal from '../components/ErrorModal';
 import { useHeader } from '../context/HeaderContext';
 import Confetti from "react-confetti";
 import { X, Copy, Gift } from "lucide-react";
+import ProgressOfferBar from '../components/ProgressOfferBar';
+
 export default function PaymentPage() {
   const { pathname } = useLocation();
   const { setCount } = useHeader();
@@ -47,22 +49,30 @@ export default function PaymentPage() {
 
 
   useEffect(() => {
-    if (referralDiscount > 0 || firstDiscount > 0) {
+    const referralValue = Number(
+      String(referralDiscount).replace(/[₹,]/g, "")
+    );
+    const firstValue = Number(
+      String(firstDiscount).replace(/[₹,]/g, "")
+    );
+
+    if (referralValue > 0 || firstValue > 0) {
       setShowReferralPopup(true);
 
       const timer = setTimeout(() => {
         setShowReferralPopup(false);
-      }, 10000); // ⏱ 5 seconds
+      }, 10000); // 10 seconds
 
       return () => clearTimeout(timer);
     }
   }, [referralDiscount, firstDiscount]);
 
 
+
   // Auth state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  console.log(isAuthenticated, "isAuthenticated")
+  console.log(showReferralPopup, "showReferralPopup")
 
   // Loading states
   const [initialLoading, setInitialLoading] = useState(true);
@@ -105,11 +115,7 @@ export default function PaymentPage() {
     }
   }, [isAuthenticated]);
 
-  // useEffect(() => {
-  //   if (cartItems.length > 0 && addresses.length > 0) {
-  //     fetchCheckOutDetails();
-  //   }
-  // }, [cartItems, addresses]);
+
 
   useEffect(() => {
     if (isAuthenticated && cartItems.length > 0) {
@@ -135,7 +141,7 @@ export default function PaymentPage() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editAddressId, setEditAddressId] = useState(null);
-  const [showPopup, setShowPopup] = useState(false);
+
 
 
 
@@ -369,6 +375,7 @@ export default function PaymentPage() {
       if (res.data.success) {
         setCheckoutSuccess(true);
         setTimeout(() => {
+          setCheckoutSuccess(false);
           Navigate('/orders');
         }, 2000);
       } else {
@@ -411,7 +418,7 @@ export default function PaymentPage() {
         currency: razorpayOrder.currency,
         name: 'ICHHAPURTI',
         description: 'Order Payment',
-        image: "https://placehold.co/256x256/png",
+        image: "https://res.cloudinary.com/dld5dqpz8/image/upload/v1767092536/icchhaPurti_2_onw6az.png",
         order_id: razorpayOrder.razorpayOrderId,
         handler: async function (response) {
           const isVerified = await verifyRazorpayPayment({
@@ -525,72 +532,73 @@ export default function PaymentPage() {
     </svg>
   );
 
-  // Show auth modal if not authenticated
-  // if (!isAuthenticated && showAuthModal) {
-  //   return <AuthModal />;
-  // }
 
-  // Initial Loading State
-  if (initialLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
- flex items-center justify-center">
-        <div className="text-center">
-          <div className="relative">
-            <div className="w-24 h-24 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin mx-auto"></div>
-            <CreditCard className="w-10 h-10 text-amber-400 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
-          </div>
-          <p className="text-white text-xl font-semibold mt-6">Loading Payment Details...</p>
-          <p className="text-gray-400 text-sm mt-2">Please wait while we prepare your checkout</p>
-        </div>
-      </div>
-    );
-  }
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [isAmountReady, setIsAmountReady] = useState(false);
+
+  useEffect(() => {
+    let amount = 0;
+
+    const parseAmount = (value) =>
+      Number(String(value || 0).replace(/[^0-9.]/g, ""));
+
+    if (isAuthenticated && checkoutDetails) {
+      const total = parseAmount(checkoutDetails.totalAmount);
+      const referral = Number(referralDiscount) || 0;
+      amount = Math.max(total - referral, 0);
+    } else if (!isAuthenticated && localCartItems?.length) {
+      amount = localCartItems.reduce(
+        (sum, item) => sum + parseAmount(item.totalAmount),
+        0
+      );
+    } else if (isAuthenticated && cartItems?.length) {
+      amount = cartItems.reduce(
+        (sum, item) => sum + parseAmount(item.totalAmount),
+        0
+      );
+    }
+
+    setTotalAmount(amount);
+    setIsAmountReady(amount > 0);
+  }, [
+    isAuthenticated,
+    checkoutDetails,
+    cartItems,
+    localCartItems,
+    referralDiscount
+  ]);
+
+
 
   // Checkout Success State
-  if (checkoutSuccess) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
- flex items-center justify-center p-6">
-        <div className="bg-slate-800/90 backdrop-blur-sm rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-green-500/30">
-          <div className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
-            <CheckCircle className="w-12 h-12 text-green-500" />
-          </div>
-          <h3 className="text-3xl font-bold text-white mb-3">Order Placed Successfully!</h3>
-          <p className="text-gray-400 mb-6">Thank you for your purchase. Redirecting to orders...</p>
-          <Loader2 className="w-8 h-8 animate-spin mx-auto text-amber-400" />
-        </div>
-      </div>
-    );
-  }
+
 
   // Error State (Critical)
   if (error && !checkoutDetails) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
- flex items-center justify-center p-6">
-        <div className="bg-slate-800/90 backdrop-blur-sm rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-red-500/30">
-          <div className="w-20 h-20 bg-red-800 rounded-full flex items-center justify-center mx-auto mb-4">
-            <AlertCircle className="w-10 h-10 text-red-500" />
-          </div>
-          <h3 className="text-2xl font-bold text-white mb-3">Payment Error</h3>
-          <p className="text-gray-400 mb-6">{error}</p>
-          <div className="flex gap-3 justify-center">
-            <button
-              onClick={initializePaymentPage}
-              className="px-6 py-3 rounded-lg text-white font-medium bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 transition-all shadow-lg"
-            >
-              Try Again
-            </button>
-            <button
-              onClick={() => Navigate('/cart')}
-              className="px-6 py-3 rounded-lg text-white font-medium bg-slate-700 hover:bg-slate-600 transition-all"
-            >
-              Back to Cart
-            </button>
-          </div>
-        </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+    <div className="bg-white rounded-xl p-4 max-w-xs w-full text-center shadow-md border border-red-300">
+      <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+        <AlertCircle className="w-8 h-8 text-red-500" />
       </div>
+      <h3 className="text-xl font-bold text-gray-900 mb-1">Payment Error</h3>
+      <p className="text-gray-600 text-sm mb-3">{error}</p>
+      <div className="flex gap-2 justify-center">
+        <button
+          onClick={initializePaymentPage}
+          className="px-3 py-1.5 rounded bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition"
+        >
+          Try Again
+        </button>
+        <button
+          onClick={() => Navigate('/cart')}
+          className="px-3 py-1.5 rounded bg-gray-300 text-gray-900 text-sm font-medium hover:bg-gray-400 transition"
+        >
+          Back to Cart
+        </button>
+      </div>
+    </div>
+  </div>
     );
   }
 
@@ -607,9 +615,43 @@ export default function PaymentPage() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-amber-400 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '1s' }}></div>
       </div>
 
+      {initialLoading || checkoutLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+
+          {/* Transparent overlay only (no blur, no dark bg) */}
+          <div className="absolute inset-0 bg-transparent" />
+
+          {/* Small loading modal */}
+          <div className="relative z-10 bg-white px-6 py-4 rounded-xl shadow-xl flex items-center gap-3">
+
+            {/* Spinner */}
+            <div className="w-5 h-5 border-2 border-amber-500/40 border-t-amber-500 rounded-full animate-spin" />
+
+            {/* Text */}
+            <span className="text-sm font-semibold text-gray-900">
+              Loading…
+            </span>
+
+          </div>
+
+        </div>
+      )}
+      {checkoutSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+          <div className="bg-white rounded-xl p-4 max-w-xs w-full text-center shadow-md border border-green-300">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <CheckCircle className="w-8 h-8 text-green-500" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-1">Order Placed!</h3>
+            <p className="text-gray-600 text-sm">Thank you for your purchase. Redirecting...</p>
+          </div>
+        </div>
+      )}
 
 
-      <div className="relative z-10 p-4 md:p-4  max-w-5xl mx-auto">
+
+
+      <div className="relative z-10 p-4  max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
           <button
@@ -662,55 +704,55 @@ export default function PaymentPage() {
 
 
         {showReferralPopup && (
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-            <Confetti numberOfPieces={250} recycle={false} />
+  <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/30 backdrop-blur-sm px-2">
+    <Confetti numberOfPieces={200} recycle={false} />
 
-            <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 text-center animate-scaleIn">
+    <div className="relative w-full max-w-xs bg-white rounded-xl shadow-lg p-4 text-center animate-scaleIn">
 
-              {/* Close button (manual close also works) */}
-              <button
-                onClick={() => setShowReferralPopup(false)}
-                className="absolute top-4 right-4 text-gray-500 hover:text-black"
-              >
-                <X />
-              </button>
+      {/* Close button */}
+      <button
+        onClick={() => setShowReferralPopup(false)}
+        className="absolute top-2 right-2 text-gray-500 hover:text-black"
+      >
+        <X />
+      </button>
 
-              {/* Icon */}
-              <div className="flex justify-center mb-4">
-                <div className="bg-green-100 text-green-600 p-4 rounded-full animate-bounce">
-                  <Gift size={32} />
-                </div>
-              </div>
+      {/* Icon */}
+      <div className="flex justify-center mb-2">
+        <div className="bg-green-100 text-green-600 p-3 rounded-full animate-bounce">
+          <Gift size={24} />
+        </div>
+      </div>
 
-              {/* Heading */}
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                🎉 Referral Applied!
-              </h2>
+      {/* Heading */}
+      <h2 className="text-xl font-bold text-gray-900 mb-1">
+        🎉 Referral Applied!
+      </h2>
 
-              <p className="text-gray-600 mb-4">
-                You just unlocked a special discount
-              </p>
+      <p className="text-gray-600 text-sm mb-2">
+        You just unlocked a special discount
+      </p>
 
-              {/* Discount */}
-              <div className="text-4xl font-extrabold text-green-600 mb-4">
-                ₹{referralDiscount || firstDiscount} OFF
-              </div>
+      {/* Discount */}
+      <div className="text-2xl font-extrabold text-green-600 mb-2">
+        {referralDiscount || firstDiscount} OFF
+      </div>
 
-              {/* CTA */}
-              <button
-                onClick={() => setShowReferralPopup(false)}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition"
-              >
-                Continue Checkout 🚀
-              </button>
-            </div>
-          </div>
-        )}
+      {/* CTA */}
+      <button
+        onClick={() => setShowReferralPopup(false)}
+        className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg text-sm transition"
+      >
+        Continue Checkout 🚀
+      </button>
+    </div>
+  </div>
+)}
 
 
-        <div className="min-h-screen p-3 rounded-lg bg-gray-50">
+        <div className="min-h-screen rounded-lg bg-gray-50">
           {/* Header */}
-          <div className="bg-white shadow-sm">
+          {/* <div className="bg-white shadow-sm">
             <div className="max-w-2xl mx-auto px-2 py-2 flex justify-center">
               <img
                 src="/logo.png"
@@ -721,187 +763,110 @@ export default function PaymentPage() {
           </div>
 
 
-          {/* Trust Badge */}
+       
           <div className="bg-white  shadow-sm text-black text-center py-3 px-4">
             <p className="text-sm font-medium">
               Trusted by over 100k+ Customers 💕
             </p>
-          </div>
+          </div> */}
 
           {/* Order Summary Section */}
-          <div className="max-w-3xl mx-auto px-2 py-6">
+          <div className="max-w-4xl mx-auto px-2 py-6">
             <div className="bg-white rounded-lg px-1 shadow-sm overflow-hidden">
-              {/* Order Summary Header */}
+
+
+              {isAmountReady && <ProgressOfferBar price={totalAmount} />}
 
               {(() => {
-                let itemsCount = 0;
-                let totalAmount = 0;
-                let originalAmount = 0;
-                let items = []
-                console.log(items, "items")
-                const parseAmount = (amount) => {
-                  if (!amount) return 0;
-                  return Number(String(amount).replace(/[^0-9.]/g, ""));
+                let items = isAuthenticated
+                  ? cartItems
+                  : localCartItems || [];
+
+                if (!items?.length) return null;
+
+                const parseAmount = (amount) => Number(String(amount || 0).replace(/[^0-9.]/g, ""));
+                const referral = Number(referralDiscount) || 0;
+
+                const totalAmount = Math.max(
+                  items.reduce((sum, item) => sum + parseAmount(item.totalAmount), 0) - referral,
+                  0
+                );
+
+                const handleQuantityChange = (itemId, delta) => {
+                  // update quantity in cartItems or localCartItems
+                  const updatedItems = items.map((item) => {
+                    if (item._id === itemId) {
+                      const newQty = Math.max(item.quantity + delta, 1);
+                      return { ...item, quantity: newQty, totalAmount: newQty * parseAmount(item.product.price) };
+                    }
+                    return item;
+                  });
+                  // update state accordingly
+                  if (isAuthenticated) setCartItems(updatedItems);
+                  else setItems(updatedItems);
                 };
 
-                if (isAuthenticated && checkoutDetails) {
-                  items = cartItems
-                  itemsCount = checkoutDetails.quantity || 1;
-                  const amountNumber = parseAmount(checkoutDetails?.totalAmount);
-                  const referral = Number(referralDiscount) || 0;
-
-                  totalAmount = Math.max(amountNumber - referral, 0);
-                  originalAmount = amountNumber 
-                }
-                else if (!isAuthenticated && !checkoutDetails) {
-                  items = localCartItems
-                  itemsCount = localCartItems?.length || 0;
-                   totalAmount = localCartItems.reduce(
-                    (sum, item) => sum + parseAmount(item.totalAmount),
-                    0
-                  );
-
-                  originalAmount = totalAmount 
-                }
-                else if (isAuthenticated) {
-                  items = cartItems
-                  itemsCount = cartItems?.length || 0;
-                  totalAmount = cartItems.reduce(
-                    (sum, item) => sum + parseAmount(item.totalAmount),
-                    0
-                  );
-                  originalAmount = totalAmount 
-                }
-
-                if (!itemsCount) return null;
-
                 return (
-                  <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200 bg-white">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="border-b border-gray-50 bg-white text-sm">
+                    <div className="p-2">
+                      <div className="rounded-lg w-full overflow-hidden shadow-sm">
+                        {/* Header */}
+                        <div className="flex items-center justify-between p-2 border-b border-gray-100">
+                          <h3 className="font-bold text-gray-900">
+                            Order Details <span className="font-normal ml-1">({items.length} Items)</span>
+                          </h3>
+                        </div>
 
-                      {/* LEFT */}
-                      <h2 className="text-base sm:text-xl font-semibold text-gray-900">
-                        Order summary
-                        <span className="text-gray-500 font-normal ml-2">
-                          {itemsCount} Items
-                        </span>
-                      </h2>
-
-                      {/* RIGHT */}
-                      <div
-                        className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-colors"
-                        onClick={() => setShowPopup(true)}
-                      >
-                        {/* <span className="text-xs sm:text-sm text-gray-400 line-through">
-                          ₹{originalAmount.toLocaleString("en-IN")}
-                        </span> */}
-
-                        <span className="text-lg sm:text-2xl font-bold text-gray-900">
-                          ₹{totalAmount.toLocaleString("en-IN")}
-                        </span>
-
-                        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
-                      </div>
-                    </div>
-
-
-                    {showPopup && (
-                      <div className="fixed inset-0 mt-35 bg-opacity-50 z-50 flex items-center justify-center p-4">
-                        <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
-                          {/* Header */}
-                          <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
-                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
-                              Order Details
-                            </h3>
-                            <button
-                              onClick={() => setShowPopup(false)}
-                              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                            >
-                              <X className="w-5 h-5 text-gray-500" />
-                            </button>
-                          </div>
-
-                          {/* Products List */}
-                          <div className="overflow-y-auto max-h-[40vh] p-4 sm:p-6">
-                            <div className="space-y-4">
-                              {items?.map((item) => (
-                                <div
-                                  key={item._id}
-                                  className="flex gap-4 p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
-                                >
-                                  {/* Product Image */}
-                                  <img
-                                    src={item.product?.image || item.product?.images[0]}
-                                    alt={item.name}
-                                    className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-md"
-                                  />
-
-                                  {/* Product Details */}
-                                  <div className="flex-1 min-w-0">
-                                    <h4 className="font-semibold text-gray-900 text-sm sm:text-base mb-2 truncate">
-                                      {item?.product.name}
-                                    </h4>
-
-                                    <div className="space-y-1 text-sm">
-                                      <p className="text-gray-600">
-                                        Quantity: <span className="font-medium text-gray-900">{item.quantity}</span>
-                                      </p>
-                                      <p className="text-gray-600">
-                                        Price:
-                                        <span className="font-medium text-gray-900">{item?.product.price?.toLocaleString("en-IN")}</span>
-
-                                      </p>
-                                      {item?.discount > 0 && (
-                                        <p className="text-green-600 font-medium">
-                                          {item?.discount}% OFF
-                                        </p>
-                                      )}
-                                    </div>
+                        {/* Products List */}
+                        <div className="overflow-y-auto max-h-[35vh] p-2">
+                          {items.map((item) => (
+                            <div key={item._id} className="flex gap-2 p-2 border border-gray-100 rounded hover:shadow transition-shadow">
+                              <img
+                                src={item.product?.image || item.product?.images?.[0]}
+                                alt={item.name}
+                                className="w-16 h-16 object-cover rounded"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-semibold text-gray-900 truncate">{item.product.name}</h4>
+                                <div className="flex items-center justify-between mt-1">
+                                  <div className="flex items-center gap-1">
+                                    <button
+                                      onClick={() => handleQuantityChange(item._id, -1)}
+                                      className="px-2 py-0.5 bg-gray-200 rounded"
+                                    >−</button>
+                                    <span className="px-2">{item.quantity}</span>
+                                    <button
+                                      onClick={() => handleQuantityChange(item._id, 1)}
+                                      className="px-2 py-0.5 bg-gray-200 rounded"
+                                    >+</button>
                                   </div>
-
-                                  {/* Total Amount */}
-                                  <div className="text-right">
-                                    <p className="text-lg font-bold text-gray-900">
-                                      {item?.totalAmount.toLocaleString("en-IN")}
-                                    </p>
-                                  </div>
+                                  <p className="font-medium text-gray-900">{item.totalAmount.toLocaleString("en-IN")}</p>
                                 </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          {/* Footer with Total */}
-                          <div className="border-t border-gray-200 p-4 sm:p-6 bg-gray-50">
-                            <div className="space-y-2">
-                              {/* <div className="flex justify-between text-sm text-gray-600">
-                                <span>Subtotal ({itemsCount} items)</span>
-                                <span className="line-through">{((Number(originalAmount) || 0) / 1.1).toLocaleString("en-IN")}
-
-
-                                </span>
-                              </div> */}
-                              {referralDiscount > 0 && (
-                                <div className="flex justify-between text-sm text-green-600">
-                                  <span>Discount</span>
-                                  <span>-₹{referralDiscount.toLocaleString("en-IN")}</span>
-                                </div>
-                              )}
-                              <div className="flex justify-between text-lg sm:text-xl font-bold text-gray-900 pt-2 border-t border-gray-300">
-                                <span>Total Amount</span>
-                                <span>₹{(totalAmount || 0).toLocaleString("en-IN")}
-                                </span>
+                                {item.discount > 0 && <p className="text-green-600 font-medium">{item.discount}% OFF</p>}
                               </div>
                             </div>
+                          ))}
+                        </div>
+
+                        {/* Footer */}
+                        <div className="border-t p-2 bg-gray-50">
+                          {referral > 0 && (
+                            <div className="flex justify-between text-green-600 text-xs">
+                              <span>Discount</span>
+                              <span>-{referral.toLocaleString("en-IN")}</span>
+                            </div>
+                          )}
+                          <div className="flex justify-between font-bold mt-1">
+                            <span>Total</span>
+                            <span>₹{totalAmount.toLocaleString("en-IN")}</span>
                           </div>
                         </div>
                       </div>
-                    )}
-
-
-
+                    </div>
                   </div>
                 );
               })()}
+
 
 
               {/* Savings Banner */}
@@ -918,7 +883,7 @@ export default function PaymentPage() {
                   const total = parseAmount(checkoutDetails.totalAmount);
                   const referral = parseAmount(checkoutDetails.referralDiscount);
 
-                  savings =  referral;
+                  savings = referral;
 
                 } else if (!isAuthenticated) {
                   const cartTotal = localCartItems.reduce(
@@ -941,15 +906,15 @@ export default function PaymentPage() {
                 if (savings <= 0) return null;
 
                 return (
-                  <div className="bg-green-50 border-l-4 border-green-500 px-6 py-4 rounded-lg shadow-sm mb-4">
-                    <p className="text-green-800 font-semibold text-sm sm:text-base">
+                  <div className="text-amber-500 border-l-4 border-amber-500 px-6 py-4 rounded-lg shadow-sm mb-4">
+                    <p className="text-amber-500  font-semibold text-sm sm:text-base">
                       🎉 Yay! You’ve saved{" "}
                       <span className="font-bold">
                         {formatCurrency(savings)}
                       </span>{" "}
                       so far
                     </p>
-                    <p className="text-green-700 text-xs mt-1">
+                    <p className="text-amber-500 text-xs mt-1">
                       Extra savings applied automatically at checkout
                     </p>
                   </div>
@@ -1043,30 +1008,52 @@ export default function PaymentPage() {
               {
                 isAuthenticated && addresses[addressIndex] &&
 
-                <div className=" mt-1 backdrop-blur-sm rounded-xl p-4 mb-4 border border-slate-700">
-                  <div className="flex flex-col sm:flex-row justify-between items-start gap-3">
-                    <div className="flex-1">
-                      <p className="text-black text-sm">
-                        <span className="text-gray-800">{t('cart.deliveryAddress.deliverTo')} </span>
-                        <span className="font-semibold">{addresses[addressIndex]?.fullName}</span>
+                <div className="mt-1 mb-3 rounded-lg border border-slate-300 p-3">
+                  <div className="flex items-start justify-between gap-3">
+
+                    {/* Address */}
+                    <div className="flex-1 text-sm text-gray-800 leading-snug">
+                      <p>
+                        <span className="text-gray-600">{t("cart.deliveryAddress.deliverTo")} </span>
+                        <span className="font-semibold">
+                          {addresses[addressIndex]?.fullName}
+                        </span>
                       </p>
-                      <p className="text-gray-800 text-xs sm:text-sm mt-1">{addresses[addressIndex].street}</p>
-                      <p className="text-gray-800 text-xs sm:text-sm">{addresses[addressIndex]?.city}, {addresses[addressIndex].state} - {addresses[addressIndex].pinCode}</p>
-                      <p className="text-gray-800 text-xs sm:text-sm">{addresses[addressIndex].country}</p>
-                      <p className="text-gray-800 text-xs sm:text-sm">{t('cart.deliveryAddress.mobileNumber')} {addresses[addressIndex].phoneNumber}</p>
+
+                      <p className="text-xs mt-0.5">
+                        {addresses[addressIndex]?.street},{" "}
+                        {addresses[addressIndex]?.city},{" "}
+                        {addresses[addressIndex]?.state} –{" "}
+                        {addresses[addressIndex]?.pinCode}
+                      </p>
+
+                      <p className="text-xs">
+                        {addresses[addressIndex]?.country} ·{" "}
+                        {t("cart.deliveryAddress.mobileNumber")}{" "}
+                        {addresses[addressIndex]?.phoneNumber}
+                      </p>
                     </div>
-                    {
-                      // !checkoutDetails &&
-                      <button
-                        onClick={() => setIsModalOpen(true)}
-                        className="bg-amber-500 hover:bg-amber-600 text-white text-xs sm:text-sm font-medium px-4 py-2 rounded-lg transition-colors whitespace-nowrap"
-                      >
-                        {t('cart.deliveryAddress.changeAddress')}
-                      </button>
-                    }
+
+                    {/* Change Button */}
+                    <button
+                      onClick={() => setIsModalOpen(true)}
+                      className="
+        shrink-0
+        text-xs font-medium
+        px-3 py-1.5
+        rounded-md
+        bg-amber-500 hover:bg-amber-600
+        text-white
+        transition-colors
+        whitespace-nowrap
+      "
+                    >
+                      {t("cart.deliveryAddress.changeAddress")}
+                    </button>
 
                   </div>
                 </div>
+
 
               }
 
@@ -1093,13 +1080,14 @@ export default function PaymentPage() {
 
 
                   {/* Referral Code Input */}
-                  <div className="mb-6">
-                    <label className="block text-black text-sm font-semibold mb-3 flex items-center gap-2">
-                      <span>{t('payment.referral.label')}</span>
-                      {codeApplied && <CheckCircle size={16} className="text-green-400" />}
+                  <div className="mb-4">
+                    <label className="flex items-center gap-1.5 text-black text-sm font-medium mb-1.5">
+                      <span>{t("payment.referral.label")}</span>
+                      {codeApplied && <CheckCircle size={14} className="text-green-500" />}
                     </label>
-                    <div className="backdrop-blur-sm rounded-xl overflow-hidden border border-slate-700">
-                      <div className="flex flex-col sm:flex-row">
+
+                    <div className="rounded-lg overflow-hidden border border-slate-300">
+                      <div className="flex">
 
                         {/* Input */}
                         <input
@@ -1110,8 +1098,15 @@ export default function PaymentPage() {
                             setReferralCode(e.target.value);
                             setCodeApplied(false);
                           }}
-                          placeholder={t('payment.referral.placeholder')}
-                          className="w-full px-4 py-3 sm:py-4 bg-transparent text-black focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                          placeholder={t("payment.referral.placeholder")}
+                          className="
+          flex-1
+          px-3 py-2
+          text-sm text-black
+          bg-transparent
+          focus:outline-none
+          disabled:opacity-50 disabled:cursor-not-allowed
+        "
                         />
 
                         {/* Button */}
@@ -1120,31 +1115,32 @@ export default function PaymentPage() {
                             onClick={() => handleApply(referralCode)}
                             disabled={codeApplied || applyingCode || !referralCode.trim()}
                             className="
-          w-full sm:w-auto
-          px-4 sm:px-6 py-3 sm:py-4
-          text-amber-400 hover:text-amber-300
-          font-semibold transition-colors
-          disabled:opacity-50 disabled:cursor-not-allowed
-          flex items-center justify-center gap-2
-          border-t sm:border-t-0 sm:border-l border-slate-700
-        "
+            px-3 py-2
+            text-sm font-medium
+            text-amber-500 hover:text-amber-400
+            transition-colors
+            disabled:opacity-50 disabled:cursor-not-allowed
+            flex items-center gap-1.5
+            border-l border-slate-300
+            whitespace-nowrap
+          "
                           >
                             {applyingCode ? (
                               <>
-                                <Loader2 size={16} className="animate-spin" />
-                                Applying...
+                                <Loader2 size={14} className="animate-spin" />
+                                Applying
                               </>
                             ) : codeApplied ? (
-                              'Applied'
+                              "Applied"
                             ) : (
-                              t('payment.referral.apply')
+                              t("payment.referral.apply")
                             )}
                           </button>
                         )}
                       </div>
                     </div>
-
                   </div>
+
 
 
                   {
@@ -1174,39 +1170,55 @@ export default function PaymentPage() {
                   }
 
                   {/* Payment Methods */}
-                  <div className="mb-6">
-                    <h3 className="text-black font-semibold mb-3 flex items-center gap-2">
-                      <CreditCard size={20} className="text-amber-400" />
+                  <div className="mb-4">
+                    <h3 className="text-black font-medium mb-2 flex items-center gap-2 text-sm">
+                      <CreditCard size={16} className="text-amber-400" />
                       Payment Method
                     </h3>
-                    <div className="backdrop-blur-sm rounded-xl overflow-hidden border border-slate-700">
+
+                    <div className="rounded-lg overflow-hidden border border-slate-300">
                       {paymentMethods.map((method, index) => (
                         <div
                           key={method.id}
                           onClick={() => setSelectedMethod(method.id)}
-                          className={`flex items-center justify-between p-5 cursor-pointer transition-all hover:bg-slate-200/50 ${index !== paymentMethods.length - 1 ? 'border-b border-slate-700' : ''
-                            } ${selectedMethod === method.id ? 'bg-amber-500/10' : ''}`}
+                          className={`flex items-center justify-between px-3 py-2 cursor-pointer transition-all
+          hover:bg-slate-100
+          ${index !== paymentMethods.length - 1 ? "border-b border-slate-200" : ""}
+          ${selectedMethod === method.id ? "bg-amber-500/10" : ""}
+        `}
                         >
-                          <div className="flex items-center gap-4">
-                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${selectedMethod === method.id ? 'bg-amber-500/20' : 'bg-white-700'
-                              }`}>
-                              {method.icon === 'wallet' && <WalletIcon />}
-                              {method.icon === 'razorpay' && <RazorpayIcon />}
-                              {/* {method.icon === 'cod' && <CODIcon />} */}
+                          {/* Left */}
+                          <div className="flex items-center gap-2">
+                            <div
+                              className={`w-8 h-8 rounded-md flex items-center justify-center
+              ${selectedMethod === method.id ? "bg-amber-500/20" : "bg-gray-100"}
+            `}
+                            >
+                              {method.icon === "wallet" && <WalletIcon className="w-4 h-4" />}
+                              {method.icon === "razorpay" && <RazorpayIcon className="w-4 h-4" />}
                             </div>
-                            <div>
-                              <span className="text-black font-medium block">{method.name}</span>
+
+                            <div className="leading-tight">
+                              <span className="text-black text-sm font-medium">
+                                {method.name}
+                              </span>
+
                               {method.balance !== undefined && (
-                                <span className="text-gray-400 text-sm">
-                                  {t('payment.methods.balance')}: ₹ {method.balance.toFixed(2)}
-                                </span>
+                                <div className="text-xs text-gray-500">
+                                  ₹ {method.balance.toFixed(2)}
+                                </div>
                               )}
                             </div>
                           </div>
-                          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${selectedMethod === method.id ? 'border-amber-500 scale-110' : 'border-gray-500'
-                            }`}>
+
+                          {/* Radio */}
+                          <div
+                            className={`w-4 h-4 rounded-full border flex items-center justify-center
+            ${selectedMethod === method.id ? "border-amber-500" : "border-gray-400"}
+          `}
+                          >
                             {selectedMethod === method.id && (
-                              <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                              <div className="w-2 h-2 rounded-full bg-amber-500" />
                             )}
                           </div>
                         </div>
@@ -1215,77 +1227,133 @@ export default function PaymentPage() {
                   </div>
 
                   {/* Price Details */}
-                  <div className=" backdrop-blur-sm rounded-xl p-6 mb-6 border border-slate-700">
-                    <h3 className="text-black font-bold text-lg mb-4 flex items-center gap-2">
-                      <Package size={20} className="text-amber-400" />
-                      {t('payment.price_details.title')}
+                  <div className="rounded-lg border border-slate-300 p-4 mb-4">
+                    <h3 className="text-black font-semibold text-base mb-3 flex items-center gap-2">
+                      <Package size={16} className="text-amber-400" />
+                      {t("payment.price_details.title")}
                     </h3>
-                    <div className="space-y-3">
-                      <div className="flex justify-between text-gray-500 pb-3 border-b border-slate-600 border-dashed">
-                        <span>{t('payment.price_details.total_items')}</span>
-                        <span className="text-black font-semibold">{totalItems}</span>
+
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between text-gray-600 border-b border-dashed pb-1">
+                        <span>{t("payment.price_details.total_items")}</span>
+                        <span className="text-black font-medium">{totalItems}</span>
                       </div>
-                      <div className="flex justify-between text-gray-500 pb-3 border-b border-slate-600 border-dashed">
-                        <span>{t('payment.price_details.price')}</span>
-                        <span className="text-black font-semibold">
+
+                      <div className="flex justify-between text-gray-600 border-b border-dashed pb-1">
+                        <span>{t("payment.price_details.price")}</span>
+                        <span className="text-black font-medium">
                           {checkoutDetails?.totalAmount?.toLocaleString("en-IN") || 0}
                         </span>
                       </div>
-                      <div className="flex justify-between text-gray-500 pb-3 border-b border-slate-600 border-dashed">
+
+                      <div className="flex justify-between text-gray-600 border-b border-dashed pb-1">
                         <span>Discount Off</span>
-                        <span className="text-green-400 font-semibold">
+                        <span className="text-green-500 font-medium">
                           -{checkoutDetails?.discountOff?.toLocaleString("en-IN") || 0}
                         </span>
                       </div>
-                      <div className="flex justify-between text-gray-500 pb-3 border-b border-slate-600 border-dashed">
+
+                      <div className="flex justify-between text-gray-600 border-b border-dashed pb-1">
                         <span>Referral Discount</span>
-                        <span className={`font-semibold ${(referralDiscount || checkoutDetails?.referralDiscount) > 0 ? 'text-green-400' : 'text-gray-400'}`}>
-                          {(referralDiscount || checkoutDetails?.referralDiscount) > 0 && '- '}
+                        <span
+                          className={`font-medium ${(referralDiscount || checkoutDetails?.referralDiscount) > 0
+                            ? "text-green-500"
+                            : "text-green-500"
+                            }`}
+                        >
+                          - {(referralDiscount || checkoutDetails?.referralDiscount) > 0 && "- "}
                           {(referralDiscount || checkoutDetails?.referralDiscount || 0).toLocaleString("en-IN")}
                         </span>
                       </div>
-                      <div className="flex justify-between text-gray-500 pb-3 border-b border-slate-600 border-dashed">
-                        <span>{t('payment.price_details.shipping')}</span>
-                        <span className="text-black font-semibold">
-                          {checkoutDetails?.shippingCharge?.toLocaleString("en-IN") || 0}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-gray-500 pb-3 border-b border-slate-600 border-dashed">
-                        <span>Gst(18%)</span>
-                        <span className="text-black font-semibold">
 
-                          {checkoutDetails?.gstAmount?.toLocaleString("en-IN") || 0}
+                      <div className="flex justify-between text-gray-600 border-b border-dashed pb-1">
+                        <span>{t("payment.price_details.shipping")}</span>
+                        <span className="text-black font-medium">
+                          + {checkoutDetails?.shippingCharge?.toLocaleString("en-IN") || 0}
                         </span>
                       </div>
-                      <div className="flex justify-between text-black font-bold text-lg pt-2">
-                        <span>{t('payment.price_details.total_amount')}</span>
-                        <span className="text-amber-400 text-2xl">
-                          {/* ₹ {(((checkoutDetails?.grandTotal || 0) - firstDiscount) * 1.18).toFixed(2)} */}
+
+                      <div className="flex justify-between text-gray-600 border-b border-dashed pb-1">
+                        <span>GST (18%)</span>
+                        <span className="text-black font-medium">
+                          + {checkoutDetails?.gstAmount?.toLocaleString("en-IN") || 0}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between items-center pt-2 font-bold">
+                        <span className="text-black">
+                          {t("payment.price_details.total_amount")}
+                        </span>
+                        <span className="text-amber-500 text-xl">
                           {checkoutDetails?.grandTotal?.toLocaleString("en-IN") || 0}
-
                         </span>
                       </div>
                     </div>
                   </div>
 
+
                   {/* Checkout Button */}
                   <button
                     onClick={handleCheckout}
                     disabled={!isAuthenticated || checkoutLoading}
-                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/50 w-full max-w-lg disabled:opacity-50 disabled:cursor-not-allowed mx-auto block text-lg flex items-center justify-center gap-3"
+                    className="
+    w-full max-w-md mx-auto cursor-pointer
+    bg-gradient-to-r from-amber-500 to-orange-500
+    hover:from-amber-600 hover:to-orange-600
+    text-white font-semibold
+    py-3 px-5
+    rounded-lg
+    flex items-center justify-center gap-2
+    transition-all duration-300
+    hover:shadow-md hover:shadow-amber-500/40
+    disabled:opacity-50 disabled:cursor-not-allowed
+    text-sm
+  "
                   >
                     {checkoutLoading ? (
                       <>
-                        <Loader2 size={24} className="animate-spin" />
-                        {selectedMethod === 'razorpay' ? 'Opening Payment Gateway...' : 'Processing Payment...'}
+                        <Loader2 size={18} className="animate-spin" />
+                        <span>
+                          {selectedMethod === "razorpay"
+                            ? "Opening Payment Gateway..."
+                            : "Processing Payment..."}
+                        </span>
                       </>
                     ) : (
                       <>
-                        <ShieldCheck size={24} />
-                        {selectedMethod === 'razorpay' ? 'Proceed To Payment' : t('payment.checkout')}
+                        <span>
+                          {selectedMethod === "razorpay"
+                            ? "Proceed To Payment"
+                            : t("payment.checkout")}
+                        </span>
+
+                        {/* Payment Logos */}
+                        <div className="flex items-center ml-1">
+                          {[
+                            { src: "/paytm.png", alt: "Paytm" },
+                            { src: "/phonepay.jpg", alt: "PhonePe" },
+                            { src: "/gpay.jpg", alt: "GPay" },
+                          ].map((logo, index) => (
+                            <div
+                              key={index}
+                              className={`w-6 h-6 rounded-full bg-white border border-white
+              flex items-center justify-center
+              ${index !== 0 ? "-ml-2" : ""}`}
+                            >
+                              <img
+                                src={logo.src}
+                                alt={logo.alt}
+                                className="w-4 h-4 object-contain"
+                              />
+                            </div>
+                          ))}
+                        </div>
+
+                        <ArrowRight size={18} />
                       </>
                     )}
                   </button>
+
 
                   {/* Additional Info */}
                   <p className="text-center text-gray-400 text-sm mt-4">

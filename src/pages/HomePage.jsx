@@ -154,7 +154,7 @@ console.log(cartCount,"cartCount")
       {/* <HowToUseManifestationPen /> */}
       {/* <ManifestationFeatures /> */}
       <Testimonials />
-      <CustomerReviews/>
+      {/* <CustomerReviews/> */}
       {/* <FAQPage/> */}
       {/* <ManifestationStory /> */}
       {/* <OurProducts /> */}

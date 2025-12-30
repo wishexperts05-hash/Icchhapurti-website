@@ -14,7 +14,7 @@ const Footer = () => {
     { label: t('footer.links.termsConditions'), href: "/terms" },
     { label: "Shipping Policy", href: "/shipping-policy" },
     { label: "Refund & Cancellation Policy", href: "/refund-cancellation-policy" },
-    { label: "FAQ", href: "/faq" },
+    // { label: "FAQ", href: "/faq" },
   ];
 
   const socialLinks = [

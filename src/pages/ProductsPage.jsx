@@ -682,16 +682,20 @@ export default function ProductsPage() {
         </div>
 
         {products.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id || product._id}
-                product={product}
-                onAddToCart={handleAddToCart}
-                onWishlistUpdate={handleWishlistUpdate}
-              />
-            ))}
-          </div>
+   <div className="grid gap-4 md:gap-6 
+                grid-cols-1 
+                sm:grid-cols-2 
+                lg:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
+  {products.map((product) => (
+    <ProductCard
+      key={product.id || product._id}
+      product={product}
+      onAddToCart={handleAddToCart}
+      onWishlistUpdate={handleWishlistUpdate}
+    />
+  ))}
+</div>
+
         ) : (
           <div className="text-center py-20">
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 max-w-md mx-auto border border-slate-700">

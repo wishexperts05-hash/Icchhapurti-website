@@ -35,8 +35,50 @@ export default function ProductDetails() {
   const token = localStorage.getItem("token");
   const [openReview, setOpenReview] = useState(false);
 
+  const [openIndex, setOpenIndex] = useState(null);
+  const faqs = [
+    {
+      question: "How does the Seven Chakra Pen work?",
+      answer:
+        "Charged with multiple rituals like Havans, Mantra Jaap, Mantras Chanting, Moon Charging, and many more rituals that align the energy of the pen to support your emotional balance, clarity, and vibrational alignment with your desires."
+    },
+    {
+      question: "Can I use the pen for journaling or planning?",
+      answer:
+        "Yes, the pen is perfect for journaling, scripting, planning goals, or writing manifestation statements."
+    },
+    {
+      question: "Is the Seven Chakra Pen suitable for beginners in manifestation?",
+      answer:
+        "Absolutely. It is designed to be simple, practical, and easy to incorporate into daily routines."
+    },
+    {
+      question: "How often should I use the Seven Chakra Pen?",
+      answer:
+        "Daily use is recommended, but even using it a few times a week with focused intention can be effective."
+    },
+    {
+      question: "Can the pen help with emotional balance?",
+      answer:
+        "Yes, consistent intention-based writing can support emotional clarity, grounding, and inner balance."
+    },
+    {
+      question: "Is the pen spiritually charged or energized?",
+      answer:
+        "This pen is specially charged and activated with multiple processes and rituals like Havans, Mantra Jaap, Mantras Chanting, Moon Charging, and many more rituals."
+    },
+    {
+      question: "How long does it take to see results?",
+      answer:
+        "Manifestation is a personal journey. Some users notice shifts in mindset quickly, while deeper results develop with consistent practice."
+    },
+    {
+      question: "Can I gift the Seven Chakra Pen to someone?",
+      answer:
+        "Yes, it makes a thoughtful gift for anyone interested in mindfulness, spirituality, or personal growth."
+    }
+  ];
 
-  const [faqs, setFaqs] = useState([]);
   const [openFAQ, setOpenFAQ] = useState(null);
   const toggleFAQ = (id) => {
     setOpenFAQ(openFAQ === id ? null : id);
@@ -53,37 +95,37 @@ export default function ProductDetails() {
 
     }
 
-    fetchFaqs();
+    // fetchFaqs();
   }, [currentPage]);
 
 
 
 
-  const fetchFaqs = async () => {
-    try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/user/faq/list`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+  // const fetchFaqs = async () => {
+  //   try {
+  //     const res = await fetch(
+  //       `${import.meta.env.VITE_API_URL}/api/user/faq/list`,
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       }
+  //     );
 
-      if (!res.ok) {
-        throw new Error("Failed to fetch FAQs");
-      }
+  //     if (!res.ok) {
+  //       throw new Error("Failed to fetch FAQs");
+  //     }
 
-      const json = await res.json();
-      setFaqs(json.data || []);
-    } catch (err) {
-      console.error("Error fetching FAQs:", err);
-    } finally {
-      // setLoading(false);
-    }
-  };
+  //     const json = await res.json();
+  //     setFaqs(json.data || []);
+  //   } catch (err) {
+  //     console.error("Error fetching FAQs:", err);
+  //   } finally {
+  //     // setLoading(false);
+  //   }
+  // };
 
   const fetchProductDetails = async () => {
     setLoading(true);
@@ -484,7 +526,7 @@ export default function ProductDetails() {
                   )}
                 </Swiper> */}
 
-              <ProductImageGallery images={product.images || [product.image]} videos={product.videos || []} />
+                <ProductImageGallery images={product.images || [product.image]} videos={product.videos || []} />
               </div>
 
               {/* Trust Badges */}
@@ -553,57 +595,55 @@ export default function ProductDetails() {
               </div>
 
               {/* Description */}
-             <div className="space-y-2 mb-10 hidden lg:block">
-  {product?.productDetails?.map((faq, index) => {
-    const faqId = faq._id || index;
-    const isOpen = openFAQ === faqId;
+              <div className="space-y-2 mb-10 hidden lg:block">
+                {product?.productDetails?.map((faq, index) => {
+                  const faqId = faq._id || index;
+                  const isOpen = openFAQ === faqId;
 
-    return (
-      <div
-        key={faqId}
-        className={`bg-white rounded-xl overflow-hidden border transition-colors ${
-          isOpen
-            ? "border-blue-500/50 shadow-md"
-            : "border-slate-300 hover:border-slate-400"
-        }`}
-      >
-        <button
-          onClick={() => toggleFAQ(faqId)}
-          className="w-full px-4 py-3 flex items-center justify-between text-left cursor-pointer hover:bg-gray-50 transition-colors"
-        >
-          <h3
-            className="text-sm font-semibold text-black pr-3"
-            dangerouslySetInnerHTML={{ __html: faq.title }}
-          />
-          <div
-            className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${
-              isOpen ? "bg-blue-500 rotate-180" : "bg-slate-500"
-            }`}
-          >
-            <ChevronDown className="w-4 h-4 text-white" />
-          </div>
-        </button>
+                  return (
+                    <div
+                      key={faqId}
+                      className={`bg-white rounded-xl overflow-hidden border transition-colors ${isOpen
+                          ? "border-blue-500/50 shadow-md"
+                          : "border-slate-300 hover:border-slate-400"
+                        }`}
+                    >
+                      <button
+                        onClick={() => toggleFAQ(faqId)}
+                        className="w-full px-4 py-3 flex items-center justify-between text-left cursor-pointer hover:bg-gray-50 transition-colors"
+                      >
+                        <h3
+                          className="text-sm font-semibold text-black pr-3"
+                          dangerouslySetInnerHTML={{ __html: faq.title }}
+                        />
+                        <div
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${isOpen ? "bg-blue-500 rotate-180" : "bg-slate-500"
+                            }`}
+                        >
+                          <ChevronDown className="w-4 h-4 text-white" />
+                        </div>
+                      </button>
 
-        {/* Grid-based animation - Most performant */}
-        <div
-          className="grid transition-all duration-200 ease-in-out"
-          style={{
-            gridTemplateRows: isOpen ? '1fr' : '0fr'
-          }}
-        >
-          <div className="overflow-hidden">
-            <div className="px-4 pb-3">
-              <div
-                className="bg-gray-100 rounded-lg p-3 text-sm text-black"
-                dangerouslySetInnerHTML={{ __html: faq.detail }}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  })}
-</div>
+                      {/* Grid-based animation - Most performant */}
+                      <div
+                        className="grid transition-all duration-200 ease-in-out"
+                        style={{
+                          gridTemplateRows: isOpen ? '1fr' : '0fr'
+                        }}
+                      >
+                        <div className="overflow-hidden">
+                          <div className="px-4 pb-3">
+                            <div
+                              className="bg-gray-100 rounded-lg p-3 text-sm text-black"
+                              dangerouslySetInnerHTML={{ __html: faq.detail }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
 
               {/* Action Buttons */}
               <div className="grid grid-cols-2 gap-2 sm:gap-4">
@@ -655,68 +695,102 @@ export default function ProductDetails() {
                 </button>
               </div>
             </div>
-<div className="space-y-2 mb-10 lg:hidden block">
-  {product?.productDetails?.map((faq, index) => {
-    const faqId = faq._id || index;
-    const isOpen = openFAQ === faqId;
+            <div className="space-y-2 mb-10 lg:hidden block">
+              {product?.productDetails?.map((faq, index) => {
+                const faqId = faq._id || index;
+                const isOpen = openFAQ === faqId;
 
-    return (
-      <div
-        key={faqId}
-        className={`bg-white rounded-xl overflow-hidden border transition-colors ${
-          isOpen
-            ? "border-blue-500/50 shadow-md"
-            : "border-slate-300 hover:border-slate-400"
-        }`}
-      >
-        <button
-          onClick={() => toggleFAQ(faqId)}
-          className="w-full px-4 py-2 flex items-center justify-between text-left cursor-pointer hover:bg-gray-50 transition-colors"
-        >
-          <h3
-            className="text-sm font-semibold text-black pr-3"
-            dangerouslySetInnerHTML={{ __html: faq.title }}
-          />
-          <div
-            className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${
-              isOpen ? "bg-blue-500 rotate-180" : "bg-slate-500"
-            }`}
-          >
-            <ChevronDown className="w-4 h-4 text-white" />
-          </div>
-        </button>
+                return (
+                  <div
+                    key={faqId}
+                    className={`bg-white rounded-xl overflow-hidden border transition-colors ${isOpen
+                        ? "border-blue-500/50 shadow-md"
+                        : "border-slate-300 hover:border-slate-400"
+                      }`}
+                  >
+                    <button
+                      onClick={() => toggleFAQ(faqId)}
+                      className="w-full px-4 py-2 flex items-center justify-between text-left cursor-pointer hover:bg-gray-50 transition-colors"
+                    >
+                      <h3
+                        className="text-sm font-semibold text-black pr-3"
+                        dangerouslySetInnerHTML={{ __html: faq.title }}
+                      />
+                      <div
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${isOpen ? "bg-blue-500 rotate-180" : "bg-slate-500"
+                          }`}
+                      >
+                        <ChevronDown className="w-4 h-4 text-white" />
+                      </div>
+                    </button>
 
-        {/* Grid-based animation - Most performant */}
-        <div
-          className="grid transition-all duration-200 ease-in-out"
-          style={{
-            gridTemplateRows: isOpen ? '1fr' : '0fr'
-          }}
-        >
-          <div className="overflow-hidden">
-            <div className="px-4 pb-3">
-              <div
-                className="bg-gray-100 rounded-lg p-3 text-sm text-black"
-                dangerouslySetInnerHTML={{ __html: faq.detail }}
-              />
+                    {/* Grid-based animation - Most performant */}
+                    <div
+                      className="grid transition-all duration-200 ease-in-out"
+                      style={{
+                        gridTemplateRows: isOpen ? '1fr' : '0fr'
+                      }}
+                    >
+                      <div className="overflow-hidden">
+                        <div className="px-4 pb-3">
+                          <div
+                            className="bg-gray-100 rounded-lg p-3 text-sm text-black"
+                            dangerouslySetInnerHTML={{ __html: faq.detail }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          </div>
-        </div>
-      </div>
-    );
-  })}
-</div>
           </div>
           {/* faq section  */}
 
 
+ <section className="max-w-4xl mx-auto px-4 py-12">
+      <h2 className="text-3xl font-bold text-center mb-8 text-gray-900">
+        Frequently Asked Questions
+      </h2>
 
+      <div className="space-y-4">
+        {faqs.map((faq, index) => (
+          <div
+            key={index}
+            className="border border-gray-200 rounded-xl shadow-sm bg-white"
+          >
+            <button
+              onClick={() =>
+                setOpenIndex(openIndex === index ? null : index)
+              }
+              className="w-full flex justify-between items-center px-5 py-4 text-left"
+            >
+              <span className="font-semibold text-gray-800">
+                {faq.question}
+              </span>
+
+              <ChevronDown
+                className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${
+                  openIndex === index ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+
+            {openIndex === index && (
+              <div className="px-5 pb-5 text-gray-600 leading-relaxed">
+                {faq.answer}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
 
 
 
           {/* Reviews Section */}
           <div className="border-t border-slate-700/50 p-4 sm:p-6 lg:p-8">
-            <h2 className="text-white font-bold text-lg sm:text-xl lg:text-2xl mb-4 sm:mb-6 flex items-center gap-2">
+            <h2 className="text-black font-bold text-lg sm:text-xl lg:text-2xl mb-4 sm:mb-6 flex items-center gap-2">
               <Star className="text-yellow-400 fill-yellow-400" size={20} />
               Customer Reviews
             </h2>
@@ -883,7 +957,7 @@ export default function ProductDetails() {
 
                               <StarRating rating={review.stars || 0} size={12} />
                             </div>
-
+                            <h1 className="text-lg font-bold my-1">{review.title}</h1>
                             {/* Review text */}
                             <p className="text-black text-xs leading-snug mb-2">
                               {review.text ||

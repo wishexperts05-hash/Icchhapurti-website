@@ -2,40 +2,43 @@ import { useState, useEffect, useRef } from "react";
 import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function Testimonials() {
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [reviews, setReviews] = useState(["./review1.png", "./review2.png", "./review3.png", "./review4.png", "./review5.png", "./review6.png", "./review7.png", "./review8.png", "./review9.png", "./review10.png",]);
+  const [loading, setLoading] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [animatingCards, setAnimatingCards] = useState(new Set());
   const [cardsPerView, setCardsPerView] = useState(4);
 
   const scrollRef = useRef(null);
 
+
+
+
   // 🔄 Fetch reviews
-  useEffect(() => {
-    const fetchReviews = async () => {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/user/v1/reviews/getTopReviews`
-      );
-      const data = await res.json();
-      const list = data?.data?.reviews || [];
+  // useEffect(() => {
+  //   const fetchReviews = async () => {
+  //     const res = await fetch(
+  //       `${import.meta.env.VITE_API_URL}/api/user/v1/reviews/getTopReviews`
+  //     );
+  //     const data = await res.json();
+  //     const list = data?.data?.reviews || [];
 
-      setReviews(
-        list.map((r, i) => ({
-          id: r._id || i,
-          rating: r.stars || 5,
-          text: r.comment,
-          name: r.userName || "Anonymous",
-          location: r.city || "India",
-          image:
-            r.profile ||
-            `https://ui-avatars.com/api/?name=${r.userName || "U"}`,
-        }))
-      );
-      setLoading(false);
-    };
+  //     setReviews(
+  //       list.map((r, i) => ({
+  //         id: r._id || i,
+  //         rating: r.stars || 5,
+  //         text: r.comment,
+  //         name: r.userName || "Anonymous",
+  //         location: r.city || "India",
+  //         image:
+  //           r.profile ||
+  //           `https://ui-avatars.com/api/?name=${r.userName || "U"}`,
+  //       }))
+  //     );
+  //     setLoading(false);
+  //   };
 
-    fetchReviews();
-  }, []);
+  //   fetchReviews();
+  // }, []);
 
   // Calculate cards per view based on screen size
   useEffect(() => {
@@ -93,7 +96,7 @@ export default function Testimonials() {
 
   return (
     <section className="relative bg-gradient-to-br from-purple-50 via-pink-100 to-yellow-50">
-      
+
       {/* Top Wave */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none rotate-180">
         <svg
@@ -135,7 +138,9 @@ export default function Testimonials() {
                 msOverflowStyle: 'none',
               }}
             >
-              {reviews.map((review, index) => (
+
+              {/* for api respon */}
+              {/* {reviews.map((review, index) => (
                 <div
                   key={review.id}
                   data-review-card
@@ -178,7 +183,33 @@ export default function Testimonials() {
                     </div>
                   </div>
                 </div>
+              ))} */}
+
+
+
+
+              {reviews.map((image, index) => (
+                <div
+                  key={index}
+                  data-review-card
+                  className="flex-shrink-0 w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)]"
+                >
+                  <div
+                    className={`
+        bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-xl h-full
+        hover:scale-105 hover:shadow-2xl transition-all duration-300
+        ${animatingCards.has(index) ? 'animate-slide-down' : ''}
+      `}
+                  >
+                    <img
+                      src={image}
+                      alt={`Review ${index + 1}`}
+                      className="w-full h-auto rounded-xl object-contain"
+                    />
+                  </div>
+                </div>
               ))}
+
             </div>
 
             {/* Navigation Arrows */}
@@ -212,11 +243,10 @@ export default function Testimonials() {
                   setCurrentIndex(newIndex);
                   scrollToIndex(newIndex);
                 }}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  Math.floor(currentIndex / cardsPerView) === i
-                    ? 'w-8 bg-purple-500'
-                    : 'w-2 bg-gray-300 hover:bg-gray-400'
-                }`}
+                className={`h-2 rounded-full transition-all duration-300 ${Math.floor(currentIndex / cardsPerView) === i
+                  ? 'w-8 bg-purple-500'
+                  : 'w-2 bg-gray-300 hover:bg-gray-400'
+                  }`}
                 aria-label={`Go to slide ${i + 1}`}
               />
             ))}
