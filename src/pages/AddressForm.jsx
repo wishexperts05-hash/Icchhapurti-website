@@ -152,7 +152,7 @@ export default function AddressForm() {
     }
     
     // Pin Code validation
-    if (!formData.pinCode.trim()) {
+    if (!formData.pinCode) {
       newErrors.pinCode = 'PIN code is required';
     } else if (!/^\d+$/.test(formData.pinCode)) {
       newErrors.pinCode = 'PIN code must contain only digits';
@@ -265,7 +265,7 @@ export default function AddressForm() {
     }
   };
 
-  const inputClass = (field) => `w-full bg-white rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 ${errors[field] ? 'ring-2 ring-red-500' : ''}`;
+  const inputClass = (field) => `w-full bg-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 ${errors[field] ? 'ring-2 ring-red-500' : ''}`;
 
   const SearchableDropdown = ({ field, label, placeholder, options, value, onSelect, disabled, renderOption, getOptionValue }) => (
     <div ref={el => dropdownRefs.current[field] = el} className="relative">
@@ -273,7 +273,7 @@ export default function AddressForm() {
       <div className={`relative ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
         <div 
           onClick={() => !disabled && setOpenDropdown(openDropdown === field ? null : field)}
-          className={`w-full bg-white rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-500 cursor-pointer flex items-center justify-between ${errors[field] ? 'ring-2 ring-red-500' : ''}`}
+          className={`w-full bg-gray-200 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-500 cursor-pointer flex items-center justify-between ${errors[field] ? 'ring-2 ring-red-500' : ''}`}
         >
           <span className={value ? 'text-gray-800' : 'text-gray-400'}>
             {value || placeholder}
@@ -374,179 +374,233 @@ export default function AddressForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
-      <div className="relative z-10 p-6 max-w-5xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-6">
-          {editMode ? 'Update Address' : 'Add New Address'}
-        </h1>
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Full Name */}
-            <div>
-              <label className="block text-white text-sm mb-2">Full Name *</label>
-              <input 
-                type="text" 
-                name="fullName" 
-                value={formData.fullName} 
-                onChange={handleChange} 
-                placeholder="Enter your full name" 
-                className={inputClass('fullName')} 
-              />
-              {errors.fullName && <p className="text-red-400 text-xs mt-1">{errors.fullName}</p>}
-            </div>
+   <div className="min-h-screen bg-white max-w-5xl mx-auto relative overflow-hidden">
+  <div className="relative z-10 p-6 max-w-5xl mx-auto">
 
-            {/* Mobile Number */}
-            <div>
-              <label className="block text-white text-sm mb-2">Mobile Number *</label>
-              <div className="flex gap-2">
-                <div ref={el => dropdownRefs.current['countryCode'] = el} className="relative w-32">
-                  <div 
-                    onClick={() => setOpenDropdown(openDropdown === 'countryCode' ? null : 'countryCode')}
-                    className={`bg-white rounded-lg px-3 py-3 text-gray-800 cursor-pointer flex items-center justify-between ${errors.countryCode ? 'ring-2 ring-red-500' : ''}`}
-                  >
-                    <span className={formData.countryCode ? 'text-gray-800' : 'text-gray-400'}>
-                      {formData.countryCode ? `+${formData.countryCode}` : 'Code'}
-                    </span>
-                    <ChevronDown className="w-4 h-4 text-gray-500" />
-                  </div>
-                  
-                  {openDropdown === 'countryCode' && (
-                    <div className="absolute z-50 w-64 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-64 overflow-hidden"
-                         onMouseDown={(e) => e.preventDefault()}>
-                      <div className="p-2 border-b border-gray-200">
-                        <div className="relative">
-                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                          <input
-                            type="text"
-                            value={searchTerms.countryCode}
-                            onChange={(e) => setSearchTerms(prev => ({ ...prev, countryCode: e.target.value }))}
-                            placeholder="Search country code..."
-                            className="w-full pl-10 pr-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
-                            autoFocus
-                          />
-                        </div>
-                      </div>
-                      <div className="max-h-48 overflow-y-auto">
-                        {filteredCountryCodes.length === 0 ? (
-                          <div className="px-4 py-3 text-sm text-gray-500">No results found</div>
-                        ) : (
-                          filteredCountryCodes.map(country => (
-                            <div
-                              key={country.isoCode}
-                              onMouseDown={(e) => {
-                                e.preventDefault();
-                                handleSelectCountryCode(country.phonecode);
-                              }}
-                              className="px-4 py-2 hover:bg-amber-50 cursor-pointer text-sm text-gray-800"
-                            >
-                              +{country.phonecode} - {country.name}
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                <input 
-                  type="tel" 
-                  name="mobileNumber" 
-                  value={formData.mobileNumber} 
-                  onChange={handleChange} 
-                  placeholder="Enter mobile number" 
-                  className={`flex-1 ${inputClass('mobileNumber')}`} 
-                />
-              </div>
-              {errors.mobileNumber && <p className="text-red-400 text-xs mt-1">{errors.mobileNumber}</p>}
-              {errors.countryCode && <p className="text-red-400 text-xs mt-1">{errors.countryCode}</p>}
-            </div>
+    {/* Heading */}
+    <h1 className="text-3xl font-bold text-slate-900 mb-6">
+      {editMode ? "Update Address" : "Add New Address"}
+    </h1>
 
-            {/* Country */}
-            <SearchableDropdown
-              field="country"
-              label="Country"
-              placeholder="Select country"
-              options={filteredCountries}
-              value={formData.country}
-              onSelect={handleSelectCountry}
-              disabled={false}
-              renderOption={(country) => country.name}
-              getOptionValue={(country) => country.name}
-            />
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-            {/* State */}
-            <SearchableDropdown
-              field="state"
-              label="State"
-              placeholder="Select state"
-              options={filteredStates}
-              value={formData.state}
-              onSelect={handleSelectState}
-              disabled={!formData.country}
-              renderOption={(state) => state.name}
-              getOptionValue={(state) => state.name}
-            />
+        {/* Full Name */}
+        <div>
+          <label className="block text-slate-700 text-sm mb-2">
+            Full Name *
+          </label>
+          <input
+            type="text"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleChange}
+            placeholder="Enter your full name"
+            className={inputClass("fullName")}
+          />
+          {errors.fullName && (
+            <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>
+          )}
+        </div>
 
-            {/* City */}
-            <SearchableDropdown
-              field="city"
-              label="City"
-              placeholder="Select city"
-              options={filteredCities}
-              value={formData.city}
-              onSelect={handleSelectCity}
-              disabled={!formData.state}
-              renderOption={(city) => city.name}
-              getOptionValue={(city) => city.name}
-            />
+        {/* Mobile Number */}
+        <div>
+          <label className="block text-slate-700 text-sm mb-2">
+            Mobile Number *
+          </label>
 
-            {/* Street */}
-            <div>
-              <label className="block text-white text-sm mb-2">Street Address *</label>
-              <input 
-                type="text" 
-                name="street" 
-                value={formData.street} 
-                onChange={handleChange} 
-                placeholder="Enter street address" 
-                className={inputClass('street')} 
-              />
-              {errors.street && <p className="text-red-400 text-xs mt-1">{errors.street}</p>}
-            </div>
-
-            {/* Pin Code */}
-            <div>
-              <label className="block text-white text-sm mb-2">PIN Code *</label>
-              <input 
-                type="text" 
-                name="pinCode" 
-                value={formData.pinCode} 
-                onChange={handleChange} 
-                placeholder="Enter PIN code" 
-                className={inputClass('pinCode')} 
-              />
-              {errors.pinCode && <p className="text-red-400 text-xs mt-1">{errors.pinCode}</p>}
-            </div>
-          </div>
-
-          {/* Submit Button */}
-          <div className="flex justify-center pt-4">
-            <button 
-              onClick={handleSubmit} 
-              disabled={loading} 
-              className="bg-amber-500 hover:bg-amber-600 disabled:bg-gray-500 text-white font-semibold py-3 px-16 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/30 disabled:cursor-not-allowed"
+          <div className="flex gap-2">
+            <div
+              ref={(el) => (dropdownRefs.current["countryCode"] = el)}
+              className="relative w-32"
             >
-              {loading ? (
-                <span className="flex items-center gap-2">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  {editMode ? 'Updating...' : 'Saving...'}
+              <div
+                onClick={() =>
+                  setOpenDropdown(
+                    openDropdown === "countryCode" ? null : "countryCode"
+                  )
+                }
+                className={`bg-white rounded-lg px-3 py-3 text-slate-800 cursor-pointer flex items-center justify-between border ${
+                  errors.countryCode
+                    ? "border-red-500"
+                    : "border-slate-300"
+                }`}
+              >
+                <span
+                  className={
+                    formData.countryCode ? "text-slate-800" : "text-slate-400"
+                  }
+                >
+                  {formData.countryCode
+                    ? `+${formData.countryCode}`
+                    : "Code"}
                 </span>
-              ) : (
-                editMode ? 'Update Address' : 'Save Address'
+                <ChevronDown className="w-4 h-4 text-slate-500" />
+              </div>
+
+              {openDropdown === "countryCode" && (
+                <div
+                  className="absolute z-50 w-64 mt-1 bg-white rounded-lg shadow-lg border border-slate-200 max-h-64 overflow-hidden"
+                  onMouseDown={(e) => e.preventDefault()}
+                >
+                  <div className="p-2 border-b border-slate-200">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                      <input
+                        type="text"
+                        value={searchTerms.countryCode}
+                        onChange={(e) =>
+                          setSearchTerms((p) => ({
+                            ...p,
+                            countryCode: e.target.value,
+                          }))
+                        }
+                        placeholder="Search country code..."
+                        className="w-full pl-10 pr-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        autoFocus
+                      />
+                    </div>
+                  </div>
+
+                  <div className="max-h-48 overflow-y-auto">
+                    {filteredCountryCodes.length === 0 ? (
+                      <div className="px-4 py-3 text-sm text-slate-500">
+                        No results found
+                      </div>
+                    ) : (
+                      filteredCountryCodes.map((country) => (
+                        <div
+                          key={country.isoCode}
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            handleSelectCountryCode(country.phonecode);
+                          }}
+                          className="px-4 py-2 hover:bg-amber-50 cursor-pointer text-sm text-slate-800"
+                        >
+                          +{country.phonecode} – {country.name}
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
               )}
-            </button>
+            </div>
+
+            <input
+              type="tel"
+              name="mobileNumber"
+              value={formData.mobileNumber}
+              onChange={handleChange}
+              placeholder="Enter mobile number"
+              className={`flex-1 ${inputClass("mobileNumber")}`}
+            />
           </div>
+
+          {errors.mobileNumber && (
+            <p className="text-red-500 text-xs mt-1">{errors.mobileNumber}</p>
+          )}
+          {errors.countryCode && (
+            <p className="text-red-500 text-xs mt-1">{errors.countryCode}</p>
+          )}
+        </div>
+
+        {/* Country */}
+        <SearchableDropdown
+          field="country"
+          label="Country"
+          placeholder="Select country"
+          options={filteredCountries}
+          value={formData.country}
+          onSelect={handleSelectCountry}
+          renderOption={(c) => c.name}
+          getOptionValue={(c) => c.name}
+        />
+
+        {/* State */}
+        <SearchableDropdown
+          field="state"
+          label="State"
+          placeholder="Select state"
+          options={filteredStates}
+          value={formData.state}
+          onSelect={handleSelectState}
+          disabled={!formData.country}
+          renderOption={(s) => s.name}
+          getOptionValue={(s) => s.name}
+        />
+
+        {/* City */}
+        <SearchableDropdown
+          field="city"
+          label="City"
+          placeholder="Select city"
+          options={filteredCities}
+          value={formData.city}
+          onSelect={handleSelectCity}
+          disabled={!formData.state}
+          renderOption={(c) => c.name}
+          getOptionValue={(c) => c.name}
+        />
+
+        {/* Street */}
+        <div>
+          <label className="block text-slate-700 text-sm mb-2">
+            Street Address *
+          </label>
+          <input
+            type="text"
+            name="street"
+            value={formData.street}
+            onChange={handleChange}
+            placeholder="Enter street address"
+            className={inputClass("street")}
+          />
+          {errors.street && (
+            <p className="text-red-500 text-xs mt-1">{errors.street}</p>
+          )}
+        </div>
+
+        {/* Pin Code */}
+        <div>
+          <label className="block text-slate-700 text-sm mb-2">
+            PIN Code *
+          </label>
+          <input
+            type="text"
+            name="pinCode"
+            value={formData.pinCode}
+            onChange={handleChange}
+            placeholder="Enter PIN code"
+            className={inputClass("pinCode")}
+          />
+          {errors.pinCode && (
+            <p className="text-red-500 text-xs mt-1">{errors.pinCode}</p>
+          )}
         </div>
       </div>
+
+      {/* Submit */}
+      <div className="flex justify-center pt-6">
+        <button
+          onClick={handleSubmit}
+          disabled={loading}
+          className="bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-90 disabled:bg-slate-400 text-white font-semibold py-3 px-16 rounded-lg transition"
+        >
+          {loading ? (
+            <span className="flex items-center gap-2">
+              <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
+              {editMode ? "Updating..." : "Saving..."}
+            </span>
+          ) : editMode ? (
+            "Update Address"
+          ) : (
+            "Save Address"
+          )}
+        </button>
+      </div>
     </div>
+  </div>
+</div>
+
   );
 }

@@ -191,7 +191,7 @@ export default function ViewProfile() {
             ...(required && { required: `${label} is required` }),
             ...rules,
           })}
-          className="w-full bg-white text-gray-800 rounded-lg py-3 px-4 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-amber-400"
+          className="w-full bg-gray-200 text-gray-800 rounded-lg py-3 px-4 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-amber-400"
         >
           <option value="">{label}</option>
           {options?.map((opt, i) => (
@@ -212,7 +212,7 @@ export default function ViewProfile() {
           ...(required && { required: `${label} is required` }),
           ...rules,
         })}
-        className="w-full bg-white text-gray-800 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+        className="w-full bg-gray-200 text-gray-800 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
         {...rest}
       />
     )}
@@ -241,151 +241,170 @@ export default function ViewProfile() {
 
   return (
     <div className="min-h-screen">
-      <div className="max-w-4xl mx-auto p-6">
-        <h1 className="text-white font-bold text-xl mb-6">
-          {t("profile.title")}
-        </h1>
+    <div className="max-w-4xl mx-auto p-6 bg-white text-slate-900">
 
-        <div className="flex justify-center mb-6">
-          <div className="relative">
-            <img
-              src={avatar}
-              className="w-24 h-24 rounded-full object-cover border-2 border-cyan-400"
-            />
-            <label className="absolute bottom-0 right-0 bg-amber-500 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer">
-              <Camera size={15} className="text-white" />
-              <input type="file" className="hidden" onChange={onAvatarChange} />
-            </label>
-          </div>
-        </div>
+  {/* Page Title */}
+  <h1 className="font-bold text-xl mb-6 text-slate-900">
+    {t("profile.title")}
+  </h1>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Personal Info */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InputField
-              label={t("profile.personal_info.full_name")}
-              name="name"
-              rules={{
-                pattern: {
-                  value: /^[A-Za-z\s]{2,}$/,
-                  message: "Only letters & spaces (min 2 chars)",
-                },
-              }}
-            />
-            <InputField
-              label={t("profile.personal_info.mobile_number")}
-              name="phoneNumber"
-              rules={{
-                pattern: {
-                  value: /^\d{10}$/,
-                  message: "Mobile must be exactly 10 digits",
-                },
-              }}
-            />
-         <InputField
-  label={t("profile.personal_info.email")}
-  type="email"
-  name="email"
-  required={false}
-  rules={{
-    // only validate if value is non-empty
-    validate: (value) =>
-      !value ||
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
-      "Invalid email address",
-  }}
-/>
+  {/* Avatar */}
+  <div className="flex justify-center mb-6">
+    <div className="relative">
+      <img
+        src={avatar}
+        className="w-24 h-24 rounded-full object-cover border-2 border-amber-400"
+      />
+      <label className="absolute bottom-0 right-0 bg-amber-500 hover:bg-amber-600 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition">
+        <Camera size={15} className="text-white" />
+        <input
+          type="file"
+          className="hidden"
+          onChange={onAvatarChange}
+        />
+      </label>
+    </div>
+  </div>
 
-           <InputField
-  label={t("profile.personal_info.dob")}
-  name="dob"
-  type="date"
-  required={false}
-/>
+  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
+    {/* Personal Info */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <InputField
+        label={t("profile.personal_info.full_name")}
+        name="name"
+        rules={{
+          pattern: {
+            value: /^[A-Za-z\s]{2,}$/,
+            message: "Only letters & spaces (min 2 chars)",
+          },
+        }}
+      />
 
-            <InputField
-              label={t("profile.personal_info.country")}
-              name="country"
-              isSelect
-              options={countries}
-            />
-            <InputField
-              label={t("profile.personal_info.state")}
-              name="state"
-              isSelect
-              options={states}
-            />
-            <InputField
-              label={t("profile.personal_info.city")}
-              name="city"
-              isSelect
-              options={cities}
-            />
-          </div>
+      <InputField
+        label={t("profile.personal_info.mobile_number")}
+        name="phoneNumber"
+        rules={{
+          pattern: {
+            value: /^\d{10}$/,
+            message: "Mobile must be exactly 10 digits",
+          },
+        }}
+      />
 
-          {/* Bank Details */}
-          <h2 className="text-white font-semibold mt-6">
-            {t("profile.bank_details.title")}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InputField
-              label={t("profile.bank_details.bank_name")}
-              name="bankName"
-            />
-            <InputField
-              label={t("profile.bank_details.account_number")}
-              name="accountNumber"
-              rules={{
-                pattern: {
-                  value: /^[0-9]{9,18}$/,
-                  message: "Account number must be 9–18 digits",
-                },
-              }}
-              inputMode="numeric"
-            />
-            <InputField
-              label={t("profile.bank_details.ifsc")}
-              name="ifscCode"
-              rules={{
-                setValueAs: (v) => v?.toUpperCase() || "",
-                pattern: {
-                  value: /^[A-Z]{4}0[A-Z0-9]{6}$/,
-                  message: "Invalid IFSC (e.g. SBIN0001234)",
-                },
-                maxLength: {
-                  value: 11,
-                  message: "IFSC must be 11 characters",
-                },
-              }}
-              maxLength={11}
-            />
-            <InputField
-              label={t("profile.bank_details.account_type")}
-              name="accountType"
-              isSelect
-              options={["Savings", "Current", "Salary"]}
-            />
-          </div>
+      <InputField
+        label={t("profile.personal_info.email")}
+        type="email"
+        name="email"
+        required={false}
+        rules={{
+          validate: (value) =>
+            !value ||
+            /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
+            "Invalid email address",
+        }}
+      />
 
-          <InputField
-            label={t("profile.bank_details.account_holder_name")}
-            name="accountHolderName"
-            rules={{
-              pattern: {
-                value: /^[A-Za-z\s]{2,}$/,
-                message: "Only letters & spaces (min 2 chars)",
-              },
-            }}
-          />
+      <InputField
+        label={t("profile.personal_info.dob")}
+        name="dob"
+        type="date"
+        required={false}
+      />
 
-          <button
-            className="w-full mt-4 bg-gradient-to-r cursor-pointer from-amber-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:opacity-90"
-          >
-            {loading ? t("profile.buttons.saving") : t("profile.buttons.save")}
-          </button>
-        </form>
-      </div>
+      <InputField
+        label={t("profile.personal_info.country")}
+        name="country"
+        isSelect
+        options={countries}
+      />
+
+      <InputField
+        label={t("profile.personal_info.state")}
+        name="state"
+        isSelect
+        options={states}
+      />
+
+      <InputField
+        label={t("profile.personal_info.city")}
+        name="city"
+        isSelect
+        options={cities}
+      />
+    </div>
+
+    {/* Bank Details */}
+    <h2 className="text-slate-800 font-semibold mt-6">
+      {t("profile.bank_details.title")}
+    </h2>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <InputField
+        label={t("profile.bank_details.bank_name")}
+        name="bankName"
+      />
+
+      <InputField
+        label={t("profile.bank_details.account_number")}
+        name="accountNumber"
+        rules={{
+          pattern: {
+            value: /^[0-9]{9,18}$/,
+            message: "Account number must be 9–18 digits",
+          },
+        }}
+        inputMode="numeric"
+      />
+
+      <InputField
+        label={t("profile.bank_details.ifsc")}
+        name="ifscCode"
+        rules={{
+          setValueAs: (v) => v?.toUpperCase() || "",
+          pattern: {
+            value: /^[A-Z]{4}0[A-Z0-9]{6}$/,
+            message: "Invalid IFSC (e.g. SBIN0001234)",
+          },
+          maxLength: {
+            value: 11,
+            message: "IFSC must be 11 characters",
+          },
+        }}
+        maxLength={11}
+      />
+
+      <InputField
+        label={t("profile.bank_details.account_type")}
+        name="accountType"
+        isSelect
+        options={["Savings", "Current", "Salary"]}
+      />
+    </div>
+
+    <InputField
+      label={t("profile.bank_details.account_holder_name")}
+      name="accountHolderName"
+      rules={{
+        pattern: {
+          value: /^[A-Za-z\s]{2,}$/,
+          message: "Only letters & spaces (min 2 chars)",
+        },
+      }}
+    />
+
+    {/* Save Button */}
+    <button
+      className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-60"
+      disabled={loading}
+    >
+      {loading
+        ? t("profile.buttons.saving")
+        : t("profile.buttons.save")}
+    </button>
+  </form>
+</div>
+
     </div>
   );
 }

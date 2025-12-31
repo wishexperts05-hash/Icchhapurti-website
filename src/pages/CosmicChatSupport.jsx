@@ -147,9 +147,9 @@ export default function CosmicChatSupport() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-gradient-radial from-orange-300/80 via-orange-400/60 to-transparent blur-sm animate-pulse pointer-events-none"></div>
 
       {/* Main Container */}
- <div className="relative z-10 flex flex-col h-[80vh] overflow-y-auto max-w-7xl mx-auto w-full">
+ <div className="relative z-10 flex flex-col h-[80vh] overflow-y-auto bg-white max-w-4xl mx-auto w-full">
         {/* Header */}
-        <div className="flex-shrink-0 px-10 py-5 bg-slate-900/50 backdrop-blur-sm">
+        <div className="flex-shrink-0 px-10 py-5 bg-slate-900 backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <h1 className="text-white text-2xl font-semibold">{t("chat.title")}</h1>
             {conversation && (
@@ -223,7 +223,7 @@ export default function CosmicChatSupport() {
         </div>
 
         {/* Input Area */}
-      <div className="flex-shrink-0 px-3 sm:px-6 md:px-10 py-3 sm:py-4 md:py-5 bg-slate-900/80 backdrop-blur-lg">
+      <div className="flex-shrink-0 px-3 sm:px-6 md:px-10 py-3 sm:py-4 md:py-5 bg-slate-900 backdrop-blur-lg">
   <div className="flex gap-2 sm:gap-3 bg-white/10 rounded-full px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 border border-white/20">
     <input
       type="text"

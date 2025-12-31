@@ -89,155 +89,154 @@ const OrderDetailsPage = () => {
     <div className="min-h-screen  relative overflow-hidden">
       {/* Background elements omitted for brevity, keep same as your original code */}
 
-      <div className="relative z-10 max-w-5xl mx-auto p-6">
-        <h1 className="text-3xl font-bold text-white mb-2">{t("orders.orderDetails")}</h1>
-        <p className="text-sm text-slate-300 mb-6">
-          ORDER ID: <span className="text-white font-semibold">{oid}</span>
-          <span className="ml-3 text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
-            {status} • {paymentMethod} • {paymentStatus}
-          </span>
-        </p>
+     <div className="relative bg-white z-10 max-w-4xl mx-auto p-6 text-slate-900">
 
-        {/* Order Items */}
-        <div className="space-y-3 mb-8">
-          {products.map((item) => (
-            <div
-              key={item.productId}
-              className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-4 flex items-center justify-between hover:bg-slate-800/60 transition-all duration-300"
-            >
-              <div className="flex items-center gap-4">
-                <div onClick={() => Navigate(`/product/${item.productId}`)} className="w-12 h-12 bg-slate-600 rounded flex items-center justify-center overflow-hidden">
-                  {item.images?.[0] ? (
-                    <img
-                      src={item.images[0]}
-                      alt={item.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <Package className="w-6 h-6 text-white" />
-                  )}
-                </div>
-                <div>
-                  <p className="text-white text-sm line-clamp-2">{item.name}</p>
-                  <p className="text-slate-400 text-xs">{t("order.qty")}: {item.quantity}</p>
-                  <p className="text-amber-400 font-semibold">
-                    ₹ {item.price} <span className="text-xs text-slate-400">({t("orders.subtotal")}: ₹ {item.subtotal})</span>
-                  </p>
-                  {item.returnable && (
-                    <p className="text-xs text-emerald-400 mt-1">
-                      {t("orders.returnable")}{item.returnableDays ? ` within ${item.returnableDays} days` : ''}
-                    </p>
-                  )}
-                </div>
-              </div>
-              <div className='flex gap-2'>
-                {/* Add Review Button */}
-                {/* <button
-                  onClick={(e) => {
-                    if (status !== "Delivered") {
-                      e.preventDefault();
-                      return;
-                    }
-                    handleAddReview(item.productId, e);
-                  }}
-                  disabled={status !== "Delivered"}
-                  className={`text-xs ml-2 px-3 py-1.5 rounded transition-colors duration-300
-      ${status === "Delivered"
-                      ? "text-white bg-green-600 hover:bg-green-700 cursor-pointer"
-                      : "text-gray-400 bg-gray-200 cursor-not-allowed"
-                    }
-    `}
-                  title={status === "Delivered" ? "Write a review" : "Only delivered products can be reviewed"}
-                >
-                  {t("orders.addReview")}
-                </button> */}
+  {/* Header */}
+  <h1 className="text-3xl font-bold text-slate-900 mb-2">
+    {t("orders.orderDetails")}
+  </h1>
 
-                {/* Return Button */}
-                {/* <Link
-                  to={status === 'Delivered' && item?.returnable ? `/orders/return/${item.productId}` : '#'}
-                  className={`px-4 py-1.5 text-white text-sm rounded transition-all duration-300 
-      ${status === 'Delivered' && item?.returnable
-                      ? 'bg-amber-500 hover:bg-amber-600 cursor-pointer'
-                      : 'bg-gray-600 cursor-not-allowed'
-                    }`}
-                  title={status === 'Delivered' && item?.returnable ? '' : 'Only delivered & Returnable products can be returned'}
-                  onClick={(e) => {
-                    if (status !== 'Delivered') e.preventDefault();
-                  }}
-                >
-                  Return
-                </Link> */}
-              </div>
+  <p className="text-sm text-slate-600 mb-6">
+    ORDER ID: <span className="text-slate-900 font-semibold">{oid}</span>
+    <span className="ml-3 text-xs px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">
+      {status} • {paymentMethod} • {paymentStatus}
+    </span>
+  </p>
 
-            </div>
-          ))}
-        </div>
-
-        {/* Order Timeline from API */}
-        <div className="mb-8">
-          <div className="relative pl-8">
-            <div className="absolute left-2 top-2 bottom-2 w-0.5 bg-gradient-to-b from-emerald-400 via-emerald-400 to-emerald-400"></div>
-
-            {timeline.map((step, index) => (
-              <div key={index} className="relative mb-6 last:mb-0">
-                <div className="absolute -left-6 w-4 h-4 rounded-full border-2 bg-emerald-400 border-emerald-400 flex items-center justify-center">
-                  <Check className="w-2.5 h-2.5 text-slate-900" />
-                </div>
-
-                <div>
-                  <h3 className="text-white font-semibold text-sm mb-1">{step.status}</h3>
-                  <p className="text-slate-300 text-xs mb-1">{step.note}</p>
-                  <p className="text-slate-500 text-xs">{formatDateTime(step.at)}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Delivery Address from API */}
-        <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-4 mb-4">
-          <h3 className="text-white font-semibold mb-3 text-sm border-b border-slate-700/50 pb-2">
-            {t("orders.deliveryAddress")}
-          </h3>
-          <div className="text-slate-300 text-sm">
-            <p className="font-semibold text-white mb-1">{shippingAddress.label}</p>
-            <p>
-              {shippingAddress.street}, {shippingAddress.city} - {shippingAddress.pinCode}
-            </p>
-          </div>
-        </div>
-
-        {/* Price Details from API */}
-        <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-4">
-          <h3 className="text-white font-semibold mb-3 text-sm border-b border-slate-700/50 pb-2">
-            {t("orders.price")}
-          </h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between text-slate-300">
-              <span>    {t("orders.totalItems")}</span>
-              <span>{totalProducts}</span>
-            </div>
-            <div className="flex justify-between text-slate-300">
-              <span> {t("orders.price")}</span>
-              <span>₹ {subtotalAmount}</span>
-            </div>
-            {discountAmount > 0 && (
-              <div className="flex justify-between text-emerald-400">
-                <span>Discount Amount</span>
-                <span>-₹ {discountAmount}</span>
-              </div>
+  {/* Order Items */}
+  <div className="space-y-3 mb-8">
+    {products.map((item) => (
+      <div
+        key={item.productId}
+        className="bg-slate-50 border border-slate-200 rounded-lg p-4 flex items-center justify-between hover:bg-slate-100 transition-all"
+      >
+        <div className="flex items-center gap-4">
+          <div
+            onClick={() => Navigate(`/product/${item.productId}`)}
+            className="w-12 h-12 bg-slate-200 rounded flex items-center justify-center overflow-hidden cursor-pointer"
+          >
+            {item.images?.[0] ? (
+              <img
+                src={item.images[0]}
+                alt={item.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <Package className="w-6 h-6 text-slate-600" />
             )}
-            <div className="flex justify-between text-slate-300">
-              <span>{t("orders.shippingAmount")}</span>
-              <span>₹ {shippingAmount}</span>
-            </div>
-            <div className="border-t border-slate-700/50 pt-2 mt-2 flex justify-between text-white font-semibold">
-              <span>{t("orders.totalAmount")}</span>
-              <span>₹ {grandTotal}</span>
-            </div>
+          </div>
+
+          <div>
+            <p className="text-slate-900 text-sm line-clamp-2">
+              {item.name}
+            </p>
+            <p className="text-slate-600 text-xs">
+              {t("order.qty")}: {item.quantity}
+            </p>
+
+            <p className="text-amber-600 font-semibold">
+              ₹ {item.price}
+              <span className="text-xs text-slate-500">
+                ({t("orders.subtotal")}: ₹ {item.subtotal})
+              </span>
+            </p>
+
+            {item.returnable && (
+              <p className="text-xs text-emerald-600 mt-1">
+                {t("orders.returnable")}
+                {item.returnableDays
+                  ? ` within ${item.returnableDays} days`
+                  : ""}
+              </p>
+            )}
           </div>
         </div>
       </div>
+    ))}
+  </div>
+
+  {/* Order Timeline */}
+  <div className="mb-8">
+    <div className="relative pl-8">
+      <div className="absolute left-2 top-2 bottom-2 w-0.5 bg-emerald-300"></div>
+
+      {timeline.map((step, index) => (
+        <div key={index} className="relative mb-6 last:mb-0">
+          <div className="absolute -left-6 w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center">
+            <Check className="w-2.5 h-2.5 text-white" />
+          </div>
+
+          <div>
+            <h3 className="text-slate-900 font-semibold text-sm mb-1">
+              {step.status}
+            </h3>
+            <p className="text-slate-600 text-xs mb-1">
+              {step.note}
+            </p>
+            <p className="text-slate-500 text-xs">
+              {formatDateTime(step.at)}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {/* Delivery Address */}
+  <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 mb-4">
+    <h3 className="text-slate-900 font-semibold mb-3 text-sm border-b border-slate-200 pb-2">
+      {t("orders.deliveryAddress")}
+    </h3>
+
+    <div className="text-slate-700 text-sm">
+      <p className="font-semibold text-slate-900 mb-1">
+        {shippingAddress.label}
+      </p>
+      <p>
+        {shippingAddress.street}, {shippingAddress.city} -{" "}
+        {shippingAddress.pinCode}
+      </p>
+    </div>
+  </div>
+
+  {/* Price Details */}
+  <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+    <h3 className="text-slate-900 font-semibold mb-3 text-sm border-b border-slate-200 pb-2">
+      {t("orders.price")}
+    </h3>
+
+    <div className="space-y-2 text-sm">
+      <div className="flex justify-between text-slate-700">
+        <span>{t("orders.totalItems")}</span>
+        <span>{totalProducts}</span>
+      </div>
+
+      <div className="flex justify-between text-slate-700">
+        <span>{t("orders.price")}</span>
+        <span>₹ {subtotalAmount}</span>
+      </div>
+
+      {discountAmount > 0 && (
+        <div className="flex justify-between text-emerald-600 font-medium">
+          <span>Discount</span>
+          <span>-₹ {discountAmount}</span>
+        </div>
+      )}
+
+      <div className="flex justify-between text-slate-700">
+        <span>{t("orders.shippingAmount")}</span>
+        <span>₹ {shippingAmount}</span>
+      </div>
+
+      <div className="border-t border-slate-300 pt-2 mt-2 flex justify-between text-slate-900 font-bold">
+        <span>{t("orders.totalAmount")}</span>
+        <span>₹ {grandTotal}</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
 
       <style jsx>{`
         @keyframes twinkle {

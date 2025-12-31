@@ -20,6 +20,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
   const [addedToCart, setAddedToCart] = useState(false);
   const [liked, setLiked] = useState(product.isWishlisted || false);
   const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -29,6 +30,18 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
   useEffect(() => {
     setLiked(product.isWishlisted || false);
   }, [product.isWishlisted]);
+
+  // Auto-slide images
+  useEffect(() => {
+    const images = product.images || [];
+    if (images.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+      }, 3000); // Change image every 3 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [product.images]);
 
   const handleAddToCart = async ({ e, isBuyNow }) => {
     e.stopPropagation();
@@ -263,11 +276,12 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
         <div className="relative w-full aspect-[3/4] bg-gradient-to-b from-purple-50 to-transparent">
           <img
             src={
+              product.images?.[currentImageIndex] ||
               product.images?.[0] ||
               "https://images.unsplash.com/photo-1585409677983-0f6c41ca9c3b?w=400"
             }
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-full object-contain transition-all duration-500 group-hover:scale-105"
             onError={(e) => {
               e.target.src = "https://via.placeholder.com/400x532?text=No+Image";
             }}

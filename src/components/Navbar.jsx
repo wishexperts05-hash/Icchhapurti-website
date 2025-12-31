@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { useHeader } from "../context/HeaderContext";
 import { Mail } from "lucide-react";
+import { LucideShoppingBag } from "lucide-react";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -90,7 +91,7 @@ via-[#020A1E]
 to-[#02081B]
 shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
  text-white border-b border-white/10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-1">
             <div className="flex items-center justify-between">
               {/* Left - Trusted Users Badge */}
               <div className="hidden sm:flex items-center gap-2 text-sm">
@@ -117,7 +118,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
                         />
                       </div>
                       <span className="text-sm font-medium">{user?.name?.split(' ')[0]}</span>
-                      <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                      <ChevronRight  size={14} className="group-hover:translate-x-0.5 transition-transform" />
                     </Link>
 
                     {/* Wishlist */}
@@ -130,26 +131,31 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
                         size={18}
                         className="sm:w-5 sm:h-5 group-hover:scale-110 transition-transform"
                       />
-                      <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-purple-700 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
-                        {wishlistCount || 0}
-                      </span>
+
+                      {
+                        wishlistCount > 0 && (<span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-purple-700 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
+                          {wishlistCount || 0}
+                        </span>)
+                      }
+
                     </Link>
 
                     {/* Cart */}
-                 <Link
-  to="/cart"
-  className="relative p-2 rounded-full hover:bg-white/10 transition-colors group"
->
-  <div className="relative w-5 h-5 sm:w-6 sm:h-6">
-    <ShoppingCart className="w-full h-full transition-transform group-hover:scale-110" />
+                    <Link
+                      to="/cart"
+                      className="relative p-2 rounded-full hover:bg-white/10 transition-colors group"
+                    >
+                      <div className="relative  ">
+                        <LucideShoppingBag size={18}  className="w-full h-full transition-transform group-hover:scale-110" />
+                        {/* <ShoppingBag /> */}
 
-    {cartCount > 0 && (
-      <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
-        {cartCount}
-      </span>
-    )}
-  </div>
-</Link>
+                        {cartCount > 0 && (
+                          <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
+                            {cartCount}
+                          </span>
+                        )}
+                      </div>
+                    </Link>
 
 
                     {/* Notifications */}
@@ -158,13 +164,18 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
                       className="relative p-2 rounded-full hover:bg-white/10 transition-colors group"
                       title="Notifications"
                     >
-                      <Bell size={18} className="sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
-                      <div className="absolute -top-1 -right-1 flex items-center gap-1">
-                        <span className="text-xs bg-red-500 text-white px-1.5 py-0.5 rounded-full">
-                          {unreadCount || 0}
+                      <Bell
+                        size={18}
+                        className="sm:w-5 sm:h-5 transition-transform group-hover:scale-110"
+                      />
+
+                      {unreadCount > 0 && (
+                        <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center text-[10px] font-semibold bg-red-500 text-white rounded-full px-1">
+                          {unreadCount}
                         </span>
-                      </div>
+                      )}
                     </Link>
+
                   </>
                 ) : (
                   <>
@@ -178,19 +189,19 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
                     </Link>
 
                     <Link
-  to="/cart"
-  className="relative p-2 rounded-full hover:bg-white/10 transition-colors group"
->
-  <div className="relative w-5 h-5 sm:w-6 sm:h-6">
-    <ShoppingCart className="w-full h-full transition-transform group-hover:scale-110" />
+                      to="/cart"
+                      className="relative p-2 rounded-full hover:bg-white/10 transition-colors group"
+                    >
+                      <div className="relative w-5 h-5 sm:w-6 sm:h-6">
+                        <LucideShoppingBag     size={18} className="w-full h-full transition-transform group-hover:scale-110" />
 
-    {cartCount > 0 && (
-      <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
-        {cartCount}
-      </span>
-    )}
-  </div>
-</Link>
+                        {cartCount > 0 && (
+                          <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
+                            {cartCount}
+                          </span>
+                        )}
+                      </div>
+                    </Link>
 
                   </>
                 )}
@@ -220,15 +231,13 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
                   <Link
                     key={index}
                     to={link.href}
-                    className={`text-[16px] lg:text-[18px] cursor-pointer font-medium transition-all relative pb-1 group ${
-                      isActive(link.href) ? 'text-purple-900' : 'hover:text-purple-900'
-                    }`}
+                    className={`text-[16px] lg:text-[18px] cursor-pointer font-medium transition-all relative pb-1 group ${isActive(link.href) ? 'text-purple-900' : 'hover:text-purple-900'
+                      }`}
                   >
                     {link.label}
                     <span
-                      className={`absolute bottom-0 left-0 h-0.5 bg-purple-900 transition-all ${
-                        isActive(link.href) ? 'w-full' : 'w-0 group-hover:w-full'
-                      }`}
+                      className={`absolute bottom-0 left-0 h-0.5 bg-purple-900 transition-all ${isActive(link.href) ? 'w-full' : 'w-0 group-hover:w-full'
+                        }`}
                     ></span>
                   </Link>
                 ))}
@@ -250,9 +259,8 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
 
       {/* RIGHT SLIDING DRAWER */}
       <div
-        className={`fixed top-0 right-0 h-full w-full sm:w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
-          menuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 h-full w-full sm:w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         {/* User Profile Section */}
         <div className="bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
@@ -319,7 +327,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
                 onClick={() => setMenuOpen(false)}
                 className="flex flex-col items-center gap-1 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all"
               >
-                <ShoppingCart size={18} />
+                <LucideShoppingBag size={18} />
                 <span className="text-xs">Cart</span>
               </Link>
               <Link
@@ -345,11 +353,10 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
                 key={index}
                 to={item.href}
                 onClick={() => setMenuOpen(false)}
-                className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${
-                  isItemActive
-                    ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
-                    : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
-                }`}
+                className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isItemActive
+                  ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
+                  : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
+                  }`}
               >
                 <Icon size={20} className="group-hover:scale-110 transition-transform" />
                 <span className="font-medium flex-1 text-sm sm:text-base">{item.label}</span>
@@ -364,11 +371,10 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
             <Link
               to="/about-us"
               onClick={() => setMenuOpen(false)}
-              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${
-                isActive('/about-us')
-                  ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
-                  : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
-              }`}
+              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isActive('/about-us')
+                ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
+                : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
+                }`}
             >
               <Info size={20} className="group-hover:scale-110 transition-transform" />
               <span className="font-medium flex-1 text-sm sm:text-base">{t("nav.about")}</span>
@@ -378,11 +384,10 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
             <Link
               to="/contact"
               onClick={() => setMenuOpen(false)}
-              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${
-                isActive('/contact')
-                  ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
-                  : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
-              }`}
+              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isActive('/contact')
+                ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
+                : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
+                }`}
             >
               <Mail size={20} className="group-hover:scale-110 transition-transform" />
               <span className="font-medium flex-1 text-sm sm:text-base">Contact Us</span>
@@ -392,11 +397,10 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
             <Link
               to="/blogs"
               onClick={() => setMenuOpen(false)}
-              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${
-                isActive('/blogs')
-                  ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
-                  : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
-              }`}
+              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isActive('/blogs')
+                ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
+                : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
+                }`}
             >
               <BookOpen size={20} className="group-hover:scale-110 transition-transform" />
               <span className="font-medium flex-1 text-sm sm:text-base">{t("nav.blogs")}</span>

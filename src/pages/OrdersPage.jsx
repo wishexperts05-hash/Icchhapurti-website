@@ -88,7 +88,7 @@ const OrdersPage = () => {
     // Show ellipsis if needed
     if (currentPage > 3) {
       buttons.push(
-        <span key="ellipsis-1" className="text-white px-2">
+        <span key="ellipsis-1" className="text-black px-2">
           ...
         </span>
       );
@@ -112,7 +112,7 @@ const OrdersPage = () => {
     // Show ellipsis if needed
     if (currentPage < totalPages - 2) {
       buttons.push(
-        <span key="ellipsis-2" className="text-white px-2">
+        <span key="ellipsis-2" className="text-black px-2">
           ...
         </span>
       );
@@ -191,8 +191,8 @@ const OrdersPage = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-5xl mx-auto p-6">
-        <h1 className="text-3xl font-bold text-white mb-8">{t("nav.orders")}</h1>
+      <div className="relative z-10 max-w-4xl bg-white mx-auto p-6">
+        <h1 className="text-3xl font-bold text-black mb-8">{t("nav.orders")}</h1>
 
         {orders.length === 0 ? (
           <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-8 text-center">
@@ -215,7 +215,7 @@ const OrdersPage = () => {
               return (
                 <div
                   key={order._id}
-                  className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-4 hover:bg-slate-800/60 transition-all duration-300"
+                  className="bg-gray-50 backdrop-blur-sm border border-slate-700/50 rounded-lg p-4 hover:bg-gray-100 transition-all duration-300"
                 >
                   <div className="flex items-center gap-4">
                     {/* Product Image */}
@@ -239,7 +239,7 @@ const OrdersPage = () => {
                     {/* Order Details */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs font-bold text-gray-800">
                           Order ID: {order.orderId}
                         </span>
                       </div>
@@ -248,10 +248,10 @@ const OrdersPage = () => {
                           {order.status}
                         </span>
                       </div>
-                      <p className="text-white text-sm truncate">
+                      <p className="text-black text-sm truncate">
                         {order.productName}
                       </p>
-                      <p className="text-amber-400 font-semibold">₹ {order.price}</p>
+                      <p className="text-amber-600 font-semibold">₹ {order.price}</p>
 
                       {/* Star Rating - Show only for delivered orders */}
                       {/* {!isDelivered && (

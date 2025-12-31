@@ -117,12 +117,7 @@ export default function PaymentPage() {
 
 
 
-  useEffect(() => {
-    if (isAuthenticated && cartItems.length > 0) {
-      fetchCheckOutDetails();
-    }
-
-  }, [isAuthenticated, cartItems])
+  
 
   // Load Razorpay Script
   useEffect(() => {
@@ -143,7 +138,12 @@ export default function PaymentPage() {
   const [editAddressId, setEditAddressId] = useState(null);
 
 
+useEffect(() => {
+    if (isAuthenticated && cartItems.length > 0) {
+      fetchCheckOutDetails();
+    }
 
+  }, [isAuthenticated, cartItems,addressIndex])
 
 
 
@@ -576,29 +576,29 @@ export default function PaymentPage() {
   // Error State (Critical)
   if (error && !checkoutDetails) {
     return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
-    <div className="bg-white rounded-xl p-4 max-w-xs w-full text-center shadow-md border border-red-300">
-      <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
-        <AlertCircle className="w-8 h-8 text-red-500" />
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+        <div className="bg-white rounded-xl p-4 max-w-xs w-full text-center shadow-md border border-red-300">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+            <AlertCircle className="w-8 h-8 text-red-500" />
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-1">Payment Error</h3>
+          <p className="text-gray-600 text-sm mb-3">{error}</p>
+          <div className="flex gap-2 justify-center">
+            <button
+              onClick={initializePaymentPage}
+              className="px-3 py-1.5 rounded bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition"
+            >
+              Try Again
+            </button>
+            <button
+              onClick={() => Navigate('/cart')}
+              className="px-3 py-1.5 rounded bg-gray-300 text-gray-900 text-sm font-medium hover:bg-gray-400 transition"
+            >
+              Back to Cart
+            </button>
+          </div>
+        </div>
       </div>
-      <h3 className="text-xl font-bold text-gray-900 mb-1">Payment Error</h3>
-      <p className="text-gray-600 text-sm mb-3">{error}</p>
-      <div className="flex gap-2 justify-center">
-        <button
-          onClick={initializePaymentPage}
-          className="px-3 py-1.5 rounded bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition"
-        >
-          Try Again
-        </button>
-        <button
-          onClick={() => Navigate('/cart')}
-          className="px-3 py-1.5 rounded bg-gray-300 text-gray-900 text-sm font-medium hover:bg-gray-400 transition"
-        >
-          Back to Cart
-        </button>
-      </div>
-    </div>
-  </div>
     );
   }
 
@@ -704,50 +704,50 @@ export default function PaymentPage() {
 
 
         {showReferralPopup && (
-  <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/30 backdrop-blur-sm px-2">
-    <Confetti numberOfPieces={200} recycle={false} />
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/30 backdrop-blur-sm px-2">
+            <Confetti numberOfPieces={200} recycle={false} />
 
-    <div className="relative w-full max-w-xs bg-white rounded-xl shadow-lg p-4 text-center animate-scaleIn">
+            <div className="relative w-full max-w-xs bg-white rounded-xl shadow-lg p-4 text-center animate-scaleIn">
 
-      {/* Close button */}
-      <button
-        onClick={() => setShowReferralPopup(false)}
-        className="absolute top-2 right-2 text-gray-500 hover:text-black"
-      >
-        <X />
-      </button>
+              {/* Close button */}
+              <button
+                onClick={() => setShowReferralPopup(false)}
+                className="absolute top-2 right-2 text-gray-500 hover:text-black"
+              >
+                <X />
+              </button>
 
-      {/* Icon */}
-      <div className="flex justify-center mb-2">
-        <div className="bg-green-100 text-green-600 p-3 rounded-full animate-bounce">
-          <Gift size={24} />
-        </div>
-      </div>
+              {/* Icon */}
+              <div className="flex justify-center mb-2">
+                <div className="bg-green-100 text-green-600 p-3 rounded-full animate-bounce">
+                  <Gift size={24} />
+                </div>
+              </div>
 
-      {/* Heading */}
-      <h2 className="text-xl font-bold text-gray-900 mb-1">
-        🎉 Referral Applied!
-      </h2>
+              {/* Heading */}
+              <h2 className="text-xl font-bold text-gray-900 mb-1">
+                🎉 Referral Applied!
+              </h2>
 
-      <p className="text-gray-600 text-sm mb-2">
-        You just unlocked a special discount
-      </p>
+              <p className="text-gray-600 text-sm mb-2">
+                You just unlocked a special discount
+              </p>
 
-      {/* Discount */}
-      <div className="text-2xl font-extrabold text-green-600 mb-2">
-        {referralDiscount || firstDiscount} OFF
-      </div>
+              {/* Discount */}
+              <div className="text-2xl font-extrabold text-green-600 mb-2">
+                {referralDiscount || firstDiscount} OFF
+              </div>
 
-      {/* CTA */}
-      <button
-        onClick={() => setShowReferralPopup(false)}
-        className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg text-sm transition"
-      >
-        Continue Checkout 🚀
-      </button>
-    </div>
-  </div>
-)}
+              {/* CTA */}
+              <button
+                onClick={() => setShowReferralPopup(false)}
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg text-sm transition"
+              >
+                Continue Checkout 🚀
+              </button>
+            </div>
+          </div>
+        )}
 
 
         <div className="min-h-screen rounded-lg bg-gray-50">
@@ -1324,30 +1324,36 @@ export default function PaymentPage() {
                         <span>
                           {selectedMethod === "razorpay"
                             ? "Proceed To Payment"
-                            : t("payment.checkout")}
+                            : "Pay Now"}
                         </span>
 
                         {/* Payment Logos */}
-                        <div className="flex items-center ml-1">
-                          {[
-                            { src: "/paytm.png", alt: "Paytm" },
-                            { src: "/phonepay.jpg", alt: "PhonePe" },
-                            { src: "/gpay.jpg", alt: "GPay" },
-                          ].map((logo, index) => (
-                            <div
-                              key={index}
-                              className={`w-6 h-6 rounded-full bg-white border border-white
+
+                        {
+                          selectedMethod === "razorpay" &&
+
+                          <div className="flex items-center ml-1">
+                            {[
+                              { src: "/paytm.png", alt: "Paytm" },
+                              { src: "/phonepay.jpg", alt: "PhonePe" },
+                              { src: "/gpay.jpg", alt: "GPay" },
+                            ].map((logo, index) => (
+                              <div
+                                key={index}
+                                className={`w-6 h-6 rounded-full bg-white border border-white
               flex items-center justify-center
               ${index !== 0 ? "-ml-2" : ""}`}
-                            >
-                              <img
-                                src={logo.src}
-                                alt={logo.alt}
-                                className="w-4 h-4 object-contain"
-                              />
-                            </div>
-                          ))}
-                        </div>
+                              >
+                                <img
+                                  src={logo.src}
+                                  alt={logo.alt}
+                                  className="w-4 h-4 object-contain"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        }
+
 
                         <ArrowRight size={18} />
                       </>

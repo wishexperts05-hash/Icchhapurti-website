@@ -82,64 +82,78 @@ const { t } = useTranslation();
   
 
   return (
-    <div className="min-h-screen  flex flex-col items-center justify-start py-10">
+   <div className=" bg-white max-w-4xl mx-auto flex flex-col items-center justify-start py-10 px-4">
 
-      <h2 className="text-white text-lg font-semibold mb-6">{t("addresses.shippingAddress")}</h2>
+  {/* Title */}
+  <h2 className="text-slate-900 text-lg font-semibold mb-6">
+    {t("addresses.shippingAddress")}
+  </h2>
 
-      {addresses.length === 0 ? (
-        <p className="text-gray-300 mb-6">{t("addresses.noAddress")}</p>
-      ) : (
-        <div className="w-full max-w-4xl flex flex-col gap-4">
-          {addresses.map((addr) => (
-            <div
-              key={addr._id}
-              className="relative bg-transparent border border-gray-300 rounded-lg p-4 flex items-start justify-between gap-4"
-            >
-              <div>
-                <div className="flex items-center gap-4 mb-1">
-                  <span className="text-white font-medium">{addr.fullName}</span>
-                  <span className="text-white text-sm">{addr.phoneNumber}</span>
-                </div>
+  {/* Empty State */}
+  {addresses.length === 0 ? (
+    <p className="text-slate-500 mb-6">
+      {t("addresses.noAddress")}
+    </p>
+  ) : (
+    <div className="w-full flex flex-col gap-4">
 
-                <div className="text-gray-300 text-sm mb-2">
-                  {addr.street}, {addr.city}, {addr.state}, {addr.country}, {addr.pinCode}
-                </div>
-
-                <Link
-                  to={`/address-form/${addr._id}`}
-                  className="text-yellow-400 cursor-pointer text-sm mr-4 hover:underline"
-                >
-                  Edit
-                </Link>
-
-                <button
-                  onClick={() => handleDelete(addr._id)}
-                  className="text-red-400 cursor-pointer text-sm hover:underline"
-                  disabled={deleteLoading === addr._id}
-                >
-                  {deleteLoading === addr._id ? "Removing..." : "Remove"}
-                </button>
-              </div>
-
-              <input
-                type="radio"
-                className="accent-[#C8AC5B] w-5 h-5 mt-2"
-                checked={selected === addr._id}
-                onChange={() => setSelected(addr._id)}
-                name="selectedAddress"
-              />
+      {addresses.map((addr) => (
+        <div
+          key={addr._id}
+          className="relative bg-white border border-slate-200 rounded-lg p-4 flex items-start justify-between gap-4 hover:border-amber-300 transition"
+        >
+          <div>
+            <div className="flex items-center gap-4 mb-1">
+              <span className="text-slate-800 font-medium">
+                {addr.fullName}
+              </span>
+              <span className="text-slate-600 text-sm">
+                {addr.phoneNumber}
+              </span>
             </div>
-          ))}
-        </div>
-      )}
 
-      <Link
-        to="/address-form"
-        className="mt-8 px-10 py-3 rounded-md bg-[#C8AC5B] text-white text-lg font-semibold transition hover:bg-yellow-600"
-      >
-       {t("addresses.addAddress")}
-      </Link>
+            <div className="text-slate-600 text-sm mb-2">
+              {addr.street}, {addr.city}, {addr.state}, {addr.country},{" "}
+              {addr.pinCode}
+            </div>
+
+            <Link
+              to={`/address-form/${addr._id}`}
+              className="text-amber-600 text-sm mr-4 hover:underline"
+            >
+              Edit
+            </Link>
+
+            <button
+              onClick={() => handleDelete(addr._id)}
+              className="text-red-500 text-sm hover:underline disabled:opacity-50"
+              disabled={deleteLoading === addr._id}
+            >
+              {deleteLoading === addr._id ? "Removing..." : "Remove"}
+            </button>
+          </div>
+
+          <input
+            type="radio"
+            className="accent-amber-500 w-5 h-5 mt-2"
+            checked={selected === addr._id}
+            onChange={() => setSelected(addr._id)}
+            name="selectedAddress"
+          />
+        </div>
+      ))}
     </div>
+  )}
+
+  {/* Add Address Button */}
+  <Link
+    to="/address-form"
+    className="mt-8 px-10 py-3 rounded-md bg-gradient-to-r from-amber-500 to-orange-500 text-white text-lg font-semibold transition hover:opacity-90"
+  >
+    {t("addresses.addAddress")}
+  </Link>
+</div>
+
   );
 };
 

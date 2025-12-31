@@ -12,6 +12,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useHeader } from "../context/HeaderContext";
+import { ArrowBigRight } from "lucide-react";
+import { ArrowBigLeft } from "lucide-react";
 
 // ---------- PRODUCT CARD ----------
 function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
@@ -20,6 +22,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
   const [addedToCart, setAddedToCart] = useState(false);
   const [liked, setLiked] = useState(product.isWishlisted || false);
   const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -29,6 +32,18 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
   useEffect(() => {
     setLiked(product.isWishlisted || false);
   }, [product.isWishlisted]);
+
+  // Auto-slide images
+  useEffect(() => {
+    const images = product.images || [];
+    if (images.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+      }, 3000); // Change image every 3 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [product.images]);
 
   const handleAddToCart = async ({ e, isBuyNow }) => {
     e.stopPropagation();
@@ -82,7 +97,12 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
           })
         );
         navigate("/cart");
-
+        // if (redirectToCart) {
+        //   navigate("/cart");
+        // } else {
+        //   setAddedToCart(true);
+        //   setTimeout(() => setAddedToCart(false), 2000);
+        // }
       } else {
         await onAddToCart(product);
 
@@ -102,7 +122,6 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
       setBuyingNow(false);
     }
   };
-
 
   const handleBuyNow = async (e) => {
     e.stopPropagation();
@@ -199,6 +218,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
         throw new Error(result.message || "Failed to update wishlist");
       }
       setList((prev) => (nextLiked ? prev + 1 : prev - 1));
+
       setLiked(nextLiked);
 
       // if parent passed onWishlistUpdate, keep product.isWishlisted in sync
@@ -217,10 +237,10 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
     <div className="relative group h-full">
       <div
         onClick={handleViewDetails}
-        className="relative bg-white cursor-pointer 
- rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50 transition-all duration-500 hover:scale-[1.02] border border-purple-500/30 flex flex-col h-full "
+        className="relative  bg-white
+ rounded-3xl overflow-hidden shadow-2xl  transition-all duration-500 hover:scale-[1.02] border border-purple-500/30 flex flex-col h-full "
       >
-        <div className="absolute inset-0    transition-all duration-500" />
+        <div className="absolute inset-0  transition-all duration-500" />
 
         <div className="absolute top-4 right-4 text-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-pulse">
           <Sparkles className="w-5 h-5" />
@@ -228,7 +248,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
 
         {product.discount && (
           <div className="absolute top-3 left-3 z-10">
-            <div className="px-3 py-1.5 rounded-full shadow-lg animate-pulse">
+            <div className="bg-gradient-to-r from-red-500 to-pink-600 px-3 py-1.5 rounded-full shadow-lg animate-pulse">
               <span className="text-white text-xs font-black">
                 {product.discount}% OFF
               </span>
@@ -236,24 +256,14 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
           </div>
         )}
 
-        {/* {product.badge && (
-          <div className="absolute top-3 right-14 z-10">
-            <div className="bg-gradient-to-r from-yellow-500 to-amber-600 px-3 py-1 rounded-full shadow-lg">
-              <span className="text-white text-xs font-bold">
-                ✨ {product.badge}
-              </span>
-            </div>
-          </div>
-        )} */}
 
-        {/* Heart button (fixed, no navigation) */}
         <button
           onClick={toggleWishlist}
           disabled={wishlistLoading}
-          className="  cursor-pointer top-3 right-3 z-10 w-10 h-10  backdrop-blur-md rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 hover:bg-white/20 border border-white/20 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="  cursor-pointer top-3 right-3 z-10 w-10 h-10  backdrop-blur-md rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110  disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {wishlistLoading ? (
-            <Loader2 size={18} className="animate-spin text-white" />
+            <Loader2 size={18} className="animate-spin text-black" />
           ) : (
             <Heart
               size={18}
@@ -265,15 +275,15 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
         </button>
 
 
-        
         <div className="relative w-full aspect-[3/4] bg-gradient-to-b from-purple-50 to-transparent">
           <img
             src={
+              product.images?.[currentImageIndex] ||
               product.images?.[0] ||
               "https://images.unsplash.com/photo-1585409677983-0f6c41ca9c3b?w=400"
             }
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-full object-contain transition-all duration-500 group-hover:scale-105"
             onError={(e) => {
               e.target.src = "https://via.placeholder.com/400x532?text=No+Image";
             }}
@@ -281,33 +291,33 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
         </div>
 
         <div className="relative p-6 bg-[#f8f8f8] flex-1 flex flex-col">
-          <h3 className="text-base sm:text-lg font-bold text-black leading-snug mb-2 line-clamp-2 min-h-[3rem] sm:min-h-[3.5rem]   transition-all">
+          <h3 className=" sm:text-2xl font-bold text-[#041049] leading-snug mb-2 text-2xl line-clamp-2 min-h-[3rem] sm:min-h-[3.5rem]  transition-all">
             {product.name || "Untitled Product"}
           </h3>
 
-        {product.description && (() => {
-  try {
-    const parsed = JSON.parse(product.description);
-    const firstContent = parsed?.[0]?.content || "";
+          {product.description && (() => {
+            try {
+              const parsed = JSON.parse(product.description);
+              const firstContent = parsed?.[0]?.content || "";
 
-    const cleanText = firstContent
-      .replace(/<[^>]*>/g, "") // remove HTML tags
-      .replace(/&nbsp;/g, " ")
-      .trim();
+              const cleanText = firstContent
+                .replace(/<[^>]*>/g, "") // remove HTML tags
+                .replace(/&nbsp;/g, " ")
+                .trim();
 
-    return (
-      <p className="text-xs sm:text-sm text-gray-500 mb-3 line-clamp-2 leading-relaxed">
-        {cleanText}
-      </p>
-    );
-  } catch (e) {
-    return null;
-  }
-})()}
+              return (
+                <p className="text-xs sm:text-sm text-gray-500 mb-3 line-clamp-2 leading-relaxed">
+                  {cleanText}
+                </p>
+              );
+            } catch (e) {
+              return null;
+            }
+          })()}
 
 
           <div className="flex items-center gap-2 mb-3">
-            <div className="flex items-center gap-1 px-2 py-1 rounded-lg ">
+            <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-yellow-500/20 border border-yellow-500/30">
               <Star
                 size={12}
                 className="sm:w-3.5 sm:h-3.5"
@@ -324,7 +334,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 mb-4">
-            <span className="text-2xl sm:text-3xl font-black text-black">
+            <span className="text-2xl sm:text-3xl text-black font-black  bg-clip-text 0">
               {product.price || 0}
             </span>
             {/* {product.price && (
@@ -358,7 +368,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
             <button
               onClick={(e) => handleAddToCart({ e, isBuyNow: false })}
               disabled={addingToCart || addedToCart || buyingNow}
-              className="flex-1 flex cursor-pointer items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 border-2 border-purple-500 rounded-xl font-bold text-xs sm:text-sm text-black transition-all hover:bg-purple-500/20 disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
+              className="flex-1 cursor-pointer flex items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 border-2 border-purple-500 rounded-xl font-bold text-xs sm:text-sm text-black transition-all hover:bg-purple-500/20 disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
             >
               {addingToCart ? (
                 <>
@@ -384,7 +394,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
                     size={16}
                     className="sm:w-[18px] sm:h-[18px]"
                   />
-                  <span className="hidden sm:inline">Add to Cart</span>
+                  <span className="hidden cursor-pointer sm:inline">Add to Cart</span>
                   <span className="sm:hidden">Add</span>
                 </>
               )}
@@ -719,7 +729,7 @@ export default function ProductsPage() {
             className="px-4 py-2 rounded-lg text-white text-sm disabled:opacity-40"
             style={{ background: 'linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)' }}
           >
-            Prev
+            <ArrowBigLeft/>
           </button>
 
           <span className="text-white font-semibold text-lg">
@@ -732,7 +742,7 @@ export default function ProductsPage() {
             className="px-4 py-2 rounded-lg text-white text-sm disabled:opacity-40"
             style={{ background: 'linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)' }}
           >
-            Next
+            <ArrowBigRight/>
           </button>
         </div>
 
