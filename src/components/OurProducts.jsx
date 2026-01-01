@@ -107,7 +107,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate,openPayment,setOpe
         await onAddToCart(product);
 
         if (isBuyNow) {
-          navigate("/payments")
+           setOpenPayment(true)
         } else {
           setAddedToCart(true);
           setTimeout(() => setAddedToCart(false), 2000);

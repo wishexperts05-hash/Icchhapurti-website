@@ -376,8 +376,9 @@ export default function PaymentModal({ isOpen, onClose }) {
             if (res.data.success) {
                 setCheckoutSuccess(true);
                 setTimeout(() => {
+                     onClose()
                     setCheckoutSuccess(false);
-                    onClose()
+                   
                     Navigate('/orders');
                 }, 2000);
             } else {
@@ -609,7 +610,7 @@ export default function PaymentModal({ isOpen, onClose }) {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-[9999] backdrop-blur-[2px] bg-black/60  ">
+        <div className="fixed inset-0 z-[9999] h-screen backdrop-blur-[2px] bg-black/60  ">
 
 
             <CartSidebar
@@ -719,7 +720,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                                 }
                                 className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
                             >
-                               Close
+                                Close
                             </button>
                         </div>
                     </div>
@@ -729,7 +730,7 @@ export default function PaymentModal({ isOpen, onClose }) {
 
 
             {showReferralPopup && (
-                <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/30 backdrop-blur-sm px-2">
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm px-2">
                     <Confetti numberOfPieces={200} recycle={false} />
 
                     <div className="relative w-full max-w-xs bg-white rounded-xl shadow-lg p-4 text-center animate-scaleIn">
@@ -793,7 +794,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                             <div className="bg-white rounded-lg px-1 shadow-sm overflow-hidden">
 
 
-                                {isAmountReady && <ProgressOfferBar price={totalAmount} />}
+                                {isAmountReady && <ProgressOfferBar   confettiOrigin={{ x: 0.5, y: 0.2 }} price={totalAmount} />}
 
                                 {(() => {
                                     let items = isAuthenticated
@@ -1076,7 +1077,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                                 }
 
 
-                                {
+                                {/* {
                                     isAuthenticated && !checkoutDetails &&
                                     <button className="bg-gradient-to-r my-2 from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/50 w-full max-w-lg disabled:opacity-50 disabled:cursor-not-allowed mx-auto block text-lg flex items-center justify-center gap-3" onClick={fetchCheckOutDetails} >
 
@@ -1085,7 +1086,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                                             checkoutLoading ? "Processing...." : "Checkout"
                                         }
                                     </button>
-                                }
+                                } */}
 
 
 

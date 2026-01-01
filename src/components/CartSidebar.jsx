@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useHeader } from '../context/HeaderContext';
 import PaymentModal from '../pages/PaymentModal';
 import FullscreenModal from './FullscreenModal';
+import ProgressOfferBar from './ProgressOfferBar';
 
 export default function CartSidebar({ isOpen, onClose, onCheckout }) {
   const { t } = useTranslation();
@@ -224,7 +225,7 @@ export default function CartSidebar({ isOpen, onClose, onCheckout }) {
       {/* Sidebar Drawer */}
       <div
         className={`fixed top-0 right-0 h-full 
-w-[85%] sm:w-80 
+w-[85%] sm:w-100
 bg-white shadow-2xl z-50 
 transform transition-transform duration-300 ease-in-out
 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
@@ -255,10 +256,19 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] p-4 sm:p-6 text-white">
           </div>
         </div>
 
+        {cartItems && totalPrice && (
+          <ProgressOfferBar
+       confettiOrigin={{ x: 0.95, y: 0.6 }}
+            price={Number(String(totalPrice).replace(/[^0-9.]/g, ''))}
+          />
+        )}
+
+
         {/* Content */}
-        <div className="flex flex-col  h-[calc(100%-120px)]">
+      
+       <div className="flex min-h-0 overflow-y-auto flex-col h-[calc(100%-240px)]">
           {/* Cart Items - Scrollable */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+         <div className="flex-1 max-h-[calc(100%-120px)] overflow-y-scroll p-4 space-y-3">
             {loading ? (
               <div className="flex flex-col items-center justify-center h-full">
                 <Loader2 className="w-10 h-10 animate-spin text-[#a17b0a] mb-3" />
@@ -317,7 +327,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] p-4 sm:p-6 text-white">
                       >
                         {item.product.name}
                       </h3>
-                      <p className="text-[#a17b0a] font-semibold text-sm mb-2">
+                      <p className="text-black font-semibold text-sm mb-2">
                         {item.product.price}
                       </p>
 
@@ -374,13 +384,27 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] p-4 sm:p-6 text-white">
             )}
           </div>
 
+        <div className="sticky bottom-[96px] z-10 w-full bg-gradient-to-r from-[#E59A2F] to-[#D8891E] text-white text-xs font-semibold py-1 flex items-center justify-center gap-4 shadow-sm">
+    <span>Fast Shipping 🚚</span>
+    <span>|</span>
+    <span>Secure & Encrypted Checkout ✅</span>
+  </div>
+
+
+
           {/* Footer - Checkout */}
           {cartItems.length > 0 && (
-            <div className="border-t border-gray-200 p-4 bg-white">
+           <div className="sticky bottom-0 z-20 border-t border-gray-200 p-4 bg-white">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-gray-600 font-medium">Total:</span>
-                <span className="text-2xl font-bold text-[#a17b0a]">₹{totalPrice.toLocaleString('en-IN')}</span>
+                <span className="text-gray-600 font-medium">SubTotal:</span>
+                <span className="text-2xl font-bold text-black">₹{totalPrice.toLocaleString('en-IN')}</span>
               </div>
+              <div className="flex items-center justify-between mb-4 text-sm text-gray-500">
+                <p>
+                  Final price (after discounts) will be displayed at checkout
+                </p>
+              </div>
+
               <button
                 onClick={handleCheckout}
                 className="w-full bg-gradient-to-r cursor-pointer from-[#a17b0a] to-[#a17b0a] hover:from-[#a17b0a] hover:to-[#a17b0a] text-white py-3 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl"

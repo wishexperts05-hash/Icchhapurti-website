@@ -475,7 +475,11 @@ export default function ProductDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+    <div className="min-h-screen bg-gradient-to-br 
+from-[#040934] 
+via-[#030e2d] 
+to-[#051036]
+shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
  relative overflow-hidden py-4 sm:py-8">
 
       <CartSidebar
