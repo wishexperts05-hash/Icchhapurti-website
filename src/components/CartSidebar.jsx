@@ -383,7 +383,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] p-4 sm:p-6 text-white">
               </div>
               <button
                 onClick={handleCheckout}
-                className="w-full bg-gradient-to-r from-[#a17b0a] to-[#a17b0a] hover:from-[#a17b0a] hover:to-[#a17b0a] text-white py-3 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl"
+                className="w-full bg-gradient-to-r cursor-pointer from-[#a17b0a] to-[#a17b0a] hover:from-[#a17b0a] hover:to-[#a17b0a] text-white py-3 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl"
               >
                 Proceed to Checkout
               </button>

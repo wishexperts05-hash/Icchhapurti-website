@@ -18,7 +18,7 @@ import CartSidebar from "../components/CartSidebar";
 import PaymentModal from "./PaymentModal";
 
 // ---------- PRODUCT CARD ----------
-function ProductCard({ product, onAddToCart, onWishlistUpdate, setCartSidebarOpen }) {
+function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setOpenPayment, setCartSidebarOpen }) {
   const [addingToCart, setAddingToCart] = useState(false);
   const [buyingNow, setBuyingNow] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -125,7 +125,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, setCartSidebarOpe
       setBuyingNow(false);
     }
   };
-  const [openPayment, setOpenPayment] = useState(false)
+ 
 
   const handleBuyNow = async (e) => {
     e.stopPropagation();
@@ -477,7 +477,7 @@ export default function ProductsPage() {
   const token = localStorage.getItem("token");
 
   const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
-
+  const [openPayment, setOpenPayment] = useState(false)
   useEffect(() => {
     fetchProducts();
   }, [page, debounceSearch]);
@@ -729,6 +729,8 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
                 onAddToCart={handleAddToCart}
                 setCartSidebarOpen={setCartSidebarOpen}
                 onWishlistUpdate={handleWishlistUpdate}
+                openPayment={openPayment}
+                setOpenPayment={setOpenPayment}
               />
             ))}
           </div>
@@ -781,8 +783,11 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
         <CartSidebar
           isOpen={cartSidebarOpen}
           onClose={() => setCartSidebarOpen(false)}
+          onCheckout={() => {
 
-        />
+            setCartSidebarOpen(false);
+            setOpenPayment(true);
+          }} />
 
       </div>
     </div>

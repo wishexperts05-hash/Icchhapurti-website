@@ -309,7 +309,7 @@ export default function ProductDetails() {
         if (result.success) {
           setCount(prev => prev + 1)
           if (isBuyNow) {
-          setOpenPayment(true)
+            setOpenPayment(true)
           } else {
             setCartSuccess(true);
             setTimeout(() => setCartSuccess(false), 2000);
@@ -481,6 +481,11 @@ export default function ProductDetails() {
       <CartSidebar
         isOpen={cartSidebarOpen}
         onClose={() => setCartSidebarOpen(false)}
+        onCheckout={() => {
+
+          setCartSidebarOpen(false);
+          setOpenPayment(true);
+        }}
 
       />
       {
@@ -692,7 +697,7 @@ export default function ProductDetails() {
                 <button
                   onClick={() => handleBuyNow(product)}
                   disabled={addingToCart || cartSuccess || buyingNow}
-                  className="flex items-center cursor-pointer justify-center gap-1 sm:gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-base"
+                  className="flex items-center cursor-pointer justify-center gap-1 sm:gap-2 bg-[#D3AF37] text-white py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-base"
                 >
                   {buyingNow ? (
                     <>

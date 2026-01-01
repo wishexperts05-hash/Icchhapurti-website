@@ -271,6 +271,7 @@ bg-center bg-no-repeat
         isOpen={cartSidebarOpen}
         onClose={() => setCartSidebarOpen(false)}
         onCheckout={() => {
+      
           setCartSidebarOpen(false);
           setOpenPayment(true);
         }}

@@ -16,7 +16,7 @@ import CartSidebar from "./CartSidebar";
 import PaymentModal from "../pages/PaymentModal";
 
 // ---------- PRODUCT CARD ----------
-function ProductCard({ product, onAddToCart, onWishlistUpdate, setCartSidebarOpen }) {
+function ProductCard({ product, onAddToCart, onWishlistUpdate,openPayment,setOpenPayment, setCartSidebarOpen }) {
   const [addingToCart, setAddingToCart] = useState(false);
   const [buyingNow, setBuyingNow] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -102,12 +102,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, setCartSidebarOpe
         );
         // navigate("/cart");
         setCartSidebarOpen(true)
-        // if (redirectToCart) {
-        //   navigate("/cart");
-        // } else {
-        //   setAddedToCart(true);
-        //   setTimeout(() => setAddedToCart(false), 2000);
-        // }
+     
       } else {
         await onAddToCart(product);
 
@@ -241,14 +236,14 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, setCartSidebarOpe
   };
   console.log(product, "product")
 
-  const [openPayment, setOpenPayment] = useState(false)
+  
 
   return (
     <div className="relative group h-full">
 
-    {
-      openPayment && <PaymentModal isOpen={openPayment} onClose={() => setOpenPayment(false)} />
-    }
+      {
+        openPayment && <PaymentModal isOpen={openPayment} onClose={() => setOpenPayment(false)} />
+      }
       <div onClick={handleViewDetails}
         className="relative  bg-white
  rounded-3xl overflow-hidden shadow-2xl  transition-all duration-500 hover:scale-[1.02] border border-purple-500/30 flex flex-col h-full "
@@ -481,7 +476,7 @@ export default function OurProducts() {
 
 
   const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
-
+const [openPayment, setOpenPayment] = useState(false)
   useEffect(() => {
     fetchProducts();
   }, [page, debounceSearch]);
@@ -699,6 +694,8 @@ export default function OurProducts() {
                 onAddToCart={handleAddToCart}
                 onWishlistUpdate={handleWishlistUpdate}
                 setCartSidebarOpen={setCartSidebarOpen}
+                openPayment={openPayment}
+                setOpenPayment={setOpenPayment}
               />
             ))}
           </div>
@@ -771,6 +768,11 @@ export default function OurProducts() {
         <CartSidebar
           isOpen={cartSidebarOpen}
           onClose={() => setCartSidebarOpen(false)}
+          onCheckout={() => {
+      
+          setCartSidebarOpen(false);
+          setOpenPayment(true);
+        }}
 
         />
       </div>
