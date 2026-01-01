@@ -13,6 +13,8 @@ import { Box } from 'lucide-react';
 import FAQPage from './FAQPage';
 import { ChevronDown } from 'lucide-react';
 import ProductImageGallery from '../components/ProductImageGallery';
+import CartSidebar from '../components/CartSidebar';
+import PaymentModal from './PaymentModal';
 
 export default function ProductDetails() {
   const [product, setProduct] = useState(null);
@@ -34,6 +36,9 @@ export default function ProductDetails() {
   const Navigate = useNavigate();
   const token = localStorage.getItem("token");
   const [openReview, setOpenReview] = useState(false);
+
+
+  const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
 
   const [openIndex, setOpenIndex] = useState(null);
   const faqs = [
@@ -278,7 +283,7 @@ export default function ProductDetails() {
             detail: { cart: existingCart, count: totalItems },
           })
         );
-        Navigate("/cart");
+        setCartSidebarOpen(true)
 
       } else {
         const cartData = {
@@ -304,11 +309,11 @@ export default function ProductDetails() {
         if (result.success) {
           setCount(prev => prev + 1)
           if (isBuyNow) {
-            Navigate("/payments")
+          setOpenPayment(true)
           } else {
             setCartSuccess(true);
             setTimeout(() => setCartSuccess(false), 2000);
-            Navigate("/cart")
+            setCartSidebarOpen(true)
 
           }
         }
@@ -318,13 +323,13 @@ export default function ProductDetails() {
 
       }
     } catch (error) {
-      Navigate("/cart");
+      setCartSidebarOpen(true)
     } finally {
       setAddingToCart(false);
       setBuyingNow(false);
     }
   };
-
+  const [openPayment, setOpenPayment] = useState(false)
 
   const handleBuyNow = async (product) => {
     // e.stopPropagation();
@@ -375,7 +380,8 @@ export default function ProductDetails() {
           detail: { cart: existingCart, count: totalItems },
         })
       );
-      Navigate("/payments");
+      // Navigate("/payments");
+      setOpenPayment(true)
     }
 
   };
@@ -471,6 +477,15 @@ export default function ProductDetails() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
  relative overflow-hidden py-4 sm:py-8">
+
+      <CartSidebar
+        isOpen={cartSidebarOpen}
+        onClose={() => setCartSidebarOpen(false)}
+
+      />
+      {
+        openPayment && <PaymentModal isOpen={openPayment} onClose={() => setOpenPayment(false)} />
+      }
       {/* Animated background */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-blue-500 rounded-full filter blur-3xl animate-pulse"></div>
@@ -604,8 +619,8 @@ export default function ProductDetails() {
                     <div
                       key={faqId}
                       className={`bg-white rounded-xl overflow-hidden border transition-colors ${isOpen
-                          ? "border-blue-500/50 shadow-md"
-                          : "border-slate-300 hover:border-slate-400"
+                        ? "border-blue-500/50 shadow-md"
+                        : "border-slate-300 hover:border-slate-400"
                         }`}
                     >
                       <button
@@ -704,8 +719,8 @@ export default function ProductDetails() {
                   <div
                     key={faqId}
                     className={`bg-white rounded-xl overflow-hidden border transition-colors ${isOpen
-                        ? "border-blue-500/50 shadow-md"
-                        : "border-slate-300 hover:border-slate-400"
+                      ? "border-blue-500/50 shadow-md"
+                      : "border-slate-300 hover:border-slate-400"
                       }`}
                   >
                     <button
@@ -748,43 +763,42 @@ export default function ProductDetails() {
           {/* faq section  */}
 
 
- <section className="max-w-4xl mx-auto px-4 py-12">
-      <h2 className="text-3xl font-bold text-center mb-8 text-gray-900">
-        Frequently Asked Questions
-      </h2>
+          <section className="max-w-4xl mx-auto px-4 py-12">
+            <h2 className="text-3xl font-bold text-center mb-8 text-gray-900">
+              Frequently Asked Questions
+            </h2>
 
-      <div className="space-y-4">
-        {faqs.map((faq, index) => (
-          <div
-            key={index}
-            className="border border-gray-200 rounded-xl shadow-sm bg-white"
-          >
-            <button
-              onClick={() =>
-                setOpenIndex(openIndex === index ? null : index)
-              }
-              className="w-full flex justify-between items-center px-5 py-4 text-left"
-            >
-              <span className="font-semibold text-gray-800">
-                {faq.question}
-              </span>
+            <div className="space-y-4">
+              {faqs.map((faq, index) => (
+                <div
+                  key={index}
+                  className="border border-gray-200 rounded-xl shadow-sm bg-white"
+                >
+                  <button
+                    onClick={() =>
+                      setOpenIndex(openIndex === index ? null : index)
+                    }
+                    className="w-full flex justify-between items-center px-5 py-4 text-left"
+                  >
+                    <span className="font-semibold text-gray-800">
+                      {faq.question}
+                    </span>
 
-              <ChevronDown
-                className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${
-                  openIndex === index ? "rotate-180" : ""
-                }`}
-              />
-            </button>
+                    <ChevronDown
+                      className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${openIndex === index ? "rotate-180" : ""
+                        }`}
+                    />
+                  </button>
 
-            {openIndex === index && (
-              <div className="px-5 pb-5 text-gray-600 leading-relaxed">
-                {faq.answer}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </section>
+                  {openIndex === index && (
+                    <div className="px-5 pb-5 text-gray-600 leading-relaxed">
+                      {faq.answer}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
 
 
 
@@ -1059,6 +1073,8 @@ export default function ProductDetails() {
             )}
           </div>
         </div>
+
+
       </div>
 
       <style jsx>{`

@@ -74,7 +74,11 @@ const handleSubmit = async () => {
 };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+    <div className="min-h-screen bg-gradient-to-br 
+from-[#040934] 
+via-[#030e2d] 
+to-[#051036]
+shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
  py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Heading */}
@@ -179,7 +183,7 @@ const handleSubmit = async () => {
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="px-16 py-3 bg-black text-white font-semibold tracking-wider hover:bg-gray-800 disabled:opacity-50"
+              className="px-16 py-3 bg-[#D3AF37] text-white font-semibold tracking-wider hover:bg-gray-800 disabled:opacity-50"
             >
               {loading ? "SENDING..." : "SUBMIT"}
             </button>

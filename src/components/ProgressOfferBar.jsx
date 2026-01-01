@@ -47,7 +47,7 @@ const ProgressOfferBar = ({ price = 0 }) => {
 
       {/* 🎁 Gift Summary */}
       {totalGiftWorth > 0 && (
-        <div className="text-center text-xs font-semibold text-white bg-amber-600 border border-green-200 rounded py-1.5 mb-2">
+        <div className="text-center text-xs font-semibold text-white bg-[#b88b05] border border-green-200 rounded py-1.5 mb-2">
           🎁 All gifts added to cart worth{" "}
           <span className="font-bold">
             ₹{totalGiftWorth.toLocaleString("en-IN")}
@@ -57,7 +57,7 @@ const ProgressOfferBar = ({ price = 0 }) => {
 
       {/* Banner */}
       {nextMilestone && (
-        <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-white text-center py-1.5 rounded text-xs mb-3">
+        <div className="bg-gradient-to-r from-[#b88b05] to-[#b88b05] text-white text-center py-1.5 rounded text-xs mb-3">
           Shop for{" "}
           <b>₹{remainingAmount.toLocaleString("en-IN")}</b> more to get{" "}
           <b>{nextMilestone.label}</b>
@@ -70,7 +70,7 @@ const ProgressOfferBar = ({ price = 0 }) => {
           <div key={i}>
             <span
               className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-semibold
-                ${m.completed ? "bg-amber-500 text-white" : "bg-gray-300 text-gray-700"}`}
+                ${m.completed ? "bg-[#b88b05] text-white" : "bg-gray-300 text-gray-700"}`}
             >
               {m.label}
             </span>
@@ -82,7 +82,7 @@ const ProgressOfferBar = ({ price = 0 }) => {
       <div className="relative my-4">
         <div className="h-1.5 bg-gray-300 rounded-full" />
         <div
-          className="absolute top-0 left-0 h-1.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 transition-all duration-500"
+          className="absolute top-0 left-0 h-1.5 rounded-full bg-gradient-to-r from-[#b88b05] to-[#b88b05] transition-all duration-500"
           style={{ width: `${progressPercent}%` }}
         />
 
@@ -93,7 +93,7 @@ const ProgressOfferBar = ({ price = 0 }) => {
               <div
                 className={`w-8 h-8 rounded-full border-2 flex items-center justify-center
                   ${m.completed
-                    ? "bg-amber-500 border-white shadow-md"
+                    ? "bg-[#b88b05] border-white shadow-md"
                     : "bg-gray-300 border-white"}`}
               >
                 {m.completed ? (
@@ -113,7 +113,7 @@ const ProgressOfferBar = ({ price = 0 }) => {
           <div key={i}>
             <span
               className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold
-                ${m.completed ? "bg-amber-500 text-white" : "bg-gray-300 text-gray-600"}`}
+                ${m.completed ? "bg-[#b88b05] text-white" : "bg-gray-300 text-gray-600"}`}
             >
               ₹ {m.amount.toLocaleString("en-IN")}
             </span>

@@ -14,9 +14,11 @@ import { useTranslation } from "react-i18next";
 import { useHeader } from "../context/HeaderContext";
 import { ArrowBigRight } from "lucide-react";
 import { ArrowBigLeft } from "lucide-react";
+import CartSidebar from "../components/CartSidebar";
+import PaymentModal from "./PaymentModal";
 
 // ---------- PRODUCT CARD ----------
-function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
+function ProductCard({ product, onAddToCart, onWishlistUpdate, setCartSidebarOpen }) {
   const [addingToCart, setAddingToCart] = useState(false);
   const [buyingNow, setBuyingNow] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -96,7 +98,8 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
             detail: { cart: existingCart, count: totalItems },
           })
         );
-        navigate("/cart");
+        // navigate("/cart");
+        setCartSidebarOpen(true)
         // if (redirectToCart) {
         //   navigate("/cart");
         // } else {
@@ -111,17 +114,18 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
         } else {
           setAddedToCart(true);
           setTimeout(() => setAddedToCart(false), 2000);
-          navigate("/cart")
+          setCartSidebarOpen(true)
 
         }
       }
     } catch (error) {
-      navigate("/cart");
+      setCartSidebarOpen(true)
     } finally {
       setAddingToCart(false);
       setBuyingNow(false);
     }
   };
+  const [openPayment, setOpenPayment] = useState(false)
 
   const handleBuyNow = async (e) => {
     e.stopPropagation();
@@ -172,7 +176,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
           detail: { cart: existingCart, count: totalItems },
         })
       );
-      navigate("/payments");
+      setOpenPayment(true)
     }
 
 
@@ -233,12 +237,18 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
     }
   };
   console.log(product, "product")
+
   return (
     <div className="relative group h-full">
+
+      {
+        openPayment && <PaymentModal isOpen={openPayment} onClose={() => setOpenPayment(false)} />
+      }
+
       <div
         onClick={handleViewDetails}
         className="relative  bg-white
- rounded-3xl overflow-hidden shadow-2xl  transition-all duration-500 hover:scale-[1.02] border border-purple-500/30 flex flex-col h-full "
+ rounded-3xl overflow-hidden shadow-2xl  transition-all duration-500 hover:scale-[1.02] border border-[#D3AF37] flex flex-col h-full "
       >
         <div className="absolute inset-0  transition-all duration-500" />
 
@@ -248,7 +258,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
 
         {product.discount && (
           <div className="absolute top-3 left-3 z-10">
-            <div className="bg-gradient-to-r from-red-500 to-pink-600 px-3 py-1.5 rounded-full shadow-lg animate-pulse">
+            <div className="bg-gradient-to-r from-[#D3AF37] to-[#D3AF37] px-3 py-1.5 rounded-full shadow-lg animate-pulse">
               <span className="text-white text-xs font-black">
                 {product.discount}% OFF
               </span>
@@ -368,7 +378,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
             <button
               onClick={(e) => handleAddToCart({ e, isBuyNow: false })}
               disabled={addingToCart || addedToCart || buyingNow}
-              className="flex-1 cursor-pointer flex items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 border-2 border-purple-500 rounded-xl font-bold text-xs sm:text-sm text-black transition-all hover:bg-purple-500/20 disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
+              className="flex-1 cursor-pointer flex items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 border-2 border-[#D3AF37] rounded-xl font-bold text-xs sm:text-sm text-black transition-all hover:bg-[#D3AF37]/20 disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105 hover:shadow-lg hover:shadow-[#D3AF37]/50"
             >
               {addingToCart ? (
                 <>
@@ -403,7 +413,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
             <button
               onClick={handleBuyNow}
               disabled={addingToCart || addedToCart || buyingNow}
-              className="flex-1 flex cursor-pointer items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl font-bold text-xs sm:text-sm text-white transition-all bg-gradient-to-r from-purple-600 via-pink-600 to-yellow-500 hover:from-purple-500 hover:via-pink-500 hover:to-yellow-400 hover:scale-105 hover:shadow-lg hover:shadow-pink-500/50 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="flex-1 flex cursor-pointer items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl font-bold text-xs sm:text-sm text-white transition-all bg-gradient-to-r from-[#D3AF37] via-[#D3AF37] to-yellow-500 hover:from-[#D3AF37] hover:via-[#D3AF37] hover:to-yellow-400 hover:scale-105 hover:shadow-lg hover:shadow-[#D3AF37]/50 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {buyingNow ? (
                 <>
@@ -465,6 +475,8 @@ export default function ProductsPage() {
   const Navigate = useNavigate();
   const { t } = useTranslation();
   const token = localStorage.getItem("token");
+
+  const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -589,7 +601,7 @@ export default function ProductsPage() {
       if (result.success) {
         localStorage.setItem("cart", oldCount + 1);
         setCount(oldCount + 1)
-        Navigate("/cart");
+        setCartSidebarOpen(true)
       }
 
       window.dispatchEvent(new CustomEvent("cartUpdated", { detail: result }));
@@ -620,7 +632,11 @@ export default function ProductsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+      <div className="min-h-screen bg-gradient-to-br 
+from-[#040934] 
+via-[#030e2d] 
+to-[#051036]
+shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
  flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-cyan-400" />
@@ -632,9 +648,13 @@ export default function ProductsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+      <div className="min-h-screenbg-gradient-to-br 
+from-[#040934] 
+via-[#030e2d] 
+to-[#051036]
+shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
  flex items-center justify-center p-4">
-        <div className="bg-slate-800/90 backdrop-blur-sm rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-red-500/30">
+        <div className="bg-slate-800/90 backdrop-blur-sm rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-[#D3AF37]/30">
           <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
           <h3 className="text-2xl font-bold text-white mb-3">
             Error Loading Products
@@ -642,7 +662,7 @@ export default function ProductsPage() {
           <p className="text-gray-400 mb-6">{error}</p>
           <button
             onClick={fetchProducts}
-            className="px-6 py-3 rounded-lg text-white font-medium bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition-all"
+            className="px-6 py-3 rounded-lg text-white font-medium bg-gradient-to-r from-[#D3AF37] to-[#D3AF37] hover:from-[#D3AF37] hover:to-[#D3AF37] transition-all"
           >
             Try Again
           </button>
@@ -652,8 +672,14 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+    <div className="min-h-screen bg-gradient-to-br 
+from-[#040934] 
+via-[#030e2d] 
+to-[#051036]
+shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
  p-4 md:p-8">
+
+
       <div className="max-w-7xl mx-auto">
 
 
@@ -683,7 +709,7 @@ export default function ProductsPage() {
     outline-none
     transition-all duration-300
     focus:shadow-[0_0_8px_2px_rgba(255,0,120,0.8)]
-    focus:border-pink-500
+    focus:border-[#D3AF37]
     animate-borderPulse
   "
             placeholder="Search Products By Name..."
@@ -692,19 +718,20 @@ export default function ProductsPage() {
         </div>
 
         {products.length > 0 ? (
-   <div className="grid gap-4 md:gap-6 
+          <div className="grid gap-4 md:gap-6 
                 grid-cols-1 
                 sm:grid-cols-2 
                 lg:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
-  {products.map((product) => (
-    <ProductCard
-      key={product.id || product._id}
-      product={product}
-      onAddToCart={handleAddToCart}
-      onWishlistUpdate={handleWishlistUpdate}
-    />
-  ))}
-</div>
+            {products.map((product) => (
+              <ProductCard
+                key={product.id || product._id}
+                product={product}
+                onAddToCart={handleAddToCart}
+                setCartSidebarOpen={setCartSidebarOpen}
+                onWishlistUpdate={handleWishlistUpdate}
+              />
+            ))}
+          </div>
 
         ) : (
           <div className="text-center py-20">
@@ -729,7 +756,7 @@ export default function ProductsPage() {
             className="px-4 py-2 rounded-lg text-white text-sm disabled:opacity-40"
             style={{ background: 'linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)' }}
           >
-            <ArrowBigLeft/>
+            <ArrowBigLeft />
           </button>
 
           <span className="text-white font-semibold text-lg">
@@ -742,7 +769,7 @@ export default function ProductsPage() {
             className="px-4 py-2 rounded-lg text-white text-sm disabled:opacity-40"
             style={{ background: 'linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)' }}
           >
-            <ArrowBigRight/>
+            <ArrowBigRight />
           </button>
         </div>
 
@@ -751,7 +778,11 @@ export default function ProductsPage() {
         </p>
 
 
+        <CartSidebar
+          isOpen={cartSidebarOpen}
+          onClose={() => setCartSidebarOpen(false)}
 
+        />
 
       </div>
     </div>

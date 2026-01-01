@@ -12,15 +12,21 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useHeader } from "../context/HeaderContext";
+import CartSidebar from "./CartSidebar";
+import PaymentModal from "../pages/PaymentModal";
 
 // ---------- PRODUCT CARD ----------
-function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
+function ProductCard({ product, onAddToCart, onWishlistUpdate, setCartSidebarOpen }) {
   const [addingToCart, setAddingToCart] = useState(false);
   const [buyingNow, setBuyingNow] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
   const [liked, setLiked] = useState(product.isWishlisted || false);
   const [wishlistLoading, setWishlistLoading] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+
+
+
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -94,7 +100,8 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
             detail: { cart: existingCart, count: totalItems },
           })
         );
-        navigate("/cart");
+        // navigate("/cart");
+        setCartSidebarOpen(true)
         // if (redirectToCart) {
         //   navigate("/cart");
         // } else {
@@ -109,12 +116,14 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
         } else {
           setAddedToCart(true);
           setTimeout(() => setAddedToCart(false), 2000);
-          navigate("/cart")
+          // navigate("/cart")
+          setCartSidebarOpen(true)
 
         }
       }
     } catch (error) {
-      navigate("/cart");
+      // navigate("/cart");
+      setCartSidebarOpen(true)
     } finally {
       setAddingToCart(false);
       setBuyingNow(false);
@@ -170,7 +179,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
           detail: { cart: existingCart, count: totalItems },
         })
       );
-      navigate("/payments");
+      setOpenPayment(true)
     }
 
 
@@ -231,10 +240,16 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
     }
   };
   console.log(product, "product")
+
+  const [openPayment, setOpenPayment] = useState(false)
+
   return (
     <div className="relative group h-full">
-      <div
-        onClick={handleViewDetails}
+
+    {
+      openPayment && <PaymentModal isOpen={openPayment} onClose={() => setOpenPayment(false)} />
+    }
+      <div onClick={handleViewDetails}
         className="relative  bg-white
  rounded-3xl overflow-hidden shadow-2xl  transition-all duration-500 hover:scale-[1.02] border border-purple-500/30 flex flex-col h-full "
       >
@@ -366,7 +381,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
             <button
               onClick={(e) => handleAddToCart({ e, isBuyNow: false })}
               disabled={addingToCart || addedToCart || buyingNow}
-              className="flex-1 cursor-pointer flex items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 border-2 border-purple-500 rounded-xl font-bold text-xs sm:text-sm text-black transition-all hover:bg-purple-500/20 disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
+              className="flex-1 cursor-pointer flex items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 border-2 border-[#a17b0a] rounded-xl font-bold text-xs sm:text-sm text-black transition-all disabled:opacity-70 disabled:cursor-not-allowed hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
             >
               {addingToCart ? (
                 <>
@@ -401,7 +416,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate }) {
             <button
               onClick={handleBuyNow}
               disabled={addingToCart || addedToCart || buyingNow}
-              className="flex-1 flex cursor-pointer items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl font-bold text-xs sm:text-sm text-white transition-all bg-gradient-to-r from-purple-600 via-pink-600 to-yellow-500 hover:from-purple-500 hover:via-pink-500 hover:to-yellow-400 hover:scale-105 hover:shadow-lg hover:shadow-pink-500/50 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="flex-1 flex cursor-pointer items-center justify-center gap-1.5 py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl font-bold text-xs sm:text-sm text-white transition-all bg-[#a17b0a] disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {buyingNow ? (
                 <>
@@ -463,6 +478,9 @@ export default function OurProducts() {
   const Navigate = useNavigate();
   const { t } = useTranslation();
   const token = localStorage.getItem("token");
+
+
+  const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -666,7 +684,7 @@ export default function OurProducts() {
 
           <button
             onClick={() => Navigate("/products")}
-            className="text-white px-6 py-2 cursor-pointer rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 transition-all font-semibold shadow-lg hover:shadow-purple-500/50"
+            className="text-white px-6 py-2 cursor-pointer rounded-lg bg-[#a17b0a] transition-all font-semibold shadow-lg hover:shadow-purple-500/50"
           >
             View All
           </button>
@@ -680,6 +698,7 @@ export default function OurProducts() {
                 product={product}
                 onAddToCart={handleAddToCart}
                 onWishlistUpdate={handleWishlistUpdate}
+                setCartSidebarOpen={setCartSidebarOpen}
               />
             ))}
           </div>
@@ -741,13 +760,19 @@ export default function OurProducts() {
                 <button
                   //  onClick={() => Navigate(`/product/${products[0]._id}`)} 
 
-                  className="mt-8  bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-amber-500/50 transform hover:scale-105 w-fit">
+                  className="mt-8  bg-[#a17b0a] text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-amber-500/50 transform hover:scale-105 w-fit">
                   Coming Soon
                 </button>
               </div>
             </div>
           </div>
         </div>
+
+        <CartSidebar
+          isOpen={cartSidebarOpen}
+          onClose={() => setCartSidebarOpen(false)}
+
+        />
       </div>
     </div>
   );

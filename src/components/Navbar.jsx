@@ -8,15 +8,18 @@ import { useEffect } from "react";
 import { useHeader } from "../context/HeaderContext";
 import { Mail } from "lucide-react";
 import { LucideShoppingBag } from "lucide-react";
+import CartSidebar from "./CartSidebar"; // Import the new CartSidebar component
+import PaymentModal from "../pages/PaymentModal";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [cartSidebarOpen, setCartSidebarOpen] = useState(false); // New state for cart sidebar
   const [searchFocused, setSearchFocused] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const token = localStorage?.getItem("token");
-
+  const [openPayment, setOpenPayment] = useState(false)
   const baseMenu = [
     { icon: MdAccountBox, label: t(`nav.account`), href: "/account", auth: true },
     { icon: Home, label: t(`nav.home`), href: "/homePage", auth: false },
@@ -79,17 +82,23 @@ export default function Navbar() {
 
   const { cartCount, wishlistCount, unreadCount } = useHeader();
 
+  // Function to open cart sidebar
+  const openCartSidebar = (e) => {
+    e.preventDefault();
+    setCartSidebarOpen(true);
+  };
+
   return (
     <>
       {/* STICKY CONTAINER - Both top bar and nav together */}
       <div className="sticky top-0 z-30">
-        {/* bg-[#e4baba] */}
         {/* Top Bar - Login/Account with Cart & Wishlist */}
         <div className="w-full bg-gradient-to-br 
-from-[#020516] 
-via-[#020A1E] 
-to-[#02081B]
+from-[#040934] 
+via-[#030e2d] 
+to-[#051036]
 shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+bg-center bg-no-repeat
  text-white border-b border-white/10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-1">
             <div className="flex items-center justify-between">
@@ -118,7 +127,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
                         />
                       </div>
                       <span className="text-sm font-medium">{user?.name?.split(' ')[0]}</span>
-                      <ChevronRight  size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                      <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                     </Link>
 
                     {/* Wishlist */}
@@ -133,21 +142,20 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
                       />
 
                       {
-                        wishlistCount > 0 && (<span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-purple-700 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
+                        wishlistCount > 0 && (<span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-[#D3AF37]text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
                           {wishlistCount || 0}
                         </span>)
                       }
 
                     </Link>
 
-                    {/* Cart */}
-                    <Link
-                      to="/cart"
-                      className="relative p-2 rounded-full hover:bg-white/10 transition-colors group"
+                    {/* Cart - Updated to open sidebar */}
+                    <button
+                      onClick={openCartSidebar}
+                      className="relative p-2 rounded-full cursor-pointer hover:bg-white/10 transition-colors group"
                     >
-                      <div className="relative  ">
-                        <LucideShoppingBag size={18}  className="w-full h-full transition-transform group-hover:scale-110" />
-                        {/* <ShoppingBag /> */}
+                      <div className="relative">
+                        <LucideShoppingBag size={18} className="w-full h-full transition-transform group-hover:scale-110" />
 
                         {cartCount > 0 && (
                           <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
@@ -155,8 +163,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
                           </span>
                         )}
                       </div>
-                    </Link>
-
+                    </button>
 
                     {/* Notifications */}
                     <Link
@@ -182,18 +189,19 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
                     {/* Login Button */}
                     <Link
                       to="/login"
-                      className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-purple-900 rounded-full hover:bg-purple-900 transition-all font-medium text-xs sm:text-sm shadow-lg shadow-[#C9A227]/20"
+                      className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-[#D3AF37] rounded-full hover:bg-[#D3AF37] transition-all font-medium text-xs sm:text-sm shadow-lg shadow-[#C9A227]/20"
                     >
                       <User size={16} className="sm:w-4 sm:h-4" />
                       <span>Login</span>
                     </Link>
 
-                    <Link
-                      to="/cart"
-                      className="relative p-2 rounded-full hover:bg-white/10 transition-colors group"
+                    {/* Cart for Guest - Updated to open sidebar */}
+                    <button
+                      onClick={openCartSidebar}
+                      className="relative p-2 rounded-full cursor-pointer hover:bg-white/10 transition-colors group"
                     >
                       <div className="relative w-5 h-5 sm:w-6 sm:h-6">
-                        <LucideShoppingBag     size={18} className="w-full h-full transition-transform group-hover:scale-110" />
+                        <LucideShoppingBag size={18} className="w-full h-full transition-transform group-hover:scale-110" />
 
                         {cartCount > 0 && (
                           <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
@@ -201,7 +209,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
                           </span>
                         )}
                       </div>
-                    </Link>
+                    </button>
 
                   </>
                 )}
@@ -212,7 +220,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
 
         {/* Main Navigation */}
         <nav className="w-full bg-white border-b border-gray-200 shadow-sm backdrop-blur-sm bg-white/95">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-1">
             <div className="flex items-center justify-between gap-4">
               {/* Logo */}
               <div className="flex-shrink-0">
@@ -231,12 +239,12 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
                   <Link
                     key={index}
                     to={link.href}
-                    className={`text-[16px] lg:text-[18px] cursor-pointer font-medium transition-all relative pb-1 group ${isActive(link.href) ? 'text-purple-900' : 'hover:text-purple-900'
+                    className={`text-[16px] lg:text-[18px] cursor-pointer font-medium transition-all relative pb-1 group ${isActive(link.href) ? 'text-[#D3AF37]' : 'hover:text-[#D3AF37]'
                       }`}
                   >
                     {link.label}
                     <span
-                      className={`absolute bottom-0 left-0 h-0.5 bg-purple-900 transition-all ${isActive(link.href) ? 'w-full' : 'w-0 group-hover:w-full'
+                      className={`absolute bottom-0 left-0 h-0.5 bg-[#D3AF37] transition-all ${isActive(link.href) ? 'w-full' : 'w-0 group-hover:w-full'
                         }`}
                     ></span>
                   </Link>
@@ -249,7 +257,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
                   onClick={() => setMenuOpen(true)}
                   className="p-2 rounded-full hover:bg-gray-100 transition-colors group"
                 >
-                  <Menu size={22} className="text-purple-900 group-hover:scale-110 transition-transform sm:w-7 sm:h-7" />
+                  <Menu size={22} className="text-[#D3AF37] group-hover:scale-110 transition-transform sm:w-7 sm:h-7" />
                 </button>
               </div>
             </div>
@@ -257,14 +265,27 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
         </nav>
       </div>
 
-      {/* RIGHT SLIDING DRAWER */}
+      {/* Cart Sidebar Component */}
+
+      <CartSidebar
+        isOpen={cartSidebarOpen}
+        onClose={() => setCartSidebarOpen(false)}
+        onCheckout={() => {
+          setCartSidebarOpen(false);
+          setOpenPayment(true);
+        }}
+      />
+      {
+        openPayment && <PaymentModal isOpen={openPayment} onClose={() => setOpenPayment(false)} />
+      }
+
+      {/* RIGHT SLIDING DRAWER (Menu) */}
       <div
         className={`fixed top-0 right-0 h-full w-full sm:w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "translate-x-full"
           }`}
       >
         {/* User Profile Section */}
-        <div className="bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
- relative overflow-hidden p-4 sm:p-6 text-white">
+        <div className="bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] relative overflow-hidden p-4 sm:p-6 text-white">
           <div className="flex items-center justify-between mb-4">
             {user ? (
               <div className="flex items-center gap-3 flex-1">
@@ -322,14 +343,16 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
                 <Heart size={18} />
                 <span className="text-xs">Wishlist</span>
               </Link>
-              <Link
-                to="/cart"
-                onClick={() => setMenuOpen(false)}
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  setCartSidebarOpen(true);
+                }}
                 className="flex flex-col items-center gap-1 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all"
               >
                 <LucideShoppingBag size={18} />
                 <span className="text-xs">Cart</span>
-              </Link>
+              </button>
               <Link
                 to="/notification"
                 onClick={() => setMenuOpen(false)}
@@ -354,8 +377,8 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
                 to={item.href}
                 onClick={() => setMenuOpen(false)}
                 className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isItemActive
-                  ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
-                  : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
+                  ? 'bg-[#C9A227]/10 text-[#D3AF37] shadow-sm'
+                  : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-[#D3AF37]'
                   }`}
               >
                 <Icon size={20} className="group-hover:scale-110 transition-transform" />
@@ -372,8 +395,8 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
               to="/about-us"
               onClick={() => setMenuOpen(false)}
               className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isActive('/about-us')
-                ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
-                : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
+                ? 'bg-[#C9A227]/10 text-[#D3AF37] shadow-sm'
+                : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-[#D3AF37]'
                 }`}
             >
               <Info size={20} className="group-hover:scale-110 transition-transform" />
@@ -385,8 +408,8 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
               to="/contact"
               onClick={() => setMenuOpen(false)}
               className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isActive('/contact')
-                ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
-                : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
+                ? 'bg-[#C9A227]/10 text-[#D3AF37] shadow-sm'
+                : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-[#D3AF37]'
                 }`}
             >
               <Mail size={20} className="group-hover:scale-110 transition-transform" />
@@ -398,8 +421,8 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
               to="/blogs"
               onClick={() => setMenuOpen(false)}
               className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isActive('/blogs')
-                ? 'bg-[#C9A227]/10 text-purple-900 shadow-sm'
-                : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-purple-900'
+                ? 'bg-[#C9A227]/10 text-[#D3AF37] shadow-sm'
+                : 'text-gray-700 hover:bg-[#C9A227]/10 hover:text-[#D3AF37]'
                 }`}
             >
               <BookOpen size={20} className="group-hover:scale-110 transition-transform" />

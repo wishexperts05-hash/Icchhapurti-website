@@ -26,7 +26,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative overflow-hidden bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] text-white">
+    <footer className="relative overflow-hidden   text-white">
 
       {/* 🔶 TOP SHAPE */}
       {/* <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10">

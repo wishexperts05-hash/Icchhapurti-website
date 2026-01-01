@@ -12,14 +12,14 @@ export default function Layout() {
 
       <div
         className="fixed inset-0 -z-10 bg-cover bg-gradient-to-br 
-from-[#020516] 
-via-[#020A1E] 
-to-[#02081B]
+from-[#040934] 
+via-[#030e2d] 
+to-[#051036]
 shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
 bg-center bg-no-repeat"
 
       />
-      <div className="fixed bottom-25 right-6 z-50 group">
+      <div className="fixed bottom-25 left-6 z-50 group">
         <a
           href="https://wa.me/919815555569" // Replace with your WhatsApp number
           target="_blank"

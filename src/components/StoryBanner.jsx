@@ -111,7 +111,7 @@ const StoryBanner = () => {
 
   /* ------------------ RENDER ------------------ */
   return (
-    <div className="bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] py-16 px-4 relative overflow-hidden">
+    <div className=" py-16 px-4 relative overflow-hidden">
            <div className="absolute top-0 left-0 right-0 w-full z-10 pointer-events-none">
             <img
               src="/shape.png"
