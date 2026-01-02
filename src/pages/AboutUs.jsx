@@ -49,7 +49,7 @@ export default function AboutUs() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
+    <div className="min-h-screen ">
       {/* Hero Section */}
       <div className="relative overflow-hidden  text-white">
         <div className="absolute inset-0 bg-black opacity-10"></div>
@@ -91,7 +91,7 @@ export default function AboutUs() {
       </div>
 
       {/* What We Create Section */}
-      <div className="bg-gradient-to-r from-purple-100 to-blue-100 py-16">
+      <div className="bg-gradient-to-r  py-16">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold text-[#a17b0a] mb-6 text-center">
             What We Create
@@ -143,19 +143,19 @@ export default function AboutUs() {
       </div>
 
       {/* Philosophy Section */}
-      <div className="max-w-6xl mx-auto px-6 py-16">
+      <div className="max-w-6xl mx-auto px-6 py-16 bg-white">
         <div className=" rounded-2xl shadow-xl p-8 md:p-12 text-white">
           <h2 className="text-3xl md:text-4xl text-[#D3AF37] font-bold mb-6 text-center">
             Our Philosophy
           </h2>
-          <p className="text-lg leading-relaxed text-center max-w-4xl mx-auto">
+          <p className="text-lg text-black leading-relaxed text-center max-w-4xl mx-auto">
             Manifestation is a personal journey, and results may vary for each individual. Our products are not shortcuts—they are supportive tools meant to enhance focus, intention, belief, and disciplined action. We encourage users to combine our tools with effort, gratitude, and consistency.
           </p>
         </div>
       </div>
 
       {/* Values Section */}
-      <div className="bg-gray-50 py-16">
+      <div className=" py-16">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold text-[#a17b0a] mb-12 text-center">
             Our Promise
@@ -194,12 +194,12 @@ export default function AboutUs() {
       </div>
 
       {/* Closing Section */}
-      <div className="max-w-6xl mx-auto px-6 py-16">
+      <div className="max-w-6xl mx-auto px-6 py-16 bg-white">
         <div className=" rounded-2xl shadow-2xl p-8 md:p-12 text-white text-center">
           <h2 className="text-3xl md:text-4xl text-[#D3AF37] font-bold mb-6">
             Your Journey Begins Here
           </h2>
-          <p className="text-lg leading-relaxed mb-4 max-w-3xl mx-auto">
+          <p className="text-lg leading-relaxed mb-4 text-black max-w-3xl mx-auto">
             At Icchhapurti, our commitment goes beyond creating products—we aim to support transformation. We believe that when intention meets the right tools and consistent effort, goals become clearer, energy becomes aligned, and progress becomes visible.
           </p>
           <div className="mt-8 space-y-2">
@@ -208,7 +208,7 @@ export default function AboutUs() {
             <p className="text-xl font-semibold text-[#D3AF37]">And with the right tools, your goals move closer to reality.</p>
           </div>
           <div className="mt-8">
-            <Sparkles className="w-16 h-16 mx-auto animate-pulse" />
+            <Sparkles className="w-16 h-16 text-[#D3AF37] mx-auto animate-pulse" />
           </div>
         </div>
       </div>
