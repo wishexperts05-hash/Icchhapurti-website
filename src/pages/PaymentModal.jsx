@@ -240,8 +240,6 @@ export default function PaymentModal({ isOpen, onClose }) {
         }
     };
 
-    // const [checkoutLoading ,setCheckoutLoading] =useState(false)
-
     const fetchCheckOutDetails = async () => {
         try {
             setCheckoutLoading(true)
@@ -271,20 +269,19 @@ export default function PaymentModal({ isOpen, onClose }) {
 
             if (data.success) {
                 setDiscount(data.data.referralDiscount);
-                setCheckoutLoading(false)
                 setDetails(data.data);
                 setOrderToken(data.orderToken);
                 if (data.data.referralCode) {
                     setReferralCode(data.data.referralCode);
                 }
             } else {
-                setCheckoutLoading(false)
                 throw new Error(data.message || "Failed to load checkout details");
             }
         } catch (error) {
-            setCheckoutLoading(false)
             console.error("Error fetching checkout details:", error);
             setError(error.message);
+        } finally {
+            setCheckoutLoading(false);
         }
     };
 
@@ -375,10 +372,10 @@ export default function PaymentModal({ isOpen, onClose }) {
 
             if (res.data.success) {
                 setCheckoutSuccess(true);
+                setCount(0);
                 setTimeout(() => {
-                     onClose()
                     setCheckoutSuccess(false);
-                   
+                    onClose();
                     Navigate('/orders');
                 }, 2000);
             } else {
@@ -424,24 +421,32 @@ export default function PaymentModal({ isOpen, onClose }) {
                 image: "https://res.cloudinary.com/dld5dqpz8/image/upload/v1767092536/icchhaPurti_2_onw6az.png",
                 order_id: razorpayOrder.razorpayOrderId,
                 handler: async function (response) {
-                    const isVerified = await verifyRazorpayPayment({
-                        razorpay_order_id: response.razorpay_order_id,
-                        razorpay_payment_id: response.razorpay_payment_id,
-                        razorpay_signature: response.razorpay_signature,
-                        orderId: razorpayOrder.orderId
-                    });
+                    try {
+                        const isVerified = await verifyRazorpayPayment({
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            orderId: razorpayOrder.orderId
+                        });
 
-                    if (isVerified) {
+                        if (isVerified) {
+                            setCheckoutLoading(false);
+                            setCheckoutSuccess(true);
+                            setCount(0);
+                            scrollToTop();
+                            setTimeout(() => {
+                                setCheckoutSuccess(false);
+                                onClose();
+                                Navigate('/orders');
+                            }, 2000);
+                        } else {
+                            throw new Error('Payment verification failed');
+                        }
+                    } catch (err) {
                         setCheckoutLoading(false);
-                        setCheckoutSuccess(true);
-                        scrollToTop()
-                        setCount(0)
-                        setTimeout(() => {
-                            Navigate('/orders');
-                        }, 2000);
-                    } else {
-                        throw new Error('Payment verification failed');
-                        scrollToTop()
+                        setError(err.message || 'Payment verification failed');
+                        scrollToTop();
+                        setTimeout(() => setError(null), 4000);
                     }
                 },
                 prefill: {
@@ -471,7 +476,7 @@ export default function PaymentModal({ isOpen, onClose }) {
             setError(error.message || 'Failed to initiate payment');
             setTimeout(() => setError(null), 4000);
             setCheckoutLoading(false);
-            scrollToTop()
+            scrollToTop();
         }
     };
 
@@ -483,13 +488,12 @@ export default function PaymentModal({ isOpen, onClose }) {
 
         if (!cartItems.length) {
             alert(t('payment.alerts.cart_empty'));
-
             return;
         }
 
         if (!addresses[addressIndex || 0]) {
             alert('Please select a delivery address');
-            scrollToTop()
+            scrollToTop();
             return;
         }
 
@@ -503,7 +507,9 @@ export default function PaymentModal({ isOpen, onClose }) {
                 const finalAmount = (checkoutDetails?.grandTotal || 0) - (referralDiscount || 0);
                 if (balance < finalAmount) {
                     setError('Insufficient wallet balance');
-                    scrollToTop()
+                    setCheckoutLoading(false);
+                    scrollToTop();
+                    return;
                 }
                 await createWalletpayOrder();
             }
@@ -513,7 +519,7 @@ export default function PaymentModal({ isOpen, onClose }) {
             setError(errorMsg);
             setTimeout(() => setError(null), 4000);
             setCheckoutLoading(false);
-            scrollToTop()
+            scrollToTop();
         }
     };
 
@@ -573,11 +579,12 @@ export default function PaymentModal({ isOpen, onClose }) {
 
 
 
-    // Checkout Success State
+    const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
 
+    if (!isOpen) return null;
 
-    // Error State (Critical)
-    if (error && !checkoutDetails) {
+    // Show critical error modal only for initialization errors
+    if (error && !checkoutDetails && !isAuthenticated) {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
                 <div className="bg-white rounded-xl p-4 max-w-xs w-full text-center shadow-md border border-red-300">
@@ -594,7 +601,10 @@ export default function PaymentModal({ isOpen, onClose }) {
                             Try Again
                         </button>
                         <button
-                            onClick={() => Navigate('/cart')}
+                            onClick={() => {
+                                onClose();
+                                Navigate('/cart');
+                            }}
                             className="px-3 py-1.5 rounded bg-gray-300 text-gray-900 text-sm font-medium hover:bg-gray-400 transition"
                         >
                             Back to Cart
@@ -605,10 +615,6 @@ export default function PaymentModal({ isOpen, onClose }) {
         );
     }
 
-
-    const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
-    if (!isOpen) return null;
-
     return (
         <div className="fixed inset-0 z-[9999] h-screen backdrop-blur-[2px] bg-black/60  ">
 
@@ -616,14 +622,11 @@ export default function PaymentModal({ isOpen, onClose }) {
             <CartSidebar
                 isOpen={cartSidebarOpen}
                 onClose={() => setCartSidebarOpen(false)}
-
             />
 
             {/* Header */}
             <div className="sticky top-0 z-20 bg-white shadow-sm">
                 <div className="relative flex items-center px-4 h-16 max-w-2xl mx-auto">
-
-                    {/* Back Button */}
                     <button
                         onClick={() => setWarning(true)}
                         className="absolute left-4 text-black cursor-pointer hover:text-amber-400 transition-colors"
@@ -631,7 +634,6 @@ export default function PaymentModal({ isOpen, onClose }) {
                         <ArrowLeft size={24} />
                     </button>
 
-                    {/* Center Logo */}
                     <div className="mx-auto">
                         <img
                             src="/logo.png"
@@ -640,36 +642,26 @@ export default function PaymentModal({ isOpen, onClose }) {
                         />
                     </div>
 
-                    {/* Right Animation */}
                     <div className="absolute right-4">
                         <img src="/newyear2026ani.gif" alt="" className="h-20" />
                     </div>
-
                 </div>
             </div>
 
-
-            {initialLoading || checkoutLoading && (
+            {/* Loading Modal - Fixed condition */}
+            {(initialLoading || checkoutLoading) && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center">
-
-                    {/* Transparent overlay only (no blur, no dark bg) */}
                     <div className="absolute inset-0 bg-transparent" />
-
-                    {/* Small loading modal */}
                     <div className="relative z-10 bg-white px-6 py-4 rounded-xl shadow-xl flex items-center gap-3">
-
-                        {/* Spinner */}
                         <div className="w-5 h-5 border-2 border-amber-500/40 border-t-amber-500 rounded-full animate-spin" />
-
-                        {/* Text */}
                         <span className="text-sm font-semibold text-gray-900">
-                            Loading…
+                            {initialLoading ? "Loading..." : "Processing..."}
                         </span>
-
                     </div>
-
                 </div>
             )}
+
+            {/* Success Modal */}
             {checkoutSuccess && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
                     <div className="bg-white rounded-xl p-4 max-w-xs w-full text-center shadow-md border border-green-300">
@@ -682,7 +674,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                 </div>
             )}
 
-
+            {/* Warning Modal */}
             {showWarning && (
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
                     <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
@@ -709,15 +701,10 @@ export default function PaymentModal({ isOpen, onClose }) {
                             </button>
                             <button
                                 onClick={() => {
-                                    setWarning(false)
-                                    setCartSidebarOpen(true)
-                                    onClose()
-
-
-                                }
-
-
-                                }
+                                    setWarning(false);
+                                    setCartSidebarOpen(true);
+                                    onClose();
+                                }}
                                 className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
                             >
                                 Close
@@ -727,15 +714,12 @@ export default function PaymentModal({ isOpen, onClose }) {
                 </div>
             )}
 
-
-
+            {/* Referral Popup */}
             {showReferralPopup && (
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm px-2">
                     <Confetti numberOfPieces={200} recycle={false} />
 
                     <div className="relative w-full max-w-xs bg-white rounded-xl shadow-lg p-4 text-center animate-scaleIn">
-
-                        {/* Close button */}
                         <button
                             onClick={() => setShowReferralPopup(false)}
                             className="absolute top-2 right-2 text-gray-500 hover:text-black"
@@ -743,14 +727,12 @@ export default function PaymentModal({ isOpen, onClose }) {
                             <X />
                         </button>
 
-                        {/* Icon */}
                         <div className="flex justify-center mb-2">
                             <div className="bg-green-100 text-green-600 p-3 rounded-full animate-bounce">
                                 <Gift size={24} />
                             </div>
                         </div>
 
-                        {/* Heading */}
                         <h2 className="text-xl font-bold text-gray-900 mb-1">
                             🎉 Referral Applied!
                         </h2>
@@ -759,12 +741,10 @@ export default function PaymentModal({ isOpen, onClose }) {
                             You just unlocked a special discount
                         </p>
 
-                        {/* Discount */}
                         <div className="text-2xl font-extrabold text-green-600 mb-2">
                             {referralDiscount || firstDiscount} OFF
                         </div>
 
-                        {/* CTA */}
                         <button
                             onClick={() => setShowReferralPopup(false)}
                             className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg text-sm transition"
@@ -775,31 +755,18 @@ export default function PaymentModal({ isOpen, onClose }) {
                 </div>
             )}
 
+
             <div className="relative z-10 h-[calc(100vh-4rem)] overflow-y-auto pt-[env(safe-area-inset-top)]">
-
-                <div className=" max-w-2xl mx-auto">
-
-
-
-                    <div className="  bg-gray-50 ">
-
-
-
-
-
-
-
+                <div className="max-w-2xl mx-auto">
+                    <div className="bg-gray-50">
                         {/* Order Summary Section */}
-                        <div className=" mx-auto px-2 py-6">
+                        <div className="mx-auto px-2 py-6">
                             <div className="bg-white rounded-lg px-1 shadow-sm overflow-hidden">
 
-
-                                {isAmountReady && <ProgressOfferBar   confettiOrigin={{ x: 0.5, y: 0.2 }} price={totalAmount} />}
+                                {isAmountReady && <ProgressOfferBar confettiOrigin={{ x: 0.5, y: 0.2 }} price={totalAmount} />}
 
                                 {(() => {
-                                    let items = isAuthenticated
-                                        ? cartItems
-                                        : localCartItems || [];
+                                    let items = isAuthenticated ? cartItems : localCartItems || [];
 
                                     if (!items?.length) return null;
 
@@ -812,7 +779,6 @@ export default function PaymentModal({ isOpen, onClose }) {
                                     );
 
                                     const handleQuantityChange = (itemId, delta) => {
-                                        // update quantity in cartItems or localCartItems
                                         const updatedItems = items.map((item) => {
                                             if (item._id === itemId) {
                                                 const newQty = Math.max(item.quantity + delta, 1);
@@ -820,7 +786,6 @@ export default function PaymentModal({ isOpen, onClose }) {
                                             }
                                             return item;
                                         });
-                                        // update state accordingly
                                         if (isAuthenticated) setCartItems(updatedItems);
                                         else setItems(updatedItems);
                                     };
@@ -829,14 +794,12 @@ export default function PaymentModal({ isOpen, onClose }) {
                                         <div className="border-b border-gray-50 bg-white text-sm">
                                             <div className="p-2">
                                                 <div className="rounded-lg w-full overflow-hidden shadow-sm">
-                                                    {/* Header */}
                                                     <div className="flex items-center justify-between p-2 border-b border-gray-100">
                                                         <h3 className="font-bold text-gray-900">
                                                             Order Details <span className="font-normal ml-1">({items.length} Items)</span>
                                                         </h3>
                                                     </div>
 
-                                                    {/* Products List */}
                                                     <div className="overflow-y-auto max-h-[35vh] p-2">
                                                         {items.map((item) => (
                                                             <div key={item._id} className="flex gap-2 p-2 border border-gray-100 rounded hover:shadow transition-shadow">
@@ -867,7 +830,6 @@ export default function PaymentModal({ isOpen, onClose }) {
                                                         ))}
                                                     </div>
 
-                                                    {/* Footer */}
                                                     <div className="border-t p-2 bg-gray-50">
                                                         {referral > 0 && (
                                                             <div className="flex justify-between text-green-600 text-xs">
@@ -886,10 +848,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                                     );
                                 })()}
 
-
-
                                 {/* Savings Banner */}
-
                                 {(() => {
                                     let savings = 0;
                                     const parseAmount = (amount) => {
@@ -899,35 +858,16 @@ export default function PaymentModal({ isOpen, onClose }) {
 
                                     const formatCurrency = (value) => `₹${value.toFixed(2)}`;
                                     if (isAuthenticated && checkoutDetails) {
-                                        const total = parseAmount(checkoutDetails.totalAmount);
                                         const referral = parseAmount(checkoutDetails.referralDiscount);
-
                                         savings = referral;
-
-                                    } else if (!isAuthenticated) {
-                                        const cartTotal = localCartItems?.reduce(
-                                            (sum, item) => sum + parseAmount(item.totalAmount),
-                                            0
-                                        );
-
-                                        savings = 0
-
-                                    } else if (isAuthenticated && !checkoutDetails) {
-                                        const cartTotal = cartItems.reduce(
-                                            (sum, item) => sum + parseAmount(item.totalAmount),
-                                            0
-                                        );
-
-                                        savings = 0
                                     }
-
 
                                     if (savings <= 0) return null;
 
                                     return (
                                         <div className="text-amber-500 border-l-4 border-amber-500 px-6 py-4 rounded-lg shadow-sm mb-4">
-                                            <p className="text-amber-500  font-bold text-sm sm:text-base">
-                                                🎉 Yay! You’ve saved{" "}
+                                            <p className="text-amber-500 font-bold text-sm sm:text-base">
+                                                🎉 Yay! You've saved{" "}
                                                 <span className="font-bold">
                                                     {formatCurrency(savings)}
                                                 </span>{" "}
@@ -940,8 +880,6 @@ export default function PaymentModal({ isOpen, onClose }) {
                                     );
                                 })()}
 
-
-
                                 <RegistrationModal
                                     isOpen={registerModal}
                                     onClose={() => setRegisterModal(false)}
@@ -953,28 +891,24 @@ export default function PaymentModal({ isOpen, onClose }) {
                                     setIsAuthenticated={setIsAuthenticated}
                                 />
 
-
                                 <AddressModal
                                     isOpen={isModalOpen}
                                     onClose={() => setIsModalOpen(false)}
-                                    // onSuccess={handleSuccess}
                                     addressId={editAddressId}
                                     setAddressesIndex={setAddressesIndex}
                                 />
-                                {!isAuthenticated &&
-                                    <div className="max-w-md mx-auto bg-white rounded-2xl shadow-lg p-6 space-y-6">
 
-                                        {/* Heading */}
+                                {!isAuthenticated && (
+                                    <div className="max-w-md mx-auto bg-white rounded-2xl shadow-lg p-6 space-y-6">
                                         <div className="text-center space-y-2">
                                             <h2 className="text-2xl font-bold text-gray-900">
                                                 Continue to Checkout
                                             </h2>
                                             <p className="text-gray-600 text-sm">
-                                                Choose how you’d like to proceed. It only takes a few seconds ✨
+                                                Choose how you'd like to proceed. It only takes a few seconds ✨
                                             </p>
                                         </div>
 
-                                        {/* Trust Badges */}
                                         <div className="grid grid-cols-3 gap-3">
                                             <div className="rounded-xl p-3 text-center border border-gray-200 bg-gray-50">
                                                 <ShieldCheck className="w-7 h-7 text-green-500 mx-auto mb-1" />
@@ -988,13 +922,10 @@ export default function PaymentModal({ isOpen, onClose }) {
 
                                             <div className="rounded-xl p-3 text-center border border-gray-200 bg-gray-50">
                                                 <Package className="w-7 h-7 text-amber-500 mx-auto mb-1" />
-                                                <p className="text-gray-800 text-xs font-medium">
-                                                    Quality Product
-                                                </p>
+                                                <p className="text-gray-800 text-xs font-medium">Quality Product</p>
                                             </div>
                                         </div>
 
-                                        {/* Primary CTA */}
                                         <button
                                             onClick={() => setRegisterModal(true)}
                                             className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-4 rounded-xl transition-all shadow-md hover:shadow-lg"
@@ -1002,35 +933,28 @@ export default function PaymentModal({ isOpen, onClose }) {
                                             Add Delivery Address & Continue
                                         </button>
 
-                                        {/* Divider */}
                                         <div className="flex items-center gap-3">
                                             <div className="flex-1 h-px bg-gray-200"></div>
                                             <span className="text-gray-400 text-xs uppercase">or</span>
                                             <div className="flex-1 h-px bg-gray-200"></div>
                                         </div>
 
-                                        {/* Secondary CTA */}
                                         <button
                                             onClick={() => setIsLoginModalOpen(true)}
                                             className="w-full border border-gray-300 hover:border-gray-400 text-gray-800 font-semibold py-4 rounded-xl transition-all hover:bg-gray-50"
                                         >
-                                            I’m Already a Customer — Login
+                                            I'm Already a Customer — Login
                                         </button>
 
-                                        {/* Footer Microcopy */}
                                         <p className="text-center text-xs text-gray-500">
                                             100% secure checkout • Easy returns • Trusted by thousands
                                         </p>
                                     </div>
-                                }
+                                )}
 
-                                {
-                                    isAuthenticated && addresses[addressIndex] &&
-
+                                {isAuthenticated && addresses[addressIndex] && (
                                     <div className="mt-1 mb-3 rounded-lg border border-slate-300 p-3">
                                         <div className="flex items-start justify-between gap-3">
-
-                                            {/* Address */}
                                             <div className="flex-1 text-sm text-gray-800 leading-snug">
                                                 <p>
                                                     <span className="text-gray-600">{t("cart.deliveryAddress.deliverTo")} </span>
@@ -1053,51 +977,18 @@ export default function PaymentModal({ isOpen, onClose }) {
                                                 </p>
                                             </div>
 
-                                            {/* Change Button */}
                                             <button
                                                 onClick={() => setIsModalOpen(true)}
-                                                className="
-        shrink-0
-        text-xs font-medium
-        px-3 py-1.5
-        rounded-md
-        bg-amber-500 hover:bg-amber-600
-        text-white
-        transition-colors
-        whitespace-nowrap
-      "
+                                                className="shrink-0 text-xs font-medium px-3 py-1.5 rounded-md bg-amber-500 hover:bg-amber-600 text-white transition-colors whitespace-nowrap"
                                             >
                                                 {t("cart.deliveryAddress.changeAddress")}
                                             </button>
-
                                         </div>
                                     </div>
+                                )}
 
-
-                                }
-
-
-                                {/* {
-                                    isAuthenticated && !checkoutDetails &&
-                                    <button className="bg-gradient-to-r my-2 from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/50 w-full max-w-lg disabled:opacity-50 disabled:cursor-not-allowed mx-auto block text-lg flex items-center justify-center gap-3" onClick={fetchCheckOutDetails} >
-
-
-                                        {
-                                            checkoutLoading ? "Processing...." : "Checkout"
-                                        }
-                                    </button>
-                                } */}
-
-
-
-
-
-                                {
-                                    isAuthenticated && checkoutDetails &&
-
+                                {isAuthenticated && checkoutDetails && (
                                     <>
-
-
                                         {/* Referral Code Input */}
                                         <div className="mb-4">
                                             <label className="flex items-center gap-1.5 text-black text-sm font-medium mb-1.5">
@@ -1107,8 +998,6 @@ export default function PaymentModal({ isOpen, onClose }) {
 
                                             <div className="rounded-lg overflow-hidden border border-slate-300">
                                                 <div className="flex">
-
-                                                    {/* Input */}
                                                     <input
                                                         type="text"
                                                         value={referralCode}
@@ -1118,31 +1007,14 @@ export default function PaymentModal({ isOpen, onClose }) {
                                                             setCodeApplied(false);
                                                         }}
                                                         placeholder={t("payment.referral.placeholder")}
-                                                        className="
-          flex-1
-          px-3 py-2
-          text-sm text-black
-          bg-transparent
-          focus:outline-none
-          disabled:opacity-50 disabled:cursor-not-allowed
-        "
+                                                        className="flex-1 px-3 py-2 text-sm text-black bg-transparent focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                                                     />
 
-                                                    {/* Button */}
                                                     {!checkoutDetails?.referralCode && (
                                                         <button
                                                             onClick={() => handleApply(referralCode)}
                                                             disabled={codeApplied || applyingCode || !referralCode.trim()}
-                                                            className="
-            px-3 py-2
-            text-sm font-medium
-            text-amber-500 hover:text-amber-400
-            transition-colors
-            disabled:opacity-50 disabled:cursor-not-allowed
-            flex items-center gap-1.5
-            border-l border-slate-300
-            whitespace-nowrap
-          "
+                                                            className="px-3 py-2 text-sm font-medium text-amber-500 hover:text-amber-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 border-l border-slate-300 whitespace-nowrap"
                                                         >
                                                             {applyingCode ? (
                                                                 <>
@@ -1160,10 +1032,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                                             </div>
                                         </div>
 
-
-
-                                        {
-                                            !checkoutDetails?.referralCode &&
+                                        {!checkoutDetails?.referralCode && (
                                             <label className="flex items-center gap-3 mb-6 cursor-pointer group">
                                                 <div
                                                     onClick={() => {
@@ -1175,7 +1044,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                                                             handleApply(code);
                                                         }
                                                     }}
-                                                    className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${applyDefault ? 'bg-amber-500 border-amber-500 scale-110' : 'border-gray-400  group-hover:border-amber-400'
+                                                    className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${applyDefault ? 'bg-amber-500 border-amber-500 scale-110' : 'border-gray-400 group-hover:border-amber-400'
                                                         }`}
                                                 >
                                                     {applyDefault && (
@@ -1186,7 +1055,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                                                 </div>
                                                 <span className="text-black text-sm font-medium">{t('payment.referral.default')}</span>
                                             </label>
-                                        }
+                                        )}
 
                                         {/* Payment Methods */}
                                         <div className="mb-4">
@@ -1200,19 +1069,13 @@ export default function PaymentModal({ isOpen, onClose }) {
                                                     <div
                                                         key={method.id}
                                                         onClick={() => setSelectedMethod(method.id)}
-                                                        className={`flex items-center justify-between px-3 py-2 cursor-pointer transition-all
-          hover:bg-slate-100
-          ${index !== paymentMethods.length - 1 ? "border-b border-slate-200" : ""}
-          ${selectedMethod === method.id ? "bg-amber-500/10" : ""}
-        `}
+                                                        className={`flex items-center justify-between px-3 py-2 cursor-pointer transition-all hover:bg-slate-100
+                                                                   ${index !== paymentMethods.length - 1 ? "border-b border-slate-200" : ""}
+                                                                   ${selectedMethod === method.id ? "bg-amber-500/10" : ""}`}
                                                     >
-                                                        {/* Left */}
                                                         <div className="flex items-center gap-2">
-                                                            <div
-                                                                className={`w-8 h-8 rounded-md flex items-center justify-center
-              ${selectedMethod === method.id ? "bg-amber-500/20" : "bg-gray-100"}
-            `}
-                                                            >
+                                                            <div className={`w-8 h-8 rounded-md flex items-center justify-center
+                                                                       ${selectedMethod === method.id ? "bg-amber-500/20" : "bg-gray-100"}`}>
                                                                 {method.icon === "wallet" && <WalletIcon className="w-4 h-4" />}
                                                                 {method.icon === "razorpay" && <RazorpayIcon className="w-4 h-4" />}
                                                             </div>
@@ -1230,12 +1093,8 @@ export default function PaymentModal({ isOpen, onClose }) {
                                                             </div>
                                                         </div>
 
-                                                        {/* Radio */}
-                                                        <div
-                                                            className={`w-4 h-4 rounded-full border flex items-center justify-center
-            ${selectedMethod === method.id ? "border-amber-500" : "border-gray-400"}
-          `}
-                                                        >
+                                                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center
+                                                                   ${selectedMethod === method.id ? "border-amber-500" : "border-gray-400"}`}>
                                                             {selectedMethod === method.id && (
                                                                 <div className="w-2 h-2 rounded-full bg-amber-500" />
                                                             )}
@@ -1244,6 +1103,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                                                 ))}
                                             </div>
                                         </div>
+
 
                                         {/* Price Details */}
                                         <div className="rounded-lg border border-slate-300 p-4 mb-4">
@@ -1395,7 +1255,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                                         )}
 
 
-                                    </>
+                                    </>)
 
                                 }
 

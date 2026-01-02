@@ -258,17 +258,17 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] p-4 sm:p-6 text-white">
 
         {cartItems && totalPrice && (
           <ProgressOfferBar
-       confettiOrigin={{ x: 0.95, y: 0.6 }}
+            confettiOrigin={{ x: 0.95, y: 0.6 }}
             price={Number(String(totalPrice).replace(/[^0-9.]/g, ''))}
           />
         )}
 
 
         {/* Content */}
-      
-       <div className="flex min-h-0 overflow-y-auto flex-col h-[calc(100%-240px)]">
+
+        <div className="flex min-h-0 overflow-y-auto flex-col h-[calc(100%-260px)]">
           {/* Cart Items - Scrollable */}
-         <div className="flex-1 max-h-[calc(100%-120px)] overflow-y-scroll p-4 space-y-3">
+          <div className="flex-1 max-h-[calc(100%-120px)] overflow-y-scroll p-4 space-y-3">
             {loading ? (
               <div className="flex flex-col items-center justify-center h-full">
                 <Loader2 className="w-10 h-10 animate-spin text-[#a17b0a] mb-3" />
@@ -384,17 +384,17 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] p-4 sm:p-6 text-white">
             )}
           </div>
 
-        <div className="sticky bottom-[96px] z-10 w-full bg-gradient-to-r from-[#E59A2F] to-[#D8891E] text-white text-xs font-semibold py-1 flex items-center justify-center gap-4 shadow-sm">
-    <span>Fast Shipping 🚚</span>
-    <span>|</span>
-    <span>Secure & Encrypted Checkout ✅</span>
-  </div>
+          <div className="sticky bottom-[96px] z-10 w-full bg-gradient-to-r from-[#E59A2F] to-[#D8891E] text-white text-xs font-semibold py-1 flex items-center justify-center gap-4 shadow-sm">
+            <span>Fast Shipping 🚚</span>
+            <span>|</span>
+            <span>Secure & Encrypted Checkout ✅</span>
+          </div>
 
 
 
           {/* Footer - Checkout */}
           {cartItems.length > 0 && (
-           <div className="sticky bottom-0 z-20 border-t border-gray-200 p-4 bg-white">
+            <div className="sticky bottom-0 z-20 border-t border-gray-200 p-4 bg-white">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-gray-600 font-medium">SubTotal:</span>
                 <span className="text-2xl font-bold text-black">₹{totalPrice.toLocaleString('en-IN')}</span>
@@ -407,10 +407,39 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] p-4 sm:p-6 text-white">
 
               <button
                 onClick={handleCheckout}
-                className="w-full bg-gradient-to-r cursor-pointer from-[#a17b0a] to-[#a17b0a] hover:from-[#a17b0a] hover:to-[#a17b0a] text-white py-3 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl"
+                className="w-full cursor-pointer bg-gradient-to-r from-[#a17b0a] to-[#a17b0a]
+             hover:from-[#8c6909] hover:to-[#8c6909]
+             text-white py-3 px-4 rounded-lg font-semibold
+             transition-all shadow-lg hover:shadow-xl"
               >
-                Proceed to Checkout
+                <div className="flex items-center justify-center">
+                  {/* Left Text */}
+                  <span className="text-base">Proceed to Checkout</span>
+
+                  {/* Right Payment Icons */}
+                  <div className="flex items-center ml-2">
+                    {[
+                      { src: "/paytm.png", alt: "Paytm" },
+                      { src: "/phonepay.jpg", alt: "PhonePe" },
+                      { src: "/gpay.jpg", alt: "GPay" },
+                    ].map((logo, index) => (
+                      <div
+                        key={index}
+                        className={`w-6 h-6 rounded-full bg-white border border-white
+                      flex items-center justify-center
+                      ${index !== 0 ? "-ml-2" : ""}`}
+                      >
+                        <img
+                          src={logo.src}
+                          alt={logo.alt}
+                          className="w-4 h-4 object-contain"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </button>
+
             </div>
           )}
         </div>

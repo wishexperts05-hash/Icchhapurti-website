@@ -251,7 +251,7 @@ const OrdersPage = () => {
                       <p className="text-black text-sm truncate">
                         {order.productName}
                       </p>
-                      <p className="text-amber-600 font-semibold">₹ {order.price}</p>
+                      <p className="text-amber-600 font-semibold">₹ {(order.price).toFixed(2)}</p>
 
                       {/* Star Rating - Show only for delivered orders */}
                       {/* {!isDelivered && (
