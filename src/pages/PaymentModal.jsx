@@ -581,6 +581,15 @@ export default function PaymentModal({ isOpen, onClose }) {
 
     const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
 
+    useEffect(() => {
+  document.body.style.overflow = "hidden";
+
+  return () => {
+    document.body.style.overflow = "auto";
+  };
+}, []);
+
+
     if (!isOpen) return null;
 
     // Show critical error modal only for initialization errors
@@ -757,7 +766,7 @@ export default function PaymentModal({ isOpen, onClose }) {
 
 
             <div className="relative z-10 h-[calc(100vh-4rem)] overflow-y-auto pt-[env(safe-area-inset-top)]">
-                <div className="max-w-2xl mx-auto">
+                <div className="max-w-xl mx-auto">
                     <div className="bg-gray-50">
                         {/* Order Summary Section */}
                         <div className="mx-auto px-2 py-6">

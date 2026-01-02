@@ -256,13 +256,12 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] p-4 sm:p-6 text-white">
           </div>
         </div>
 
-        {cartItems && totalPrice && (
+        {cartItems && cartItems.length > 0 && (
           <ProgressOfferBar
             confettiOrigin={{ x: 0.95, y: 0.6 }}
-            price={Number(String(totalPrice).replace(/[^0-9.]/g, ''))}
+            price={Number(String(totalPrice || 0).replace(/[^0-9.]/g, ''))}
           />
         )}
-
 
         {/* Content */}
 
@@ -384,11 +383,17 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] p-4 sm:p-6 text-white">
             )}
           </div>
 
-          <div className="sticky bottom-[96px] z-10 w-full bg-gradient-to-r from-[#E59A2F] to-[#D8891E] text-white text-xs font-semibold py-1 flex items-center justify-center gap-4 shadow-sm">
-            <span>Fast Shipping 🚚</span>
-            <span>|</span>
-            <span>Secure & Encrypted Checkout ✅</span>
-          </div>
+
+          {
+            cartItems.length > 0 &&
+
+            <div className="sticky bottom-[96px] z-10 w-full bg-gradient-to-r from-[#E59A2F] to-[#D8891E] text-white text-xs font-semibold py-1 flex items-center justify-center gap-4 shadow-sm">
+              <span>Fast Shipping 🚚</span>
+              <span>|</span>
+              <span>Secure & Encrypted Checkout ✅</span>
+            </div>
+          }
+
 
 
 

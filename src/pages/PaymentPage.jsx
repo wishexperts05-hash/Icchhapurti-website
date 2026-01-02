@@ -437,8 +437,9 @@ useEffect(() => {
               Navigate('/orders');
             }, 2000);
           } else {
+             scrollToTop()
             throw new Error('Payment verification failed');
-            scrollToTop()
+           
           }
         },
         prefill: {
