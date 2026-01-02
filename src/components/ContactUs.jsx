@@ -74,11 +74,7 @@ const handleSubmit = async () => {
 };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br 
-from-[#040934] 
-via-[#030e2d] 
-to-[#051036]
-shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+    <div className="min-h-screen 
  py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Heading */}

@@ -632,11 +632,7 @@ export default function ProductsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br 
-from-[#040934] 
-via-[#030e2d] 
-to-[#051036]
-shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+      <div className="min-h-screen 
  flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-cyan-400" />
@@ -648,11 +644,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
 
   if (error) {
     return (
-      <div className="min-h-screenbg-gradient-to-br 
-from-[#040934] 
-via-[#030e2d] 
-to-[#051036]
-shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+      <div className="min-h-screen
  flex items-center justify-center p-4">
         <div className="bg-slate-800/90 backdrop-blur-sm rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-[#D3AF37]/30">
           <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
@@ -672,11 +664,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br 
-from-[#040934] 
-via-[#030e2d] 
-to-[#051036]
-shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+    <div className="min-h-screen 
  p-4 md:p-8">
 
 

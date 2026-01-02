@@ -3,12 +3,12 @@ import { RefreshCcw, XCircle, CheckCircle, AlertTriangle, Clock, Package, Credit
 
 export default function RefundCancellationPolicy() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
+    <div className="min-h-screen ">
       {/* Header */}
       <div className="bg-white border-b shadow-sm">
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="flex items-center gap-3 mb-4">
-            <RefreshCcw className="w-8 h-8 text-purple-600" />
+            <RefreshCcw className="w-8 h-8 text-[#D8891E]" />
             <h1 className="text-3xl font-bold text-gray-900">Refund & Cancellation Policy</h1>
           </div>
           <p className="text-gray-600">ICCHHAPURTI - Your Manifestation Journey Partner</p>
@@ -27,7 +27,7 @@ export default function RefundCancellationPolicy() {
         {/* Order Cancellation */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <XCircle className="w-6 h-6 text-purple-600" />
+            <XCircle className="w-6 h-6 text-[#D8891E]" />
             <h2 className="text-2xl font-semibold text-gray-900">Order Cancellation</h2>
           </div>
 
@@ -35,7 +35,7 @@ export default function RefundCancellationPolicy() {
             <div>
               <h3 className="font-semibold text-lg text-gray-900 mb-3">Before Shipment</h3>
               <p className="text-gray-700 leading-relaxed mb-3">
-                You can cancel your order before it has been shipped. To cancel your order, please contact us immediately at <a href="mailto:official@icchhapurti.com" className="text-purple-600 font-medium hover:underline">official@icchhapurti.com</a> with your order number.
+                You can cancel your order before it has been shipped. To cancel your order, please contact us immediately at <a href="mailto:official@icchhapurti.com" className="text-[#D8891E] font-medium hover:underline">official@icchhapurti.com</a> with your order number.
               </p>
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                 <div className="flex gap-2">
@@ -68,7 +68,7 @@ export default function RefundCancellationPolicy() {
         {/* Return Policy */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <Package className="w-6 h-6 text-purple-600" />
+            <Package className="w-6 h-6 text-[#D8891E]" />
             <h2 className="text-2xl font-semibold text-gray-900">Return Policy</h2>
           </div>
 
@@ -129,23 +129,23 @@ export default function RefundCancellationPolicy() {
         {/* Return Process */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <FileText className="w-6 h-6 text-purple-600" />
+            <FileText className="w-6 h-6 text-[#D8891E]" />
             <h2 className="text-2xl font-semibold text-gray-900">How to Initiate a Return</h2>
           </div>
 
           <div className="space-y-4">
             <div className="flex gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold">
+              <div className="flex-shrink-0 w-8 h-8 bg-[#D8891E] text-white rounded-full flex items-center justify-center font-bold">
                 1
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900 mb-1">Contact Us</h3>
-                <p className="text-gray-700">Email us at <a href="mailto:official@icchhapurti.com" className="text-purple-600 font-medium hover:underline">official@icchhapurti.com</a> within 7 days of receiving your order with your order number, reason for return, and photos of the product (if applicable).</p>
+                <p className="text-gray-700">Email us at <a href="mailto:official@icchhapurti.com" className="text-[#D8891E] font-medium hover:underline">official@icchhapurti.com</a> within 7 days of receiving your order with your order number, reason for return, and photos of the product (if applicable).</p>
               </div>
             </div>
 
             <div className="flex gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold">
+              <div className="flex-shrink-0 w-8 h-8 bg-[#D8891E] text-white rounded-full flex items-center justify-center font-bold">
                 2
               </div>
               <div>
@@ -155,7 +155,7 @@ export default function RefundCancellationPolicy() {
             </div>
 
             <div className="flex gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold">
+              <div className="flex-shrink-0 w-8 h-8 bg-[#D8891E] text-white rounded-full flex items-center justify-center font-bold">
                 3
               </div>
               <div>
@@ -165,7 +165,7 @@ export default function RefundCancellationPolicy() {
             </div>
 
             <div className="flex gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold">
+              <div className="flex-shrink-0 w-8 h-8 bg-[#D8891E] text-white rounded-full flex items-center justify-center font-bold">
                 4
               </div>
               <div>
@@ -185,7 +185,7 @@ export default function RefundCancellationPolicy() {
         {/* Refund Process */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <CreditCard className="w-6 h-6 text-purple-600" />
+            <CreditCard className="w-6 h-6 text-[#D8891E]" />
             <h2 className="text-2xl font-semibold text-gray-900">Refund Process</h2>
           </div>
 
@@ -202,19 +202,19 @@ export default function RefundCancellationPolicy() {
               <div className="bg-gray-50 rounded-lg p-4">
                 <ul className="space-y-2 text-gray-700">
                   <li className="flex gap-2">
-                    <span className="text-purple-600 mt-1">•</span>
+                    <span className="text-[#D8891E] mt-1">•</span>
                     <span><span className="font-medium">Credit/Debit Card:</span> 5-7 business days after approval</span>
                   </li>
                   <li className="flex gap-2">
-                    <span className="text-purple-600 mt-1">•</span>
+                    <span className="text-[#D8891E] mt-1">•</span>
                     <span><span className="font-medium">Net Banking:</span> 5-7 business days after approval</span>
                   </li>
                   <li className="flex gap-2">
-                    <span className="text-purple-600 mt-1">•</span>
+                    <span className="text-[#D8891E] mt-1">•</span>
                     <span><span className="font-medium">UPI/Wallets:</span> 5-7 business days after approval</span>
                   </li>
                   <li className="flex gap-2">
-                    <span className="text-purple-600 mt-1">•</span>
+                    <span className="text-[#D8891E] mt-1">•</span>
                     <span><span className="font-medium">Cash on Delivery:</span> Bank transfer to your provided account details</span>
                   </li>
                 </ul>
@@ -228,15 +228,15 @@ export default function RefundCancellationPolicy() {
               </p>
               <ul className="space-y-2 text-gray-700">
                 <li className="flex gap-2">
-                  <span className="text-purple-600 mt-1">•</span>
+                  <span className="text-[#D8891E] mt-1">•</span>
                   <span>Items with obvious signs of use</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-purple-600 mt-1">•</span>
+                  <span className="text-[#D8891E] mt-1">•</span>
                   <span>Items not in original packaging</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-purple-600 mt-1">•</span>
+                  <span className="text-[#D8891E] mt-1">•</span>
                   <span>Items damaged during return shipping due to inadequate packaging</span>
                 </li>
               </ul>
@@ -247,7 +247,7 @@ export default function RefundCancellationPolicy() {
         {/* Exchange Policy */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <RefreshCcw className="w-6 h-6 text-purple-600" />
+            <RefreshCcw className="w-6 h-6 text-[#D8891E]" />
             <h2 className="text-2xl font-semibold text-gray-900">Exchange Policy</h2>
           </div>
           <p className="text-gray-700 leading-relaxed mb-4">
@@ -263,29 +263,29 @@ export default function RefundCancellationPolicy() {
         {/* Damaged or Defective Items */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <AlertTriangle className="w-6 h-6 text-purple-600" />
+            <AlertTriangle className="w-6 h-6 text-[#D8891E]" />
             <h2 className="text-2xl font-semibold text-gray-900">Damaged or Defective Items</h2>
           </div>
           <p className="text-gray-700 leading-relaxed mb-4">
-            If you receive a damaged or defective item, please contact us within 24 hours of delivery at <a href="mailto:official@icchhapurti.com" className="text-purple-600 font-medium hover:underline">official@icchhapurti.com</a>.
+            If you receive a damaged or defective item, please contact us within 24 hours of delivery at <a href="mailto:official@icchhapurti.com" className="text-[#D8891E] font-medium hover:underline">official@icchhapurti.com</a>.
           </p>
           <div className="bg-gray-50 rounded-lg p-4">
             <h3 className="font-semibold text-gray-900 mb-3">Please provide:</h3>
             <ul className="space-y-2 text-gray-700">
               <li className="flex gap-2">
-                <span className="text-purple-600 mt-1">•</span>
+                <span className="text-[#D8891E] mt-1">•</span>
                 <span>Order number</span>
               </li>
               <li className="flex gap-2">
-                <span className="text-purple-600 mt-1">•</span>
+                <span className="text-[#D8891E] mt-1">•</span>
                 <span>Clear photos of the damaged/defective item</span>
               </li>
               <li className="flex gap-2">
-                <span className="text-purple-600 mt-1">•</span>
+                <span className="text-[#D8891E] mt-1">•</span>
                 <span>Photos of the packaging</span>
               </li>
               <li className="flex gap-2">
-                <span className="text-purple-600 mt-1">•</span>
+                <span className="text-[#D8891E] mt-1">•</span>
                 <span>Description of the defect or damage</span>
               </li>
             </ul>
@@ -298,20 +298,20 @@ export default function RefundCancellationPolicy() {
         {/* Processing Time */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <Clock className="w-6 h-6 text-purple-600" />
+            <Clock className="w-6 h-6 text-[#D8891E]" />
             <h2 className="text-2xl font-semibold text-gray-900">Processing Time</h2>
           </div>
           <div className="space-y-3">
             <div className="flex gap-3 items-start">
-              <div className="flex-shrink-0 w-2 h-2 bg-purple-600 rounded-full mt-2"></div>
+              <div className="flex-shrink-0 w-2 h-2 bg-[#D8891E] rounded-full mt-2"></div>
               <p className="text-gray-700"><span className="font-medium">Return Approval:</span> 24-48 hours after receiving your request</p>
             </div>
             <div className="flex gap-3 items-start">
-              <div className="flex-shrink-0 w-2 h-2 bg-purple-600 rounded-full mt-2"></div>
+              <div className="flex-shrink-0 w-2 h-2 bg-[#D8891E] rounded-full mt-2"></div>
               <p className="text-gray-700"><span className="font-medium">Inspection:</span> 2-3 business days after receiving returned item</p>
             </div>
             <div className="flex gap-3 items-start">
-              <div className="flex-shrink-0 w-2 h-2 bg-purple-600 rounded-full mt-2"></div>
+              <div className="flex-shrink-0 w-2 h-2 bg-[#D8891E] rounded-full mt-2"></div>
               <p className="text-gray-700"><span className="font-medium">Refund Processing:</span> 5-7 business days after approval</p>
             </div>
           </div>
@@ -341,13 +341,13 @@ export default function RefundCancellationPolicy() {
         </div>
 
         {/* Contact Information */}
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg p-8 text-white">
+        <div className="bg-gradient-to-r from-[#9a7035] to-[#916a32]  rounded-lg p-8 text-white">
           <h2 className="text-2xl font-semibold mb-4">Need Help?</h2>
           <p className="mb-4 leading-relaxed">
             If you have any questions about our refund and cancellation policy or need assistance with a return, please don't hesitate to contact us.
           </p>
           <div className="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur-sm">
-            <p className="text-lg font-medium mb-2">📧 official@icchhapurti.com</p>
+            <p className="text-lg text-black font-medium mb-2">📧 official@icchhapurti.com</p>
             <p className="text-sm opacity-90">Our customer support team will respond within 24-48 hours.</p>
           </div>
           <p className="mt-6 text-sm opacity-90">

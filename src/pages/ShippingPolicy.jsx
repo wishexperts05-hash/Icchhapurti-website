@@ -3,13 +3,13 @@ import { Package, Clock, MapPin, Shield, AlertCircle, Globe, Truck, FileText } f
 
 export default function ShippingPolicy() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+    <div className="min-h-screen 
 ">
       {/* Header */}
       <div className="bg-white border-b shadow-sm">
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="flex items-center gap-3 mb-4">
-            <Package className="w-8 h-8 text-purple-600" />
+            <Package className="w-8 h-8 text-[#D8891E]" />
             <h1 className="text-3xl font-bold text-gray-900">Shipping Policy</h1>
           </div>
           <p className="text-gray-600">ICCHHAPURTI - Your Manifestation Journey Partner</p>
@@ -28,14 +28,14 @@ export default function ShippingPolicy() {
         {/* Processing Time */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <Clock className="w-6 h-6 text-purple-600" />
+            <Clock className="w-6 h-6 text-[#D8891E]" />
             <h2 className="text-2xl font-semibold text-gray-900">Processing Time</h2>
           </div>
           <p className="text-gray-700 leading-relaxed mb-4">
             Orders are typically processed within 3-5 business days. During special occasions or special promotions processing time may vary but we strive to dispatch your order as quickly as possible.
           </p>
-          <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-            <p className="text-purple-900">
+          <div className="bg-purple-50 border border-[#D8891E] rounded-lg p-4">
+            <p className="text-[#e89c33]">
               <span className="font-medium">Business Days:</span> Monday to Friday. Does not include Saturday, Sunday or National Holidays.
             </p>
           </div>
@@ -44,13 +44,13 @@ export default function ShippingPolicy() {
         {/* Shipping Methods */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <Truck className="w-6 h-6 text-purple-600" />
+            <Truck className="w-6 h-6 text-[#D8891E]" />
             <h2 className="text-2xl font-semibold text-gray-900">Shipping Methods</h2>
           </div>
           <p className="text-gray-700 leading-relaxed mb-6">
             We offer various shipping methods to cater to your preferences and needs. The available shipping options will be displayed during the checkout process. Our standard shipping methods include:
           </p>
-          
+
           <div className="space-y-6">
             <div className="border-l-4 border-blue-500 pl-4">
               <h3 className="font-semibold text-lg text-gray-900 mb-2">1. Standard Shipping</h3>
@@ -86,7 +86,7 @@ export default function ShippingPolicy() {
         {/* International Shipping */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <Globe className="w-6 h-6 text-purple-600" />
+            <Globe className="w-6 h-6 text-[#D8891E]" />
             <h2 className="text-2xl font-semibold text-gray-900">International Shipping</h2>
           </div>
           <p className="text-gray-700 leading-relaxed mb-4">
@@ -102,7 +102,7 @@ export default function ShippingPolicy() {
         {/* Order Tracking */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <MapPin className="w-6 h-6 text-purple-600" />
+            <MapPin className="w-6 h-6 text-[#D8891E]" />
             <h2 className="text-2xl font-semibold text-gray-900">Order Tracking</h2>
           </div>
           <p className="text-gray-700 leading-relaxed">
@@ -113,7 +113,7 @@ export default function ShippingPolicy() {
         {/* Shipping Delays */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <AlertCircle className="w-6 h-6 text-purple-600" />
+            <AlertCircle className="w-6 h-6 text-[#D8891E]" />
             <h2 className="text-2xl font-semibold text-gray-900">Shipping Delays</h2>
           </div>
           <p className="text-gray-700 leading-relaxed">
@@ -124,26 +124,26 @@ export default function ShippingPolicy() {
         {/* Lost or Stolen Packages */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <Shield className="w-6 h-6 text-purple-600" />
+            <Shield className="w-6 h-6 text-[#D8891E]" />
             <h2 className="text-2xl font-semibold text-gray-900">Lost or Stolen Packages</h2>
           </div>
           <p className="text-gray-700 leading-relaxed">
-            In the rare event that your package is lost or stolen during transit, please contact our customer support team at <a href="mailto:official@icchhapurti.com" className="text-purple-600 font-medium hover:underline">official@icchhapurti.com</a> for assistance. We will work with the shipping carrier to resolve the issue and ensure you receive your order.
+            In the rare event that your package is lost or stolen during transit, please contact our customer support team at <a href="mailto:official@icchhapurti.com" className="text-[#D8891E] font-medium hover:underline">official@icchhapurti.com</a> for assistance. We will work with the shipping carrier to resolve the issue and ensure you receive your order.
           </p>
         </div>
 
         {/* Courier Partners */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <Truck className="w-6 h-6 text-purple-600" />
+            <Truck className="w-6 h-6 text-[#D8891E]" />
             <h2 className="text-2xl font-semibold text-gray-900">Courier Partners and Third-Party Delivery</h2>
           </div>
-          
+
           <div className="space-y-4 text-gray-700">
             <p className="leading-relaxed">
               We use trusted third-party courier partners to deliver packages.
             </p>
-            
+
             <div className="bg-gray-50 rounded-lg p-4">
               <h3 className="font-semibold text-gray-900 mb-3">What ICCHHAPURTI Does:</h3>
               <p>We package your order, choose an appropriate courier, and hand the shipment to that courier.</p>
@@ -165,10 +165,10 @@ export default function ShippingPolicy() {
         {/* Delivery Attempts */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <FileText className="w-6 h-6 text-purple-600" />
+            <FileText className="w-6 h-6 text-[#D8891E]" />
             <h2 className="text-2xl font-semibold text-gray-900">Delivery Attempts and Customer Responsibility</h2>
           </div>
-          
+
           <div className="space-y-4">
             <p className="text-gray-700 leading-relaxed">
               Please provide a full, accurate delivery address and a phone number where someone can be reached during normal delivery hours.
@@ -208,22 +208,22 @@ export default function ShippingPolicy() {
         {/* Damaged or Tampered Packages */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <AlertCircle className="w-6 h-6 text-purple-600" />
+            <AlertCircle className="w-6 h-6 text-[#D8891E]" />
             <h2 className="text-2xl font-semibold text-gray-900">Damaged or Tampered Packages</h2>
           </div>
-          
+
           <p className="text-gray-700 leading-relaxed mb-4 font-medium">
             Inspect the package at the time of delivery. If the outer package is damaged or appears tampered with:
           </p>
 
           <div className="space-y-3 mb-6">
             <div className="flex gap-2 text-gray-700">
-              <span className="text-purple-600 mt-1 font-bold">1.</span>
+              <span className="text-[#D8891E] mt-1 font-bold">1.</span>
               <span>Refuse delivery where practicable and note the reason with the delivery agent; OR</span>
             </div>
             <div className="flex gap-2 text-gray-700">
-              <span className="text-purple-600 mt-1 font-bold">2.</span>
-              <span>If you accept delivery, take clear photos of the outer packaging and the product immediately and notify us at <a href="mailto:official@icchhapurti.com" className="text-purple-600 font-medium hover:underline">official@icchhapurti.com</a> within 24 hours of delivery.</span>
+              <span className="text-[#D8891E] mt-1 font-bold">2.</span>
+              <span>If you accept delivery, take clear photos of the outer packaging and the product immediately and notify us at <a href="mailto:official@icchhapurti.com" className="text-[#D8891E] font-medium hover:underline">official@icchhapurti.com</a> within 24 hours of delivery.</span>
             </div>
           </div>
 
@@ -235,7 +235,7 @@ export default function ShippingPolicy() {
         {/* Report Timelines */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
           <h2 className="text-2xl font-semibold text-gray-900 mb-6">Report Timelines</h2>
-          
+
           <div className="space-y-4">
             <div className="border-l-4 border-red-500 pl-4">
               <h3 className="font-semibold text-gray-900 mb-2">Damaged on Arrival</h3>
@@ -256,7 +256,7 @@ export default function ShippingPolicy() {
         </div>
 
         {/* Contact Information */}
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg p-8 text-white">
+        <div className="bg-gradient-to-r from-[#9a7035] to-[#916a32] rounded-lg p-8 text-white">
           <h2 className="text-2xl font-semibold mb-4">Contact Information</h2>
           <p className="mb-4 leading-relaxed">
             If you have any questions or concerns regarding your order or our shipping policy, please contact our customer support team.

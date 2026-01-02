@@ -232,11 +232,11 @@ ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
 
       >
         {/* Header */}
-        <div className="bg-gradient-to-br 
+        <div className=" p-4 sm:p-6 text-white bg-gradient-to-br 
 from-[#040934] 
 via-[#030e2d] 
 to-[#051036]
-shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] p-4 sm:p-6 text-white">
+shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">

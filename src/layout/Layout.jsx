@@ -10,15 +10,22 @@ export default function Layout() {
       {/* Background Image */}
       {/* <AIChatbot/> */}
 
-      <div
-        className="fixed inset-0 -z-10 bg-cover bg-gradient-to-br 
-from-[#040934] 
-via-[#030e2d] 
-to-[#051036]
-shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
-bg-center bg-no-repeat"
+<div
+  className="fixed inset-0 -z-10 bg-center bg-no-repeat bg-cover
+             shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]"
+  style={{
+    backgroundImage: `
+      linear-gradient(
+        135deg,
+        rgba(4,9,52,0.92),
+        rgba(3,14,45,0.92),
+        rgba(5,16,54,0.92)
+      ),
+      url('/new-bg.jpg')
+    `,
+  }}
+/>
 
-      />
       <div className="fixed bottom-25 left-6 z-50 group">
         <a
           href="https://wa.me/919815555569" // Replace with your WhatsApp number

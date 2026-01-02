@@ -16,7 +16,7 @@ import CartSidebar from "./CartSidebar";
 import PaymentModal from "../pages/PaymentModal";
 
 // ---------- PRODUCT CARD ----------
-function ProductCard({ product, onAddToCart, onWishlistUpdate,openPayment,setOpenPayment, setCartSidebarOpen }) {
+function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setOpenPayment, setCartSidebarOpen }) {
   const [addingToCart, setAddingToCart] = useState(false);
   const [buyingNow, setBuyingNow] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -102,12 +102,12 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate,openPayment,setOpe
         );
         // navigate("/cart");
         setCartSidebarOpen(true)
-     
+
       } else {
         await onAddToCart(product);
 
         if (isBuyNow) {
-           setOpenPayment(true)
+          setOpenPayment(true)
         } else {
           setAddedToCart(true);
           setTimeout(() => setAddedToCart(false), 2000);
@@ -236,7 +236,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate,openPayment,setOpe
   };
   console.log(product, "product")
 
-  
+
 
   return (
     <div className="relative group h-full">
@@ -476,7 +476,7 @@ export default function OurProducts() {
 
 
   const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
-const [openPayment, setOpenPayment] = useState(false)
+  const [openPayment, setOpenPayment] = useState(false)
   useEffect(() => {
     fetchProducts();
   }, [page, debounceSearch]);
@@ -634,7 +634,7 @@ const [openPayment, setOpenPayment] = useState(false)
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+      <div className="min-h-screen shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
  flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-cyan-400" />
@@ -646,7 +646,7 @@ const [openPayment, setOpenPayment] = useState(false)
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+      <div className="min-h-screen  
  flex items-center justify-center p-4">
         <div className="bg-slate-800/90 backdrop-blur-sm rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-red-500/30">
           <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
@@ -667,7 +667,9 @@ const [openPayment, setOpenPayment] = useState(false)
 
   return (
     <div className="min-h-screen bg-cover bg-center bg-no-repeat relative py-2 px-3"
-      style={{ backgroundImage: "url('/product-bg.jpg')" }}>
+      // style={{ backgroundImage: "url('/product-bg.jpg')" }}
+      
+      >
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
@@ -769,10 +771,10 @@ const [openPayment, setOpenPayment] = useState(false)
           isOpen={cartSidebarOpen}
           onClose={() => setCartSidebarOpen(false)}
           onCheckout={() => {
-      
-          setCartSidebarOpen(false);
-          setOpenPayment(true);
-        }}
+
+            setCartSidebarOpen(false);
+            setOpenPayment(true);
+          }}
 
         />
       </div>
