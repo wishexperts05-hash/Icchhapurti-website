@@ -1,9 +1,11 @@
 import { Phone, Mail, MapPin, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Footer = () => {
   const { t } = useTranslation();
+const location = useLocation();
+const isHomePage = location.pathname === "/" || location.pathname === "/homePage";
 
   const quickLinks = [
     { label: t('footer.links.home'), href: "/homePage" },
@@ -28,14 +30,18 @@ const Footer = () => {
   return (
     <footer className="relative overflow-hidden   text-white">
 
-      {/* 🔶 TOP SHAPE */}
-      {/* <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10">
-        <img
-          src="/shape.png"
-          alt="footer-shape"
-          className="w-full h-auto"
-        />
-      </div> */}
+
+
+    {isHomePage && (
+  <div className="absolute top-0 left-0 w-full pointer-events-none">
+    <img
+      src="/shape.png"
+      alt=""
+      className="w-full block"
+    />
+  </div>
+)}
+
 
       {/* CONTENT */}
       <div className="relative max-w-7xl mx-auto px-6 pt-24 pb-12 z-20">

@@ -246,7 +246,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setO
       }
       <div onClick={handleViewDetails}
         className="relative  bg-white
- rounded-3xl overflow-hidden shadow-2xl  transition-all duration-500 hover:scale-[1.02] border border-purple-500/30 flex flex-col h-full "
+ rounded-3xl overflow-hidden shadow-2xl cursor-pointer transition-all duration-500 hover:scale-[1.02] border border-purple-500/30 flex flex-col h-full "
       >
         <div className="absolute inset-0  transition-all duration-500" />
 
@@ -283,6 +283,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setO
         </button>
 
 
+      
         <div className="relative w-full h-[260px] sm:h-[450px] bg-gradient-to-b from-purple-50 to-transparent flex items-center justify-center p-4">
 
           <img
@@ -298,7 +299,6 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setO
             }}
           />
         </div>
-
 
         <div className="relative p-6 bg-[#f8f8f8] flex-1 flex flex-col">
           <h3 className=" sm:text-2xl font-bold text-[#041049] leading-snug mb-2 text-2xl line-clamp-2 min-h-[3rem] sm:min-h-[3.5rem]  transition-all">
@@ -698,7 +698,7 @@ export default function OurProducts() {
           </button>
         </div>
 
-        {products.length > 0 ? (
+      {products.length > 0 ? (
           <div className={`grid gap-4 md:gap-6 ${products.length === 1
             ? "grid-cols-1 md:grid-cols-3"
             : products.length === 2

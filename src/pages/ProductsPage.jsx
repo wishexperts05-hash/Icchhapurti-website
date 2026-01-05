@@ -248,7 +248,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setO
       <div
         onClick={handleViewDetails}
         className="relative  bg-white
- rounded-3xl overflow-hidden shadow-2xl  transition-all duration-500 hover:scale-[1.02] border border-[#D3AF37] flex flex-col h-full "
+ rounded-3xl overflow-hidden shadow-2xl cursor-pointer  transition-all duration-500 hover:scale-[1.02] border border-[#D3AF37] flex flex-col h-full "
       >
         <div className="absolute inset-0  transition-all duration-500" />
 
@@ -285,7 +285,8 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setO
         </button>
 
 
-        <div className="relative w-full aspect-[3/4] bg-gradient-to-b from-purple-50 to-transparent">
+         <div className="relative w-full h-[260px] sm:h-[450px] bg-gradient-to-b from-purple-50 to-transparent flex items-center justify-center p-4">
+
           <img
             src={
               product.images?.[currentImageIndex] ||
@@ -295,7 +296,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setO
             alt={product.name}
             className="w-full h-full object-contain transition-all duration-500 group-hover:scale-105"
             onError={(e) => {
-              e.target.src = "https://via.placeholder.com/400x532?text=No+Image";
+              e.target.src = "https://via.placeholder.com/600x600?text=No+Image";
             }}
           />
         </div>
@@ -705,39 +706,54 @@ export default function ProductsPage() {
 
         </div>
 
-        {products.length > 0 ? (
-          <div className="grid gap-4 md:gap-6 
-                grid-cols-1 
-                sm:grid-cols-2 
-                lg:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id || product._id}
-                product={product}
-                onAddToCart={handleAddToCart}
-                setCartSidebarOpen={setCartSidebarOpen}
-                onWishlistUpdate={handleWishlistUpdate}
-                openPayment={openPayment}
-                setOpenPayment={setOpenPayment}
-              />
-            ))}
-          </div>
-
-        ) : (
-          <div className="text-center py-20">
-            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 max-w-md mx-auto border border-slate-700">
-              <div className="w-16 h-16 bg-gray-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <ShoppingCart className="w-8 h-8 text-gray-400" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">
-                No Products Found
-              </h3>
-              <p className="text-gray-400">
-                We could not find any products at the moment.
-              </p>
-            </div>
-          </div>
-        )}
+         {products.length > 0 ? (
+                  <div className={`grid gap-4 md:gap-6 ${products.length === 1
+                    ? "grid-cols-1 md:grid-cols-3"
+                    : products.length === 2
+                      ? "grid-cols-1 md:grid-cols-2 md:justify-around md:max-w-7xl px-4 md:px-0 md:mx-auto"
+                      : "grid-cols-1 md:grid-cols-3"
+                    }`}>
+                    {products.map((product, index) => {
+                      const isOne = products.length === 1;
+                      const isTwo = products.length === 2;
+        
+                      return (
+                        <div
+                          key={product.id || product._id}
+                          className={
+                            isOne
+                              ? "md:col-span-1 md:col-start-2"
+                              : ""
+                          }
+                        >
+                          <ProductCard
+                            product={product}
+                            onAddToCart={handleAddToCart}
+                            onWishlistUpdate={handleWishlistUpdate}
+                            setCartSidebarOpen={setCartSidebarOpen}
+                            openPayment={openPayment}
+                            setOpenPayment={setOpenPayment}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+        
+                ) : (
+                  <div className="text-center py-20 px-4">
+                    <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 max-w-md mx-auto border border-slate-700">
+                      <div className="w-16 h-16 bg-gray-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <ShoppingCart className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <h3 className="text-xl font-bold text-white mb-2">
+                        No Products Found
+                      </h3>
+                      <p className="text-gray-400">
+                        We could not find any products at the moment.
+                      </p>
+                    </div>
+                  </div>
+                )}
         {/* Pagination */}
         <div className="mt-10 flex items-center justify-center gap-4">
           <button

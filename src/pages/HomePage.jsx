@@ -126,11 +126,25 @@ const HomePage = () => {
 
       <StoryBanner />
 
-     
-    
 
+
+      <div className="mt-30">
+        <img
+          src="/shape1.png"
+          alt=""
+          className="w-full block"
+        />
+      </div>
 
       <ProductVideoSection />
+      
+      <div className="mt-30">
+        <img
+          src="/shape1.png"
+          alt=""
+          className="w-full block"
+        />
+      </div>
 
       <Testimonials />
     </div>

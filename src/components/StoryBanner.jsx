@@ -113,7 +113,7 @@ const StoryBanner = () => {
   return (
     <>
     
-    <div className="pt-5 px-4 relative bg-white  overflow-hidden ">
+    <div className="pt-5 px-4 relative bg-white overflow-hidden ">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-4xl font-bold text-black text-center mb-4">
           Our Stories

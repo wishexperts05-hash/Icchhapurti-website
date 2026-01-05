@@ -95,7 +95,7 @@ export default function Testimonials() {
   if (loading || !reviews.length) return null;
 
   return (
-    <section className="relative mt-15 ">
+    <section className="relative  ">
 
       {/* Top Wave */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none rotate-180">
