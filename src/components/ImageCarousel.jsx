@@ -108,7 +108,7 @@ const ImageCarousel = ({
     >
       {/* ================= SLIDES ================= */}
       {/* Aspect ratio container: 1920/1050 = 1.829 ≈ 64:35 */}
-      <div className="relative w-full" style={{ aspectRatio: '1920/1050' }}>
+      <div className="relative w-full" style={{ aspectRatio: '1600/500' }} >
         <div
           className="flex h-full transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
@@ -119,7 +119,7 @@ const ImageCarousel = ({
                 <img
                   src={media.src}
                   alt={`Slide ${i + 1}`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
               ) : (
                 <video
@@ -227,8 +227,8 @@ const ImageCarousel = ({
               key={i}
               onClick={() => setCurrentIndex(i)}
               className={`transition-all rounded-full focus:outline-none focus:ring-2 focus:ring-white/50 ${i === currentIndex
-                  ? 'w-6 xs:w-8 sm:w-10 md:w-12 lg:w-14 h-1.5 xs:h-2 sm:h-2.5 md:h-3 bg-white shadow-lg'
-                  : 'w-1.5 xs:w-2 sm:w-2.5 md:w-3 h-1.5 xs:h-2 sm:h-2.5 md:h-3 bg-white/50 hover:bg-white/75'
+                ? 'w-6 xs:w-8 sm:w-10 md:w-12 lg:w-14 h-1.5 xs:h-2 sm:h-2.5 md:h-3 bg-white shadow-lg'
+                : 'w-1.5 xs:w-2 sm:w-2.5 md:w-3 h-1.5 xs:h-2 sm:h-2.5 md:h-3 bg-white/50 hover:bg-white/75'
                 }`}
               aria-label={`Go to slide ${i + 1}`}
             />

@@ -142,3 +142,116 @@ html, body {
     background-position: 200% 50%;
   }
 }
+/* Pure CSS Wave Divider - Add to your CSS file */
+
+/* Option 1: Simple CSS Wave using border-radius */
+.wave-divider-css {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100px;
+  background: #ffffff;
+  z-index: 10;
+  pointer-events: none;
+  transform: translateY(50%);
+}
+
+.wave-divider-css::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: inherit;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+}
+
+/* Option 2: Animated CSS Wave */
+.wave-divider-animated {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100px;
+  overflow: hidden;
+  z-index: 10;
+  pointer-events: none;
+  transform: translateY(50%);
+}
+
+.wave-divider-animated::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  background: radial-gradient(ellipse at center, transparent 40%, #ffffff 40%);
+  background-size: 50% 100%;
+  animation: wave 10s linear infinite;
+}
+
+@keyframes wave {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(50%);
+  }
+}
+
+/* Option 3: Multiple Layer Wave */
+.wave-divider-multi {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 120px;
+  z-index: 10;
+  pointer-events: none;
+  transform: translateY(50%);
+}
+
+.wave-layer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+}
+
+.wave-layer-1 {
+  opacity: 0.3;
+  border-radius: 50% 50% 0 0 / 30% 30% 0 0;
+}
+
+.wave-layer-2 {
+  opacity: 0.6;
+  border-radius: 50% 50% 0 0 / 50% 50% 0 0;
+}
+
+.wave-layer-3 {
+  opacity: 1;
+  border-radius: 50% 50% 0 0 / 70% 70% 0 0;
+}
+
+/* Option 4: Clip-path Wave */
+.wave-divider-clip {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100px;
+  background: #ffffff;
+  z-index: 10;
+  pointer-events: none;
+  transform: translateY(50%);
+  clip-path: ellipse(100% 100% at 50% 0%);
+}

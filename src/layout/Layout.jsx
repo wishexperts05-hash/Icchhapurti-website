@@ -17,9 +17,9 @@ export default function Layout() {
     backgroundImage: `
       linear-gradient(
         135deg,
-        rgba(4,9,52,0.92),
-        rgba(3,14,45,0.92),
-        rgba(5,16,54,0.92)
+        rgba(4,9,30,0.80),
+        rgba(3,14,30,0.80),
+        rgba(5,16,30,0.80)
       ),
       url('/new-bg.jpg')
     `,

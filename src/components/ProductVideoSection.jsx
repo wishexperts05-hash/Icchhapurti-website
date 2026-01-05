@@ -94,18 +94,31 @@ const ProductVideoSection = () => {
   };
 
   return (
-    <div className=" py-8 sm:py-12  relative overflow-hidden">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+    <> <div className="">
+            <img
+              src="/shape1.png"
+              alt=""
+              className="w-full block"
+            />
+          </div>
+          <div className=" sm:py-5 bg-white  relative overflow-hidden">
+
+
+     
+       
+
+      <div className="relative max-w-7xl  mx-auto  px-4 sm:px-6">
+
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8 md:mb-5">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 sm:mb-3">
-            Product Reels
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black mb-2 sm:mb-3">
+            See How World Is Manifesting With Ichhapurti
           </h2>
-          <p className="text-sm sm:text-base text-slate-300 px-4">
+          <p className="text-sm sm:text-base text-gray-700 px-4">
             Experience the Manifestation Pen in short, powerful reels
           </p>
         </div>
-      
+
         {/* Slider Container */}
         <div className="relative">
           {/* Navigation Buttons */}
@@ -140,8 +153,8 @@ const ProductVideoSection = () => {
                 key={video.id}
                 onClick={() => openVideo(video)}
                 className={`flex-shrink-0 w-[200px] sm:w-[240px] md:w-[280px] cursor-pointer snap-center group ${index === currentSlide
-                    ? 'opacity-100'
-                    : 'opacity-60'
+                  ? 'opacity-100'
+                  : 'opacity-60'
                   }`}
               >
                 <div className={`relative aspect-[9/16] rounded-xl sm:rounded-2xl overflow-hidden bg-black shadow-2xl
@@ -220,8 +233,8 @@ const ProductVideoSection = () => {
                 key={index}
                 onClick={() => setCurrentSlide(index)}
                 className={`h-1.5 sm:h-2 rounded-full transition-all ${index === currentSlide
-                    ? 'w-6 sm:w-8 bg-amber-500 shadow-lg shadow-amber-500/50'
-                    : 'w-1.5 sm:w-2 bg-slate-600 hover:bg-slate-500'
+                  ? 'w-6 sm:w-8 bg-amber-500 shadow-lg shadow-amber-500/50'
+                  : 'w-1.5 sm:w-2 bg-slate-600 hover:bg-slate-500'
                   }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
@@ -269,13 +282,13 @@ const ProductVideoSection = () => {
           </div>
         </div>
       )}
-  <div className="absolute bottom-0 left-0 right-0 w-full z-10 pointer-events-none">
-      <img
-        src="/shape1.png"
-        alt=""
-        className="w-full h-auto block"
-      />
-    </div>
+      {/* <div className="absolute bottom-0 left-0 right-0 w-full z-10 pointer-events-none">
+        <img
+          src="/shape1.png"
+          alt=""
+          className="w-full h-auto block"
+        />
+      </div> */}
       <style jsx>{`
         @keyframes shine {
           0% { background-position: 200% 200%; }
@@ -286,7 +299,8 @@ const ProductVideoSection = () => {
           display: none;
         }
       `}</style>
-    </div>
+    </div></>
+    
   );
 };
 

@@ -95,7 +95,7 @@ export default function Testimonials() {
   if (loading || !reviews.length) return null;
 
   return (
-    <section className="relative bg-gradient-to-br from-purple-50 via-pink-100 to-yellow-50">
+    <section className="relative mt-15 ">
 
       {/* Top Wave */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none rotate-180">
@@ -121,8 +121,8 @@ export default function Testimonials() {
                 <Star key={i} className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 fill-yellow-500" />
               ))}
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black mb-2 sm:mb-4">Testimonials</h2>
-            <p className="text-base sm:text-xl text-gray-600">
+            <h2 className="text-3xl sm:text-5xl text-white font-black mb-2 sm:mb-4">Testimonials</h2>
+            <p className="text-base sm:text-xl text-gray-200">
               Real stories from real customers
             </p>
           </div>

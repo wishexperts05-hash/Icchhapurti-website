@@ -16,6 +16,7 @@ import StoryBanner from '../components/StoryBanner'
 import ProductVideoSection from '../components/ProductVideoSection'
 import FAQPage from './FAQPage'
 import Testimonials from '../components/Testimonials'
+import WaveDivider from '../components/WaveDivider'
 
 const HomePage = () => {
 
@@ -35,7 +36,6 @@ const HomePage = () => {
 
   const fetchCartData = async () => {
     try {
-      // setLoading(true)
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems`, {
         method: 'GET',
         headers: {
@@ -53,19 +53,15 @@ const HomePage = () => {
       localStorage.setItem("cart", data?.data?.length || 0)
       setCount(data?.data?.length)
     } catch (err) {
-      // setError(err.message);
       console.error('Error fetching cart:', err);
     } finally {
-      // setLoading(false);
     }
   };
 
-console.log(cartCount,"cartCount")
+  console.log(cartCount, "cartCount")
 
   const fetchNotifications = async () => {
     try {
-      // setLoading(true);
-
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/user/notifications/get`,
         {
@@ -85,26 +81,15 @@ console.log(cartCount,"cartCount")
       const unreadCount = allNotifications.filter(n => !n.isRead).length;
       localStorage.setItem("unreadCount", unreadCount)
       setUnreadCount(unreadCount)
-      // setNotifications(allNotifications);
 
     } catch (err) {
       console.error("Error fetching notifications:", err);
-      // setNotifications([]);
     } finally {
-      // setLoading(false);
     }
   };
 
-
-
-
-
   useEffect(() => {
-
-
     const fetchWishlist = async () => {
-      // setLoading(true);
-      // setError(null);
       try {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/wishlist/getWishlist`, {
           method: "GET",
@@ -120,45 +105,34 @@ console.log(cartCount,"cartCount")
           throw new Error(data.message || "Failed to fetch wishlist");
         }
 
-        // adjust if your field is different
-        // setItems(data.data || []);
-
         setList(data.data.length)
       } catch (err) {
         console.error("Error fetching wishlist:", err);
-        // setError(err.message);
       } finally {
-        // setLoading(false);
       }
     };
 
     fetchWishlist();
   }, [token]);
 
-
-
   return (
-    <div className=' mx-auto'>
-
-
-
-      {/* <HeroSection /> */}
+    <div className='mx-auto'>
       <ImageCarousel />
-      <WhyChooseUs/>
-      {/* <ManifestationPenHero /> */}
-      
+      <WhyChooseUs />
+
       <OurProducts />
-      <StoryBanner/>
-      <ProductVideoSection/>
-      {/* <ManifestationBenefits /> */}
-      {/* <HowToUseManifestationPen /> */}
-      {/* <ManifestationFeatures /> */}
+
+      {/* Story Banner and Video Section with SVG Wave Divider */}
+
+      <StoryBanner />
+
+     
+    
+
+
+      <ProductVideoSection />
+
       <Testimonials />
-      {/* <CustomerReviews/> */}
-      {/* <FAQPage/> */}
-      {/* <ManifestationStory /> */}
-      {/* <OurProducts /> */}
-      {/* <DownloadAppSection/> */}
     </div>
   )
 }

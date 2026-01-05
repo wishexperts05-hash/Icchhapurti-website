@@ -239,7 +239,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setO
 
 
   return (
-    <div className="relative group h-full">
+    <div className="relative group h-full md:mx-4 ">
 
       {
         openPayment && <PaymentModal isOpen={openPayment} onClose={() => setOpenPayment(false)} />
@@ -283,7 +283,8 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setO
         </button>
 
 
-        <div className="relative w-full aspect-[3/4] bg-gradient-to-b from-purple-50 to-transparent">
+        <div className="relative w-full h-[260px] sm:h-[450px] bg-gradient-to-b from-purple-50 to-transparent flex items-center justify-center p-4">
+
           <img
             src={
               product.images?.[currentImageIndex] ||
@@ -293,10 +294,11 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setO
             alt={product.name}
             className="w-full h-full object-contain transition-all duration-500 group-hover:scale-105"
             onError={(e) => {
-              e.target.src = "https://via.placeholder.com/400x532?text=No+Image";
+              e.target.src = "https://via.placeholder.com/600x600?text=No+Image";
             }}
           />
         </div>
+
 
         <div className="relative p-6 bg-[#f8f8f8] flex-1 flex flex-col">
           <h3 className=" sm:text-2xl font-bold text-[#041049] leading-snug mb-2 text-2xl line-clamp-2 min-h-[3rem] sm:min-h-[3.5rem]  transition-all">
@@ -667,10 +669,19 @@ export default function OurProducts() {
 
   return (
     <div className="min-h-screen bg-cover bg-center bg-no-repeat relative py-2 px-3"
-      // style={{ backgroundImage: "url('/product-bg.jpg')" }}
-      
-      >
-      <div className="max-w-7xl mx-auto">
+    // style={{ backgroundImage: "url('/product-bg.jpg')" }}
+
+    >
+      <div className="absolute  top-0  left-0 right-0 w-full z-10 pointer-events-none">
+        <img
+          src="/shape.png"
+          alt=""
+          className="w-full block"
+        />
+      </div>
+
+
+      <div className="max-w-6xl mx-auto mt-20">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">
@@ -688,21 +699,40 @@ export default function OurProducts() {
         </div>
 
         {products.length > 0 ? (
-          <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-6">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id || product._id}
-                product={product}
-                onAddToCart={handleAddToCart}
-                onWishlistUpdate={handleWishlistUpdate}
-                setCartSidebarOpen={setCartSidebarOpen}
-                openPayment={openPayment}
-                setOpenPayment={setOpenPayment}
-              />
-            ))}
+          <div className={`grid gap-4 md:gap-6 ${products.length === 1
+            ? "grid-cols-1 md:grid-cols-3"
+            : products.length === 2
+              ? "grid-cols-1 md:grid-cols-2 md:justify-around md:max-w-7xl px-4 md:px-0 md:mx-auto"
+              : "grid-cols-1 md:grid-cols-3"
+            }`}>
+            {products.map((product, index) => {
+              const isOne = products.length === 1;
+              const isTwo = products.length === 2;
+
+              return (
+                <div
+                  key={product.id || product._id}
+                  className={
+                    isOne
+                      ? "md:col-span-1 md:col-start-2"
+                      : ""
+                  }
+                >
+                  <ProductCard
+                    product={product}
+                    onAddToCart={handleAddToCart}
+                    onWishlistUpdate={handleWishlistUpdate}
+                    setCartSidebarOpen={setCartSidebarOpen}
+                    openPayment={openPayment}
+                    setOpenPayment={setOpenPayment}
+                  />
+                </div>
+              );
+            })}
           </div>
+
         ) : (
-          <div className="text-center py-20">
+          <div className="text-center py-20 px-4">
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 max-w-md mx-auto border border-slate-700">
               <div className="w-16 h-16 bg-gray-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <ShoppingCart className="w-8 h-8 text-gray-400" />
@@ -718,8 +748,7 @@ export default function OurProducts() {
         )}
 
 
-
-        <div className="  my-3 flex items-center justify-center ">
+        <div className="  my-5 mb-10 flex items-center justify-center ">
           {/* Product Card */}
           <div className=" w-full bg-white rounded-xl overflow-hidden hover:border-amber-400/50 transition-all duration-300">
             <div className="grid grid-cols-1 md:grid-cols-2  gap-8 p-8 md:p-10">

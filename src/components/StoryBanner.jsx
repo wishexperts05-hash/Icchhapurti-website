@@ -55,13 +55,13 @@ const StoryBanner = () => {
       type: "video"
     },
     {
-      id: 1,
+      id: 7,
       video: "/story6.mp4",
       title: "Manifestation Pen in Daily Routine",
       description: "Create focus, clarity, and abundance every day",
       type: "video"
     },
-   
+
   ];
 
   /* ------------------ MOBILE CHECK ------------------ */
@@ -111,16 +111,11 @@ const StoryBanner = () => {
 
   /* ------------------ RENDER ------------------ */
   return (
-    <div className=" py-16 px-4 relative overflow-hidden">
-           <div className="absolute top-0 left-0 right-0 w-full z-10 pointer-events-none">
-            <img
-              src="/shape.png"
-              alt=""
-              className="w-full block"
-            />
-          </div>
+    <>
+    
+    <div className="pt-5 px-4 relative bg-white  overflow-hidden ">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-4xl font-bold text-white text-center mb-4">
+        <h2 className="text-4xl font-bold text-black text-center mb-4">
           Our Stories
         </h2>
         <p className="text-slate-400 text-center mb-12">
@@ -153,9 +148,9 @@ const StoryBanner = () => {
             ref={sliderRef}
             className="flex gap-6 overflow-x-auto hide-scrollbar-desktop px-4 py-4"
           >
-            {productVideos.map((story) => (
+            {productVideos.map((story, index) => (
               <div
-                key={story.id}
+                key={`${story.id}-${index}`}
                 className="w-32 md:w-40 flex-shrink-0 cursor-pointer group"
                 onClick={() => handleVideoClick(story)}
               >
@@ -181,34 +176,34 @@ const StoryBanner = () => {
                       autoPlay
                     />
                   )}
-                  
+
                   {/* Hover overlay with play icon */}
                   <div className="absolute inset-0 bg-black/0 md:group-hover:bg-black/30 
                                 transition-all duration-300 flex items-center justify-center">
                     <div className="w-12 h-12 rounded-full bg-white/0 md:group-hover:bg-white/90 
                                   flex items-center justify-center transform scale-0 md:group-hover:scale-100 
                                   transition-all duration-300">
-                      <svg 
-                        className="w-6 h-6 text-purple-600 ml-1" 
-                        fill="currentColor" 
+                      <svg
+                        className="w-6 h-6 text-purple-600 ml-1"
+                        fill="currentColor"
                         viewBox="0 0 24 24"
                       >
-                        <path d="M8 5v14l11-7z"/>
+                        <path d="M8 5v14l11-7z" />
                       </svg>
                     </div>
                   </div>
-                  
+
                   {/* Shine effect on hover */}
                   <div className="absolute inset-0 opacity-0 md:group-hover:opacity-100 
                                 transition-opacity duration-500 pointer-events-none"
-                       style={{
-                         background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%)',
-                         backgroundSize: '200% 200%',
-                         animation: 'shine 1.5s infinite'
-                       }}>
+                    style={{
+                      background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%)',
+                      backgroundSize: '200% 200%',
+                      animation: 'shine 1.5s infinite'
+                    }}>
                   </div>
                 </div>
-                
+
                 {/* Title appears on hover */}
                 <p className="text-white text-xs mt-2 text-center opacity-0 md:group-hover:opacity-100 
                             transition-opacity duration-300 font-medium truncate px-1">
@@ -219,6 +214,8 @@ const StoryBanner = () => {
           </div>
         </div>
       </div>
+
+    
 
       {/* MODAL */}
       {isModalOpen && selectedVideo && (
@@ -283,7 +280,18 @@ const StoryBanner = () => {
           scrollbar-width: none;
         }
       `}</style>
+
+
+      
     </div>
+    <div className="">
+        <img
+          src="/shape.png"
+          alt=""
+          className="w-full block"
+        />
+      </div>
+      </>
   );
 };
 
