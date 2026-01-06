@@ -142,7 +142,7 @@ bg-center bg-no-repeat
                       />
 
                       {
-                        wishlistCount > 0 && (<span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-[#D3AF37]text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
+                        wishlistCount > 0 && (<span className="absolute bg-red-500 -top-1 -right-1 min-w-[18px] h-[18px] bg-[#D3AF37]text-white text-[10px] font-semibold rounded-full flex items-center justify-center px-1">
                           {wishlistCount || 0}
                         </span>)
                       }

@@ -12,6 +12,7 @@ const ImageCarousel = ({
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const videoRef = useRef(null);
 
   const [countdown, setCountdown] = useState({
@@ -23,6 +24,18 @@ const ImageCarousel = ({
 
   /* ================= Default Images ================= */
   const defaultImages = ["/new-banner.jpg"];
+  const mobileBanners = ["./bannerMobile1.jpg", "./bannerMobile2.jpg"];
+
+  /* ================= Detect Mobile ================= */
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Combine images and videos into one array with type identifier
   const allMedia = [
@@ -30,7 +43,10 @@ const ImageCarousel = ({
     ...videos.map(vid => ({ type: 'video', src: vid }))
   ];
 
-  const displayMedia = allMedia.length > 0 ? allMedia : defaultImages.map(img => ({ type: 'image', src: img }));
+  // Use mobile banners on mobile, otherwise use fetched media or default
+  const displayMedia = isMobile 
+    ? mobileBanners.map(img => ({ type: 'image', src: img }))
+    : (allMedia.length > 0 ? allMedia : defaultImages.map(img => ({ type: 'image', src: img })));
 
   /* ================= Fetch Banners ================= */
   useEffect(() => {
@@ -107,8 +123,8 @@ const ImageCarousel = ({
       onMouseLeave={() => setIsHovering(false)}
     >
       {/* ================= SLIDES ================= */}
-      {/* Aspect ratio container: 1920/1050 = 1.829 ≈ 64:35 */}
-      <div className="relative w-full" style={{ aspectRatio: '1600/500' }} >
+      {/* Desktop: 1600/600 ratio, Mobile: 480/480 (1:1) ratio */}
+      <div className="relative w-full" style={{ aspectRatio: isMobile ? '1/1' : '1600/600' }} >
         <div
           className="flex h-full transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
@@ -119,7 +135,7 @@ const ImageCarousel = ({
                 <img
                   src={media.src}
                   alt={`Slide ${i + 1}`}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-cover"
                 />
               ) : (
                 <video
@@ -132,8 +148,8 @@ const ImageCarousel = ({
                 />
               )}
 
-              {/* ===== ANIMATION VIDEO OVERLAY (Only on first slide) ===== */}
-              {i === 0 && (
+              {/* ===== ANIMATION VIDEO OVERLAY (Only on first slide and desktop) ===== */}
+              {i === 0 && !isMobile && (
                 <>
                   {/* Multi-layer gradient for seamless blending */}
                   <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent pointer-events-none z-[5]"></div>

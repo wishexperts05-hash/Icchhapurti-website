@@ -4,8 +4,8 @@ import { Link, useLocation } from 'react-router-dom';
 
 const Footer = () => {
   const { t } = useTranslation();
-const location = useLocation();
-const isHomePage = location.pathname === "/" || location.pathname === "/homePage";
+  const location = useLocation();
+  const isHomePage = location.pathname === "/" || location.pathname === "/homePage";
 
   const quickLinks = [
     { label: t('footer.links.home'), href: "/homePage" },
@@ -28,10 +28,10 @@ const isHomePage = location.pathname === "/" || location.pathname === "/homePage
   ];
 
   return (
-    <footer className="relative overflow-hidden   text-white">
+    <footer className="relative overflow-hidden  text-white">
 
-
-
+      <div className="absolute inset-0 bg-black/50 pointer-events-none" />
+      {/* 
     {isHomePage && (
   <div className="absolute top-0 left-0 w-full pointer-events-none">
     <img
@@ -40,7 +40,7 @@ const isHomePage = location.pathname === "/" || location.pathname === "/homePage
       className="w-full block"
     />
   </div>
-)}
+)} */}
 
 
       {/* CONTENT */}

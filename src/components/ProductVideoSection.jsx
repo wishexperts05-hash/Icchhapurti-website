@@ -112,14 +112,7 @@ const ProductVideoSection = () => {
           </div> */}
 
           {/* Header */}
-          <div className="text-center py-3 mb-6 sm:mb-8 md:mb-5">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black mb-2 sm:mb-3">
-              See How World Is Manifesting With Icchhapurti
-            </h2>
-            <p className="text-sm sm:text-base text-gray-700 px-4">
-              Experience the Manifestation Pen in short, powerful reels
-            </p>
-          </div>
+        
 
           {/* Slider Container */}
           <div className="relative">
