@@ -354,7 +354,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setO
         <button
           onClick={(e) => handleAddToCart({ e, isBuyNow: false })}
           disabled={addingToCart || addedToCart || buyingNow}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 border-2 border-amber-600 rounded-xl font-bold text-sm text-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-amber-50 hover:shadow-md"
+          className="flex-1 flex items-center justify-center cursor-pointer gap-1.5 py-2.5 px-3 border-2 border-amber-600 rounded-xl font-bold text-sm text-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-amber-50 hover:shadow-md"
         >
           {addingToCart ? (
             <>
@@ -378,7 +378,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setO
         <button
           onClick={handleBuyNow}
           disabled={addingToCart || addedToCart || buyingNow}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl font-bold text-sm text-white transition-all bg-amber-600 hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md"
+          className="flex-1 flex items-center cursor-pointer justify-center gap-1.5 py-2.5 px-3 rounded-xl font-bold text-sm text-white transition-all bg-amber-600 hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md"
         >
           {buyingNow ? (
             <>

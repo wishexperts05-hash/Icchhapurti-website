@@ -124,7 +124,7 @@ const ImageCarousel = ({
     >
       {/* ================= SLIDES ================= */}
       {/* Desktop: 1600/600 ratio, Mobile: 480/480 (1:1) ratio */}
-      <div className="relative w-full" style={{ aspectRatio: isMobile ? '1/1' : '1600/600' }} >
+      <div className="relative w-full" style={{ aspectRatio: isMobile ? '1/1' : '1600/650' }} >
         <div
           className="flex h-full transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
@@ -206,8 +206,8 @@ const ImageCarousel = ({
                 p === 0 ? displayMedia.length - 1 : p - 1
               )
             }
-            className="absolute left-2 xs:left-3 sm:left-4 md:left-6 lg:left-8 top-1/2 -translate-y-1/2 
-                       bg-white/80 hover:bg-white 
+            className="absolute left-2 xs:left-3 sm:left-4 bg-white/80 text-white md:left-6 lg:left-8 top-1/2 -translate-y-1/2 
+                     
                        p-1.5 xs:p-2 sm:p-2.5 md:p-3 lg:p-4
                        rounded-full shadow-lg hover:scale-110 transition-all z-20
                        focus:outline-none focus:ring-2 focus:ring-white/50"
