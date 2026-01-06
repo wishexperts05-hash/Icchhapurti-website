@@ -342,7 +342,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]">
                                 price: item.product.price,
                               })
                             }
-                            className="w-7 h-7 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded flex items-center justify-center transition-colors"
+                            className="w-7 h-7 bg-gray-200 cursor-pointer hover:bg-gray-300 text-gray-700 rounded flex items-center justify-center transition-colors"
                             disabled={item.quantity <= 1}
                           >
                             <Minus size={14} />
@@ -361,7 +361,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]">
                                 price: item.product.price,
                               })
                             }
-                            className="w-7 h-7 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded flex items-center justify-center transition-colors"
+                            className="w-7 h-7 bg-gray-200 cursor-pointer hover:bg-gray-300 text-gray-700 rounded flex items-center justify-center transition-colors"
                           >
                             <Plus size={14} />
                           </button>

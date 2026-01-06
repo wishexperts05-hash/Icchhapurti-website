@@ -255,7 +255,7 @@ bg-center bg-no-repeat
               <div className="flex items-center gap-3 flex-shrink-0">
                 <button
                   onClick={() => setMenuOpen(true)}
-                  className="p-2 rounded-full hover:bg-gray-100 transition-colors group"
+                  className="p-2 rounded-full cursor-pointer hover:bg-gray-100 transition-colors group"
                 >
                   <Menu size={22} className="text-[#D3AF37] group-hover:scale-110 transition-transform sm:w-7 sm:h-7" />
                 </button>
@@ -349,7 +349,7 @@ bg-center bg-no-repeat
                   setMenuOpen(false);
                   setCartSidebarOpen(true);
                 }}
-                className="flex flex-col items-center gap-1 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all"
+                className="flex flex-col cursor-pointer items-center gap-1 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all"
               >
                 <LucideShoppingBag size={18} />
                 <span className="text-xs">Cart</span>
@@ -444,7 +444,7 @@ bg-center bg-no-repeat
                 navigate("/homePage");
                 setMenuOpen(false);
               }}
-              className="mt-6 flex items-center justify-center gap-3 bg-gradient-to-r from-red-600 to-red-700 text-white py-2.5 sm:py-3 px-4 rounded-lg font-medium hover:shadow-lg hover:shadow-red-600/30 transition-all group text-sm sm:text-base"
+              className="mt-6 flex items-center cursor-pointer justify-center gap-3 bg-gradient-to-r from-red-600 to-red-700 text-white py-2.5 sm:py-3 px-4 rounded-lg font-medium hover:shadow-lg hover:shadow-red-600/30 transition-all group text-sm sm:text-base"
             >
               <LogOut size={20} className="group-hover:scale-110 transition-transform" />
               Logout

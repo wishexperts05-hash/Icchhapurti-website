@@ -988,7 +988,7 @@ export default function PaymentModal({ isOpen, onClose }) {
 
                                             <button
                                                 onClick={() => setIsModalOpen(true)}
-                                                className="shrink-0 text-xs font-medium px-3 py-1.5 rounded-md bg-amber-500 hover:bg-amber-600 text-white transition-colors whitespace-nowrap"
+                                                className="shrink-0 text-xs font-medium cursor-pointer px-3 py-1.5 rounded-md bg-amber-500 hover:bg-amber-600 text-white transition-colors whitespace-nowrap"
                                             >
                                                 {t("cart.deliveryAddress.changeAddress")}
                                             </button>
