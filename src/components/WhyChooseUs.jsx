@@ -87,7 +87,7 @@ const WhyChooseUs = () => {
 
           {/* Right Video */}
         <div className="w-full lg:w-2/5 flex justify-center">
-            <div className="relative w-full h-[60vh] lg:h-[80vh] max-h-[80vh] rounded-2xl overflow-hidden">
+            <div className="relative w-full h-[60vh] lg:h-[88vh] max-h-[88vh] rounded-2xl overflow-hidden">
   
   {/* Video */}
   <video
