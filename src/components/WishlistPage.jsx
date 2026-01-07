@@ -100,7 +100,7 @@ export default function WishlistPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+      <div className="min-h-screen flex items-center justify-center
  text-white">
         Loading wishlist...
       </div>
@@ -109,7 +109,7 @@ export default function WishlistPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-red-400">
+      <div className="min-h-screen flex items-center justify-center  text-red-400">
         {error}
       </div>
     );
@@ -117,7 +117,7 @@ export default function WishlistPage() {
 
   if (!items.length) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+      <div className="min-h-screen flex flex-col items-center justify-center 
  text-white px-4">
         <Heart className="w-12 h-12 text-pink-500 mb-4" />
         <h1 className="text-2xl font-bold mb-2">Your wishlist is empty</h1>
@@ -135,7 +135,7 @@ export default function WishlistPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]
+    <div className="min-h-screen 
  text-white">
       <div className="max-w-6xl mx-auto px-4 py-10">
         <div className="flex items-center justify-between mb-8">

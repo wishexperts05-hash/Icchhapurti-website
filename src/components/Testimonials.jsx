@@ -43,12 +43,12 @@ export default function Testimonials() {
   };
 
   return (
-    <section className="relative py-5   overflow-hidden">
+    <section className="relative  overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
   
 
         {/* 3D Carousel */}
-        <div className="relative h-[400px] sm:h-[500px] flex items-center justify-center">
+        <div className="relative h-[300px] sm:h-[400px] flex items-center justify-center">
           {reviews.map((image, index) => {
             const position = getPosition(index);
             

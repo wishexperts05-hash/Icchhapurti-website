@@ -127,7 +127,7 @@ const HomePage = () => {
 
       <StoryBanner />
 
-      <div className="text-center py-3 mb-6 my-15">
+      <div className="text-center py-3 my-5">
         <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-white mb-2 sm:mb-3">
           See How World Is Manifesting With Icchhapurti
         </h2>
@@ -147,8 +147,8 @@ const HomePage = () => {
       <ProductVideoSection />
 
 
-      <div className="text-center  ">
-        <div className="flex justify-center gap-1.5 sm:gap-2 mb-3 sm:mb-4">
+      <div className="text-center mt-2 ">
+        <div className="flex justify-center gap-1.5 ">
           {[...Array(5)].map((_, i) => (
             <Star key={i} className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 fill-yellow-500" />
           ))}
