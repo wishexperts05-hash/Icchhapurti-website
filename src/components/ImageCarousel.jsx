@@ -124,7 +124,7 @@ const ImageCarousel = ({
     >
       {/* ================= SLIDES ================= */}
       {/* Desktop: 1600/600 ratio, Mobile: 480/480 (1:1) ratio */}
-      <div className="relative w-full" style={{ aspectRatio: isMobile ? '1/1' : '1700/680' }} >
+      <div className="relative w-full" style={{ aspectRatio: isMobile ? '1/1' : '1890/800' }} >
         <div
           className="flex h-full transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
@@ -149,12 +149,12 @@ const ImageCarousel = ({
               )}
 
               {/* ===== ANIMATION VIDEO OVERLAY (Only on first slide and desktop) ===== */}
-              {i === 0 && !isMobile && (
+              {/* {i === 0 && !isMobile && (
                 <>
-                  {/* Multi-layer gradient for seamless blending */}
+                
                   <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent pointer-events-none z-[5]"></div>
 
-                  {/* Full-height 9:16 video on right side */}
+              
                   <div className="absolute top-0 right-0 h-full z-[8] flex items-center">
                     <div className="relative h-full overflow-hidden"
                       style={{ aspectRatio: '9/16' }}>
@@ -168,10 +168,9 @@ const ImageCarousel = ({
                         <source src="/animation.mov" type="video/mp4" />
                       </video>
 
-                      {/* Left edge fade to blend with banner */}
+                  
                       <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent pointer-events-none"></div>
 
-                      {/* Soft vignette on video edges */}
                       <div className="absolute inset-0 pointer-events-none"
                         style={{
                           background: 'linear-gradient(to right, rgba(0,0,0,0.5) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.3) 100%), linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 10%, transparent 90%, rgba(0,0,0,0.3) 100%)'
@@ -180,14 +179,14 @@ const ImageCarousel = ({
                     </div>
                   </div>
                 </>
-              )}
+              )} */}
 
             </div>
           ))}
         </div>
 
         {/* ================= Decorative Bottom Edge ================= */}
-        <div className="absolute  -bottom-2 md:-bottom-8 left-0 right-0 w-full z-10 pointer-events-none">
+        <div className="absolute  -bottom-2 md:-bottom-9 left-0 right-0 w-full z-10 pointer-events-none">
           <img
             src="/shape1.png"
             alt=""

@@ -56,7 +56,7 @@ const StoryBanner = () => {
     },
     {
       id: 7,
-      video: "/story6.mp4",
+      video: "/hero_video.mp4",
       title: "Manifestation Pen in Daily Routine",
       description: "Create focus, clarity, and abundance every day",
       type: "video"
@@ -151,7 +151,7 @@ const StoryBanner = () => {
             {productVideos.map((story, index) => (
               <div
                 key={`${story.id}-${index}`}
-                className="w-32 md:w-40 flex-shrink-0 cursor-pointer group"
+                className="w-32 md:w-60 flex-shrink-0 cursor-pointer group"
                 onClick={() => handleVideoClick(story)}
               >
                 <div className="relative aspect-[9/16] rounded-xl overflow-hidden bg-black 

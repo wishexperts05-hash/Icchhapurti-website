@@ -30,16 +30,18 @@ const WhyChooseUs = () => {
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto">
-        <h2 className="text-3xl md:text-5xl text-center font-bold text-[#041049] mb-12">
-          WHY WE ARE SPECIAL......
-        </h2>
+     
 
         {/* Content + Video */}
         <div className="flex flex-col lg:flex-row gap-8 items-stretch">
-          
+
           {/* Left Content */}
-          <div className="w-full lg:w-3/5 text-left flex">
+          <div className="w-full lg:w-5/7 text-left flex">
+          
             <div className="text-base md:text-lg leading-relaxed space-y-4">
+                 <h2 className="text-3xl md:text-5xl text-center font-bold text-[#041049] mb-12">
+          WHY WE ARE SPECIAL......
+        </h2>
               <p className="font-bold text-[#a17b0a]">
                 We Don't Sell a Pen. We Offer a Powerpack Tool To Unlock Your Dreams.
               </p>
@@ -86,30 +88,30 @@ const WhyChooseUs = () => {
           </div>
 
           {/* Right Video */}
-        <div className="w-full lg:w-2/5 flex justify-center">
-            <div className="relative w-full h-[60vh] lg:h-[88vh] max-h-[88vh] rounded-2xl overflow-hidden">
-  
-  {/* Video */}
-  <video
-    ref={videoRef}
-    className="w-full h-full object-cover"
-    autoPlay
-    loop
-    muted={muted}
-    playsInline
-  >
-    <source src="/hero_video.mp4" type="video/mp4" />
-  </video>
+          <div className="w-full lg:w-2/7 flex justify-center">
+            <div className="relative w-full h-[60vh] lg:h-[80vh] max-h-[80vh] rounded-2xl overflow-hidden">
 
-  {/* Mute Button */}
-  <button
-    onClick={toggleMute}
-    className="absolute bottom-4 left-4 bg-black/60 text-white p-2 rounded-full hover:bg-black/80 transition"
-  >
-    {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-  </button>
+              {/* Video */}
+              <video
+                ref={videoRef}
+                className="w-full h-full object-cover"
+                autoPlay
+                loop
+                muted={muted}
+                playsInline
+              >
+                <source src="/hero_video.mp4" type="video/mp4" />
+              </video>
 
-</div>
+              {/* Mute Button */}
+              <button
+                onClick={toggleMute}
+                className="absolute bottom-4 left-4 bg-black/60 text-white p-2 rounded-full hover:bg-black/80 transition"
+              >
+                {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+              </button>
+
+            </div>
 
           </div>
 

@@ -153,7 +153,7 @@ const HomePage = () => {
             <Star key={i} className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 fill-yellow-500" />
           ))}
         </div>
-        <h2 className="text-3xl sm:text-6xl text-white font-black mb-2 sm:mb-4">Testimonials</h2>
+        <h2 className="text-3xl sm:text-6xl text-white font-black mb-2 sm:mb-4">What our customer says</h2>
         <p className="text-base sm:text-xl text-[#a17b0a]">
           Real stories from real customers
         </p>
