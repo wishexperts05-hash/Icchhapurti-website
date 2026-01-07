@@ -186,7 +186,7 @@ const ImageCarousel = ({
         </div>
 
         {/* ================= Decorative Bottom Edge ================= */}
-        <div className="absolute  -bottom-2 md:-bottom-9 left-0 right-0 w-full z-10 pointer-events-none">
+        <div className="absolute  -bottom-2 md:-bottom-8 left-0 right-0 w-full z-10 pointer-events-none">
           <img
             src="/shape1.png"
             alt=""

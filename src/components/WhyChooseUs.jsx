@@ -30,18 +30,37 @@ const WhyChooseUs = () => {
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto">
-     
 
+        {/* <h1
+          className="text-5xl md:text-5xl text-center font-extrabold mb-15 animate-fade-in bg-clip-text text-transparent"
+          style={{
+            backgroundImage:
+              "linear-gradient(120deg, #0a2540 0%, #0a2540 15%, #0a2540 %, #0a2540 50%, #1e6091 60%, #0d3b66 80%, #0a2540 100%)",
+            backgroundSize: "200% 200%",
+            animation: "blueShine 3s linear infinite",
+          }}
+        >
+          Why We Are Special
+        </h1> */}
+        <h1
+          className="text-5xl md:text-6xl  font-extrabold text-center mb-10 animate-fade-in bg-clip-text text-transparent"
+          style={{
+            backgroundImage:
+              "linear-gradient(120deg, #0a2540 0%, #0a2540 15%, #0a2540 30%, #0a2540 45%, #1e6091 60%, #0d3b66 75%, #0a2540 100%)",
+            backgroundSize: "200% 200%",
+            animation: "goldShine 3s linear infinite",
+          }}
+        >
+         Why We Are Special
+        </h1>
         {/* Content + Video */}
         <div className="flex flex-col lg:flex-row gap-8 items-stretch">
 
           {/* Left Content */}
           <div className="w-full lg:w-5/7 text-left flex">
-          
+
             <div className="text-base md:text-lg leading-relaxed space-y-4">
-                 <h2 className="text-3xl md:text-5xl text-center font-bold text-[#041049] mb-12">
-          WHY WE ARE SPECIAL......
-        </h2>
+
               <p className="font-bold text-[#a17b0a]">
                 We Don't Sell a Pen. We Offer a Powerpack Tool To Unlock Your Dreams.
               </p>
@@ -89,7 +108,7 @@ const WhyChooseUs = () => {
 
           {/* Right Video */}
           <div className="w-full lg:w-2/7 flex justify-center">
-            <div className="relative w-full h-[60vh] lg:h-[80vh] max-h-[80vh] rounded-2xl overflow-hidden">
+            <div className="relative w-full h-[65vh] lg:h-[80vh] max-h-[80vh] rounded-2xl overflow-hidden">
 
               {/* Video */}
               <video

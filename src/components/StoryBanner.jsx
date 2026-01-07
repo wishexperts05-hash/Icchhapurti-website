@@ -56,7 +56,7 @@ const StoryBanner = () => {
     },
     {
       id: 7,
-      video: "/hero_video.mp4",
+      video: "/story7.mp4",
       title: "Manifestation Pen in Daily Routine",
       description: "Create focus, clarity, and abundance every day",
       type: "video"

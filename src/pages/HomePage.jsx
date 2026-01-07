@@ -131,7 +131,7 @@ const HomePage = () => {
         <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-white mb-2 sm:mb-3">
           See How World Is Manifesting With Icchhapurti
         </h2>
-        <p className="text-md font-bold sm:text-base text-[#a17b0a] px-4">
+        <p className="text-md font-bold sm:text-xl text-[#a17b0a] px-4">
           Experience the Manifestation Pen in short, powerful reels
         </p>
       </div>
@@ -153,7 +153,7 @@ const HomePage = () => {
             <Star key={i} className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 fill-yellow-500" />
           ))}
         </div>
-        <h2 className="text-3xl sm:text-6xl text-white font-black mb-2 sm:mb-4">What our customer says</h2>
+        <h2 className="text-3xl sm:text-6xl text-white font-black mb-2 sm:mb-4">What Our Customer Says</h2>
         <p className="text-base sm:text-xl text-[#a17b0a]">
           Real stories from real customers
         </p>

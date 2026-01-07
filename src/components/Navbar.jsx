@@ -91,7 +91,7 @@ export default function Navbar() {
   return (
     <>
       {/* STICKY CONTAINER - Both top bar and nav together */}
-      <div className="sticky top-0 z-30">
+      <div className="sticky top-0 z-50">
         {/* Top Bar - Login/Account with Cart & Wishlist */}
         <div className="w-full  bg-gradient-to-br 
 from-[#040934] 

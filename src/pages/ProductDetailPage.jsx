@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Star, ShoppingCart, Eye, ChevronLeft, ChevronRight, Loader2, AlertCircle, Package, Truck, ShieldCheck, RefreshCw } from 'lucide-react';
+import { Star, ShoppingCart, Eye, Share2, X, Copy, ChevronLeft, ChevronRight, Loader2, AlertCircle, Package, Truck, ShieldCheck, RefreshCw } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
@@ -388,6 +388,28 @@ export default function ProductDetails() {
 
 
 
+  // share option 
+  const [shareOpen, setShareOpen] = useState(false);
+  const shareUrl = window.location.href;
+  const shareTitle = product?.name || "Check this product";
+  const handleShare = async () => {
+    if (navigator.share) {
+      // 📱 Mobile native share
+      try {
+        await navigator.share({
+          title: shareTitle,
+          url: shareUrl,
+        });
+      } catch (err) {
+        console.log("Share cancelled");
+      }
+    } else {
+      // 🖥️ Desktop modal
+      setShareOpen(true);
+    }
+  };
+
+
 
   // find current user's review (API gives isCurrentUser)
   const currentUserReview = reviews?.find(r => r.isCurrentUser);
@@ -614,8 +636,93 @@ export default function ProductDetails() {
                 </div>
               </div>
 
+
+
+              {/* Share Button */}
+              <div className="flex justify-start mb-3">
+                <button
+                  onClick={handleShare}
+                  className="flex items-center gap-2 text-sm font-semibold text-cyan-600 hover:text-cyan-700 transition"
+                >
+                  <Share2 size={16} />
+                  Share
+                </button>
+              </div>
+
+
+              {shareOpen && (
+                <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4">
+                  <div className="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-2xl">
+
+                    {/* Close */}
+                    <button
+                      onClick={() => setShareOpen(false)}
+                      className="absolute top-3 right-3 text-gray-500 hover:text-black"
+                    >
+                      <X size={18} />
+                    </button>
+
+                    <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">
+                      Share this product
+                    </h3>
+
+                    {/* Copy link */}
+                    <div className="flex items-center gap-2 mb-4">
+                      <input
+                        readOnly
+                        value={shareUrl}
+                        className="flex-1 px-3 py-2 border rounded-lg text-sm"
+                      />
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(shareUrl);
+                          alert("Link copied!");
+                        }}
+                        className="p-2 rounded-lg bg-cyan-500 text-white hover:bg-cyan-600"
+                      >
+                        <Copy size={16} />
+                      </button>
+                    </div>
+
+                    {/* Share Buttons */}
+                    <div className="grid grid-cols-3 gap-4 text-center">
+                      {/* WhatsApp */}
+                      <a
+                        href={`https://wa.me/?text=${encodeURIComponent(shareTitle + " " + shareUrl)}`}
+                        target="_blank"
+                        className="flex flex-col items-center gap-1 text-green-600 hover:scale-105 transition"
+                      >
+                        <img src="/icons/whatsapp.svg" className="w-8 h-8" />
+                        <span className="text-xs">WhatsApp</span>
+                      </a>
+
+                      {/* Instagram */}
+                      <a
+                        href="https://www.instagram.com/"
+                        target="_blank"
+                        className="flex flex-col items-center gap-1 text-pink-600 hover:scale-105 transition"
+                      >
+                        <img src="/icons/instagram.svg" className="w-8 h-8" />
+                        <span className="text-xs">Instagram</span>
+                      </a>
+
+                      {/* Pinterest */}
+                      <a
+                        href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(shareUrl)}&description=${encodeURIComponent(shareTitle)}`}
+                        target="_blank"
+                        className="flex flex-col items-center gap-1 text-red-600 hover:scale-105 transition"
+                      >
+                        <img src="/icons/pinterest.svg" className="w-8 h-8" />
+                        <span className="text-xs">Pinterest</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+
               {/* Description */}
-              <div className="space-y-2 mb-10 hidden lg:block">
+              <div className="space-y-2 max-h-[50vh] overflow-y-scroll mb-10 hidden lg:block">
                 {product?.productDetails?.map((faq, index) => {
                   const faqId = faq._id || index;
                   const isOpen = openFAQ === faqId;
@@ -878,7 +985,13 @@ export default function ProductDetails() {
                 </button>
               </div>
             ) : reviews.length === 0 ? (
-              <div className="w-full max-w-md mx-auto p-6 rounded-md bg-gray-200 text-center">
+              <div className="w-full mx-auto p-6 rounded-md text-center
+  bg-gradient-to-br from-amber-100/90 via-yellow-50 to-white
+  backdrop-blur-md
+  shadow-[0_0_30px_rgba(245,158,11,0.6)]
+  border border-amber-300/50
+">
+
                 <h2 className="text-xl font-semibold text-gray-800 text-center mb-3">
                   Customer Reviews
                 </h2>

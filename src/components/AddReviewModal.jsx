@@ -66,28 +66,49 @@ const AddReviewModal = ({ isOpen, onClose,fetchProductReviews, productId }) => {
     formData.append("images", file);
   });
 
-  try {
-    setLoading(true);
-    await axios.post(
-      `${import.meta.env.VITE_API_URL}/api/user/reviews/createOrUpdate`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+ try {
+  setLoading(true);
 
-    alert("Review submitted successfully!");
-    fetchProductReviews()
-    onClose();
-  } catch (error) {
-    console.error(error);
-    alert("Failed to submit review.");
-  } finally {
-    setLoading(false);
+  await axios.post(
+    `${import.meta.env.VITE_API_URL}/api/user/reviews/createOrUpdate`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  alert("✅ Review submitted successfully!");
+  fetchProductReviews();
+  onClose();
+
+} catch (error) {
+  console.error("Review submit error:", error);
+
+  let message = "Something went wrong. Please try again.";
+
+  if (error.response) {
+    // Server responded with status code
+    message =
+      error.response.data?.message ||
+      error.response.data?.error ||
+      `Error: ${error.response.status}`;
+  } else if (error.request) {
+    // Request sent but no response
+    message = "Server not responding. Please check your internet connection.";
+  } else {
+    // Something else happened
+    message = error.message;
   }
+
+  alert(`❌ ${message}`);
+
+} finally {
+  setLoading(false);
+}
+
 };
 
 

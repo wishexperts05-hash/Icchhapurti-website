@@ -57,7 +57,7 @@ export default function Testimonials() {
             if (position === 0) {
               // Center (highlighted)
               transform = 'translateX(0) scale(1) rotateY(0deg)';
-              zIndex = 50;
+              zIndex = 49;
               opacity = 1;
               filter = 'brightness(1)';
             } else if (position === 1) {
