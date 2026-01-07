@@ -87,26 +87,30 @@ const WhyChooseUs = () => {
 
           {/* Right Video */}
         <div className="w-full lg:w-2/5 flex justify-center">
-            <div className="relative w-full h-[60vh] lg:h-[80vh] max-h-[80vh]   overflow-hidden  ">
-              <video
-                ref={videoRef}
-                className="w-full h-full rounded-2xl object-contain"
-                autoPlay
-                loop
-                muted={muted}
-                playsInline
-              >
-                <source src="/hero_video.mp4" type="video/mp4" />
-              </video>
+            <div className="relative w-full h-[60vh] lg:h-[80vh] max-h-[80vh] rounded-2xl overflow-hidden">
+  
+  {/* Video */}
+  <video
+    ref={videoRef}
+    className="w-full h-full object-cover"
+    autoPlay
+    loop
+    muted={muted}
+    playsInline
+  >
+    <source src="/hero_video.mp4" type="video/mp4" />
+  </video>
 
-              {/* Mute Button */}
-              <button
-                onClick={toggleMute}
-                className="absolute bottom-4 left-30 bg-black/60 text-white p-2 rounded-full hover:bg-black/80 transition"
-              >
-                {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-              </button>
-            </div>
+  {/* Mute Button */}
+  <button
+    onClick={toggleMute}
+    className="absolute bottom-4 left-4 bg-black/60 text-white p-2 rounded-full hover:bg-black/80 transition"
+  >
+    {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+  </button>
+
+</div>
+
           </div>
 
         </div>
