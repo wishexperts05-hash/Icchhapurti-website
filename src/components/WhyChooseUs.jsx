@@ -63,7 +63,7 @@ const WhyChooseUs = () => {
     </p>
 
     {/* Keep this centered OR remove if you want full left align */}
-    <div className="mt-8 space-y-2">
+    <div className="mt-8 space-y-2 text-center">
       <p className="font-bold text-xl text-[#a17b0a]">Don’t Just Dream It,</p>
       <p className="font-bold text-xl text-[#a17b0a]">“ Own It ”</p>
       <p className="font-bold text-xl text-[#a17b0a]">“ Write It ” &nbsp; “ Manifest It ”</p>

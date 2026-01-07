@@ -124,7 +124,7 @@ const ImageCarousel = ({
     >
       {/* ================= SLIDES ================= */}
       {/* Desktop: 1600/600 ratio, Mobile: 480/480 (1:1) ratio */}
-      <div className="relative w-full" style={{ aspectRatio: isMobile ? '1/1' : '1600/650' }} >
+      <div className="relative w-full" style={{ aspectRatio: isMobile ? '1/1' : '1700/680' }} >
         <div
           className="flex h-full transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
