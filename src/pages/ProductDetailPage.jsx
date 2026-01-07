@@ -15,6 +15,8 @@ import { ChevronDown } from 'lucide-react';
 import ProductImageGallery from '../components/ProductImageGallery';
 import CartSidebar from '../components/CartSidebar';
 import PaymentModal from './PaymentModal';
+import { BsFacebook, BsInstagram, BsWhatsapp } from 'react-icons/bs';
+import { PiPinterestLogo } from 'react-icons/pi';
 
 export default function ProductDetails() {
   const [product, setProduct] = useState(null);
@@ -393,20 +395,7 @@ export default function ProductDetails() {
   const shareUrl = window.location.href;
   const shareTitle = product?.name || "Check this product";
   const handleShare = async () => {
-    if (navigator.share) {
-      // 📱 Mobile native share
-      try {
-        await navigator.share({
-          title: shareTitle,
-          url: shareUrl,
-        });
-      } catch (err) {
-        console.log("Share cancelled");
-      }
-    } else {
-      // 🖥️ Desktop modal
-      setShareOpen(true);
-    }
+   setShareOpen(true);
   };
 
 
@@ -499,6 +488,89 @@ export default function ProductDetails() {
   return (
     <div className="min-h-screen 
  relative overflow-hidden py-4 sm:py-8">
+
+
+     {shareOpen && (
+                <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4">
+                  <div className="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-2xl">
+
+                    {/* Close */}
+                    <button
+                      onClick={() => setShareOpen(false)}
+                      className="absolute top-3 right-3 text-gray-500 hover:text-black"
+                    >
+                      <X size={18} />
+                    </button>
+
+                    <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">
+                      Share this product
+                    </h3>
+
+                    {/* Copy link */}
+                    <div className="flex items-center gap-2 mb-4">
+                      <input
+                        readOnly
+                        value={shareUrl}
+                        className="flex-1 px-3 py-2 border rounded-lg text-sm"
+                      />
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(shareUrl);
+                          alert("Link copied!");
+                        }}
+                        className="p-2 rounded-lg bg-cyan-500 text-white hover:bg-cyan-600"
+                      >
+                        <Copy size={16} />
+                      </button>
+                    </div>
+
+                    {/* Share Buttons */}
+                    <div className="grid grid-cols-4 gap-4 text-center">
+                      {/* WhatsApp */}
+                      <a
+                        href={`https://wa.me/?text=${encodeURIComponent(shareTitle + " " + shareUrl)}`}
+                        target="_blank"
+                        className="flex flex-col items-center gap-1 text-green-600 hover:scale-105 transition"
+                      >
+                        {/* <img src="/icons/whatsapp.svg" className="w-8 h-8" /> */}
+                        <BsWhatsapp/>
+                        <span className="text-xs">WhatsApp</span>
+                      </a>
+
+                      {/* Instagram */}
+                      <a
+                        href="https://www.instagram.com/"
+                        target="_blank"
+                        className="flex flex-col items-center gap-1 text-pink-600 hover:scale-105 transition"
+                      >
+                        {/* <img src="/icons/instagram.svg" className="w-8 h-8" /> */}
+                      <BsInstagram/>
+                        <span className="text-xs">Instagram</span>
+                      </a>
+<a
+  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="flex flex-col items-center gap-1 text-blue-600 hover:scale-105 transition"
+>
+  <BsFacebook />
+  <span className="text-xs">Facebook</span>
+</a>
+
+                      {/* Pinterest */}
+                      <a
+                        href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(shareUrl)}&description=${encodeURIComponent(shareTitle)}`}
+                        target="_blank"
+                        className="flex flex-col items-center gap-1 text-red-600 hover:scale-105 transition"
+                      >
+                        {/* <img src="/icons/pinterest.svg" className="w-8 h-8" /> */}
+                        <PiPinterestLogo/>
+                        <span className="text-xs">Pinterest</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
 
       <CartSidebar
         isOpen={cartSidebarOpen}
@@ -650,75 +722,7 @@ export default function ProductDetails() {
               </div>
 
 
-              {shareOpen && (
-                <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4">
-                  <div className="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-2xl">
-
-                    {/* Close */}
-                    <button
-                      onClick={() => setShareOpen(false)}
-                      className="absolute top-3 right-3 text-gray-500 hover:text-black"
-                    >
-                      <X size={18} />
-                    </button>
-
-                    <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">
-                      Share this product
-                    </h3>
-
-                    {/* Copy link */}
-                    <div className="flex items-center gap-2 mb-4">
-                      <input
-                        readOnly
-                        value={shareUrl}
-                        className="flex-1 px-3 py-2 border rounded-lg text-sm"
-                      />
-                      <button
-                        onClick={() => {
-                          navigator.clipboard.writeText(shareUrl);
-                          alert("Link copied!");
-                        }}
-                        className="p-2 rounded-lg bg-cyan-500 text-white hover:bg-cyan-600"
-                      >
-                        <Copy size={16} />
-                      </button>
-                    </div>
-
-                    {/* Share Buttons */}
-                    <div className="grid grid-cols-3 gap-4 text-center">
-                      {/* WhatsApp */}
-                      <a
-                        href={`https://wa.me/?text=${encodeURIComponent(shareTitle + " " + shareUrl)}`}
-                        target="_blank"
-                        className="flex flex-col items-center gap-1 text-green-600 hover:scale-105 transition"
-                      >
-                        <img src="/icons/whatsapp.svg" className="w-8 h-8" />
-                        <span className="text-xs">WhatsApp</span>
-                      </a>
-
-                      {/* Instagram */}
-                      <a
-                        href="https://www.instagram.com/"
-                        target="_blank"
-                        className="flex flex-col items-center gap-1 text-pink-600 hover:scale-105 transition"
-                      >
-                        <img src="/icons/instagram.svg" className="w-8 h-8" />
-                        <span className="text-xs">Instagram</span>
-                      </a>
-
-                      {/* Pinterest */}
-                      <a
-                        href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(shareUrl)}&description=${encodeURIComponent(shareTitle)}`}
-                        target="_blank"
-                        className="flex flex-col items-center gap-1 text-red-600 hover:scale-105 transition"
-                      >
-                        <img src="/icons/pinterest.svg" className="w-8 h-8" />
-                        <span className="text-xs">Pinterest</span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              )}
+           
 
 
               {/* Description */}

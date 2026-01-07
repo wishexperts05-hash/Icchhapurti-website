@@ -43,7 +43,7 @@ const WhyChooseUs = () => {
           Why We Are Special
         </h1> */}
         <h1
-          className="text-5xl md:text-6xl  font-extrabold text-center mb-10 animate-fade-in bg-clip-text text-transparent"
+          className="text-4xl md:text-6xl  font-extrabold text-center mb-10 animate-fade-in bg-clip-text text-transparent"
           style={{
             backgroundImage:
               "linear-gradient(120deg, #0a2540 0%, #0a2540 15%, #0a2540 30%, #0a2540 45%, #1e6091 60%, #0d3b66 75%, #0a2540 100%)",
