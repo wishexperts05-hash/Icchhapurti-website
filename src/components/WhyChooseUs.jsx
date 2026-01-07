@@ -86,11 +86,11 @@ const WhyChooseUs = () => {
           </div>
 
           {/* Right Video */}
-          <div className="w-full lg:w-2/5 flex">
-            <div className="relative w-full h-full rounded-xl overflow-hidden shadow-2xl">
+        <div className="w-full lg:w-2/5 flex justify-center">
+            <div className="relative w-full h-[60vh] lg:h-[80vh] max-h-[80vh]   overflow-hidden  ">
               <video
                 ref={videoRef}
-                className="w-full h-[full] object-cover"
+                className="w-full h-full rounded-2xl object-contain"
                 autoPlay
                 loop
                 muted={muted}
@@ -99,10 +99,10 @@ const WhyChooseUs = () => {
                 <source src="/hero_video.mp4" type="video/mp4" />
               </video>
 
-              {/* Mute / Unmute Button */}
+              {/* Mute Button */}
               <button
                 onClick={toggleMute}
-                className="absolute bottom-3 left-3 bg-black/60 text-white p-2 rounded-full hover:bg-black/80 transition"
+                className="absolute bottom-4 left-30 bg-black/60 text-white p-2 rounded-full hover:bg-black/80 transition"
               >
                 {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
               </button>
