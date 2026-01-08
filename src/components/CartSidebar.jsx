@@ -226,7 +226,7 @@ export default function CartSidebar({ isOpen, onClose, onCheckout }) {
       <div
         className={`fixed top-0 right-0 h-full 
 w-[85%] sm:w-100
-bg-white shadow-2xl z-50 
+bg-white shadow-2xl z-52 
 transform transition-transform duration-300 ease-in-out
 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
 

@@ -239,181 +239,181 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setO
 
 
   return (
-   <div className="relative group h-full">
-  <div
-    onClick={handleViewDetails}
-    className="relative bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer transition-all duration-300 hover:shadow-xl border border-gray-200 hover:border-purple-300 flex flex-col h-full"
-  >
-    {/* Sparkle icon on hover */}
-    <div className="absolute top-3 right-3 text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-      <Sparkles className="w-4 h-4" />
-    </div>
-
-    {/* Discount badge */}
-    {product.discount && (
-      <div className="absolute top-3 left-3 z-20">
-        <div className="bg-gradient-to-r from-red-500 to-pink-600 py-1 rounded-full shadow-md">
-          <span className="text-white text-xs font-bold">
-            {product.discount}% OFF
-          </span>
+    <div className="relative group h-full">
+      <div
+        onClick={handleViewDetails}
+        className="relative bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer transition-all duration-300 hover:shadow-xl border border-gray-200 hover:border-purple-300 flex flex-col h-full"
+      >
+        {/* Sparkle icon on hover */}
+        <div className="absolute top-3 right-3 text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+          <Sparkles className="w-4 h-4" />
         </div>
-      </div>
-    )}
 
-    {/* Wishlist button */}
-    <button
-      onClick={toggleWishlist}
-      disabled={wishlistLoading}
-      className="absolute top-3 right-3 z-20 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transition-all hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      {wishlistLoading ? (
-        <Loader2 size={16} className="animate-spin text-gray-600" />
-      ) : (
-        <Heart
-          size={16}
-          fill={liked ? "#ef4444" : "none"}
-          stroke={liked ? "#ef4444" : "#374151"}
-          className="transition-all duration-300"
-        />
-      )}
-    </button>
-
-    {/* Full-width image - FIXED HEIGHT */}
-    <div className="relative w-full h-full bg-gradient-to-b from-gray-50 to-white overflow-hidden">
-      <img
-        src={product.images?.[currentImageIndex] || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600"}
-        alt={product.name}
-        className="w-full h-full object-cover  transition-transform duration-500 group-hover:scale-105"
-        onError={(e) => {
-          e.target.src = "https://via.placeholder.com/1000x1000?text=No+Image";
-        }}
-      />
-    </div>
-
-    {/* Content section */}
-    <div className="p-4 bg-white flex flex-col flex-1">
-      {/* Product name */}
-      <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 min-h-[3.5rem]">
-        {product.name || "Untitled Product"}
-      </h3>
-
-      {/* Description */}
-      {product.description && (() => {
-        try {
-          const parsed = JSON.parse(product.description);
-          const firstContent = parsed?.[0]?.content || "";
-          const cleanText = firstContent.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").trim();
-          return (
-            <p className="text-xs text-gray-500 mb-3 line-clamp-2">
-              {cleanText}
-            </p>
-          );
-        } catch (e) {
-          return null;
-        }
-      })()}
-
-      {/* Rating */}
-      <div className="flex items-center gap-2 mb-3">
-        <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-yellow-50 border border-yellow-200">
-          <Star size={12} fill="#eab308" stroke="#eab308" />
-          <span className="text-sm font-bold text-yellow-600">
-            {product.overallRating || 0}
-          </span>
-        </div>
-        <span className="text-xs text-gray-400">
-          ({product.totalReviews || "0"} reviews)
-        </span>
-      </div>
-
-      {/* Price */}
-      <div className="flex items-center gap-2 mb-3">
-        <span className="text-2xl font-black text-gray-900">
-          {product.price || "₹0"}
-        </span>
-      </div>
-
-      {/* Features */}
-      <div className="flex items-center gap-3 mb-3 text-xs text-gray-600 border-t border-gray-100 pt-3">
-        <div className="flex items-center gap-1.5">
-          <div className="w-4 h-4 bg-green-100 rounded-full flex items-center justify-center">
-            <Check size={10} className="text-green-600" />
+        {/* Discount badge */}
+        {product.discount && (
+          <div className="absolute top-3 left-3 z-20">
+            <div className="bg-gradient-to-r from-red-500 to-pink-600 py-1 rounded-full shadow-md">
+              <span className="text-white text-xs font-bold">
+                {product.discount}% OFF
+              </span>
+            </div>
           </div>
-          <span>Secure</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-4 h-4 bg-blue-100 rounded-full flex items-center justify-center">
-            <Zap size={10} className="text-blue-600" />
-          </div>
-          <span>Fast Delivery</span>
-        </div>
-      </div>
+        )}
 
-      {/* Action buttons */}
-      <div className="flex gap-2 mt-auto">
+        {/* Wishlist button */}
         <button
-          onClick={(e) => handleAddToCart({ e, isBuyNow: false })}
-          disabled={addingToCart || addedToCart || buyingNow}
-          className="flex-1 flex items-center justify-center cursor-pointer gap-1.5 py-2.5 px-3 border-2 border-amber-600 rounded-xl font-bold text-sm text-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-amber-50 hover:shadow-md"
+          onClick={toggleWishlist}
+          disabled={wishlistLoading}
+          className="absolute top-3 right-3 z-20 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transition-all hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {addingToCart ? (
-            <>
-              <Loader2 size={16} className="animate-spin" />
-              <span className="hidden sm:inline">Adding...</span>
-            </>
-          ) : addedToCart ? (
-            <>
-              <Check size={16} className="text-green-600" />
-              <span className="text-green-600 hidden sm:inline">Added!</span>
-            </>
+          {wishlistLoading ? (
+            <Loader2 size={16} className="animate-spin text-gray-600" />
           ) : (
-            <>
-              <ShoppingCart size={16} />
-              <span className="hidden sm:inline">Add to Cart</span>
-              <span className="sm:hidden">Add</span>
-            </>
+            <Heart
+              size={16}
+              fill={liked ? "#ef4444" : "none"}
+              stroke={liked ? "#ef4444" : "#374151"}
+              className="transition-all duration-300"
+            />
           )}
         </button>
 
-        <button
-          onClick={handleBuyNow}
-          disabled={addingToCart || addedToCart || buyingNow}
-          className="flex-1 flex items-center cursor-pointer justify-center gap-1.5 py-2.5 px-3 rounded-xl font-bold text-sm text-white transition-all bg-amber-600 hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md"
-        >
-          {buyingNow ? (
-            <>
-              <Loader2 size={16} className="animate-spin" />
-              <span className="hidden sm:inline">Processing...</span>
-            </>
-          ) : (
-            <>
-              <Zap size={16} fill="currentColor" />
-              <span className="hidden sm:inline">Buy Now</span>
-              <span className="sm:hidden">Buy</span>
-            </>
-          )}
-        </button>
-      </div>
+        {/* Full-width image - FIXED HEIGHT */}
+        <div className="relative w-full h-full bg-gradient-to-b from-gray-50 to-white overflow-hidden">
+          <img
+            src={product.images?.[currentImageIndex] || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600"}
+            alt={product.name}
+            className="w-full h-full object-cover  transition-transform duration-500 group-hover:scale-105"
+            onError={(e) => {
+              e.target.src = "https://via.placeholder.com/1000x1000?text=No+Image";
+            }}
+          />
+        </div>
 
-      {/* Stock status */}
-      {product.inStock !== undefined && (
-        <div className="mt-3 flex items-center justify-center gap-2 text-xs">
-          {product.inStock ? (
-            <>
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-green-600 font-semibold">In Stock</span>
-            </>
-          ) : (
-            <>
-              <div className="w-2 h-2 bg-red-500 rounded-full" />
-              <span className="text-red-600 font-semibold">Out of Stock</span>
-            </>
+        {/* Content section */}
+        <div className="p-4 bg-white flex flex-col flex-1">
+          {/* Product name */}
+          <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 min-h-[3.5rem]">
+            {product.name || "Untitled Product"}
+          </h3>
+
+          {/* Description */}
+          {product.description && (() => {
+            try {
+              const parsed = JSON.parse(product.description);
+              const firstContent = parsed?.[0]?.content || "";
+              const cleanText = firstContent.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").trim();
+              return (
+                <p className="text-xs text-gray-500 mb-3 line-clamp-2">
+                  {cleanText}
+                </p>
+              );
+            } catch (e) {
+              return null;
+            }
+          })()}
+
+          {/* Rating */}
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-yellow-50 border border-yellow-200">
+              <Star size={12} fill="#eab308" stroke="#eab308" />
+              <span className="text-sm font-bold text-yellow-600">
+                {product.overallRating || 0}
+              </span>
+            </div>
+            <span className="text-xs text-gray-400">
+              ({product.totalReviews || "0"} reviews)
+            </span>
+          </div>
+
+          {/* Price */}
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-2xl font-black text-gray-900">
+              {product.price || "₹0"}
+            </span>
+          </div>
+
+          {/* Features */}
+          <div className="flex items-center gap-3 mb-3 text-xs text-gray-600 border-t border-gray-100 pt-3">
+            <div className="flex items-center gap-1.5">
+              <div className="w-4 h-4 bg-green-100 rounded-full flex items-center justify-center">
+                <Check size={10} className="text-green-600" />
+              </div>
+              <span>Secure</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-4 h-4 bg-blue-100 rounded-full flex items-center justify-center">
+                <Zap size={10} className="text-blue-600" />
+              </div>
+              <span>Fast Delivery</span>
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex gap-2 mt-auto">
+            <button
+              onClick={(e) => handleAddToCart({ e, isBuyNow: false })}
+              disabled={addingToCart || addedToCart || buyingNow}
+              className="flex-1 flex items-center justify-center cursor-pointer gap-1.5 py-2.5 px-3 border-2 border-amber-600 rounded-xl font-bold text-sm text-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-amber-50 hover:shadow-md"
+            >
+              {addingToCart ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  <span className="hidden sm:inline">Adding...</span>
+                </>
+              ) : addedToCart ? (
+                <>
+                  <Check size={16} className="text-green-600" />
+                  <span className="text-green-600 hidden sm:inline">Added!</span>
+                </>
+              ) : (
+                <>
+                  <ShoppingCart size={16} />
+                  <span className="hidden sm:inline">Add to Cart</span>
+                  <span className="sm:hidden">Add</span>
+                </>
+              )}
+            </button>
+
+            <button
+              onClick={handleBuyNow}
+              disabled={addingToCart || addedToCart || buyingNow}
+              className="flex-1 flex items-center cursor-pointer justify-center gap-1.5 py-2.5 px-3 rounded-xl font-bold text-sm text-white transition-all bg-amber-600 hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md"
+            >
+              {buyingNow ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  <span className="hidden sm:inline">Processing...</span>
+                </>
+              ) : (
+                <>
+                  <Zap size={16} fill="currentColor" />
+                  <span className="hidden sm:inline">Buy Now</span>
+                  <span className="sm:hidden">Buy</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* Stock status */}
+          {product.inStock !== undefined && (
+            <div className="mt-3 flex items-center justify-center gap-2 text-xs">
+              {product.inStock ? (
+                <>
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                  <span className="text-green-600 font-semibold">In Stock</span>
+                </>
+              ) : (
+                <>
+                  <div className="w-2 h-2 bg-red-500 rounded-full" />
+                  <span className="text-red-600 font-semibold">Out of Stock</span>
+                </>
+              )}
+            </div>
           )}
         </div>
-      )}
+      </div>
     </div>
-  </div>
-</div>
 
   );
 }
@@ -640,130 +640,133 @@ export default function OurProducts() {
 
 
       <div className="max-w-7xl mx-auto mt-20">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">
-              Manifestation Tool
-            </h2>
-            {/* <p className="text-gray-400 text-sm">{t("home.tagline")}</p> */}
-          </div>
+        <div className="relative flex flex-col md:flex-row items-center gap-4 my-25">
 
+          {/* Center Heading */}
+          <h2
+            className="mx-auto text-center text-4xl md:text-5xl font-extrabold animate-fade-in bg-clip-text text-transparent"
+            style={{
+              backgroundImage:
+                "linear-gradient(120deg, #7a5c00 0%, #f6e27a 15%, #fff6b0 30%, #d4af37 45%, #fff6b0 60%, #f6e27a 75%, #7a5c00 100%)",
+              backgroundSize: "200% 200%",
+              animation: "goldShine 3s linear infinite",
+            }}
+          >
+            Manifestation Tool
+          </h2>
+
+          {/* Right Button */}
           <button
             onClick={() => Navigate("/products")}
-            className="text-white px-6 py-2 cursor-pointer rounded-lg bg-[#a17b0a] transition-all font-semibold shadow-lg hover:shadow-purple-500/50"
+            className="md:absolute md:right-0 text-white px-6 py-2 rounded-lg bg-[#a17b0a] font-semibold shadow-lg hover:shadow-purple-500/50 transition-all"
           >
             View All
           </button>
-        </div>
-       {products.length > 0 ? (
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-    {/* Map through products from API */}
-    {products.map((product, index) => (
-      <div key={product.id || product._id}>
-        <ProductCard
-          product={product}
-          onAddToCart={handleAddToCart}
-          onWishlistUpdate={handleWishlistUpdate}
-          setCartSidebarOpen={setCartSidebarOpen}
-          openPayment={openPayment}
-          setOpenPayment={setOpenPayment}
-        />
-      </div>
-    ))}
 
-    {/* Static Manifestation Kit Card - EXACT MATCH */}
-    <div className="relative group h-full">
-      <div className="relative bg-white rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl border border-gray-200 hover:border-purple-300 flex flex-col h-full">
-        
-        {/* Image - EXACT SAME HEIGHT */}
-        <div className="relative w-full h-full bg-gradient-to-b from-gray-50 to-white overflow-hidden">
-          <img
-            src={products[0]?.images?.[0] || "https://images.unsplash.com/photo-1512428559087-560fa5ceab42?w=600"}
-            alt="Manifestation Kit"
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            onError={(e) => {
-              e.target.src = "https://via.placeholder.com/1000x1000?text=No+Image";
-            }}
-          />
         </div>
 
-        {/* Content - EXACT SAME STRUCTURE */}
-        <div className="p-4 bg-white flex flex-col flex-1">
-          {/* Title */}
-          <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 min-h-[3.5rem]">
-            Manifestation Kit
-          </h3>
-
-          {/* Description */}
-          <p className="text-xs text-gray-500 mb-3 line-clamp-2">
-            Premium quality materials with complete manifestation guide included
-          </p>
-
-          {/* Rating */}
-          <div className="flex items-center gap-2 mb-3">
-            <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-yellow-50 border border-yellow-200">
-              <Star size={12} fill="#eab308" stroke="#eab308" />
-              <span className="text-sm font-bold text-yellow-600">New</span>
-            </div>
-            <span className="text-xs text-gray-400">(Coming Soon)</span>
-          </div>
-
-          {/* Price */}
-          {/* <div className="flex items-center gap-2 mb-3">
-            <span className="text-2xl font-black text-gray-900">TBA</span>
-          </div> */}
-
-          {/* Features */}
-          <div className="flex items-center gap-3 mb-3 text-xs text-gray-600 border-t border-gray-100 pt-3">
-            <div className="flex items-center gap-1.5">
-              <div className="w-4 h-4 bg-green-100 rounded-full flex items-center justify-center">
-                <Check size={10} className="text-green-600" />
+        {products.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            {/* Map through products from API */}
+            {products.map((product, index) => (
+              <div key={product.id || product._id}>
+                <ProductCard
+                  product={product}
+                  onAddToCart={handleAddToCart}
+                  onWishlistUpdate={handleWishlistUpdate}
+                  setCartSidebarOpen={setCartSidebarOpen}
+                  openPayment={openPayment}
+                  setOpenPayment={setOpenPayment}
+                />
               </div>
-              <span>Premium</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-4 h-4 bg-blue-100 rounded-full flex items-center justify-center">
-                <Zap size={10} className="text-blue-600" />
-              </div>
-              <span>Complete Kit</span>
-            </div>
-          </div>
+            ))}
 
-          {/* Action button */}
-          <div className="flex gap-2 mt-auto">
-            <button
-              disabled
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl font-bold text-sm text-white bg-amber-600 opacity-70 cursor-not-allowed"
-            >
-              <span className="hidden sm:inline">Coming Soon</span>
-              <span className="sm:hidden">Soon</span>
-            </button>
-          </div>
+            {/* Static Manifestation Kit Card - EXACT MATCH */}
+         <div className="relative group h-full">
+  <div className="relative bg-white rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl border border-gray-200 hover:border-purple-300 flex flex-col h-full">
 
-          {/* Stock status */}
-          <div className="mt-3 flex items-center justify-center gap-2 text-xs">
-            <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
-            <span className="text-amber-600 font-semibold">Launching Soon</span>
-          </div>
-        </div>
-      </div>
+    {/* Video - EXACT SAME HEIGHT */}
+    <div className="relative w-full h-full bg-gradient-to-b from-gray-50 to-white overflow-hidden">
+      <video
+        src={ "/coming-soon.mp4"}
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        autoPlay
+        loop
+        muted
+        playsInline
+        onError={(e) => {
+          e.target.poster = "https://via.placeholder.com/1000x1000?text=No+Video";
+        }}
+      />
     </div>
-  </div>
-) : (
-  <div className="text-center py-20 px-4">
-    <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 max-w-md mx-auto border border-slate-700">
-      <div className="w-16 h-16 bg-gray-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-        <ShoppingCart className="w-8 h-8 text-gray-400" />
-      </div>
-      <h3 className="text-xl font-bold text-white mb-2">
-        No Products Found
+
+    {/* Content - EXACT SAME STRUCTURE */}
+    <div className="p-4 bg-white flex flex-col flex-1">
+      <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 min-h-[3.5rem]">
+        Manifestation Kit
       </h3>
-      <p className="text-gray-400">
-        We could not find any products at the moment.
+
+      <p className="text-xs text-gray-500 mb-3 line-clamp-2">
+        Premium quality materials with complete manifestation guide included
       </p>
+
+      <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-yellow-50 border border-yellow-200">
+          <Star size={12} fill="#eab308" stroke="#eab308" />
+          <span className="text-sm font-bold text-yellow-600">New</span>
+        </div>
+        <span className="text-xs text-gray-400">(Coming Soon)</span>
+      </div>
+
+      <div className="flex items-center gap-3 mb-3 text-xs text-gray-600 border-t border-gray-100 pt-3">
+        <div className="flex items-center gap-1.5">
+          <div className="w-4 h-4 bg-green-100 rounded-full flex items-center justify-center">
+            <Check size={10} className="text-green-600" />
+          </div>
+          <span>Premium</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-4 h-4 bg-blue-100 rounded-full flex items-center justify-center">
+            <Zap size={10} className="text-blue-600" />
+          </div>
+          <span>Complete Kit</span>
+        </div>
+      </div>
+
+      <div className="flex gap-2 mt-auto">
+        <button
+          disabled
+          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl font-bold text-sm text-white bg-amber-600 opacity-70 cursor-not-allowed"
+        >
+          <span className="hidden sm:inline">Coming Soon</span>
+          <span className="sm:hidden">Soon</span>
+        </button>
+      </div>
+
+      <div className="mt-3 flex items-center justify-center gap-2 text-xs">
+        <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
+        <span className="text-amber-600 font-semibold">Launching Soon</span>
+      </div>
     </div>
   </div>
-)}
+</div>
+
+          </div>
+        ) : (
+          <div className="text-center py-20 px-4">
+            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 max-w-md mx-auto border border-slate-700">
+              <div className="w-16 h-16 bg-gray-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <ShoppingCart className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">
+                No Products Found
+              </h3>
+              <p className="text-gray-400">
+                We could not find any products at the moment.
+              </p>
+            </div>
+          </div>
+        )}
 
 
         <CartSidebar

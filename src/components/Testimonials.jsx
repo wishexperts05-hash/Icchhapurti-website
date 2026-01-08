@@ -123,7 +123,7 @@ export default function Testimonials() {
           <button
             onClick={handlePrevious}
             disabled={isAnimating}
-            className="absolute left-4 sm:left-8 z-[60] bg-white p-3 sm:p-4 rounded-full shadow-xl hover:bg-purple-50 hover:scale-110 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="absolute left-4 sm:left-8 z-[49] bg-white p-3 sm:p-4 rounded-full shadow-xl hover:bg-purple-50 hover:scale-110 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Previous review"
           >
             <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7 text-purple-600" />
@@ -132,7 +132,7 @@ export default function Testimonials() {
           <button
             onClick={handleNext}
             disabled={isAnimating}
-            className="absolute right-4 sm:right-8 z-[60] bg-white p-3 sm:p-4 rounded-full shadow-xl hover:bg-purple-50 hover:scale-110 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="absolute right-4 sm:right-8 z-[49] bg-white p-3 sm:p-4 rounded-full shadow-xl hover:bg-purple-50 hover:scale-110 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Next review"
           >
             <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7 text-purple-600" />

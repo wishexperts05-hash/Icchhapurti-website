@@ -84,7 +84,8 @@ const ProgressOfferBar = ({
       {/* Gift Summary */}
       {!isCartEmpty && totalGiftWorth > 0 && (
         <div className="text-center text-xs font-semibold text-white bg-[#b88b05] rounded py-1.5 mb-2 animate-pulse">
-          🎁 Gifts unlocked worth ₹{totalGiftWorth.toLocaleString("en-IN")}
+          {/* 🎁 Gifts unlocked worth ₹{totalGiftWorth.toLocaleString("en-IN")} */}
+          Shop For Worth Rs2500 & Get Free Shipping 
         </div>
       )}
 

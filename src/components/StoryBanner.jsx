@@ -115,10 +115,18 @@ const StoryBanner = () => {
     
     <div className="pt-5 px-4 mt-20 relative bg-white overflow-hidden ">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-4xl font-bold text-black text-center mb-4">
-          Our Stories
-        </h2>
-        <p className="text-slate-400 text-center mb-12">
+         <h1
+          className="text-4xl md:text-6xl  font-extrabold text-center mb-1 animate-fade-in bg-clip-text text-transparent"
+          style={{
+            backgroundImage:
+              "linear-gradient(120deg, #0a2540 0%, #0a2540 15%, #0a2540 30%, #0a2540 45%, #1e6091 60%, #0d3b66 75%, #0a2540 100%)",
+            backgroundSize: "200% 200%",
+            animation: "goldShine 3s linear infinite",
+          }}
+        >
+       Our Stories
+        </h1>
+        <p className="text-[#a17b0a] text-xl  text-center mb-10">
           Watch our latest updates and highlights
         </p>
 

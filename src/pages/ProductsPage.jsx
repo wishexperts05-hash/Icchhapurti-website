@@ -684,7 +684,7 @@ export default function ProductsPage() {
 
       {/* DESKTOP (centered side-by-side) */}
       <div className="hidden md:flex md:col-span-3 justify-center">
-        <div className="grid grid-cols-2 gap-6 w-[66.66%]">
+        <div className="grid grid-cols-2 gap-20 w-[80.66%]">
           {products.map((product) => (
             <ProductCard
               key={product.id || product._id}

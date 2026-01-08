@@ -689,7 +689,7 @@ export default function ProductDetails() {
                 {/* Price */}
                 <div className="flex items-baseline gap-2 sm:gap-4 mb-4 sm:mb-6 flex-wrap">
                   <span className="text-xl sm:text-3xl lg:text-4xl font-bold text-black">
-                    {product.price || 0}
+                    {product.price || 0} <p className='text-sm text-gray-600'>( MRP Incl. of All Taxes )</p>
                   </span>
                   {product.originalPrice && (
                     <>
@@ -714,7 +714,7 @@ export default function ProductDetails() {
               <div className="flex justify-start mb-3">
                 <button
                   onClick={handleShare}
-                  className="flex items-center gap-2 text-sm font-semibold text-cyan-600 hover:text-cyan-700 transition"
+                  className="flex items-center cursor-pointer gap-2 text-sm font-semibold text-cyan-600 hover:text-cyan-700 transition"
                 >
                   <Share2 size={16} />
                   Share

@@ -46,19 +46,19 @@ export default function ProductImageGallery({ images = [], videos = [] }) {
     <>
       <div className="space-y-4">
         {/* Main Media Display */}
-        <div className="bg-white rounded-2xl p-6 shadow-xl">
+        <div className="bg-white rounded-2xl ">
           <div className="relative group">
             {currentMedia.type === 'image' ? (
               <img
                 src={currentMedia.url}
                 alt={`Product ${selectedMediaIndex + 1}`}
-                className="w-full h-[400px] object-contain rounded-xl cursor-pointer transition-transform hover:scale-105"
+                className="w-full h-[450px] object-cover rounded-xl cursor-pointer transition-transform hover:scale-105"
                 onError={(e) => {
                   e.target.src = 'https://via.placeholder.com/400x400?text=No+Image';
                 }}
               />
             ) : (
-              <div className="relative w-full h-[400px] bg-black rounded-xl overflow-hidden">
+              <div className="relative w-full h-[450px] bg-black rounded-xl overflow-hidden">
                 <video
                   src={currentMedia.url}
                   controls

@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import AIChatbot from "../components/AIChatbot";
+import AnnouncementMarquee from "../components/AnnouncementMarquee";
 
 export default function Layout() {
   return (
@@ -44,6 +45,7 @@ export default function Layout() {
       </div>
       {/* Content Wrapper */}
       <div className="relative z-10 min-h-screen flex flex-col">
+        <AnnouncementMarquee/>
         <Navbar />
 
         {/* Page Content */}

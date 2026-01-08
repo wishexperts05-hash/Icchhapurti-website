@@ -467,6 +467,12 @@ bg-center bg-no-repeat
           onClick={() => setMenuOpen(false)}
         />
       )}
+      {cartSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/15  backdrop-blur-[1px] z-51 animate-fadeIn"
+          // onClick={() => setMenuOpen(false)}
+        />
+      )}
 
       <style jsx>{`
         @keyframes fadeIn {
