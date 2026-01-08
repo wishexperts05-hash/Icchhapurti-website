@@ -639,8 +639,8 @@ export default function OurProducts() {
       </div>
 
 
-      <div className="max-w-7xl mx-auto mt-20">
-        <div className="relative flex flex-col md:flex-row items-center gap-4 my-25">
+      <div className="max-w-7xl mx-auto md:mt-20">
+        <div className="relative flex flex-col md:flex-row items-center gap-4 my-10 md:my-25">
 
           {/* Center Heading */}
           <h2
@@ -658,7 +658,7 @@ export default function OurProducts() {
           {/* Right Button */}
           <button
             onClick={() => Navigate("/products")}
-            className="md:absolute md:right-0 text-white px-6 py-2 rounded-lg bg-[#a17b0a] font-semibold shadow-lg hover:shadow-purple-500/50 transition-all"
+            className="md:absolute hidden md:block md:right-0 text-white px-6 py-2 rounded-lg bg-[#a17b0a] font-semibold shadow-lg hover:shadow-purple-500/50 transition-all"
           >
             View All
           </button>
@@ -768,7 +768,12 @@ export default function OurProducts() {
           </div>
         )}
 
-
+   <button
+            onClick={() => Navigate("/products")}
+            className="md:absolute my-5 md:hidden block right-0 text-white px-6 py-2 rounded-lg bg-[#a17b0a] font-semibold shadow-lg hover:shadow-purple-500/50 transition-all"
+          >
+            View All
+          </button>
         <CartSidebar
           isOpen={cartSidebarOpen}
           onClose={() => setCartSidebarOpen(false)}
