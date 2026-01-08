@@ -259,7 +259,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]">
         {cartItems && cartItems.length > 0 && (
           <ProgressOfferBar
             confettiOrigin={{ x: 0.95, y: 0.6 }}
-            price={Number(String(totalPrice || 0).replace(/[^0-9.]/g, ''))}
+         currentStep={0}
           />
         )}
 

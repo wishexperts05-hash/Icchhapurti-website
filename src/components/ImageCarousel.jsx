@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import { useNavigate } from "react-router-dom"
+
 const ImageCarousel = ({
   autoPlay = true,
   autoPlayInterval = 5000,
@@ -14,6 +16,8 @@ const ImageCarousel = ({
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const videoRef = useRef(null);
+  const navigate = useNavigate()
+
 
   const [countdown, setCountdown] = useState({
     days: 0,
@@ -24,14 +28,14 @@ const ImageCarousel = ({
 
   /* ================= Default Images ================= */
   const defaultImages = ["/new-banner.jpg"];
-  const mobileBanners = ["./bannerMobile1.jpg", "./bannerMobile2.jpg"];
+  const mobileBanners = ["./bannerMobile1.jpg", "./bannerMobile2.jpg", "./bannerMobile3.jpg"];
 
   /* ================= Detect Mobile ================= */
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
@@ -44,7 +48,7 @@ const ImageCarousel = ({
   ];
 
   // Use mobile banners on mobile, otherwise use fetched media or default
-  const displayMedia = isMobile 
+  const displayMedia = isMobile
     ? mobileBanners.map(img => ({ type: 'image', src: img }))
     : (allMedia.length > 0 ? allMedia : defaultImages.map(img => ({ type: 'image', src: img })));
 
@@ -148,38 +152,31 @@ const ImageCarousel = ({
                 />
               )}
 
-              {/* ===== ANIMATION VIDEO OVERLAY (Only on first slide and desktop) ===== */}
-              {/* {i === 0 && !isMobile && (
-                <>
-                
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent pointer-events-none z-[5]"></div>
-
-              
-                  <div className="absolute top-0 right-0 h-full z-[8] flex items-center">
-                    <div className="relative h-full overflow-hidden"
-                      style={{ aspectRatio: '9/16' }}>
-                      <video
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        className="w-full h-full object-cover"
-                      >
-                        <source src="/animation.mov" type="video/mp4" />
-                      </video>
-
-                  
-                      <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent pointer-events-none"></div>
-
-                      <div className="absolute inset-0 pointer-events-none"
-                        style={{
-                          background: 'linear-gradient(to right, rgba(0,0,0,0.5) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.3) 100%), linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 10%, transparent 90%, rgba(0,0,0,0.3) 100%)'
-                        }}>
-                      </div>
-                    </div>
+              {/* SHOP NOW BUTTON – ONLY ON 3RD BANNER */}
+              {i === 2 && (
+                <div className="absolute inset-0 top-30 flex items-center z-20">
+                  <div className="ml-4 sm:ml-8 md:ml-32">
+                    <button
+                      onClick={() => navigate("/products")}
+                      className="
+          px-6 py-3 cusor-pointer
+          text-sm sm:text-base
+          font-bold
+          text-black
+          rounded-sm
+          bg-white
+          shadow-lg
+          hover:scale-105
+          hover:shadow-xl
+          transition-all
+        "
+                    >
+                      Shop Now
+                    </button>
                   </div>
-                </>
-              )} */}
+                </div>
+              )}
+
 
             </div>
           ))}
@@ -205,7 +202,7 @@ const ImageCarousel = ({
                 p === 0 ? displayMedia.length - 1 : p - 1
               )
             }
-            className="absolute left-2 xs:left-3 sm:left-4 bg-white/80 text-white md:left-6 lg:left-8 top-1/2 -translate-y-1/2 
+            className="absolute left-2 xs:left-3 sm:left-4 bg-white/80 text-white md:left-3 lg:left-3 top-1/2 -translate-y-1/2 
                      
                        p-1.5 xs:p-2 sm:p-2.5 md:p-3 lg:p-4
                        rounded-full shadow-lg hover:scale-110 transition-all z-20
@@ -221,7 +218,7 @@ const ImageCarousel = ({
                 p === displayMedia.length - 1 ? 0 : p + 1
               )
             }
-            className="absolute right-2 xs:right-3 sm:right-4 md:right-6 lg:right-8 top-1/2 -translate-y-1/2 
+            className="absolute right-2 xs:right-3 sm:right-4 md:right-3 lg:right-3 top-1/2 -translate-y-1/2 
                        bg-white/80 hover:bg-white 
                        p-1.5 xs:p-2 sm:p-2.5 md:p-3 lg:p-4
                        rounded-full shadow-lg hover:scale-110 transition-all z-20

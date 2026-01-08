@@ -16,6 +16,7 @@ import Confetti from "react-confetti";
 import { X, Copy, Gift } from "lucide-react";
 import ProgressOfferBar from '../components/ProgressOfferBar';
 import CartSidebar from '../components/CartSidebar';
+import { address } from 'framer-motion/client';
 
 export default function PaymentModal({ isOpen, onClose }) {
     const { pathname } = useLocation();
@@ -148,6 +149,15 @@ export default function PaymentModal({ isOpen, onClose }) {
 
 
 
+    const [currentStep, setCurrentStep] = useState(1);
+
+    useEffect(() => {
+        if (addresses.length > 0) {
+            setCurrentStep(2);
+        } else {
+            setCurrentStep(1);
+        }
+    }, [addresses]);
 
     const initializePaymentPage = async () => {
         setInitialLoading(true);
@@ -371,13 +381,15 @@ export default function PaymentModal({ isOpen, onClose }) {
             );
 
             if (res.data.success) {
+                setCurrentStep(3)
                 setCheckoutSuccess(true);
+
                 setCount(0);
                 setTimeout(() => {
                     setCheckoutSuccess(false);
                     onClose();
                     Navigate('/orders');
-                }, 2000);
+                }, 5000);
             } else {
                 throw new Error(res.data.message || "Failed to create order");
             }
@@ -582,12 +594,18 @@ export default function PaymentModal({ isOpen, onClose }) {
     const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
 
     useEffect(() => {
-  document.body.style.overflow = "hidden";
+        document.body.style.overflow = "hidden";
 
-  return () => {
-    document.body.style.overflow = "auto";
-  };
-}, []);
+        return () => {
+            document.body.style.overflow = "auto";
+        };
+    }, []);
+
+
+
+    // for step
+
+
 
 
     if (!isOpen) return null;
@@ -677,7 +695,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
                             <CheckCircle className="w-8 h-8 text-green-500" />
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-1">Order Placed!</h3>
+                        <h3 className="text-xl font-bold text-gray-900 mb-1">Payment completed!</h3>
                         <p className="text-gray-600 text-sm">Thank you for your purchase. Redirecting...</p>
                     </div>
                 </div>
@@ -772,7 +790,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                         <div className="mx-auto px-2 py-6">
                             <div className="bg-white rounded-lg px-1 shadow-sm overflow-hidden">
 
-                                {isAmountReady && <ProgressOfferBar confettiOrigin={{ x: 0.5, y: 0.2 }} price={totalAmount} />}
+                                {<ProgressOfferBar confettiOrigin={{ x: 0.5, y: 0.2 }} currentStep={currentStep} />}
 
                                 {(() => {
                                     let items = isAuthenticated ? cartItems : localCartItems || [];
@@ -831,7 +849,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                                                                                 className="px-2 py-0.5 bg-gray-200 rounded"
                                                                             >+</button>
                                                                         </div>
-                                                                        <p className="font-medium text-gray-900">{item.totalAmount.toLocaleString("en-IN")}</p>
+                                                                        <p className="font-medium text-gray-900">{item?.totalAmount?.toLocaleString("en-IN")}</p>
                                                                     </div>
                                                                     {item.discount > 0 && <p className="text-green-600 font-medium">{item.discount}% OFF</p>}
                                                                 </div>

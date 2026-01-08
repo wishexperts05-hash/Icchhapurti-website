@@ -240,6 +240,9 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setO
 
   return (
       <div className="relative group h-full">
+           {
+        openPayment && <PaymentModal isOpen={openPayment} onClose={() => setOpenPayment(false)} />
+      }
   <div
     onClick={handleViewDetails}
     className="relative bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer transition-all duration-300 hover:shadow-xl border border-gray-200 hover:border-purple-300 flex flex-col h-full"
@@ -769,7 +772,12 @@ export default function ProductsPage() {
             setCartSidebarOpen(false);
             setOpenPayment(true);
           }} />
-
+   {cartSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/15  backdrop-blur-[1px] z-51 animate-fadeIn"
+          // onClick={() => setMenuOpen(false)}
+        />
+      )}
       </div>
     </div>
   );

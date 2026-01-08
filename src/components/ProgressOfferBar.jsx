@@ -1,44 +1,43 @@
 import React, { useEffect, useRef } from "react";
-import { Check, Gift } from "lucide-react";
+import {
+  ShoppingCart,
+  ClipboardCheck,
+  MapPin,
+  CreditCard,
+  Check
+} from "lucide-react";
+
 import confetti from "canvas-confetti";
+import { Truck } from "lucide-react";
 
 const ProgressOfferBar = ({
-  price = 0,
+  currentStep = 0, // 0: Cart, 1: Checkout, 2: Address, 3: Payment
   confettiOrigin = { x: 0.95, y: 0.6 },
 }) => {
-  const milestones = [
-    { label: "NEW YEAR OFFER", amount: 449, giftValue: 0 },
-    { label: "FREE GIFT ₹249", amount: 1099, giftValue: 249 },
-    { label: "FREE GIFT ₹649", amount: 1999, giftValue: 649 },
+
+  const steps = [
+    { label: "Cart" },
+    { label: "Checkout" },
+    { label: "Address" },
+    { label: "Payment" },
   ];
+const stepIcons = [
+  ShoppingCart,
+  ClipboardCheck,
+  MapPin,
+  CreditCard,
+];
 
-  /* -------------------- STATE -------------------- */
-  const isCartEmpty = price <= 0;
+  /* -------------------- PREVIOUS STEP TRACK -------------------- */
+  const prevStepRef = useRef(-1);
 
-  // Track previous milestone completion
-  const prevStateRef = useRef(milestones.map(() => false));
-
-  const updatedMilestones = milestones.map((m, index) => ({
-    ...m,
-    index,
-    completed: !isCartEmpty && price >= m.amount,
-  }));
-
-  /* -------------------- CONFETTI -------------------- */
+  /* -------------------- CONFETTI ON STEP CHANGE -------------------- */
   useEffect(() => {
-    if (isCartEmpty) {
-      // Reset when cart is cleared
-      prevStateRef.current = milestones.map(() => false);
-      return;
+    if (currentStep > prevStepRef.current) {
+      fireConfetti();
     }
-
-    updatedMilestones.forEach((m, i) => {
-      if (m.completed && !prevStateRef.current[i]) {
-        fireConfetti();
-      }
-      prevStateRef.current[i] = m.completed;
-    });
-  }, [price]);
+    prevStepRef.current = currentStep;
+  }, [currentStep]);
 
   const fireConfetti = () => {
     confetti({
@@ -51,63 +50,34 @@ const ProgressOfferBar = ({
   };
 
   /* -------------------- CALCULATIONS -------------------- */
-  const totalGiftWorth = updatedMilestones.reduce(
-    (sum, m) => (m.completed ? sum + (m.giftValue || 0) : sum),
-    0
-  );
-
-  const maxAmount = milestones[milestones.length - 1].amount;
-
-  const progressPercent = isCartEmpty
-    ? 0
-    : Math.min((price / maxAmount) * 100, 100);
-
-  const nextMilestone = !isCartEmpty
-    ? milestones.find((m) => price < m.amount)
-    : null;
-
-  const remainingAmount = nextMilestone
-    ? nextMilestone.amount - price
-    : 0;
+  const progressPercent =
+    ((currentStep + 1) / steps.length) * 100;
 
   /* -------------------- UI -------------------- */
   return (
     <div className="w-full bg-white px-3 py-3 rounded-lg">
 
-      {/* Empty Cart Message */}
-      {isCartEmpty && (
-        <div className="text-center text-xs font-semibold text-gray-600 py-2">
-          🛒 Add products to unlock exciting offers
-        </div>
-      )}
+      {/* Step Message */}
+      {/* <div className="text-center text-xs font-semibold text-white bg-[#b88b05] rounded py-1.5 mb-3">
+        Step {currentStep + 1} of {steps.length} — {steps[currentStep]?.label}
+      </div> */}
+ <div className="flex items-center justify-center gap-2 text-xs font-semibold text-white bg-[#b88b05] rounded py-1.5 mb-3">
+  <Truck className="w-4 h-4" />
+  <span>Shop ₹2,500 & Enjoy FREE Shipping</span>
+</div>
 
-      {/* Gift Summary */}
-      {!isCartEmpty && totalGiftWorth > 0 && (
-        <div className="text-center text-xs font-semibold text-white bg-[#b88b05] rounded py-1.5 mb-2 animate-pulse">
-          {/* 🎁 Gifts unlocked worth ₹{totalGiftWorth.toLocaleString("en-IN")} */}
-          Shop For Worth Rs2500 & Get Free Shipping 
-        </div>
-      )}
 
-      {/* Next Milestone */}
-      {!isCartEmpty && nextMilestone && (
-        <div className="bg-[#b88b05] text-white text-center py-1.5 rounded text-xs mb-3">
-          Shop for ₹{remainingAmount.toLocaleString("en-IN")} more to get{" "}
-          <b>{nextMilestone.label}</b>
-        </div>
-      )}
-
-      {/* Milestone Labels */}
-      <div className="grid grid-cols-3 text-center mb-2">
-        {updatedMilestones.map((m, i) => (
+      {/* Step Labels */}
+      <div className="grid grid-cols-4 text-center mb-2">
+        {steps.map((s, i) => (
           <span
             key={i}
             className={`mx-auto px-2 py-0.5 rounded-full text-[9px] font-semibold
-              ${m.completed
+              ${i <= currentStep
                 ? "bg-[#b88b05] text-white"
                 : "bg-gray-300 text-gray-700"}`}
           >
-            {m.label}
+            {s.label}
           </span>
         ))}
       </div>
@@ -120,40 +90,31 @@ const ProgressOfferBar = ({
           style={{ width: `${progressPercent}%` }}
         />
 
-        <div className="absolute inset-0 grid grid-cols-3 items-center">
-          {updatedMilestones.map((m, i) => (
-            <div key={i} className="flex justify-center">
-              <div
-                className={`w-8 h-8 rounded-full border-2 flex items-center justify-center
-                  ${m.completed
-                    ? "bg-[#b88b05] border-white"
-                    : "bg-gray-300 border-white"}`}
-              >
-                {m.completed ? (
-                  <Check className="w-4 h-4 text-white" />
-                ) : (
-                  <Gift className="w-4 h-4 text-gray-600" />
-                )}
-              </div>
-            </div>
-          ))}
+        <div className="absolute inset-0 grid grid-cols-4 items-center">
+        {steps.map((_, i) => {
+  const Icon = stepIcons[i];
+
+  return (
+    <div key={i} className="flex justify-center">
+      <div
+        className={`w-8 h-8 rounded-full border-2 flex items-center justify-center
+          ${i <= currentStep
+            ? "bg-[#b88b05] border-white"
+            : "bg-gray-300 border-white"}`}
+      >
+        {i <= currentStep ? (
+          <Check className="w-4 h-4 text-white" />
+        ) : (
+          <Icon className="w-4 h-4 text-gray-600" />
+        )}
+      </div>
+    </div>
+  );
+})}
+
         </div>
       </div>
 
-      {/* Amount Labels */}
-      <div className="grid grid-cols-3 text-center mt-2">
-        {updatedMilestones.map((m, i) => (
-          <span
-            key={i}
-            className={`mx-auto px-2 py-0.5 rounded-full text-[10px] font-semibold
-              ${m.completed
-                ? "bg-[#b88b05] text-white"
-                : "bg-gray-300 text-gray-600"}`}
-          >
-            ₹ {m.amount.toLocaleString("en-IN")}
-          </span>
-        ))}
-      </div>
     </div>
   );
 };

@@ -582,6 +582,13 @@ export default function ProductDetails() {
         }}
 
       />
+
+         {cartSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/15  backdrop-blur-[1px] z-51 animate-fadeIn"
+          // onClick={() => setMenuOpen(false)}
+        />
+      )}
       {
         openPayment && <PaymentModal isOpen={openPayment} onClose={() => setOpenPayment(false)} />
       }
