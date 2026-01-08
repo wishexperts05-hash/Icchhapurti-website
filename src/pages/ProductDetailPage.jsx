@@ -49,11 +49,11 @@ export default function ProductDetails() {
       answer:
         "Charged with multiple rituals like Havans, Mantra Jaap, Mantras Chanting, Moon Charging, and many more rituals that align the energy of the pen to support your emotional balance, clarity, and vibrational alignment with your desires."
     },
-    {
-      question: "Can I use the pen for journaling or planning?",
-      answer:
-        "Yes, the pen is perfect for journaling, scripting, planning goals, or writing manifestation statements."
-    },
+    // {
+    //   question: "Can I use the pen for journaling or planning?",
+    //   answer:
+    //     "Yes, the pen is perfect for journaling, scripting, planning goals, or writing manifestation statements."
+    // },
     {
       question: "Is the Seven Chakra Pen suitable for beginners in manifestation?",
       answer:
@@ -72,7 +72,7 @@ export default function ProductDetails() {
     {
       question: "Is the pen spiritually charged or energized?",
       answer:
-        "This pen is specially charged and activated with multiple processes and rituals like Havans, Mantra Jaap, Mantras Chanting, Moon Charging, and many more rituals."
+        "This pen is specially charged and activated with multiple processes and rituals like  Mantra Jaap, Mantras Chanting, Moon Charging, and many more rituals."
     },
     {
       question: "How long does it take to see results?",
