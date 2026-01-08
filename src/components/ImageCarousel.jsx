@@ -159,7 +159,7 @@ const ImageCarousel = ({
                     <button
                       onClick={() => navigate("/products")}
                       className="
-          px-6 py-3 cusor-pointer
+          px-6 py-3 cursor-pointer
           text-sm sm:text-base
           font-bold
           text-black

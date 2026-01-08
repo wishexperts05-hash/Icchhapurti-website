@@ -1,6 +1,6 @@
 const AnnouncementMarquee = () => {
   return (
-    <div className="w-full  overflow-hidden bg-[#9c4f1e] py-3">
+    <div className="w-full  overflow-hidden bg-black py-3">
       <div className="flex items-center gap-16 whitespace-nowrap animate-marquee">
 
         {/* Item 1 */}
@@ -9,7 +9,7 @@ const AnnouncementMarquee = () => {
             FREE SHIPPING
           </span>
           <span className="text-white font-semibold">
-            Free Shipping on Orders Above ₹1999
+            Free Shipping on Orders Above ₹2500
           </span>
         </div>
 
@@ -19,7 +19,7 @@ const AnnouncementMarquee = () => {
             FLAT 10% OFF
           </span>
           <span className="text-white font-semibold">
-            Buy Aura Enhancer + Crystal Body Oil and get flat 10% off
+            Elegant Metal Roller Manifestation Pen + Seven Chakra Premium Manifestation Pen and get flat 10% off
           </span>
         </div>
 

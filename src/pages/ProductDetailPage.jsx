@@ -395,7 +395,7 @@ export default function ProductDetails() {
   const shareUrl = window.location.href;
   const shareTitle = product?.name || "Check this product";
   const handleShare = async () => {
-   setShareOpen(true);
+    setShareOpen(true);
   };
 
 
@@ -490,87 +490,87 @@ export default function ProductDetails() {
  relative overflow-hidden py-4 sm:py-8">
 
 
-     {shareOpen && (
-                <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4">
-                  <div className="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-2xl">
+      {shareOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-2xl">
 
-                    {/* Close */}
-                    <button
-                      onClick={() => setShareOpen(false)}
-                      className="absolute top-3 right-3 text-gray-500 hover:text-black"
-                    >
-                      <X size={18} />
-                    </button>
+            {/* Close */}
+            <button
+              onClick={() => setShareOpen(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-black"
+            >
+              <X size={18} />
+            </button>
 
-                    <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">
-                      Share this product
-                    </h3>
+            <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">
+              Share this product
+            </h3>
 
-                    {/* Copy link */}
-                    <div className="flex items-center gap-2 mb-4">
-                      <input
-                        readOnly
-                        value={shareUrl}
-                        className="flex-1 px-3 py-2 border rounded-lg text-sm"
-                      />
-                      <button
-                        onClick={() => {
-                          navigator.clipboard.writeText(shareUrl);
-                          alert("Link copied!");
-                        }}
-                        className="p-2 rounded-lg bg-cyan-500 text-white hover:bg-cyan-600"
-                      >
-                        <Copy size={16} />
-                      </button>
-                    </div>
+            {/* Copy link */}
+            <div className="flex items-center gap-2 mb-4">
+              <input
+                readOnly
+                value={shareUrl}
+                className="flex-1 px-3 py-2 border rounded-lg text-sm"
+              />
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(shareUrl);
+                  alert("Link copied!");
+                }}
+                className="p-2 rounded-lg bg-cyan-500 text-white hover:bg-cyan-600"
+              >
+                <Copy size={16} />
+              </button>
+            </div>
 
-                    {/* Share Buttons */}
-                    <div className="grid grid-cols-4 gap-4 text-center">
-                      {/* WhatsApp */}
-                      <a
-                        href={`https://wa.me/?text=${encodeURIComponent(shareTitle + " " + shareUrl)}`}
-                        target="_blank"
-                        className="flex flex-col items-center gap-1 text-green-600 hover:scale-105 transition"
-                      >
-                        {/* <img src="/icons/whatsapp.svg" className="w-8 h-8" /> */}
-                        <BsWhatsapp/>
-                        <span className="text-xs">WhatsApp</span>
-                      </a>
+            {/* Share Buttons */}
+            <div className="grid grid-cols-4 gap-4 text-center">
+              {/* WhatsApp */}
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(shareTitle + " " + shareUrl)}`}
+                target="_blank"
+                className="flex flex-col items-center gap-1 text-green-600 hover:scale-105 transition"
+              >
+                {/* <img src="/icons/whatsapp.svg" className="w-8 h-8" /> */}
+                <BsWhatsapp />
+                <span className="text-xs">WhatsApp</span>
+              </a>
 
-                      {/* Instagram */}
-                      <a
-                        href="https://www.instagram.com/"
-                        target="_blank"
-                        className="flex flex-col items-center gap-1 text-pink-600 hover:scale-105 transition"
-                      >
-                        {/* <img src="/icons/instagram.svg" className="w-8 h-8" /> */}
-                      <BsInstagram/>
-                        <span className="text-xs">Instagram</span>
-                      </a>
-<a
-  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="flex flex-col items-center gap-1 text-blue-600 hover:scale-105 transition"
->
-  <BsFacebook />
-  <span className="text-xs">Facebook</span>
-</a>
+              {/* Instagram */}
+              <a
+                href="https://www.instagram.com/"
+                target="_blank"
+                className="flex flex-col items-center gap-1 text-pink-600 hover:scale-105 transition"
+              >
+                {/* <img src="/icons/instagram.svg" className="w-8 h-8" /> */}
+                <BsInstagram />
+                <span className="text-xs">Instagram</span>
+              </a>
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center gap-1 text-blue-600 hover:scale-105 transition"
+              >
+                <BsFacebook />
+                <span className="text-xs">Facebook</span>
+              </a>
 
-                      {/* Pinterest */}
-                      <a
-                        href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(shareUrl)}&description=${encodeURIComponent(shareTitle)}`}
-                        target="_blank"
-                        className="flex flex-col items-center gap-1 text-red-600 hover:scale-105 transition"
-                      >
-                        {/* <img src="/icons/pinterest.svg" className="w-8 h-8" /> */}
-                        <PiPinterestLogo/>
-                        <span className="text-xs">Pinterest</span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              )}
+              {/* Pinterest */}
+              <a
+                href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(shareUrl)}&description=${encodeURIComponent(shareTitle)}`}
+                target="_blank"
+                className="flex flex-col items-center gap-1 text-red-600 hover:scale-105 transition"
+              >
+                {/* <img src="/icons/pinterest.svg" className="w-8 h-8" /> */}
+                <PiPinterestLogo />
+                <span className="text-xs">Pinterest</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
 
       <CartSidebar
         isOpen={cartSidebarOpen}
@@ -583,10 +583,10 @@ export default function ProductDetails() {
 
       />
 
-         {cartSidebarOpen && (
+      {cartSidebarOpen && (
         <div
           className="fixed inset-0 bg-black/15  backdrop-blur-[1px] z-51 animate-fadeIn"
-          // onClick={() => setMenuOpen(false)}
+        // onClick={() => setMenuOpen(false)}
         />
       )}
       {
@@ -729,7 +729,7 @@ export default function ProductDetails() {
               </div>
 
 
-           
+
 
 
               {/* Description */}
@@ -996,48 +996,47 @@ export default function ProductDetails() {
                 </button>
               </div>
             ) : reviews.length === 0 ? (
-              <div className="w-full mx-auto p-6 rounded-md text-center
-  bg-gradient-to-br from-amber-100/90 via-yellow-50 to-white
-  backdrop-blur-md
-  shadow-[0_0_30px_rgba(245,158,11,0.6)]
-  border border-amber-300/50
-">
-
-                <h2 className="text-xl font-semibold text-gray-800 text-center mb-3">
-                  Customer Reviews
-                </h2>
-
-                <div className="flex justify-center gap-1 mb-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                      key={star}
-                      className="w-5 h-5 text-yellow-400 fill-yellow-400"
-                    />
-                  ))}
-                </div>
-
-                <p className="text-sm text-gray-500 text-center mb-4">
-                  Be the first to write a review
-                </p>
-
-
-
-                <button
-                  className='cursor-pointer'
-                  onClick={() => {
-                    const token = localStorage.getItem("token");
-                    if (!token) return alert("Please login first");
-                    setOpenReview(true);
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }}
+              <div className="w-full flex justify-center py-10">
+                {/* Outer glow wrapper */}
+                <div
+                  className="
+      relative rounded-xl w-full
+      shadow-[0_0_80px_30px_rgba(245,158,11,0.35)]
+    "
                 >
-                  Write Review
-                </button>
+                  {/* Inner white card */}
+                  <div
+                    className="
+        bg-white rounded-xl
+        px-8 py-6
+      
+        text-center
+      "
+                  >
+                    <h2 className="text-lg font-medium text-gray-700 mb-2">
+                      Customer Reviews
+                    </h2>
 
+                    <div className="flex justify-center gap-1 mb-1">
+                      {[1, 2, 3, 4, 5].map(i => (
+                        <Star
+                          key={i}
+                          className="w-4 h-4 text-yellow-400"
+                        />
+                      ))}
+                    </div>
 
+                    <p className="text-sm text-gray-400 mb-4">
+                      Be the first to write a review
+                    </p>
 
-
+                    <button className="px-6 py-2 rounded-full bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 transition">
+                      Write a review
+                    </button>
+                  </div>
+                </div>
               </div>
+
             ) : (
               <>
                 <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
