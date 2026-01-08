@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
 import { Sparkles, Target, Heart, Package, Star, ChevronDown } from 'lucide-react';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function AboutUs() {
   const [expandedProduct, setExpandedProduct] = useState(null);
 
   const products = [
+
     {
       id: 1,
-      name: "Seven Chakra Premium Manifestation Pen",
-      description: "A luxury metal pen embedded with seven chakra stones and topped with genuine pyrite—designed to balance energy centers, boost confidence, and attract abundance.",
-      icon: "✨"
+      name: "Icchhapurti -  Elegant Metal Roller Manifestation Pen",
+      description: "A minimal Elegant Metallic Look, stone-free manifestation pen ideal for students and corporate professionals who want a subtle yet powerful intention-focused writing tool suitable for schools and offices.",
+      icon: "🖊️"
     },
     {
       id: 2,
-      name: "Elegant Metal Roller Manifestation Pen",
-      description: "A minimal, stone-free manifestation pen ideal for students and corporate professionals who want a subtle yet powerful intention-focused writing tool suitable for schools and offices.",
-      icon: "🖊️"
+      name: "Icchhapurti - Seven Chakra Premium Manifestation Pen",
+      description: "A luxury metal pen embedded with seven chakra stones and topped with genuine pyrite—designed to balance energy centers, boost confidence, and attract abundance.",
+      icon: "✨"
     },
     {
       id: 3,
@@ -24,6 +27,49 @@ export default function AboutUs() {
       icon: "📦"
     }
   ];
+
+  const [allProducts, setProducts] = useState([]);
+  console.log(allProducts, "allProducts")
+  const naviagte = useNavigate()
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=${1}&limit=${3}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        let productsData = data.products || data.data || [];
+
+        setProducts(productsData);
+
+      }
+    } catch (err) {
+      console.error("Error fetching products:", err);
+
+    } finally {
+
+    }
+  };
 
   const values = [
     {
@@ -82,7 +128,7 @@ export default function AboutUs() {
             Our Mission
           </h2>
           <p className="text-lg text-gray-700 leading-relaxed mb-6">
-            We (Wish experts private limited) with the brand name <span className="font-semibold text-[#a17b0a]">Icchhapurti</span> believe that intentions become powerful when combined with clarity, focus, and mindful action. Our mission is to create meaningful manifestation tools that help individuals align their thoughts, energy, and efforts towards achieving their goals—whether personal, professional, or spiritual.
+            We (Wish experts private limited) with the brand name <span className="font-semibold text-[#a17b0a]">Icchhapurti</span> believe that intentions become powerful when combined with clarity, focus, and mindful actions. Our mission is to create meaningful manifestation tools that help individuals align their thoughts, energy, and efforts towards achieving their goals—whether personal, professional, or spiritual.
           </p>
           <p className="text-lg text-gray-700 leading-relaxed">
             Icchhapurti was born from the idea that everyone deserves the right tools to manifest their dreams, regardless of where they are in life. From students and professionals to spiritual seekers, our products are thoughtfully designed to support focus, confidence, abundance, and positive thinking in everyday routines.
@@ -91,7 +137,7 @@ export default function AboutUs() {
       </div>
 
       {/* What We Create Section */}
-      <div className="bg-gradient-to-r  py-16">
+      <div className="  py-16">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold text-[#a17b0a] mb-6 text-center">
             What We Create
@@ -104,41 +150,96 @@ export default function AboutUs() {
                   The Power Pack Tool
                 </h3>
                 <p className="text-gray-700 leading-relaxed mb-4">
-                  We are the best in the market who create The Power Pack Tool for achieving your goals. Our products are heavily charged and activated with multiple processes and rituals like <span className="font-semibold text-[#a17b0a]">Havans, Mantra Jaap, Mantra Chanting, Moon Charging</span> and many more rituals are performed on the pen to maximize your goal achievement to 10x power/faster through manifestation.
+                  We are the best in the market who create The Power Pack Tool for achieving your goals. Our products are heavily charged and activated with multiple processes and rituals like <span className="font-semibold text-[#a17b0a]"> Mantra Jaap, Mantra Chanting, Moon Charging</span> and many more rituals are performed on the pen to maximize your goal achievement to 10x power/faster through manifestation.
                 </p>
                 <p className="text-gray-700 leading-relaxed font-medium">
                   That is why this pen is something magical for everyone only if you show trust and believe in it.
                 </p>
                 <div className="mt-6 bg-purple-50 border-l-4 border-purple-600 p-4 rounded">
-                  <p className="text-[#a17b0a] font-semibold italic">
-                    "Don't question it, just own it, write it and start manifestation then see the magic happens."
-                  </p>
+                
+
+                  <div className="mt-8 space-y-2 text-center">
+                    <p className="font-bold text-xl text-[#a17b0a]">Don't question it,</p>
+                    <p className="font-bold text-xl text-[#a17b0a]"> Just own it ,</p>
+                    <p className="font-bold text-xl text-[#a17b0a]">
+                      Write it and start manifestation,
+                    </p>
+                    <p className="font-bold text-xl text-[#a17b0a]">
+                      Then see the magic happens
+                    </p>
+                  </div>
+
                 </div>
               </div>
             </div>
           </div>
 
           {/* Products Grid */}
-          <div className="grid md:grid-cols-3 gap-6">
-            {products.map((product) => (
-              <div
-                key={product.id}
-                className="bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
-                onClick={() => setExpandedProduct(expandedProduct === product.id ? null : product.id)}
-              >
-                <div className="text-5xl mb-4 text-center">{product.icon}</div>
-                <h3 className="text-xl font-bold text-[#a17b0a] mb-3 text-center">
-                  {product.name}
-                </h3>
-                <p className={`text-gray-600 leading-relaxed ${expandedProduct === product.id ? '' : 'line-clamp-3'}`}>
-                  {product.description}
-                </p>
-                <div className="flex justify-center mt-4">
-                  <ChevronDown className={`w-5 h-5 text-[#a17b0a] transition-transform ${expandedProduct === product.id ? 'rotate-180' : ''}`} />
-                </div>
-              </div>
-            ))}
-          </div>
+         <div className="grid md:grid-cols-3 gap-6">
+  {products.map((product, i) => (
+    <div
+      key={product.id}
+      className="
+        bg-white rounded-xl shadow-lg 
+        hover:shadow-2xl transition-all duration-300
+        transform hover:-translate-y-1
+        flex flex-col
+      "
+    >
+      {/* MEDIA CONTAINER */}
+      <div className="w-full  mb-4 rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center">
+        {i === 2 ? (
+          <video
+            src="/coming-soon.mp4"
+            className="w-full  h-[450px] object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+          />
+        ) : (
+          <img
+            src={allProducts[i]?.images?.[0]}
+            alt={product.name}
+            className="w-full h-full object-cover"
+          />
+        )}
+      </div>
+
+      {/* TITLE */}
+      <h3
+        onClick={() => naviagte(`/product/${allProducts[i]._id}`)}
+        className="text-xl font-bold cursor-pointer text-[#a17b0a] mb-3 text-center"
+      >
+        {product.name}
+      </h3>
+
+      {/* DESCRIPTION */}
+      <p
+        className={`text-gray-600 p-2 leading-relaxed text-sm flex-1 ${
+          expandedProduct === product.id ? '' : 'line-clamp-3'
+        }`}
+      >
+        {product.description}
+      </p>
+
+      {/* EXPAND ICON */}
+      <div
+        onClick={() =>
+          setExpandedProduct(expandedProduct === product.id ? null : product.id)
+        }
+        className="flex justify-center cursor-pointer mt-4"
+      >
+        <ChevronDown
+          className={`w-5 h-5 text-[#a17b0a] transition-transform ${
+            expandedProduct === product.id ? 'rotate-180' : ''
+          }`}
+        />
+      </div>
+    </div>
+  ))}
+</div>
+
         </div>
       </div>
 

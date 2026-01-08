@@ -128,9 +128,23 @@ const HomePage = () => {
       <StoryBanner />
 
       <div className="text-center py-3 my-5">
-        <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-white mb-2 sm:mb-3">
+        {/* <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-white mb-2 sm:mb-3">
           See How World Is Manifesting With Icchhapurti
-        </h2>
+        </h2> */}
+
+
+        <h1
+          className="text-2xl md:text-5xl font-extrabold mb-6 animate-fade-in bg-clip-text text-transparent"
+          style={{
+            backgroundImage:
+              "linear-gradient(120deg, #7a5c00 0%, #f6e27a 15%, #fff6b0 30%, #d4af37 45%, #fff6b0 60%, #f6e27a 75%, #7a5c00 100%)",
+            backgroundSize: "200% 200%",
+            animation: "goldShine 3s linear infinite",
+          }}
+        >
+          See How World Is Manifesting With Icchhapurti
+        </h1>
+
         <p className="text-md font-bold sm:text-xl text-[#a17b0a] px-4">
           Experience the Manifestation Pen in short, powerful reels
         </p>
@@ -153,12 +167,23 @@ const HomePage = () => {
             <Star key={i} className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 fill-yellow-500" />
           ))}
         </div>
-        <h2 className="text-3xl sm:text-6xl text-white font-black mb-2 sm:mb-4">What Our Customer Says</h2>
+        {/* <h2 className="text-3xl sm:text-6xl text-white font-black mb-2 sm:mb-4">What Our Customer Says</h2> */}
+           <h1
+          className="text-2xl my-2 md:text-5xl font-extrabold mb-6 animate-fade-in bg-clip-text text-transparent"
+          style={{
+            backgroundImage:
+              "linear-gradient(120deg, #7a5c00 0%, #f6e27a 15%, #fff6b0 30%, #d4af37 45%, #fff6b0 60%, #f6e27a 75%, #7a5c00 100%)",
+            backgroundSize: "200% 200%",
+            animation: "goldShine 3s linear infinite",
+          }}
+        >
+          What Our Customer Says
+        </h1>
         <p className="text-base sm:text-xl text-[#a17b0a]">
           Real stories from real customers
         </p>
       </div>
-{/* 
+      {/* 
       <div className="">
         <img
           src="/shape1.png"

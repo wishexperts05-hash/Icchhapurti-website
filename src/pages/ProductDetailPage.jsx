@@ -86,6 +86,45 @@ export default function ProductDetails() {
     }
   ];
 
+  const faq1 = [
+    {
+      question: "Who is this Manifestation Pen best suited for?",
+      answer:
+        "The pen is ideal for students, professionals, corporate users, and anyone who values elegant design and purposeful writing."
+    },
+    {
+      question: "How does this pen support manifestation?",
+      answer:
+        "Writing goals, plans, and affirmations with intention helps improve focus, confidence, and clarity, supporting personal and professional achievement."
+    },
+    {
+      question: "Is this Manifestation Pen suitable for daily professional use?",
+      answer:
+        "Yes, it is designed for regular use in offices, meetings, classrooms, and study sessions."
+    },
+    {
+      question: "Is the Manifestation Pen comfortable for long writing sessions?",
+      answer:
+        "Yes, the balanced metal body and smooth ink flow help reduce hand fatigue during extended writing."
+    },
+    {
+      question: "Can students use this Manifestation Pen for studying and exams?",
+      answer:
+        "Yes, it is perfect for note-taking, goal setting, revision planning, and exam preparation."
+    },
+    {
+      question: "Can this Manifestation Pen help build positive writing habits?",
+      answer:
+        "Yes, a high-quality pen encourages regular writing, planning, and disciplined daily habits."
+    },
+    {
+      question: "How can this Manifestation Pen help students stay motivated?",
+      answer:
+        "Writing goals, study plans, and positive affirmations with this pen helps students stay focused and motivated toward their academic targets."
+    }
+  ];
+
+
   const [openFAQ, setOpenFAQ] = useState(null);
   const toggleFAQ = (id) => {
     setOpenFAQ(openFAQ === id ? null : id);
@@ -890,37 +929,76 @@ export default function ProductDetails() {
             <h2 className="text-3xl font-bold text-center mb-8 text-gray-900">
               Frequently Asked Questions
             </h2>
+            {
+              product?.name.includes("Elegant Metal Roller") &&
 
-            <div className="space-y-4">
-              {faqs.map((faq, index) => (
-                <div
-                  key={index}
-                  className="border border-gray-200 rounded-xl shadow-sm bg-white"
-                >
-                  <button
-                    onClick={() =>
-                      setOpenIndex(openIndex === index ? null : index)
-                    }
-                    className="w-full flex justify-between items-center px-5 py-4 text-left"
+              <div className="space-y-4">
+                {faq1.map((faq, index) => (
+                  <div
+                    key={index}
+                    className="border border-gray-200 rounded-xl shadow-sm bg-white"
                   >
-                    <span className="font-semibold text-gray-800">
-                      {faq.question}
-                    </span>
+                    <button
+                      onClick={() =>
+                        setOpenIndex(openIndex === index ? null : index)
+                      }
+                      className="w-full flex justify-between items-center px-5 py-4 text-left"
+                    >
+                      <span className="font-semibold text-gray-800">
+                        {faq.question}
+                      </span>
 
-                    <ChevronDown
-                      className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${openIndex === index ? "rotate-180" : ""
-                        }`}
-                    />
-                  </button>
+                      <ChevronDown
+                        className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${openIndex === index ? "rotate-180" : ""
+                          }`}
+                      />
+                    </button>
 
-                  {openIndex === index && (
-                    <div className="px-5 pb-5 text-gray-600 leading-relaxed">
-                      {faq.answer}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+                    {openIndex === index && (
+                      <div className="px-5 pb-5 text-gray-600 leading-relaxed">
+                        {faq.answer}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            }
+
+            {
+              product?.name.includes("Seven Chakra") &&
+              <div className="space-y-4">
+                {faqs.map((faq, index) => (
+                  <div
+                    key={index}
+                    className="border border-gray-200 rounded-xl shadow-sm bg-white"
+                  >
+                    <button
+                      onClick={() =>
+                        setOpenIndex(openIndex === index ? null : index)
+                      }
+                      className="w-full flex justify-between items-center px-5 py-4 text-left"
+                    >
+                      <span className="font-semibold text-gray-800">
+                        {faq.question}
+                      </span>
+
+                      <ChevronDown
+                        className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${openIndex === index ? "rotate-180" : ""
+                          }`}
+                      />
+                    </button>
+
+                    {openIndex === index && (
+                      <div className="px-5 pb-5 text-gray-600 leading-relaxed">
+                        {faq.answer}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+            }
+
           </section>
 
 
