@@ -1119,18 +1119,43 @@ export default function ProductDetails() {
               <>
                 <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
                   {!hasReviewed && (
-                    <div className="mb-6 flex justify-end">
-                      <button
-                        onClick={() => {
-                          if (!token) return alert("Please login first");
-                          setOpenReview(true);
-                          window.scrollTo({ top: 0, behavior: "smooth" });
-                        }}
-                        className="bg-amber-500 cursor-pointer hover:bg-amber-600 text-white px-6 py-2 rounded-lg font-semibold shadow-md transition"
-                      >
-                        ✍️ Write a Review
-                      </button>
+                    <div
+                  className="
+      relative rounded-xl w-full
+      shadow-[0_0_80px_30px_rgba(245,158,11,0.35)]
+    "
+                >
+                  {/* Inner white card */}
+                  <div
+                    className="
+        bg-white rounded-xl
+        px-8 py-6
+      
+        text-center
+      "
+                  >
+                    <h2 className="text-lg font-medium text-gray-700 mb-2">
+                      Customer Reviews
+                    </h2>
+
+                    <div className="flex justify-center gap-1 mb-1">
+                      {[1, 2, 3, 4, 5].map(i => (
+                        <Star
+                          key={i}
+                          className="w-4 h-4 text-yellow-400"
+                        />
+                      ))}
                     </div>
+
+                    {/* <p className="text-sm text-gray-400 mb-4">
+                      Be the first to write a review
+                    </p> */}
+
+                    <button className="px-6 py-2 mt-2 rounded-full bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 transition">
+                      Write a review
+                    </button>
+                  </div>
+                </div>
                   )}
 
                   {orderedReviews?.map((review, index) => {
