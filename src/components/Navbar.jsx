@@ -177,7 +177,7 @@ bg-center bg-no-repeat
                       />
 
                       {unreadCount > 0 && (
-                        <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center text-[10px] font-semibold bg-red-500 text-white rounded-full px-1">
+                        <span className="absolute -top-0 -right-0 min-w-[18px] h-[18px] flex items-center justify-center text-[10px] font-semibold bg-red-500 text-white rounded-full px-1">
                           {unreadCount}
                         </span>
                       )}
