@@ -153,7 +153,7 @@ const ImageCarousel = ({
               )}
 
               {/* SHOP NOW BUTTON – ONLY ON 3RD BANNER */}
-              {i === 2 && (
+              {i === 1 && (
                 <div className="absolute inset-0 top-30 flex items-center z-20">
                   <div className="ml-4 sm:ml-8 md:ml-32">
                     <button
