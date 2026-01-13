@@ -18,7 +18,7 @@ import PaymentModal from './PaymentModal';
 import { BsFacebook, BsInstagram, BsWhatsapp } from 'react-icons/bs';
 import { PiPinterestLogo } from 'react-icons/pi';
 
-export default function ProductDetails() {
+export default function ProductDetails({countryCurrency}) {
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [reviewData, setReviewsData] = useState();
@@ -178,7 +178,7 @@ export default function ProductDetails() {
     setError(null);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/v1/products/productById/${productId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/v1/products/productById/${productId}?countryCode=${countryCurrency ||"INR"}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

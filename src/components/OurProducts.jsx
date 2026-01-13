@@ -240,7 +240,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setO
 
   return (
     <div className="relative group h-full">
-         {
+      {
         openPayment && <PaymentModal isOpen={openPayment} onClose={() => setOpenPayment(false)} />
       }
       <div
@@ -422,7 +422,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setO
 }
 
 // ---------- OUR PRODUCTS LIST (UNCHANGED EXCEPT FOR PROP) ----------
-export default function OurProducts() {
+export default function OurProducts({countryCurrency}) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -440,9 +440,18 @@ export default function OurProducts() {
 
   const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
   const [openPayment, setOpenPayment] = useState(false)
+
+ console.log(countryCurrency, "countryCurrency in our products")
+
   useEffect(() => {
+  
+
     fetchProducts();
   }, [page, debounceSearch]);
+
+
+  
+
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -458,7 +467,7 @@ export default function OurProducts() {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=${page}&limit=${limit}&search=${debounceSearch}`,
+        `${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=${page}&limit=${limit}&search=${debounceSearch}&countryCode=${countryCurrency || "INR"}`,
         {
           method: "GET",
           headers: {
@@ -584,6 +593,9 @@ export default function OurProducts() {
   };
 
 
+
+
+
   const product = {
     title: products[0]?.name,
     features: [
@@ -685,74 +697,74 @@ export default function OurProducts() {
             ))}
 
             {/* Static Manifestation Kit Card - EXACT MATCH */}
-         <div className="relative group h-full">
-  <div className="relative bg-white rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl border border-gray-200 hover:border-purple-300 flex flex-col h-full">
+            <div className="relative group h-full">
+              <div className="relative bg-white rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl border border-gray-200 hover:border-purple-300 flex flex-col h-full">
 
-    {/* Video - EXACT SAME HEIGHT */}
-    <div className="relative w-full h-[520px]  bg-gradient-to-b from-gray-50 to-white overflow-hidden">
-      <video
-        src={ "/coming-soon.mp4"}
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        autoPlay
-        loop
-        muted
-        playsInline
-        onError={(e) => {
-          e.target.poster = "https://via.placeholder.com/1000x1000?text=No+Video";
-        }}
-      />
-    </div>
+                {/* Video - EXACT SAME HEIGHT */}
+                <div className="relative w-full h-[520px]  bg-gradient-to-b from-gray-50 to-white overflow-hidden">
+                  <video
+                    src={"/coming-soon.mp4"}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    onError={(e) => {
+                      e.target.poster = "https://via.placeholder.com/1000x1000?text=No+Video";
+                    }}
+                  />
+                </div>
 
-    {/* Content - EXACT SAME STRUCTURE */}
-    <div className="p-4 bg-white flex flex-col flex-1">
-      <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 min-h-[3.5rem]">
-        Manifestation Kit
-      </h3>
+                {/* Content - EXACT SAME STRUCTURE */}
+                <div className="p-4 bg-white flex flex-col flex-1">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 min-h-[3.5rem]">
+                    Manifestation Kit
+                  </h3>
 
-      <p className="text-xs text-gray-500 mb-3 line-clamp-2">
-        Premium quality materials with complete manifestation guide included
-      </p>
+                  <p className="text-xs text-gray-500 mb-3 line-clamp-2">
+                    Premium quality materials with complete manifestation guide included
+                  </p>
 
-      <div className="flex items-center gap-2 mb-3">
-        <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-yellow-50 border border-yellow-200">
-          <Star size={12} fill="#eab308" stroke="#eab308" />
-          <span className="text-sm font-bold text-yellow-600">New</span>
-        </div>
-        <span className="text-xs text-gray-400">(Coming Soon)</span>
-      </div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-yellow-50 border border-yellow-200">
+                      <Star size={12} fill="#eab308" stroke="#eab308" />
+                      <span className="text-sm font-bold text-yellow-600">New</span>
+                    </div>
+                    <span className="text-xs text-gray-400">(Coming Soon)</span>
+                  </div>
 
-      <div className="flex items-center gap-3 mb-3 text-xs text-gray-600 border-t border-gray-100 pt-3">
-        <div className="flex items-center gap-1.5">
-          <div className="w-4 h-4 bg-green-100 rounded-full flex items-center justify-center">
-            <Check size={10} className="text-green-600" />
-          </div>
-          <span>Premium</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-4 h-4 bg-blue-100 rounded-full flex items-center justify-center">
-            <Zap size={10} className="text-blue-600" />
-          </div>
-          <span>Complete Kit</span>
-        </div>
-      </div>
+                  <div className="flex items-center gap-3 mb-3 text-xs text-gray-600 border-t border-gray-100 pt-3">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-4 h-4 bg-green-100 rounded-full flex items-center justify-center">
+                        <Check size={10} className="text-green-600" />
+                      </div>
+                      <span>Premium</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-4 h-4 bg-blue-100 rounded-full flex items-center justify-center">
+                        <Zap size={10} className="text-blue-600" />
+                      </div>
+                      <span>Complete Kit</span>
+                    </div>
+                  </div>
 
-      <div className="flex gap-2 mt-auto">
-        <button
-          disabled
-          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl font-bold text-sm text-white bg-amber-600 opacity-70 cursor-not-allowed"
-        >
-          <span className="hidden sm:inline">Coming Soon</span>
-          <span className="sm:hidden">Soon</span>
-        </button>
-      </div>
+                  <div className="flex gap-2 mt-auto">
+                    <button
+                      disabled
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl font-bold text-sm text-white bg-amber-600 opacity-70 cursor-not-allowed"
+                    >
+                      <span className="hidden sm:inline">Coming Soon</span>
+                      <span className="sm:hidden">Soon</span>
+                    </button>
+                  </div>
 
-      <div className="mt-3 flex items-center justify-center gap-2 text-xs">
-        <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
-        <span className="text-amber-600 font-semibold">Launching Soon</span>
-      </div>
-    </div>
-  </div>
-</div>
+                  <div className="mt-3 flex items-center justify-center gap-2 text-xs">
+                    <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
+                    <span className="text-amber-600 font-semibold">Launching Soon</span>
+                  </div>
+                </div>
+              </div>
+            </div>
 
           </div>
         ) : (
@@ -771,12 +783,12 @@ export default function OurProducts() {
           </div>
         )}
 
-   <button
-            onClick={() => Navigate("/products")}
-            className="md:absolute my-5 md:hidden block right-0 text-white px-6 py-2 rounded-lg bg-[#a17b0a] font-semibold shadow-lg hover:shadow-purple-500/50 transition-all"
-          >
-            View All
-          </button>
+        <button
+          onClick={() => Navigate("/products")}
+          className="md:absolute my-5 md:hidden block right-0 text-white px-6 py-2 rounded-lg bg-[#a17b0a] font-semibold shadow-lg hover:shadow-purple-500/50 transition-all"
+        >
+          View All
+        </button>
         <CartSidebar
           isOpen={cartSidebarOpen}
           onClose={() => setCartSidebarOpen(false)}
@@ -787,12 +799,12 @@ export default function OurProducts() {
           }}
 
         />
-           {cartSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/15  backdrop-blur-[1px] z-51 animate-fadeIn"
+        {cartSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/15  backdrop-blur-[1px] z-51 animate-fadeIn"
           // onClick={() => setMenuOpen(false)}
-        />
-      )}
+          />
+        )}
       </div>
     </div>
   );

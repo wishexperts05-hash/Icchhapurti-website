@@ -421,7 +421,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setO
 }
 
 // ---------- OUR PRODUCTS LIST (UNCHANGED EXCEPT FOR PROP) ----------
-export default function ProductsPage() {
+export default function ProductsPage({countryCurrency}) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -438,9 +438,19 @@ export default function ProductsPage() {
 
   const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
   const [openPayment, setOpenPayment] = useState(false)
+
+
   useEffect(() => {
+ 
     fetchProducts();
+     
   }, [page, debounceSearch]);
+
+
+
+
+
+
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -456,7 +466,7 @@ export default function ProductsPage() {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=${page}&limit=${limit}&search=${debounceSearch}`,
+        `${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=${page}&limit=${limit}&search=${debounceSearch}&countryCode=${countryCurrency || "INR"}`,
         {
           method: "GET",
           headers: {

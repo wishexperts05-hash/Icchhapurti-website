@@ -19,7 +19,7 @@ import Testimonials from '../components/Testimonials'
 import WaveDivider from '../components/WaveDivider'
 import { Star } from 'lucide-react'
 
-const HomePage = () => {
+const HomePage = ({ countryCurrency }) => {
 
   const { setCount, cartCount, setList, setUnreadCount, wishlistCount } = useHeader();
 
@@ -121,7 +121,7 @@ const HomePage = () => {
       <ImageCarousel />
       <WhyChooseUs />
 
-      <OurProducts />
+      <OurProducts countryCurrency={countryCurrency} />
 
       {/* Story Banner and Video Section with SVG Wave Divider */}
 
