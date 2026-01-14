@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+#server Files 
+deploy.sh
+.env.production
+package-lock.json
