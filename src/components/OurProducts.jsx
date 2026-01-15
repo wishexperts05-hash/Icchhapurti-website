@@ -16,7 +16,7 @@ import CartSidebar from "./CartSidebar";
 import PaymentModal from "../pages/PaymentModal";
 
 // ---------- PRODUCT CARD ----------
-function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setOpenPayment, setCartSidebarOpen }) {
+function ProductCard({ product, countryCurrency, onAddToCart, onWishlistUpdate, openPayment, setOpenPayment, setCartSidebarOpen }) {
   const [addingToCart, setAddingToCart] = useState(false);
   const [buyingNow, setBuyingNow] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -241,7 +241,7 @@ function ProductCard({ product, onAddToCart, onWishlistUpdate, openPayment, setO
   return (
     <div className="relative group h-full">
       {
-        openPayment && <PaymentModal isOpen={openPayment} onClose={() => setOpenPayment(false)} />
+        openPayment && <PaymentModal isOpen={openPayment} onClose={() => setOpenPayment(false)} countryCurrency={countryCurrency} />
       }
       <div
         onClick={handleViewDetails}
@@ -692,6 +692,7 @@ export default function OurProducts({countryCurrency}) {
                   setCartSidebarOpen={setCartSidebarOpen}
                   openPayment={openPayment}
                   setOpenPayment={setOpenPayment}
+                  countryCurrency={countryCurrency}
                 />
               </div>
             ))}

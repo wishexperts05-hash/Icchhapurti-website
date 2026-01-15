@@ -11,7 +11,7 @@ import { LucideShoppingBag } from "lucide-react";
 import CartSidebar from "./CartSidebar"; // Import the new CartSidebar component
 import PaymentModal from "../pages/PaymentModal";
 
-export default function Navbar() {
+export default function Navbar({ countryCurrency }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartSidebarOpen, setCartSidebarOpen] = useState(false); // New state for cart sidebar
   const [searchFocused, setSearchFocused] = useState(false);
@@ -270,14 +270,15 @@ bg-center bg-no-repeat
       <CartSidebar
         isOpen={cartSidebarOpen}
         onClose={() => setCartSidebarOpen(false)}
+        countryCurrency={countryCurrency}
         onCheckout={() => {
-      
+
           setCartSidebarOpen(false);
           setOpenPayment(true);
         }}
       />
       {
-        openPayment && <PaymentModal isOpen={openPayment} onClose={() => setOpenPayment(false)} />
+        openPayment && <PaymentModal countryCurrency={countryCurrency} isOpen={openPayment} onClose={() => setOpenPayment(false)} />
       }
 
       {/* RIGHT SLIDING DRAWER (Menu) */}
@@ -470,7 +471,7 @@ bg-center bg-no-repeat
       {cartSidebarOpen && (
         <div
           className="fixed inset-0 bg-black/15  backdrop-blur-[1px] z-51 animate-fadeIn"
-          // onClick={() => setMenuOpen(false)}
+        // onClick={() => setMenuOpen(false)}
         />
       )}
 

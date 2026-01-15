@@ -7,7 +7,7 @@ import PaymentModal from '../pages/PaymentModal';
 import FullscreenModal from './FullscreenModal';
 import ProgressOfferBar from './ProgressOfferBar';
 
-export default function CartSidebar({ isOpen, onClose, onCheckout }) {
+export default function CartSidebar({ isOpen, onClose, countryCurrency, onCheckout }) {
   const { t } = useTranslation();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -45,7 +45,7 @@ export default function CartSidebar({ isOpen, onClose, onCheckout }) {
   const fetchCartData = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems?countryCode=${countryCurrency}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

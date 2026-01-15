@@ -629,7 +629,7 @@ export default function ProductDetails({countryCurrency}) {
         />
       )}
       {
-        openPayment && <PaymentModal isOpen={openPayment} onClose={() => setOpenPayment(false)} />
+        openPayment && <PaymentModal countryCurrency={countryCurrency} isOpen={openPayment} onClose={() => setOpenPayment(false)} />
       }
       {/* Animated background */}
       <div className="absolute inset-0 opacity-20">

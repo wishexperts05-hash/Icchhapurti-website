@@ -4,7 +4,7 @@ import Footer from "../components/Footer";
 import AIChatbot from "../components/AIChatbot";
 import AnnouncementMarquee from "../components/AnnouncementMarquee";
 
-export default function Layout() {
+export default function Layout({countryCurrency}) {
   return (
     <div className="min-h-screen flex flex-col relative">
       {/* Background Image with Overlay */}
@@ -46,7 +46,7 @@ export default function Layout() {
       {/* Content Wrapper */}
       <div className="relative z-10 min-h-screen flex flex-col">
         <AnnouncementMarquee/>
-        <Navbar />
+        <Navbar countryCurrency={countryCurrency} />
 
         {/* Page Content */}
         <main className="flex-1">

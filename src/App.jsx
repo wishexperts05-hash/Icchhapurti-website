@@ -113,7 +113,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<SplashScreen />} />
         {/* Routes with layout */}
-        <Route element={<Layout />}>
+        <Route element={<Layout countryCurrency={countryCurrency} />}>
 
           <Route path="/homePage" element={<HomePage countryCurrency={countryCurrency} />} />
           <Route path="/products" element={<ProductsPage countryCurrency={countryCurrency} />} />

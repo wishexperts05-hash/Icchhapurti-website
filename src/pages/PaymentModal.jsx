@@ -18,7 +18,7 @@ import ProgressOfferBar from '../components/ProgressOfferBar';
 import CartSidebar from '../components/CartSidebar';
 import { address } from 'framer-motion/client';
 
-export default function PaymentModal({ isOpen, onClose }) {
+export default function PaymentModal({ isOpen, onClose, countryCurrency }) {
     const { pathname } = useLocation();
     const { setCount } = useHeader();
     useEffect(() => {
@@ -141,7 +141,7 @@ export default function PaymentModal({ isOpen, onClose }) {
 
 
     useEffect(() => {
-        if (isAuthenticated && cartItems.length > 0) {
+        if (isAuthenticated && cartItems.length > 0 && addresses.length > 0) {
             fetchCheckOutDetails();
         }
 
@@ -200,7 +200,7 @@ export default function PaymentModal({ isOpen, onClose }) {
 
     const fetchCartData = async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems?countryCode=${countryCurrency || "INR"}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1179,21 +1179,31 @@ export default function PaymentModal({ isOpen, onClose }) {
                                                     </span>
                                                 </div>
 
-                                                <div className="flex justify-between text-gray-600 border-b border-dashed pb-1">
+                                                {/* <div className="flex justify-between text-gray-600 border-b border-dashed pb-1">
                                                     <span>GST (18%)</span>
                                                     <span className="text-black font-medium">
                                                         + {checkoutDetails?.gstAmount?.toLocaleString("en-IN") || 0}
                                                     </span>
-                                                </div>
+                                                </div> */}
 
-                                                <div className="flex justify-between items-center pt-2 font-bold">
-                                                    <span className="text-black">
-                                                        {t("payment.price_details.total_amount")}
-                                                    </span>
-                                                    <span className="text-amber-500 text-xl">
-                                                        {checkoutDetails?.grandTotal?.toLocaleString("en-IN") || 0}
-                                                    </span>
-                                                </div>
+                                                <div className="pt-2">
+    <div className="flex justify-between items-center font-bold">
+        <span className="text-black">
+            {t("payment.price_details.total_amount")}
+        </span>
+        <span className="text-amber-500 text-xl">
+            {checkoutDetails?.grandTotal?.toLocaleString("en-IN") || 0}
+        </span>
+    </div>
+
+    {/* GST info */}
+    <div className="flex justify-end">
+        <span className="text-xs text-gray-500">
+            (GST 18% inclusive of all taxes)
+        </span>
+    </div>
+</div>
+
                                             </div>
                                         </div>
 
