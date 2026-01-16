@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
-const ProductVideoSection = () => {
+const StoryVideoSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -10,63 +10,20 @@ const ProductVideoSection = () => {
   const videoRef = useRef(null);
   const sliderRef = useRef(null);
 
-  const productVideos = [
-    {
-      id: 1,
-      video: "/story1.mp4",
-      title: "Manifestation Pen Unboxing",
-      description: "Unlock intention-powered writing from the first touch",
-      type: "video"
-    },
-    {
-      id: 2,
-      video: "/story2.mp4",
-      title: "How the Manifestation Pen Works",
-      description: "Align your thoughts, goals, and daily intentions",
-      type: "video"
-    },
-    {
-      id: 3,
-      video: "/story3.mp4",
-      title: "Transform Your Mindset",
-      description: "Align your thoughts, goals, and daily intentions",
-      type: "video"
-    },
-    {
-      id: 4,
-      video: "/story1.mp4",
-      title: "Daily Affirmation Writing",
-      description: "Turn thoughts into written reality",
-      type: "video"
-    },
-    {
-      id: 5,
-      video: "/story1.mp4",
-      title: "Achieve Your Goals",
-      description: "Turn thoughts into written reality",
-      type: "video"
-    }
-  ];
-
-
-const [productsVideos, setProductVideos] = useState([]);
+  const [storyVideos, setStoryVideos] = useState([]);
 
   const fetchStorys = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/ourStories/`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/ourStories?type=unboxing`);
       const data = await response.json();
-
-      // Assuming the API returns an array of stories
-      setProductVideos(data.data);
+      setStoryVideos(data.data);
     } catch (error) {
       console.error('Error fetching stories:', error);
     }
-
-  }
-
-
+  };
 
   useEffect(() => {
+    fetchStorys();
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
@@ -74,14 +31,16 @@ const [productsVideos, setProductVideos] = useState([]);
   }, []);
 
   useEffect(() => {
+    if (storyVideos.length === 0) return;
+    
     const timer = setInterval(() => {
-      setCurrentSlide((p) => (p + 1) % productVideos.length);
+      setCurrentSlide((p) => (p + 1) % storyVideos.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, []);
+  }, [storyVideos.length]);
 
   useEffect(() => {
-    if (sliderRef.current) {
+    if (sliderRef.current && storyVideos.length > 0) {
       const cardWidth = isMobile ? 200 : 280;
       const gap = isMobile ? 16 : 24;
       sliderRef.current.scrollTo({
@@ -89,7 +48,7 @@ const [productsVideos, setProductVideos] = useState([]);
         behavior: 'smooth',
       });
     }
-  }, [currentSlide, isMobile]);
+  }, [currentSlide, isMobile, storyVideos.length]);
 
   const openVideo = (video) => {
     setSelectedVideo(video);
@@ -98,57 +57,55 @@ const [productsVideos, setProductVideos] = useState([]);
   };
 
   const closeModal = () => {
-    videoRef.current?.pause();
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
     setIsModalOpen(false);
     setTimeout(() => setSelectedVideo(null), 300);
   };
 
-  const handlePrevious = () => {
-    setCurrentSlide((p) => (p === 0 ? productVideos.length - 1 : p - 1));
+  const handlePrevious = (e) => {
+    e.stopPropagation();
+    setCurrentSlide((p) => (p === 0 ? storyVideos.length - 1 : p - 1));
   };
 
-  const handleNext = () => {
-    setCurrentSlide((p) => (p + 1) % productVideos.length);
+  const handleNext = (e) => {
+    e.stopPropagation();
+    setCurrentSlide((p) => (p + 1) % storyVideos.length);
   };
+
+  if (storyVideos.length === 0) {
+    return <div className="py-10 text-center">Loading stories...</div>;
+  }
 
   return (
     <>
-
-      <div className=" sm:py-5 bg-white  relative overflow-hidden">
-
-
-
-
-
-        <div className="relative max-w-7xl  mx-auto  px-4 sm:px-6">
-          {/* <div className="absolute -top-20">
-            <img
-              src="/shape.png"
-              alt=""
-              className="w-full block"
-            />
-          </div> */}
-
-          {/* Header */}
-        
-
+      <div className="sm:py-5 bg-white relative overflow-hidden">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           {/* Slider Container */}
           <div className="relative">
             {/* Navigation Buttons */}
             <button
               onClick={handlePrevious}
-              className="absolute left-0 sm:left-2 top-1/2 -translate-y-1/2 z-20 bg-black/70 hover:bg-black/90 p-2 sm:p-3 rounded-full transition-all shadow-lg hover:scale-110"
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-20 
+                         bg-white/40 hover:bg-white/60 
+                         p-1.5 rounded-full shadow-md hover:shadow-lg 
+                         transition-all"
               aria-label="Previous video"
             >
-              <ChevronLeft className="text-white w-4 h-4 sm:w-5 sm:h-5" />
+              <ChevronLeft className="w-4 h-4 text-gray-700" />
             </button>
 
             <button
               onClick={handleNext}
-              className="absolute right-0 sm:right-2 top-1/2 -translate-y-1/2 z-20 bg-black/70 hover:bg-black/90 p-2 sm:p-3 rounded-full transition-all shadow-lg hover:scale-110"
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-20 
+                         bg-white/40 hover:bg-white/60 
+                         p-1.5 rounded-full shadow-md hover:shadow-lg 
+                         transition-all"
               aria-label="Next video"
             >
-              <ChevronRight className="text-white w-4 h-4 sm:w-5 sm:h-5" />
+              <ChevronRight className="w-4 h-4 text-gray-700" />
             </button>
 
             {/* Slider */}
@@ -161,24 +118,25 @@ const [productsVideos, setProductVideos] = useState([]);
                 WebkitOverflowScrolling: 'touch'
               }}
             >
-              {productVideos.map((video, index) => (
+              {storyVideos.map((video, index) => (
                 <div
                   key={video.id}
                   onClick={() => openVideo(video)}
-                  className={`flex-shrink-0 w-[200px] sm:w-[240px] md:w-[280px] cursor-pointer snap-center group ${index === currentSlide
-                    ? 'opacity-100'
-                    : 'opacity-60'
-                    }`}
+                  className={`flex-shrink-0 w-[200px] sm:w-[240px] md:w-[280px] cursor-pointer snap-center group ${
+                    index === currentSlide ? 'opacity-100' : 'opacity-60'
+                  }`}
                 >
-                  <div className={`relative aspect-[9/16] rounded-xl sm:rounded-2xl overflow-hidden bg-black shadow-2xl
+                  <div
+                    className={`relative aspect-[9/16] rounded-xl sm:rounded-2xl overflow-hidden bg-black shadow-2xl
                               transition-all duration-300 ease-out
                               ${index === currentSlide ? 'scale-100 sm:scale-105' : 'scale-90 sm:scale-95'}
                               md:hover:scale-110 md:hover:-translate-y-3
                               md:hover:shadow-2xl md:hover:shadow-amber-500/50
                               md:hover:ring-2 md:hover:ring-amber-500/70
-                              md:hover:z-10`}>
+                              md:hover:z-10`}
+                  >
                     <video
-                      src={video.video}
+                      src={video.videoUrl}
                       className="w-full h-full object-cover"
                       autoPlay
                       loop
@@ -189,40 +147,49 @@ const [productsVideos, setProductVideos] = useState([]);
                     {/* Enhanced Hover Overlay */}
                     <div className="absolute inset-0 bg-black/0 md:group-hover:bg-black/40 
                                 flex items-center justify-center transition-all duration-300">
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 bg-amber-500 rounded-full 
+                      <div
+                        className="w-12 h-12 sm:w-14 sm:h-14 bg-amber-500 rounded-full 
                                   flex items-center justify-center shadow-lg
                                   scale-0 md:group-hover:scale-100
                                   opacity-0 md:group-hover:opacity-100
                                   transition-all duration-300
-                                  md:group-hover:animate-pulse">
+                                  md:group-hover:animate-pulse"
+                      >
                         <Play className="text-white ml-1 w-5 h-5 sm:w-6 sm:h-6" fill="white" />
                       </div>
                     </div>
 
                     {/* Shine effect on hover */}
-                    <div className="absolute inset-0 opacity-0 md:group-hover:opacity-100 
+                    <div
+                      className="absolute inset-0 opacity-0 md:group-hover:opacity-100 
                                 transition-opacity duration-500 pointer-events-none"
                       style={{
                         background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%)',
                         backgroundSize: '200% 200%',
                         animation: 'shine 1.5s infinite'
-                      }}>
-                    </div>
+                      }}
+                    ></div>
 
                     {/* Video Info */}
-                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 
+                    <div
+                      className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 
                                 bg-gradient-to-t from-black/95 via-black/70 to-transparent 
                                 pointer-events-none
                                 transition-all duration-300
-                                md:group-hover:from-black/100 md:group-hover:via-black/90">
-                      <h3 className="text-white font-semibold text-xs sm:text-sm mb-1
+                                md:group-hover:from-black/100 md:group-hover:via-black/90"
+                    >
+                      <h3
+                        className="text-white font-semibold text-xs sm:text-sm mb-1
                                  transition-all duration-300
-                                 md:group-hover:text-amber-400">
+                                 md:group-hover:text-amber-400"
+                      >
                         {video.title}
                       </h3>
-                      <p className="text-slate-300 text-[10px] sm:text-xs line-clamp-2
+                      <p
+                        className="text-slate-300 text-[10px] sm:text-xs line-clamp-2
                                 transition-all duration-300
-                                md:group-hover:text-white">
+                                md:group-hover:text-white"
+                      >
                         {video.description}
                       </p>
                     </div>
@@ -240,15 +207,16 @@ const [productsVideos, setProductVideos] = useState([]);
             </div>
 
             {/* Slide Indicators */}
-            <div className="flex justify-center gap-2 my-4 sm:mt-6">
-              {productVideos.map((_, index) => (
+            <div className="flex justify-center gap-1.5 my-4 sm:mt-6">
+              {storyVideos.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentSlide(index)}
-                  className={`h-1.5 sm:h-2 rounded-full transition-all ${index === currentSlide
-                    ? 'w-6 sm:w-8 bg-amber-500 shadow-lg shadow-amber-500/50'
-                    : 'w-1.5 sm:w-2 bg-slate-600 hover:bg-slate-500'
-                    }`}
+                  className={`h-1.5 rounded-full transition-all ${
+                    index === currentSlide
+                      ? 'w-6 bg-amber-500 shadow-md'
+                      : 'w-1.5 bg-slate-600 hover:bg-slate-500'
+                  }`}
                   aria-label={`Go to slide ${index + 1}`}
                 />
               ))}
@@ -257,73 +225,62 @@ const [productsVideos, setProductVideos] = useState([]);
         </div>
 
         {/* Reel Modal */}
-        {isModalOpen && selectedVideo && (
-          <div
-            className="fixed inset-0 bg-black/95 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={closeModal}
-          >
-            <div
-              className="relative w-full max-w-[360px] sm:max-w-[400px] md:max-w-[420px] aspect-[9/16] bg-black rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Close Button */}
-              <button
-                onClick={closeModal}
-                className="absolute top-3 right-3 z-50 bg-red-500 hover:bg-red-600 p-2 sm:p-2.5 rounded-full transition-all shadow-lg hover:scale-110"
-                aria-label="Close video"
-              >
-                <X className="text-white w-4 h-4 sm:w-5 sm:h-5" />
-              </button>
+       {isModalOpen && selectedVideo && (
+                <div
+                  className="fixed inset-0  z-50 flex items-center justify-center p-4"
+                  onClick={closeModal}
+                >
+                  <div
+                    className="relative w-full max-w-4xl  rounded-xl overflow-hidden shadow-2xl"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      onClick={closeModal}
+                      className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 p-2 rounded-full z-10 transition-all hover:scale-110"
+                      aria-label="Close video"
+                    >
+                      <X className="text-white" />
+                    </button>
+      
+                    <div className="aspect-video bg-black">
+                      <video
+                          ref={videoRef}
+                          src={selectedVideo.videoUrl}
+                          className="w-full h-full"
+                          controls
+                          autoPlay
+                        />
+                    </div>
+      
+                    <div className="p-4 bg-slate-900">
+                      <h3 className="text-white font-semibold text-lg">{selectedVideo.title}</h3>
+                      <p className="text-slate-400 text-sm">{selectedVideo.description}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
-              {/* Video Info in Modal */}
-              <div className="absolute top-3 left-3 z-40 bg-black/70 backdrop-blur-sm px-3 py-2 rounded-lg">
-                <h3 className="text-white font-semibold text-xs sm:text-sm">
-                  {selectedVideo.title}
-                </h3>
-              </div>
-
-              {/* Video Player */}
-              <video
-                ref={videoRef}
-                src={selectedVideo.video}
-                className="w-full h-full object-cover"
-                autoPlay
-                loop
-                playsInline
-                controls={isMobile}
-              />
-            </div>
-          </div>
-        )}
-        {/* <div className="absolute bottom-0 left-0 right-0 w-full z-10 pointer-events-none">
-        <img
-          src="/shape1.png"
-          alt=""
-          className="w-full h-auto block"
-        />
-      </div> */}
         <style jsx>{`
-        @keyframes shine {
-          0% { background-position: 200% 200%; }
-          100% { background-position: -200% -200%; }
-        }
-        
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
-      </div>
-      
-      
-       <div className="">
-        <img
-          src="/shape.png"
-          alt=""
-          className="w-full block"
-        />
-      </div></>
+          @keyframes shine {
+            0% {
+              background-position: 200% 200%;
+            }
+            100% {
+              background-position: -200% -200%;
+            }
+          }
 
+          .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
+      </div>
+
+      <div className="">
+        <img src="/shape.png" alt="" className="w-full block" />
+      </div>
+    </>
   );
 };
 
-export default ProductVideoSection;
+export default StoryVideoSection;

@@ -1,22 +1,40 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect } from "react";
 
 export default function Testimonials() {
-  const [reviews] = useState([
-    "./review1.png",
-    "./review2.png",
-    "./review3.png",
-    "./review4.png",
-    "./review5.png",
-    "./review6.png",
-    "./review7.png",
-    "./review8.png",
-    "./review9.png",
-    "./review10.png",
-  ]);
+  // const [reviews] = useState([
+  //   "./review1.png",
+  //   "./review2.png",
+  //   "./review3.png",
+  //   "./review4.png",
+  //   "./review5.png",
+  //   "./review6.png",
+  //   "./review7.png",
+  //   "./review8.png",
+  //   "./review9.png",
+  //   "./review10.png",
+  // ]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
+  const [reviews, setReviewsData] = useState([]); // State to hold fetched testimonials
+
+  const fetchTestimonials = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/testimonials`);
+      const data = await response.json(); 
+      if (data.success && data.data) {
+        // Process and set testimonials data here
+        setReviewsData(data.data);
+      } 
+    } catch (error) {
+      console.error("Error fetching testimonials:", error);
+    } }
+
+    useEffect(()=>{
+      fetchTestimonials()
+    },[])
   const handlePrevious = () => {
     if (isAnimating) return;
     setIsAnimating(true);
@@ -48,7 +66,7 @@ export default function Testimonials() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* 3D Carousel */}
         <div className="relative h-[300px] sm:h-[400px] flex items-center justify-center">
-          {reviews.map((image, index) => {
+          {reviews?.map((image, index) => {
             const position = getPosition(index);
             
             // Define transform and styles based on position
