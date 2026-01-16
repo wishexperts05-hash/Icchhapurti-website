@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { useNavigate } from "react-router-dom"
+import CarouselSkeleton from "./CarouselSkeleton";
 
 const ImageCarousel = ({
   autoPlay = true,
@@ -28,7 +29,7 @@ const ImageCarousel = ({
 
   /* ================= Default Images ================= */
   const defaultImages = ["/new-banner.jpg"];
-  const mobileBanners = ["./bannerMobile1.jpg", "./bannerMobile2.jpg", "./bannerMobile3.jpg"];
+  const mobileBanners = ["./bannerMobile1.jpg", "./bannerMobile3.jpg"];
 
   /* ================= Detect Mobile ================= */
   useEffect(() => {
@@ -118,7 +119,10 @@ const ImageCarousel = ({
     }
   }, [currentIndex, displayMedia]);
 
-  if (loading) return null;
+   if (loading) {
+    return <CarouselSkeleton isMobile={isMobile} />;
+  }
+
 
   return (
     <div
@@ -195,58 +199,56 @@ const ImageCarousel = ({
 
       {/* ================= Navigation Arrows ================= */}
       {showControls && displayMedia.length > 1 && (
-        <>
-          <button
-            onClick={() =>
-              setCurrentIndex(p =>
-                p === 0 ? displayMedia.length - 1 : p - 1
-              )
-            }
-            className="absolute left-2 xs:left-3 sm:left-4 bg-white/80 text-white md:left-3 lg:left-3 top-1/2 -translate-y-1/2 
-                     
-                       p-1.5 xs:p-2 sm:p-2.5 md:p-3 lg:p-4
-                       rounded-full shadow-lg hover:scale-110 transition-all z-20
-                       focus:outline-none focus:ring-2 focus:ring-white/50"
-            aria-label="Previous slide"
-          >
-            <ChevronLeft className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-8 lg:h-8" />
-          </button>
+       <>
+  <button
+    onClick={() =>
+      setCurrentIndex(p =>
+        p === 0 ? displayMedia.length - 1 : p - 1
+      )
+    }
+    className="absolute left-2 top-1/2 -translate-y-1/2 
+               bg-white/40 hover:bg-white/60 
+               p-1.5 rounded-full shadow-md hover:shadow-lg 
+               transition-all z-20"
+    aria-label="Previous slide"
+  >
+    <ChevronLeft className="w-6 h-6 text-gray-700" />
+  </button>
 
-          <button
-            onClick={() =>
-              setCurrentIndex(p =>
-                p === displayMedia.length - 1 ? 0 : p + 1
-              )
-            }
-            className="absolute right-2 xs:right-3 sm:right-4 md:right-3 lg:right-3 top-1/2 -translate-y-1/2 
-                       bg-white/80 hover:bg-white 
-                       p-1.5 xs:p-2 sm:p-2.5 md:p-3 lg:p-4
-                       rounded-full shadow-lg hover:scale-110 transition-all z-20
-                       focus:outline-none focus:ring-2 focus:ring-white/50"
-            aria-label="Next slide"
-          >
-            <ChevronRight className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-8 lg:h-8" />
-          </button>
-        </>
+  <button
+    onClick={() =>
+      setCurrentIndex(p =>
+        p === displayMedia.length - 1 ? 0 : p + 1
+      )
+    }
+    className="absolute right-2 top-1/2 -translate-y-1/2 
+               bg-white/40 hover:bg-white/60 
+               p-1.5 rounded-full shadow-md hover:shadow-lg 
+               transition-all z-20"
+    aria-label="Next slide"
+  >
+    <ChevronRight className="w-6 h-6 text-gray-700" />
+  </button>
+</>
       )}
 
       {/* ================= Dots Indicator ================= */}
       {displayMedia.length > 1 && (
-        <div className="absolute bottom-4 xs:bottom-6 sm:bottom-8 md:bottom-12 lg:bottom-16 
-                        left-1/2 -translate-x-1/2 flex gap-1.5 xs:gap-2 sm:gap-2.5 md:gap-3 z-20">
-          {displayMedia.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentIndex(i)}
-              className={`transition-all rounded-full focus:outline-none focus:ring-2 focus:ring-white/50 ${i === currentIndex
-                ? 'w-6 xs:w-8 sm:w-10 md:w-12 lg:w-14 h-1.5 xs:h-2 sm:h-2.5 md:h-3 bg-white shadow-lg'
-                : 'w-1.5 xs:w-2 sm:w-2.5 md:w-3 h-1.5 xs:h-2 sm:h-2.5 md:h-3 bg-white/50 hover:bg-white/75'
-                }`}
-              aria-label={`Go to slide ${i + 1}`}
-            />
-          ))}
-        </div>
-      )}
+  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
+    {displayMedia.map((_, i) => (
+      <button
+        key={i}
+        onClick={() => setCurrentIndex(i)}
+        className={`transition-all rounded-full ${
+          i === currentIndex
+            ? 'w-6 h-1.5 bg-white shadow-md'
+            : 'w-1.5 h-1.5 bg-white/50 hover:bg-white/70'
+        }`}
+        aria-label={`Go to slide ${i + 1}`}
+      />
+    ))}
+  </div>
+)}
     </div>
   );
 };

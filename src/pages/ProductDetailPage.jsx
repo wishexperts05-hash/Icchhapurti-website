@@ -72,7 +72,7 @@ export default function ProductDetails({countryCurrency}) {
     {
       question: "Is the pen spiritually charged or energized?",
       answer:
-        "This pen is specially charged and activated with multiple processes and rituals like  Mantra Jaap, Mantras Chanting, Moon Charging, and many more rituals."
+        "This pen is specially charged and activated with multiple processes and rituals like  Mantra Jaap, Herbs and Minerals Smudging Mantras , Chanting, Moon Charging, and many more rituals."
     },
     {
       question: "How long does it take to see results?",

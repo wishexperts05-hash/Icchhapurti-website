@@ -234,7 +234,7 @@ function ProductCard({ product, countryCurrency, onAddToCart, onWishlistUpdate, 
       setWishlistLoading(false);
     }
   };
-  console.log(product, "product")
+  // console.log(product, "product")
 
 
 
@@ -447,7 +447,7 @@ export default function OurProducts({countryCurrency}) {
   
 
     fetchProducts();
-  }, [page, debounceSearch]);
+  }, []);
 
 
   

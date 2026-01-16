@@ -48,6 +48,24 @@ const ProductVideoSection = () => {
     }
   ];
 
+
+const [productsVideos, setProductVideos] = useState([]);
+
+  const fetchStorys = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/ourStories/`);
+      const data = await response.json();
+
+      // Assuming the API returns an array of stories
+      setProductVideos(data.data);
+    } catch (error) {
+      console.error('Error fetching stories:', error);
+    }
+
+  }
+
+
+
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();

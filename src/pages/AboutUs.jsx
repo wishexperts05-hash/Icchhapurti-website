@@ -150,7 +150,7 @@ export default function AboutUs() {
                   The Power Pack Tool
                 </h3>
                 <p className="text-gray-700 leading-relaxed mb-4">
-                  We are the best in the market who create The Power Pack Tool for achieving your goals. Our products are heavily charged and activated with multiple processes and rituals like <span className="font-semibold text-[#a17b0a]"> Mantra Jaap, Mantra Chanting, Moon Charging</span> and many more rituals are performed on the pen to maximize your goal achievement to 10x power/faster through manifestation.
+                  We are the best in the market who create The Power Pack Tool for achieving your goals. Our products are heavily charged and activated with multiple processes and rituals like <span className="font-semibold text-[#a17b0a]"> Mantra Jaap, Herbs and Minerals smudging, Mantra Chanting, Moon Charging</span> and many more rituals are performed on the pen to maximize your goal achievement to 10x power/faster through manifestation.
                 </p>
                 <p className="text-gray-700 leading-relaxed font-medium">
                   That is why this pen is something magical for everyone only if you show trust and believe in it.

@@ -123,14 +123,11 @@ const HomePage = ({ countryCurrency }) => {
 
       <OurProducts countryCurrency={countryCurrency} />
 
-      {/* Story Banner and Video Section with SVG Wave Divider */}
 
       <StoryBanner />
 
       <div className="text-center py-3 my-5">
-        {/* <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-white mb-2 sm:mb-3">
-          See How World Is Manifesting With Icchhapurti
-        </h2> */}
+
 
 
         <h1
@@ -167,8 +164,8 @@ const HomePage = ({ countryCurrency }) => {
             <Star key={i} className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 fill-yellow-500" />
           ))}
         </div>
-        {/* <h2 className="text-3xl sm:text-6xl text-white font-black mb-2 sm:mb-4">What Our Customer Says</h2> */}
-           <h1
+      
+        <h1
           className="text-2xl my-2 md:text-5xl font-extrabold mb-6 animate-fade-in bg-clip-text text-transparent"
           style={{
             backgroundImage:
@@ -183,14 +180,7 @@ const HomePage = ({ countryCurrency }) => {
           Real stories from real customers
         </p>
       </div>
-      {/* 
-      <div className="">
-        <img
-          src="/shape1.png"
-          alt=""
-          className="w-full block"
-        />
-      </div> */}
+
 
       <Testimonials />
     </div>

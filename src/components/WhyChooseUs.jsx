@@ -79,7 +79,7 @@ const WhyChooseUs = () => {
         <span className="font-bold text-[#a17b0a]">Icchhapurti</span> products are heavily charged and activated
         with multiple processes and rituals like{" "}
         <span className="font-bold text-[#a17b0a]">
-          Mantras Jaaps, Mantras Chanting, Moon Charging
+          Mantras Jaaps, Herbs and Minerals Smudging ,Mantras Chanting, Moon Charging
         </span>{" "}
         and many more rituals are performed to maximize your goal achievement to
         10x power & faster through manifestation.

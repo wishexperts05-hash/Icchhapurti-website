@@ -223,7 +223,7 @@ export default function ShippingPolicy() {
             </div>
             <div className="flex gap-2 text-gray-700">
               <span className="text-[#D8891E] mt-1 font-bold">2.</span>
-              <span>If you accept delivery, take clear photos of the outer packaging and the product immediately and notify us at <a href="mailto:official@icchhapurti.com" className="text-[#D8891E] font-medium hover:underline">official@icchhapurti.com</a> within 24 hours of delivery.</span>
+              <span>If you accept delivery, take clear photos and videos of the outer packaging and the product immediately and notify us at <a href="mailto:official@icchhapurti.com" className="text-[#D8891E] font-medium hover:underline">official@icchhapurti.com</a> within 24 hours of delivery.</span>
             </div>
           </div>
 
@@ -239,7 +239,7 @@ export default function ShippingPolicy() {
           <div className="space-y-4">
             <div className="border-l-4 border-red-500 pl-4">
               <h3 className="font-semibold text-gray-900 mb-2">Damaged on Arrival</h3>
-              <p className="text-gray-700">Report within 24 hours of delivery and include photos of outer packaging and the product.</p>
+              <p className="text-gray-700">Report within 24 hours of delivery and include photos and videos of outer packaging and the product.</p>
             </div>
 
             <div className="border-l-4 border-orange-500 pl-4">
