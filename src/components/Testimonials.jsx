@@ -3,18 +3,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect } from "react";
 
 export default function Testimonials() {
-  // const [reviews] = useState([
-  //   "./review1.png",
-  //   "./review2.png",
-  //   "./review3.png",
-  //   "./review4.png",
-  //   "./review5.png",
-  //   "./review6.png",
-  //   "./review7.png",
-  //   "./review8.png",
-  //   "./review9.png",
-  //   "./review10.png",
-  // ]);
+ const [selectedImage, setSelectedImage] = useState(null);
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -113,19 +103,21 @@ export default function Testimonials() {
             }
             
             return (
-              <div
-                key={index}
-                className={`absolute transition-all duration-600 ease-out ${
-                  isAnimating ? 'transition-all' : ''
-                }`}
-                style={{
-                  transform,
-                  zIndex,
-                  opacity,
-                  filter,
-                  pointerEvents: position === 0 ? 'auto' : 'none',
-                }}
-              >
+             <div
+  key={index}
+  onClick={() => position === 0 && setSelectedImage(image)}
+  className={`absolute transition-all duration-600 ease-out ${
+    isAnimating ? 'transition-all' : ''
+  } ${position === 0 ? 'cursor-pointer' : ''}`}
+  style={{
+    transform,
+    zIndex,
+    opacity,
+    filter,
+    pointerEvents: position === 0 ? 'auto' : 'none',
+  }}
+>
+
                 <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl w-[280px] sm:w-[350px] md:w-[400px]">
                   <img
                     src={image}
@@ -158,7 +150,7 @@ export default function Testimonials() {
         </div>
 
         {/* Dots Indicator */}
-        <div className="flex justify-center gap-2 mt-8">
+        <div className="flex justify-center gap-2 my-4">
           {reviews.map((_, i) => (
             <button
               key={i}
@@ -179,6 +171,23 @@ export default function Testimonials() {
           ))}
         </div>
       </div>
+{selectedImage && (
+  <div
+    className="fixed inset-0 z-[999] flex items-center justify-center bg-black/40 backdrop-blur-sm"
+    onClick={() => setSelectedImage(null)}
+  >
+    <div
+      className="bg-white rounded-2xl p-4 max-w-3xl w-full mx-4 shadow-2xl animate-scale-in"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <img
+        src={selectedImage}
+        alt="Testimonial"
+        className="w-full h-auto rounded-xl object-contain"
+      />
+    </div>
+  </div>
+)}
 
       <style jsx>{`
         .transition-all {
