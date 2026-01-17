@@ -15,8 +15,8 @@ import EditProfile from "./pages/EditProfilePage";
 import ViewProfile from "./pages/ViewProfile";
 import ShippingAddressPage from "./pages/ShippingAddressPage";
 import AddressForm from "./pages/AddressForm";
-import CartPage from "./pages/CartPage";
-import PaymentPage from "./pages/PaymentPage";
+
+// import PaymentPage from "./pages/PaymentPage";
 import OrdersPage from "./pages/OrdersPage";
 import OrderDetailsPage from "./pages/OrderDetailsPage";
 import OrderReturnPage from "./pages/OrderReturnPage";
@@ -28,7 +28,7 @@ import LanguagePage from "./pages/LanguagePage";
 import TermsPage from "./pages/TermsPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import CosmicChatSupport from "./pages/CosmicChatSupport";
-import AboutUsPage from "./pages/AboutUsPage";
+
 import BlogsPage from "./pages/BlogsPage";
 import BlogDetailPage from "./pages/BlogDetailPage";
 import FAQPage from "./pages/FAQPage";
@@ -128,9 +128,9 @@ function App() {
           <Route path="/addresses" element={<ShippingAddressPage />} />
           <Route path="/address-form" element={<AddressForm />} />
           <Route path="/address-form/:id" element={<AddressForm />} />
-          <Route path="/cart" element={<CartPage />} />
+          {/* <Route path="/cart" element={<CartPage />} /> */}
           <Route path="/wishlist" element={<WishlistPage />} />
-          <Route path="/payments" element={<PaymentPage />} />
+          {/* <Route path="/payments" element={<PaymentPage />} /> */}
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/orders/:orderId" element={<OrderDetailsPage />} />
           <Route path="/orders/return/:id" element={<OrderReturnPage />} />

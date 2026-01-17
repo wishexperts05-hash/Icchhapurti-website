@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Heart, Trash2, ShoppingCart } from "lucide-react";
+import { useHeader } from "../context/HeaderContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -13,7 +14,7 @@ export default function WishlistPage() {
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-
+  const {  setList } = useHeader();
   useEffect(() => {
     // if (!token) {
     //   navigate("/login");
@@ -84,6 +85,8 @@ export default function WishlistPage() {
             (item._id || item.id) !== productId
         )
       );
+
+      setList((prev) => (prev - 1));
     } catch (err) {
       console.error("Error removing wishlist item:", err);
       alert(err.message || "Failed to remove item. Please try again.");

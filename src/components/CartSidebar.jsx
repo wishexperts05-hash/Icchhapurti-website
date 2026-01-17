@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { X, Loader2, ShoppingCart, AlertCircle, Plus, Minus, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+
 import { useHeader } from '../context/HeaderContext';
-import PaymentModal from '../pages/PaymentModal';
-import FullscreenModal from './FullscreenModal';
+// import PaymentModal from '../pages/PaymentModal';
+// import FullscreenModal from './FullscreenModal';
 import ProgressOfferBar from './ProgressOfferBar';
 
 export default function CartSidebar({ isOpen, onClose, countryCurrency, onCheckout }) {
-  const { t } = useTranslation();
+
+
+  // console.log("CartSidebar countryCurrency:", countryCurrency);
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

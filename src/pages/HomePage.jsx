@@ -1,135 +1,148 @@
-import React from 'react'
-import HeroSection from '../components/HeroSection'
+import React, { useEffect, useCallback } from 'react'
 import OurProducts from '../components/OurProducts'
-import DownloadAppSection from '../components/DownloadAppSection'
-import ManifestationPenHero from '../components/ManifestationPenHero'
-import ManifestationBenefits from '../components/ManifestationBenefits'
-import HowToUseManifestationPen from '../components/HowToUseManifestationPen'
-import ManifestationFeatures from '../components/ManifestationFeatures'
-import CustomerReviews from '../components/CustomerReviews'
-import ManifestationStory from '../components/ManifestationStory'
 import ImageCarousel from '../components/ImageCarousel'
-import { useEffect } from 'react'
 import { useHeader } from '../context/HeaderContext'
 import WhyChooseUs from '../components/WhyChooseUs'
 import StoryBanner from '../components/StoryBanner'
 import ProductVideoSection from '../components/ProductVideoSection'
-import FAQPage from './FAQPage'
 import Testimonials from '../components/Testimonials'
-import WaveDivider from '../components/WaveDivider'
 import { Star } from 'lucide-react'
 
 const HomePage = ({ countryCurrency }) => {
-
-  const { setCount, cartCount, setList, setUnreadCount, wishlistCount } = useHeader();
-
+  const { setCount, setList, setUnreadCount } = useHeader();
   const token = localStorage.getItem("token");
+  const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes for dynamic data
 
-  useEffect(() => {
-    if (token) {
-      fetchCartData();
-      fetchNotifications()
-    } else {
-      setCount(localStorage.getItem("cart"))
-    }
+  /* ================= Fetch Cart with Cache ================= */
+  const fetchCartData = useCallback(async () => {
+    // Check cache
+    // const cachedCart = localStorage.getItem('cart_data');
+    // const cacheTime = localStorage.getItem('cart_data_time');
 
-  }, []);
+    // if (cachedCart && cacheTime && Date.now() - cacheTime < CACHE_DURATION) {
+    //   setCount(Number(cachedCart));
+    //   return;
+    // }
 
-  const fetchCartData = async () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         }
       });
 
       if (!response.ok) throw new Error('Failed to fetch cart data');
 
       const data = await response.json();
-      if (data.cart) {
-        localStorage.setItem("cart", 0)
-      }
-      localStorage.setItem("cart", data?.data?.length || 0)
-      setCount(data?.data?.length)
+      const cartLength = data?.data?.length || 0;
+      
+      localStorage.setItem("cart", cartLength);
+      localStorage.setItem("cart_data", cartLength);
+      localStorage.setItem("cart_data_time", Date.now().toString());
+      
+      setCount(cartLength);
     } catch (err) {
       console.error('Error fetching cart:', err);
-    } finally {
     }
-  };
+  }, [token, setCount]);
 
-  console.log(cartCount, "cartCount")
+  /* ================= Fetch Notifications with Cache ================= */
+  const fetchNotifications = useCallback(async () => {
+    // Check cache
+    // const cachedUnread = localStorage.getItem('unread_count');
+    // const cacheTime = localStorage.getItem('notifications_cache_time');
 
-  const fetchNotifications = async () => {
+    // if (cachedUnread && cacheTime && Date.now() - cacheTime < CACHE_DURATION) {
+    //   setUnreadCount(Number(cachedUnread));
+    //   return;
+    // }
+
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/user/notifications/get`,
         {
           headers: {
-            'Authorization': localStorage.getItem('token'),
+            'Authorization': token,
             'Content-Type': 'application/json'
           }
         }
       );
 
-      if (!res.ok) {
-        throw new Error('Failed to fetch notifications');
-      }
+      if (!res.ok) throw new Error('Failed to fetch notifications');
 
       const data = await res.json();
       const allNotifications = data.data || [];
       const unreadCount = allNotifications.filter(n => !n.isRead).length;
-      localStorage.setItem("unreadCount", unreadCount)
-      setUnreadCount(unreadCount)
-
+      
+      localStorage.setItem("unreadCount", unreadCount);
+      localStorage.setItem("unread_count", unreadCount);
+      localStorage.setItem("notifications_cache_time", Date.now().toString());
+      
+      setUnreadCount(unreadCount);
     } catch (err) {
       console.error("Error fetching notifications:", err);
-    } finally {
     }
-  };
+  }, [token, setUnreadCount]);
 
+  /* ================= Fetch Wishlist with Cache ================= */
+  const fetchWishlist = useCallback(async () => {
+    // Check cache
+    // const cachedWishlist = localStorage.getItem('wishlist_count');
+    // const cacheTime = localStorage.getItem('wishlist_cache_time');
+
+    // if (cachedWishlist && cacheTime && Date.now() - cacheTime < CACHE_DURATION) {
+    //   setList(Number(cachedWishlist));
+    //   return;
+    // }
+
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/wishlist/getWishlist`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message || "Failed to fetch wishlist");
+
+      const wishlistLength = data.data.length;
+      
+      localStorage.setItem("wishlist_count", wishlistLength);
+      localStorage.setItem("wishlist_cache_time", Date.now().toString());
+      
+      setList(wishlistLength);
+    } catch (err) {
+      console.error("Error fetching wishlist:", err);
+    }
+  }, [token, setList]);
+
+  /* ================= Initial Load ================= */
   useEffect(() => {
-    const fetchWishlist = async () => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/wishlist/getWishlist`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.message || "Failed to fetch wishlist");
-        }
-
-        setList(data.data.length)
-      } catch (err) {
-        console.error("Error fetching wishlist:", err);
-      } finally {
-      }
-    };
-
-    fetchWishlist();
-  }, [token]);
+    if (token) {
+      // Parallel fetch - all three at once!
+      Promise.all([
+        fetchCartData(),
+        fetchNotifications(),
+        fetchWishlist()
+      ]);
+    } else {
+      setCount(localStorage.getItem("cart") || 0);
+    }
+  }, [token, fetchCartData, fetchNotifications, fetchWishlist, setCount]);
 
   return (
     <div className='mx-auto'>
       <ImageCarousel />
       <WhyChooseUs />
-
       <OurProducts countryCurrency={countryCurrency} />
-
-
       <StoryBanner />
 
       <div className="text-center py-3 my-5">
-
-
-
         <h1
           className="text-2xl md:text-5xl font-extrabold mb-6 animate-fade-in bg-clip-text text-transparent"
           style={{
@@ -148,23 +161,18 @@ const HomePage = ({ countryCurrency }) => {
       </div>
 
       <div className="">
-        <img
-          src="/shape1.png"
-          alt=""
-          className="w-full block"
-        />
+        <img src="/shape1.png" alt="" className="w-full block" loading="lazy" />
       </div>
 
       <ProductVideoSection />
 
-
-      <div className="text-center mt-2 ">
-        <div className="flex justify-center gap-1.5 ">
+      <div className="text-center mt-2">
+        <div className="flex justify-center gap-1.5">
           {[...Array(5)].map((_, i) => (
             <Star key={i} className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 fill-yellow-500" />
           ))}
         </div>
-      
+
         <h1
           className="text-2xl my-2 md:text-5xl font-extrabold mb-6 animate-fade-in bg-clip-text text-transparent"
           style={{
@@ -180,7 +188,6 @@ const HomePage = ({ countryCurrency }) => {
           Real stories from real customers
         </p>
       </div>
-
 
       <Testimonials />
     </div>

@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect } from "react";
 
 export default function Testimonials() {
- const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -13,18 +13,20 @@ export default function Testimonials() {
   const fetchTestimonials = async () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/testimonials`);
-      const data = await response.json(); 
+      const data = await response.json();
       if (data.success && data.data) {
         // Process and set testimonials data here
         setReviewsData(data.data);
-      } 
+      }
     } catch (error) {
       console.error("Error fetching testimonials:", error);
-    } }
+    }
+  }
 
-    useEffect(()=>{
-      fetchTestimonials()
-    },[])
+  useEffect(() => {
+    fetchTestimonials()
+  }, [])
+  
   const handlePrevious = () => {
     if (isAnimating) return;
     setIsAnimating(true);
@@ -42,12 +44,12 @@ export default function Testimonials() {
   const getPosition = (index) => {
     const diff = index - currentIndex;
     const total = reviews.length;
-    
+
     // Normalize the difference to be between -total/2 and total/2
     let normalizedDiff = diff;
     if (diff > total / 2) normalizedDiff = diff - total;
     if (diff < -total / 2) normalizedDiff = diff + total;
-    
+
     return normalizedDiff;
   };
 
@@ -58,10 +60,10 @@ export default function Testimonials() {
         <div className="relative h-[300px] sm:h-[400px] flex items-center justify-center">
           {reviews?.map((image, index) => {
             const position = getPosition(index);
-            
+
             // Define transform and styles based on position
             let transform, zIndex, opacity, filter;
-            
+
             if (position === 0) {
               // Center (highlighted)
               transform = 'translateX(0) scale(1) rotateY(0deg)';
@@ -94,35 +96,34 @@ export default function Testimonials() {
               filter = 'brightness(0.7)';
             } else {
               // Hidden cards
-              transform = position > 0 
+              transform = position > 0
                 ? 'translateX(180%) scale(0.5) rotateY(-40deg)'
                 : 'translateX(-180%) scale(0.5) rotateY(40deg)';
               zIndex = 10;
               opacity = 0;
               filter = 'brightness(0.6)';
             }
-            
-            return (
-             <div
-  key={index}
-  onClick={() => position === 0 && setSelectedImage(image)}
-  className={`absolute transition-all duration-600 ease-out ${
-    isAnimating ? 'transition-all' : ''
-  } ${position === 0 ? 'cursor-pointer' : ''}`}
-  style={{
-    transform,
-    zIndex,
-    opacity,
-    filter,
-    pointerEvents: position === 0 ? 'auto' : 'none',
-  }}
->
 
-                <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl w-[280px] sm:w-[350px] md:w-[400px]">
+            return (
+              <div
+                key={index}
+                onClick={() => position === 0 && setSelectedImage(image)}
+                className={`absolute transition-all duration-600 ease-out ${isAnimating ? 'transition-all' : ''
+                  } ${position === 0 ? 'cursor-pointer' : ''}`}
+                style={{
+                  transform,
+                  zIndex,
+                  opacity,
+                  filter,
+                  pointerEvents: position === 0 ? 'auto' : 'none',
+                }}
+              >
+
+                <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl w-[280px] sm:w-[350px] md:w-[450px]  overflow-hidden">
                   <img
                     src={image}
                     alt={`Review ${index + 1}`}
-                    className="w-full h-auto rounded-xl object-contain"
+                      className="w-full h-auto object-cover"
                   />
                 </div>
               </div>
@@ -161,33 +162,34 @@ export default function Testimonials() {
                   setTimeout(() => setIsAnimating(false), 600);
                 }
               }}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                currentIndex === i
-                  ? 'w-8 bg-purple-600'
-                  : 'w-2 bg-gray-300 hover:bg-gray-400'
-              }`}
+              className={`h-2 rounded-full transition-all duration-300 ${currentIndex === i
+                ? 'w-8 bg-purple-600'
+                : 'w-2 bg-gray-300 hover:bg-gray-400'
+                }`}
               aria-label={`Go to review ${i + 1}`}
             />
           ))}
         </div>
       </div>
-{selectedImage && (
-  <div
-    className="fixed inset-0 z-[999] flex items-center justify-center bg-black/40 backdrop-blur-sm"
-    onClick={() => setSelectedImage(null)}
-  >
-    <div
-      className="bg-white rounded-2xl p-4 max-w-3xl w-full mx-4 shadow-2xl animate-scale-in"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <img
-        src={selectedImage}
-        alt="Testimonial"
-        className="w-full h-auto rounded-xl object-contain"
-      />
-    </div>
-  </div>
-)}
+      
+      {/* Modal with zero padding */}
+      {selectedImage && (
+        <div
+          className="fixed inset-0 z-[999] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div
+            className="relative max-w-xl w-full shadow-2xl animate-scale-in overflow-hidden rounded-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={selectedImage}
+              alt="Testimonial"
+              className="w-full h-auto object-cover"
+            />
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         .transition-all {
@@ -196,6 +198,19 @@ export default function Testimonials() {
         }
         .duration-600 {
           transition-duration: 600ms;
+        }
+        @keyframes scale-in {
+          from {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        .animate-scale-in {
+          animation: scale-in 0.3s ease-out;
         }
       `}</style>
     </section>

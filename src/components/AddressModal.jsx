@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { Country, State, City } from 'country-state-city';
-import { useTranslation } from 'react-i18next';
+
 import { Search, ChevronDown, X, MapPin, Edit2, Trash2, Plus } from 'lucide-react';
 import { createPortal } from 'react-dom';
 
 const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) => {
-  const { t } = useTranslation();
+
   const [addresses, setAddresses] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({

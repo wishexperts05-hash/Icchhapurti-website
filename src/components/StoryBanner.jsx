@@ -2,60 +2,60 @@ import React, { useState, useEffect, useRef } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
 const StoryBanner = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
 
   const videoRef = useRef(null);
   const sliderRef = useRef(null);
+  const hasFetchedRef = useRef(false);
 
   const [storyVideos, setStoryVideos] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchStorys = async () => {
+    if (hasFetchedRef.current) return;
+    
     try {
+      if (storyVideos.length > 0) {
+        setIsLoading(false);
+        return;
+      }
+
+      const sessionData = sessionStorage.getItem('storyVideos');
+      if (sessionData) {
+        setStoryVideos(JSON.parse(sessionData));
+        setIsLoading(false);
+        hasFetchedRef.current = true;
+        return;
+      }
+
+      hasFetchedRef.current = true;
+      
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/ourStories?type=story`);
       const data = await response.json();
       setStoryVideos(data.data);
+      
+      sessionStorage.setItem('storyVideos', JSON.stringify(data.data));
+      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching stories:', error);
+      setIsLoading(false);
+      hasFetchedRef.current = false;
     }
   };
 
-  /* ------------------ MOBILE CHECK ------------------ */
   useEffect(() => {
-    fetchStorys();
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  /* ------------------ AUTO SLIDE ------------------ */
   useEffect(() => {
-    if (storyVideos.length === 0) return;
-    
-    const timer = setInterval(
-      () => setCurrentSlide((p) => (p + 1) % storyVideos.length),
-      4000
-    );
-    return () => clearInterval(timer);
-  }, [storyVideos.length]);
+    fetchStorys();
+  }, []);
 
-  /* ------------------ AUTO SCROLL ------------------ */
-  useEffect(() => {
-    if (!sliderRef.current || storyVideos.length === 0) return;
-    
-    const cardWidth = isMobile ? 140 : 180;
-    const gap = 24;
-
-    sliderRef.current.scrollTo({
-      left: currentSlide * (cardWidth + gap),
-      behavior: "smooth"
-    });
-  }, [currentSlide, isMobile, storyVideos.length]);
-
-  /* ------------------ HANDLERS ------------------ */
   const handleVideoClick = (story) => {
     if (story.type === "instagram" && isMobile) {
       window.open(story.videoUrl.replace("/embed", ""), "_blank");
@@ -75,21 +75,28 @@ const StoryBanner = () => {
     setTimeout(() => setSelectedVideo(null), 300);
   };
 
-  const handlePrevious = (e) => {
-    e.stopPropagation();
-    setCurrentSlide((p) => (p - 1 + storyVideos.length) % storyVideos.length);
+  const handleScroll = (direction) => {
+    if (!sliderRef.current) return;
+    const scrollAmount = isMobile ? 156 : 284; // card width + gap
+    sliderRef.current.scrollBy({
+      left: direction === 'next' ? scrollAmount : -scrollAmount,
+      behavior: 'smooth'
+    });
   };
 
-  const handleNext = (e) => {
-    e.stopPropagation();
-    setCurrentSlide((p) => (p + 1) % storyVideos.length);
-  };
-
-  if (storyVideos.length === 0) {
-    return <div className="py-10 text-center">Loading stories...</div>;
+  if (isLoading) {
+    return (
+      <div className="py-20 text-center">
+        <div className="inline-block w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-gray-600">Loading stories...</p>
+      </div>
+    );
   }
 
-  /* ------------------ RENDER ------------------ */
+  if (storyVideos.length === 0) {
+    return null;
+  }
+
   return (
     <>
       <div className="pt-5 px-4 mt-20 relative bg-white overflow-hidden">
@@ -109,33 +116,37 @@ const StoryBanner = () => {
             Watch our latest updates and highlights
           </p>
 
-          {/* Slider */}
-          <div className="relative">
+          {/* Slider Container */}
+          <div className="relative px-12">
+            {/* Previous Button - Outside */}
             <button
-              onClick={handlePrevious}
-              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 
-                         bg-white/40 hover:bg-white/60 
-                         p-1.5 rounded-full shadow-md hover:shadow-lg 
-                         transition-all"
-              aria-label="Previous video"
+              onClick={() => handleScroll('prev')}
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-20 
+                         bg-white hover:bg-gray-100 
+                         p-2 rounded-full shadow-lg hover:shadow-xl 
+                         transition-all border border-gray-200"
+              aria-label="Previous videos"
             >
-              <ChevronLeft className="w-4 h-4 text-gray-700" />
+              <ChevronLeft className="w-5 h-5 text-gray-700" />
             </button>
 
+            {/* Next Button - Outside */}
             <button
-              onClick={handleNext}
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 
-                         bg-white/40 hover:bg-white/60 
-                         p-1.5 rounded-full shadow-md hover:shadow-lg 
-                         transition-all"
-              aria-label="Next video"
+              onClick={() => handleScroll('next')}
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-20 
+                         bg-white hover:bg-gray-100 
+                         p-2 rounded-full shadow-lg hover:shadow-xl 
+                         transition-all border border-gray-200"
+              aria-label="Next videos"
             >
-              <ChevronRight className="w-4 h-4 text-gray-700" />
+              <ChevronRight className="w-5 h-5 text-gray-700" />
             </button>
 
+            {/* Scrollable Content */}
             <div
               ref={sliderRef}
-              className="flex gap-6 overflow-x-auto hide-scrollbar-desktop px-4 py-4"
+              className="flex gap-6 overflow-x-auto hide-scrollbar py-4"
+              style={{ scrollBehavior: 'smooth' }}
             >
               {storyVideos.map((story, index) => (
                 <div
@@ -146,35 +157,35 @@ const StoryBanner = () => {
                   <div
                     className="relative aspect-[9/16] rounded-xl overflow-hidden bg-black 
                               transition-all duration-300 ease-out
-                              md:hover:scale-110 md:hover:-translate-y-2
-                              md:hover:shadow-2xl md:hover:shadow-purple-500/50
-                              md:hover:ring-2 md:hover:ring-purple-500/70
-                              md:hover:z-10"
+                              md:hover:scale-105 md:hover:shadow-2xl md:hover:shadow-purple-500/50
+                              md:hover:ring-2 md:hover:ring-purple-500/70"
                   >
                     {story.type === "instagram" ? (
-                      <iframe
-                        src={story.videoUrl}
-                        className="w-full h-full pointer-events-none"
-                        allow="autoplay; encrypted-media"
-                      />
+                      <div className="w-full h-full bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 flex items-center justify-center">
+                        <div className="text-white text-center">
+                          <svg className="w-12 h-12 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                          </svg>
+                          <p className="text-xs">Instagram Story</p>
+                        </div>
+                      </div>
                     ) : (
                       <video
                         src={story.videoUrl}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover pointer-events-none"
                         muted
-                        loop
                         playsInline
-                        autoPlay
+                        preload="metadata"
                       />
                     )}
 
-                    {/* Hover overlay with play icon */}
+                    {/* Play Icon Overlay */}
                     <div className="absolute inset-0 bg-black/0 md:group-hover:bg-black/30 
                                 transition-all duration-300 flex items-center justify-center">
                       <div
-                        className="w-12 h-12 rounded-full bg-white/0 md:group-hover:bg-white/90 
-                                  flex items-center justify-center transform scale-0 md:group-hover:scale-100 
-                                  transition-all duration-300"
+                        className="w-12 h-12 rounded-full bg-white/90 md:group-hover:bg-white 
+                                  flex items-center justify-center transform md:group-hover:scale-110 
+                                  transition-all duration-300 shadow-lg"
                       >
                         <svg className="w-6 h-6 text-purple-600 ml-1" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M8 5v14l11-7z" />
@@ -182,7 +193,7 @@ const StoryBanner = () => {
                       </div>
                     </div>
 
-                    {/* Shine effect on hover */}
+                    {/* Shine effect */}
                     <div
                       className="absolute inset-0 opacity-0 md:group-hover:opacity-100 
                                 transition-opacity duration-500 pointer-events-none"
@@ -195,30 +206,11 @@ const StoryBanner = () => {
                     ></div>
                   </div>
 
-                  {/* Title appears on hover */}
-                  <p
-                    className="text-white text-xs mt-2 text-center opacity-0 md:group-hover:opacity-100 
-                            transition-opacity duration-300 font-medium truncate px-1"
-                  >
+                  {/* Title */}
+                  <p className="text-gray-800 text-xs mt-2 text-center font-medium truncate px-1">
                     {story.title}
                   </p>
                 </div>
-              ))}
-            </div>
-
-            {/* Slide Indicators */}
-            <div className="flex justify-center gap-1.5 mt-4">
-              {storyVideos.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  className={`h-1.5 rounded-full transition-all ${
-                    index === currentSlide
-                      ? 'w-6 bg-purple-500 shadow-md'
-                      : 'w-1.5 bg-slate-600 hover:bg-slate-500'
-                  }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
               ))}
             </div>
           </div>
@@ -270,11 +262,11 @@ const StoryBanner = () => {
             }
           }
 
-          .hide-scrollbar-desktop::-webkit-scrollbar {
+          .hide-scrollbar::-webkit-scrollbar {
             display: none;
           }
 
-          .hide-scrollbar-desktop {
+          .hide-scrollbar {
             -ms-overflow-style: none;
             scrollbar-width: none;
           }
@@ -282,7 +274,7 @@ const StoryBanner = () => {
       </div>
 
       <div className="">
-        <img src="/shape.png" alt="" className="w-full block" />
+        <img src="/shape.png" alt="" className="w-full block" loading="lazy" />
       </div>
     </>
   );

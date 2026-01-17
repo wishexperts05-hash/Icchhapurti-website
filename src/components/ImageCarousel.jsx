@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CarouselSkeleton from "./CarouselSkeleton";
@@ -20,12 +20,7 @@ const ImageCarousel = ({
   const videoRef = useRef(null);
   const navigate = useNavigate();
 
-  const [countdown, setCountdown] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
+  const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
   /* ================= Default Images ================= */
   const defaultDesktopImages = ["/new-banner.jpg"];
@@ -42,31 +37,64 @@ const ImageCarousel = ({
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  /* ================= Fetch Banners ================= */
+  /* ================= Fetch Banners with Cache ================= */
   useEffect(() => {
     const fetchBanners = async () => {
+      // Check cache first
+      const cachedDesktop = localStorage.getItem('banners_desktop');
+      const cachedMobile = localStorage.getItem('banners_mobile');
+      const cacheTime = localStorage.getItem('banners_cache_time');
+
+      if (cachedDesktop && cachedMobile && cacheTime && 
+          Date.now() - cacheTime < CACHE_DURATION) {
+        const desktopData = JSON.parse(cachedDesktop);
+        const mobileData = JSON.parse(cachedMobile);
+        
+        setDesktopImages(desktopData.images || []);
+        setDesktopVideos(desktopData.videos || []);
+        setMobileImages(mobileData.images || []);
+        setMobileVideos(mobileData.videos || []);
+        setLoading(false);
+        return;
+      }
+
       try {
-        // Fetch Desktop Banners
-        const desktopRes = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/user/banners/getBanner/Desktop Home`
-        );
-        const desktopData = await desktopRes.json();
+        // Parallel fetch - both banners at once
+        const [desktopRes, mobileRes] = await Promise.all([
+          fetch(`${import.meta.env.VITE_API_URL}/api/user/banners/getBanner/Desktop Home`),
+          fetch(`${import.meta.env.VITE_API_URL}/api/user/banners/getBanner/Mobile Home`)
+        ]);
+
+        const [desktopData, mobileData] = await Promise.all([
+          desktopRes.json(),
+          mobileRes.json()
+        ]);
 
         if (desktopData?.success && desktopData.data) {
           setDesktopImages(desktopData.data.images || []);
           setDesktopVideos(desktopData.data.videos || []);
+          
+          // Cache desktop banners
+          localStorage.setItem('banners_desktop', JSON.stringify({
+            images: desktopData.data.images || [],
+            videos: desktopData.data.videos || []
+          }));
         }
-
-        // Fetch Mobile Banners
-        const mobileRes = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/user/banners/getBanner/Mobile Home`
-        );
-        const mobileData = await mobileRes.json();
 
         if (mobileData?.success && mobileData.data) {
           setMobileImages(mobileData.data.images || []);
           setMobileVideos(mobileData.data.videos || []);
+          
+          // Cache mobile banners
+          localStorage.setItem('banners_mobile', JSON.stringify({
+            images: mobileData.data.images || [],
+            videos: mobileData.data.videos || []
+          }));
         }
+
+        // Set cache timestamp
+        localStorage.setItem('banners_cache_time', Date.now().toString());
+
       } catch (err) {
         console.error("Failed to fetch banners", err);
       } finally {
@@ -78,43 +106,22 @@ const ImageCarousel = ({
   }, []);
 
   /* ================= Combine Media ================= */
-  // Desktop media
-  const desktopMedia = [
+  const desktopMedia = useMemo(() => [
     ...desktopImages.map(img => ({ type: 'image', src: img })),
     ...desktopVideos.map(vid => ({ type: 'video', src: vid }))
-  ];
+  ], [desktopImages, desktopVideos]);
 
-  // Mobile media
-  const mobileMedia = [
+  const mobileMedia = useMemo(() => [
     ...mobileImages.map(img => ({ type: 'image', src: img })),
     ...mobileVideos.map(vid => ({ type: 'video', src: vid }))
-  ];
+  ], [mobileImages, mobileVideos]);
 
-  // Display appropriate media based on device
-  const displayMedia = isMobile
-    ? (mobileMedia.length > 0 ? mobileMedia : defaultMobileImages.map(img => ({ type: 'image', src: img })))
-    : (desktopMedia.length > 0 ? desktopMedia : defaultDesktopImages.map(img => ({ type: 'image', src: img })));
-
-  /* ================= Countdown ================= */
-  useEffect(() => {
-    const launchDate = new Date("2025-12-25T00:00:00").getTime();
-
-    const timer = setInterval(() => {
-      const now = Date.now();
-      const diff = launchDate - now;
-
-      if (diff > 0) {
-        setCountdown({
-          days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-          minutes: Math.floor((diff / (1000 * 60)) % 60),
-          seconds: Math.floor((diff / 1000) % 60),
-        });
-      }
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
+  const displayMedia = useMemo(() => 
+    isMobile
+      ? (mobileMedia.length > 0 ? mobileMedia : defaultMobileImages.map(img => ({ type: 'image', src: img })))
+      : (desktopMedia.length > 0 ? desktopMedia : defaultDesktopImages.map(img => ({ type: 'image', src: img }))),
+    [isMobile, mobileMedia, desktopMedia]
+  );
 
   /* ================= Autoplay ================= */
   useEffect(() => {
@@ -166,6 +173,7 @@ const ImageCarousel = ({
                   src={media.src}
                   alt={`Slide ${i + 1}`}
                   className="w-full h-full object-cover"
+                  loading={i === 0 ? "eager" : "lazy"}
                 />
               ) : (
                 <video
@@ -175,6 +183,7 @@ const ImageCarousel = ({
                   muted
                   loop
                   playsInline
+                  preload={i === currentIndex ? "auto" : "none"}
                 />
               )}
 
@@ -197,7 +206,7 @@ const ImageCarousel = ({
 
         {/* ================= Decorative Bottom Edge ================= */}
         <div className="absolute -bottom-2 md:-bottom-8 left-0 right-0 w-full z-10 pointer-events-none">
-          <img src="/shape1.png" alt="" className="w-full block" />
+          <img src="/shape1.png" alt="" className="w-full block" loading="lazy" />
         </div>
       </div>
 
