@@ -8,6 +8,7 @@ const ImageCarousel = ({
   autoPlayInterval = 5000,
   showControls = true,
   className = "",
+  countryCurrency
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
@@ -19,6 +20,8 @@ const ImageCarousel = ({
   const [isMobile, setIsMobile] = useState(false);
   const videoRef = useRef(null);
   const navigate = useNavigate();
+
+  const [products, setProducts] = useState([]);
 
   const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
@@ -45,35 +48,42 @@ const ImageCarousel = ({
       const cachedMobile = localStorage.getItem('banners_mobile');
       const cacheTime = localStorage.getItem('banners_cache_time');
 
-      if (cachedDesktop && cachedMobile && cacheTime && 
-          Date.now() - cacheTime < CACHE_DURATION) {
+      if (cachedDesktop && cachedMobile && cacheTime &&
+        Date.now() - cacheTime < CACHE_DURATION) {
         const desktopData = JSON.parse(cachedDesktop);
         const mobileData = JSON.parse(cachedMobile);
-        
+
         setDesktopImages(desktopData.images || []);
         setDesktopVideos(desktopData.videos || []);
         setMobileImages(mobileData.images || []);
         setMobileVideos(mobileData.videos || []);
         setLoading(false);
+        setProducts(JSON.parse(localStorage.getItem('products')) || []);
         return;
       }
 
       try {
         // Parallel fetch - both banners at once
-        const [desktopRes, mobileRes] = await Promise.all([
+        const [desktopRes, mobileRes, productRes] = await Promise.all([
           fetch(`${import.meta.env.VITE_API_URL}/api/user/banners/getBanner/Desktop Home`),
-          fetch(`${import.meta.env.VITE_API_URL}/api/user/banners/getBanner/Mobile Home`)
+          fetch(`${import.meta.env.VITE_API_URL}/api/user/banners/getBanner/Mobile Home`),
+          fetch(
+            `${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=1&limit=2&countryCode=${countryCurrency || "INR"}`,
+
+          ),
         ]);
 
-        const [desktopData, mobileData] = await Promise.all([
+        const [desktopData, mobileData, productData] = await Promise.all([
           desktopRes.json(),
-          mobileRes.json()
+          mobileRes.json(),
+          productRes.json()
         ]);
 
         if (desktopData?.success && desktopData.data) {
           setDesktopImages(desktopData.data.images || []);
           setDesktopVideos(desktopData.data.videos || []);
-          
+
+
           // Cache desktop banners
           localStorage.setItem('banners_desktop', JSON.stringify({
             images: desktopData.data.images || [],
@@ -84,14 +94,20 @@ const ImageCarousel = ({
         if (mobileData?.success && mobileData.data) {
           setMobileImages(mobileData.data.images || []);
           setMobileVideos(mobileData.data.videos || []);
-          
+
           // Cache mobile banners
           localStorage.setItem('banners_mobile', JSON.stringify({
             images: mobileData.data.images || [],
             videos: mobileData.data.videos || []
           }));
         }
-
+        if (productData?.success && productData.data) {
+          console.log("Fetched products for carousel:", productData.data);
+          setProducts(productData.data);
+          localStorage.setItem('products', JSON.stringify(
+            productData.data
+          ));
+        }
         // Set cache timestamp
         localStorage.setItem('banners_cache_time', Date.now().toString());
 
@@ -116,7 +132,7 @@ const ImageCarousel = ({
     ...mobileVideos.map(vid => ({ type: 'video', src: vid }))
   ], [mobileImages, mobileVideos]);
 
-  const displayMedia = useMemo(() => 
+  const displayMedia = useMemo(() =>
     isMobile
       ? (mobileMedia.length > 0 ? mobileMedia : defaultMobileImages.map(img => ({ type: 'image', src: img })))
       : (desktopMedia.length > 0 ? desktopMedia : defaultDesktopImages.map(img => ({ type: 'image', src: img }))),
@@ -192,7 +208,7 @@ const ImageCarousel = ({
                 <div className="absolute inset-0 top-30 flex items-center z-20">
                   <div className="ml-4 sm:ml-8 md:ml-32">
                     <button
-                      onClick={() => navigate("/products")}
+                      onClick={() => navigate(`/product/${products[0]?._id}/${products[0]?.name?.replace(/\s+/g, '-').toLowerCase()}`)}
                       className="px-6 py-3 cursor-pointer text-sm sm:text-base font-bold text-black rounded-sm bg-white shadow-lg hover:scale-105 hover:shadow-xl transition-all"
                     >
                       Shop Now
@@ -252,11 +268,10 @@ const ImageCarousel = ({
             <button
               key={i}
               onClick={() => setCurrentIndex(i)}
-              className={`transition-all rounded-full ${
-                i === currentIndex
-                  ? 'w-6 h-1.5 bg-white shadow-md'
-                  : 'w-1.5 h-1.5 bg-white/50 hover:bg-white/70'
-              }`}
+              className={`transition-all rounded-full ${i === currentIndex
+                ? 'w-6 h-1.5 bg-white shadow-md'
+                : 'w-1.5 h-1.5 bg-white/50 hover:bg-white/70'
+                }`}
               aria-label={`Go to slide ${i + 1}`}
             />
           ))}

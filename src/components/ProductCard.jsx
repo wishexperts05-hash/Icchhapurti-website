@@ -177,7 +177,7 @@ export default function ProductCard({ product, countryCurrency, onAddToCart, onW
     };
 
     const handleViewDetails = () => {
-        navigate(`/product/${product.id || product._id}`);
+        navigate(`/product/${product.id || product._id}/${encodeURIComponent(product.name || "product")}`);
     };
 
     // TOGGLE wishlist: add if not liked, remove if liked
@@ -263,7 +263,7 @@ export default function ProductCard({ product, countryCurrency, onAddToCart, onW
                 <button
                     onClick={toggleWishlist}
                     disabled={wishlistLoading}
-                    className="absolute top-3 right-3 z-20 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transition-all hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="absolute top-3 right-3 cursor-pointer z-20 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transition-all hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {wishlistLoading ? (
                         <Loader2 size={16} className="animate-spin text-gray-600" />

@@ -117,7 +117,7 @@ function App() {
 
           <Route path="/homePage" element={<HomePage countryCurrency={countryCurrency} />} />
           <Route path="/products" element={<ProductsPage countryCurrency={countryCurrency} />} />
-          <Route path="/product/:id" element={<ProductDetailPage countryCurrency={countryCurrency} />} />
+          <Route path="/product/:id/:name" element={<ProductDetailPage countryCurrency={countryCurrency} />} />
           <Route path="/wallet" element={<WalletPage />} />
           <Route path="/reedem" element={<RedeemPage />} />
           <Route path="/reedem-history" element={<RedeemHistory />} />

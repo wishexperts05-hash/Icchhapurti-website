@@ -239,12 +239,12 @@ bg-center bg-no-repeat
                   <Link
                     key={index}
                     to={link.href}
-                    className={`text-[16px] lg:text-[18px] cursor-pointer font-medium transition-all relative pb-1 group ${isActive(link.href) ? 'text-[#D3AF37]' : 'hover:text-[#D3AF37]'
+                    className={`text-[16px] lg:text-[18px] cursor-pointer font-medium  relative pb-1 group ${isActive(link.href) ? 'text-[#D3AF37]' : 'hover:text-[#D3AF37]'
                       }`}
                   >
                     {link.label}
                     <span
-                      className={`absolute bottom-0 left-0 h-0.5 bg-[#D3AF37] transition-all ${isActive(link.href) ? 'w-full' : 'w-0 group-hover:w-full'
+                      className={`absolute bottom-0 left-0 h-0.5 bg-[#D3AF37]  ${isActive(link.href) ? 'w-full' : 'w-0 group-hover:w-full'
                         }`}
                     ></span>
                   </Link>

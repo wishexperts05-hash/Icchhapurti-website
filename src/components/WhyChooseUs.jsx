@@ -31,17 +31,7 @@ const WhyChooseUs = () => {
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto">
 
-        {/* <h1
-          className="text-5xl md:text-5xl text-center font-extrabold mb-15 animate-fade-in bg-clip-text text-transparent"
-          style={{
-            backgroundImage:
-              "linear-gradient(120deg, #0a2540 0%, #0a2540 15%, #0a2540 %, #0a2540 50%, #1e6091 60%, #0d3b66 80%, #0a2540 100%)",
-            backgroundSize: "200% 200%",
-            animation: "blueShine 3s linear infinite",
-          }}
-        >
-          Why We Are Special
-        </h1> */}
+ 
         <h1
           className="text-4xl md:text-6xl  font-extrabold text-center mb-10 animate-fade-in bg-clip-text text-transparent"
           style={{

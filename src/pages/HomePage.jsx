@@ -137,7 +137,7 @@ const HomePage = ({ countryCurrency }) => {
 
   return (
     <div className='mx-auto'>
-      <ImageCarousel />
+      <ImageCarousel  countryCurrency={countryCurrency}s />
       <WhyChooseUs />
       <OurProducts countryCurrency={countryCurrency} />
       <StoryBanner />

@@ -320,7 +320,7 @@ export default function ProductsPage({ countryCurrency }) {
         )}
 
         {/* Pagination */}
-        <div className="mt-10 flex items-center justify-center gap-4">
+        {/* <div className="mt-10 flex items-center justify-center gap-4">
           <button
             disabled={page === 1}
             onClick={handlePrev}
@@ -342,7 +342,7 @@ export default function ProductsPage({ countryCurrency }) {
           >
             <ArrowBigRight />
           </button>
-        </div>
+        </div> */}
 
         <p className="text-center text-gray-400 mt-3 text-sm">
           Showing {(page - 1) * limit + 1} – {Math.min(page * limit, totalProducts)} of {totalProducts} products

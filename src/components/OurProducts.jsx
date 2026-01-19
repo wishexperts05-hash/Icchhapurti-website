@@ -17,10 +17,10 @@ export default function OurProducts({ countryCurrency }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page] = useState(1);
-  const [limit] = useState(2);
+  const [limit] = useState(3);
   const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
   const [openPayment, setOpenPayment] = useState(false);
-  
+
   const { setCount } = useHeader();
   const Navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -37,7 +37,7 @@ export default function OurProducts({ countryCurrency }) {
     // Check cache first
     const cached = localStorage.getItem(cacheKey);
     const cacheTime = localStorage.getItem(`${cacheKey}_time`);
-    
+
     if (cached && cacheTime && Date.now() - cacheTime < CACHE_DURATION) {
       setProducts(JSON.parse(cached));
       setLoading(false);
@@ -89,7 +89,7 @@ export default function OurProducts({ countryCurrency }) {
           const wishlistedIds = new Set(
             wishlistData.data.map(item => item?._id || item.productId)
           );
-          
+
           productsList = productsList.map(product => ({
             ...product,
             isWishlisted: wishlistedIds.has(product._id || product.id),
@@ -97,7 +97,7 @@ export default function OurProducts({ countryCurrency }) {
         }
 
         setProducts(productsList);
-        
+
         // Cache the enriched data
         localStorage.setItem(cacheKey, JSON.stringify(productsList));
         localStorage.setItem(`${cacheKey}_time`, Date.now().toString());
@@ -177,21 +177,27 @@ export default function OurProducts({ countryCurrency }) {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="bg-slate-800/90 backdrop-blur-sm rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-red-500/30">
-          <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
-          <h3 className="text-2xl font-bold text-white mb-3">
-            Error Loading Products
+      <div className="min-h-screen flex items-center justify-center p-4 ">
+        <div className="rounded-lg p-6 max-w-sm w-full text-center border bg-white border-gray-200 shadow-sm">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+
+          <h3 className="text-md font-semibold text-gray-800 mb-2">
+          We couldn’t load the products right now. Please try again
           </h3>
-          <p className="text-gray-400 mb-6">{error}</p>
+
+          {/* <p className="text-gray-600 mb-5">
+            {error}
+          </p> */}
+
           <button
             onClick={fetchProducts}
-            className="px-6 py-3 rounded-lg text-white font-medium bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition-all"
+            className="px-3 py-2  text-md  rounded-md text-white font-medium bg-red-500 hover:bg-red-600 transition"
           >
             Try Again
           </button>
         </div>
       </div>
+
     );
   }
 
@@ -339,7 +345,7 @@ export default function OurProducts({ countryCurrency }) {
             setOpenPayment(true);
           }}
         />
-        
+
         {cartSidebarOpen && (
           <div className="fixed inset-0 bg-black/15 backdrop-blur-[1px] z-51 animate-fadeIn" />
         )}

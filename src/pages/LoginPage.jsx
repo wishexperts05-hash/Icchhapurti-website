@@ -70,7 +70,7 @@ const Login = () => {
       const data = await response.json();
 
       if (data.success) {
-        alert(`otp sent ${data.otp}`)
+        // alert(`otp sent ${data.otp}`)
         setShowOtpModal(true);
         setError("");
       } else {

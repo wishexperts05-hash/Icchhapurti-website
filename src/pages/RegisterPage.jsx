@@ -255,7 +255,7 @@ const Register = () => {
       if (data.success) {
         setToken(data.registrationToken);
         setShowOtpModal(true);
-        alert(data.otp);
+        // alert(data.otp);
       } else {
         setApiError(data.message || "Failed to send OTP");
       }
