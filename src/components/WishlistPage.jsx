@@ -98,7 +98,7 @@ export default function WishlistPage() {
   const handleGoToProduct = (item) => {
     const id = item._id || item.id;
     if (!id) return;
-    navigate(`/product/${id}`);
+    navigate(`/product/${id}/${item.name?.replace(/\s+/g, '-').toLowerCase()}`);
   };
 
   if (loading) {
@@ -128,7 +128,7 @@ export default function WishlistPage() {
           Save products you love and come back anytime to purchase them.
         </p>
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/product")}
           className="px-6 py-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-500 text-white font-semibold hover:scale-105 transition-transform"
         >
           Start Shopping
@@ -177,7 +177,7 @@ export default function WishlistPage() {
                     <img
                       src={image}
                       alt={item.name}
-                      className="h-full w-full object-contain group-hover:scale-105 transition-transform duration-300"
+                      className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
                       onError={(e) => {
                         e.currentTarget.src =
                           "https://via.placeholder.com/300x200?text=No+Image";
@@ -189,11 +189,11 @@ export default function WishlistPage() {
                     <h2 className="text-sm font-semibold line-clamp-2">
                       {item.name || "Unnamed Product"}
                     </h2>
-                    <p className="text-xs text-gray-400 line-clamp-2">
+                    {/* <p className="text-xs text-gray-400 line-clamp-2">
                       {item.description || "No description available."}
-                    </p>
+                    </p> */}
 
-                    <div className="flex items-center justify-between mt-2">
+                    {/* <div className="flex items-center justify-between mt-2">
                       <span className="text-lg font-bold text-yellow-400">
                         ₹{item.price ?? 0}
                       </span>
@@ -202,7 +202,7 @@ export default function WishlistPage() {
                           ₹{item.originalPrice}
                         </span>
                       )}
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 

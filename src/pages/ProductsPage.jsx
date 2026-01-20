@@ -344,9 +344,9 @@ export default function ProductsPage({ countryCurrency }) {
           </button>
         </div> */}
 
-        <p className="text-center text-gray-400 mt-3 text-sm">
+        {/* <p className="text-center text-gray-400 mt-3 text-sm">
           Showing {(page - 1) * limit + 1} – {Math.min(page * limit, totalProducts)} of {totalProducts} products
-        </p>
+        </p> */}
 
         <CartSidebar
           countryCurrency={countryCurrency}

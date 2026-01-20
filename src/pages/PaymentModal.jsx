@@ -610,52 +610,52 @@ export default function PaymentModal({ isOpen, onClose, countryCurrency }) {
     if (!isOpen) return null;
 
     // Show critical error modal only for initialization errors
-  if (error && !checkoutDetails && !isAuthenticated) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-      <div className="bg-white rounded-xl p-5 w-full max-w-sm shadow-lg text-center">
-        
-        {/* Icon */}
-        <AlertCircle className="w-10 h-10 text-red-500 mx-auto mb-3" />
+    if (error && !checkoutDetails && !isAuthenticated) {
+        return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+                <div className="bg-white rounded-xl p-5 w-full max-w-sm shadow-lg text-center">
 
-        {/* Title */}
-        <h3 className="text-lg font-semibold text-gray-900">
-          Payment Error
-        </h3>
+                    {/* Icon */}
+                    <AlertCircle className="w-10 h-10 text-red-500 mx-auto mb-3" />
 
-        {/* Message */}
-        <p className="text-sm text-gray-600 mt-2 mb-5">
-          {error}
-        </p>
+                    {/* Title */}
+                    <h3 className="text-lg font-semibold text-gray-900">
+                        Payment Error
+                    </h3>
 
-        {/* Actions */}
-        <div className="flex gap-3 justify-center">
-          <button
-            onClick={initializePaymentPage}
-            className="px-4 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition"
-          >
-            Try Again
-          </button>
+                    {/* Message */}
+                    <p className="text-sm text-gray-600 mt-2 mb-5">
+                        {error}
+                    </p>
 
-          <button
-            onClick={() => {
-              onClose();
-              Navigate("/cart");
-            }}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition"
-          >
-            Back to Cart
-          </button>
-        </div>
+                    {/* Actions */}
+                    <div className="flex gap-3 justify-center">
+                        <button
+                            onClick={initializePaymentPage}
+                            className="px-4 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition"
+                        >
+                            Try Again
+                        </button>
 
-      </div>
-    </div>
-  );
-}
+                        <button
+                            onClick={() => {
+                                onClose();
+                                Navigate("/cart");
+                            }}
+                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition"
+                        >
+                            Back to Cart
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        );
+    }
 
 
     return (
-        <div className="fixed inset-0 z-[9999] h-screen backdrop-blur-[2px] bg-black/60  ">
+        <div className="fixed inset-0 z-[9999] h-screen backdrop-blur-[2px] bg-black/20  ">
 
 
             <CartSidebar
@@ -1144,133 +1144,133 @@ export default function PaymentModal({ isOpen, onClose, countryCurrency }) {
                                         </div>
 
                                         <div className="rounded-lg border border-slate-300 p-3 mb-4">
-    <h3 className="text-black font-semibold text-base mb-2.5 flex items-center gap-2">
-        <Package size={16} className="text-amber-400" />
-        {t("payment.price_details.title")}
-    </h3>
+                                            <h3 className="text-black font-semibold text-base mb-2.5 flex items-center gap-2">
+                                                <Package size={16} className="text-amber-400" />
+                                                {t("payment.price_details.title")}
+                                            </h3>
 
-    <div className="space-y-1.5 text-sm">
-        {/* Total Items */}
-        <div className="flex justify-between text-gray-600">
-            <span>{t("payment.price_details.total_items")}</span>
-            <span className="text-black font-medium">{totalItems}</span>
-        </div>
+                                            <div className="space-y-1.5 text-sm">
+                                                {/* Total Items */}
+                                                <div className="flex justify-between text-gray-600">
+                                                    <span>{t("payment.price_details.total_items")}</span>
+                                                    <span className="text-black font-medium">{totalItems}</span>
+                                                </div>
 
-        {/* Divider */}
-        <div className="border-t border-dashed border-slate-200 my-1.5"></div>
+                                                {/* Divider */}
+                                                <div className="border-t border-dashed border-slate-200 my-1.5"></div>
 
-        {/* Price */}
-        <div className="flex justify-between text-gray-600">
-            <span>{t("payment.price_details.price")}</span>
-            <span className="text-black font-medium">
-                {checkoutDetails?.totalAmount?.toLocaleString("en-IN") || 0}
-            </span>
-        </div>
+                                                {/* Price */}
+                                                <div className="flex justify-between text-gray-600">
+                                                    <span>{t("payment.price_details.price")}</span>
+                                                    <span className="text-black font-medium">
+                                                        {checkoutDetails?.totalAmount?.toLocaleString("en-IN") || 0}
+                                                    </span>
+                                                </div>
 
-        {/* Discount Off */}
-        <div className="flex justify-between text-gray-600">
-            <span>Discount Off</span>
-            <span className="text-green-600 font-medium">
-                -{checkoutDetails?.discountOff?.toLocaleString("en-IN") || 0}
-            </span>
-        </div>
+                                                {/* Discount Off */}
+                                                <div className="flex justify-between text-gray-600">
+                                                    <span>Discount Off</span>
+                                                    <span className="text-green-600 font-medium">
+                                                        -{checkoutDetails?.discountOff?.toLocaleString("en-IN") || 0}
+                                                    </span>
+                                                </div>
 
-        {/* Referral Discount */}
-        <div className="flex justify-between text-gray-600">
-            <span>Referral Discount</span>
-            <span className="text-green-600 font-medium">
-                {(Number(String(referralDiscount || checkoutDetails?.referralDiscount || 0).replace(/[₹,\s]/g, ''))) > 0 && "-"}
-                {(referralDiscount || checkoutDetails?.referralDiscount || 0).toLocaleString("en-IN")}
-            </span>
-        </div>
+                                                {/* Referral Discount */}
+                                                <div className="flex justify-between text-gray-600">
+                                                    <span>Referral Discount</span>
+                                                    <span className="text-green-600 font-medium">
+                                                        {(Number(String(referralDiscount || checkoutDetails?.referralDiscount || 0).replace(/[₹,\s]/g, ''))) > 0 && "-"}
+                                                        {(referralDiscount || checkoutDetails?.referralDiscount || 0).toLocaleString("en-IN")}
+                                                    </span>
+                                                </div>
 
-        {/* Divider */}
-        <div className="border-t border-dashed border-slate-200 my-1.5"></div>
+                                                {/* Divider */}
+                                                <div className="border-t border-dashed border-slate-200 my-1.5"></div>
 
-        {/* Price After Discount */}
-        <div className="flex justify-between text-gray-700 font-medium">
-            <span>Price After Discount</span>
-            <span className="text-black">
-                {(() => {
-                    const currencySymbol = String(checkoutDetails?.totalAmount || '').replace(/[\d,.\s]/g, '') || '';
-                    const totalAmount = Number(String(checkoutDetails?.totalAmount || 0).replace(/[₹$€£¥,\s]/g, ''));
-                    const discountOff = Number(String(checkoutDetails?.discountOff || 0).replace(/[₹$€£¥,\s]/g, ''));
-                    const referralDiscountAmount = Number(String(referralDiscount || checkoutDetails?.referralDiscount || 0).replace(/[₹$€£¥,\s]/g, ''));
-                    const afterDiscount = totalAmount - discountOff - referralDiscountAmount;
-                    return `${currencySymbol}${afterDiscount.toFixed(2)}`;
-                })()}
-            </span>
-        </div>
+                                                {/* Price After Discount */}
+                                                <div className="flex justify-between text-gray-700 font-medium">
+                                                    <span>Price After Discount</span>
+                                                    <span className="text-black">
+                                                        {(() => {
+                                                            const currencySymbol = String(checkoutDetails?.totalAmount || '').replace(/[\d,.\s]/g, '') || '';
+                                                            const totalAmount = Number(String(checkoutDetails?.totalAmount || 0).replace(/[₹$€£¥,\s]/g, ''));
+                                                            const discountOff = Number(String(checkoutDetails?.discountOff || 0).replace(/[₹$€£¥,\s]/g, ''));
+                                                            const referralDiscountAmount = Number(String(referralDiscount || checkoutDetails?.referralDiscount || 0).replace(/[₹$€£¥,\s]/g, ''));
+                                                            const afterDiscount = totalAmount - discountOff - referralDiscountAmount;
+                                                            return `${currencySymbol}${afterDiscount.toFixed(2)}`;
+                                                        })()}
+                                                    </span>
+                                                </div>
 
-        {/* Base Price & GST Breakdown */}
-        <div className="bg-slate-50 rounded-md p-2 space-y-1 text-xs">
-            <div className="flex justify-between text-gray-600">
-                <span className="flex items-center gap-1">
-                    <span className="text-slate-400">├</span> Base Price
-                </span>
-                <span className="text-gray-700 font-medium">
-                    {(() => {
-                        const currencySymbol = String(checkoutDetails?.totalAmount || '').replace(/[\d,.\s]/g, '') || '';
-                        const totalAmount = Number(String(checkoutDetails?.totalAmount || 0).replace(/[₹$€£¥,\s]/g, ''));
-                        const discountOff = Number(String(checkoutDetails?.discountOff || 0).replace(/[₹$€£¥,\s]/g, ''));
-                        const referralDiscountAmount = Number(String(referralDiscount || checkoutDetails?.referralDiscount || 0).replace(/[₹$€£¥,\s]/g, ''));
-                        const afterDiscount = totalAmount - discountOff - referralDiscountAmount;
-                        const basePrice = afterDiscount - (afterDiscount * 18 / 118);
-                        return `${currencySymbol}${basePrice.toFixed(2)}`;
-                    })()}
-                </span>
-            </div>
+                                                {/* Base Price & GST Breakdown */}
+                                                <div className="bg-slate-50 rounded-md p-2 space-y-1 text-xs">
+                                                    <div className="flex justify-between text-gray-600">
+                                                        <span className="flex items-center gap-1">
+                                                            <span className="text-slate-400">├</span> Base Price
+                                                        </span>
+                                                        <span className="text-gray-700 font-medium">
+                                                            {(() => {
+                                                                const currencySymbol = String(checkoutDetails?.totalAmount || '').replace(/[\d,.\s]/g, '') || '';
+                                                                const totalAmount = Number(String(checkoutDetails?.totalAmount || 0).replace(/[₹$€£¥,\s]/g, ''));
+                                                                const discountOff = Number(String(checkoutDetails?.discountOff || 0).replace(/[₹$€£¥,\s]/g, ''));
+                                                                const referralDiscountAmount = Number(String(referralDiscount || checkoutDetails?.referralDiscount || 0).replace(/[₹$€£¥,\s]/g, ''));
+                                                                const afterDiscount = totalAmount - discountOff - referralDiscountAmount;
+                                                                const basePrice = afterDiscount - (afterDiscount * 18 / 118);
+                                                                return `${currencySymbol}${basePrice.toFixed(2)}`;
+                                                            })()}
+                                                        </span>
+                                                    </div>
 
-            <div className="flex justify-between text-gray-600">
-                <span className="flex items-center gap-1">
-                    <span className="text-slate-400">└</span> GST (18%)
-                </span>
-                <span className="text-gray-700 font-medium">
-                    {(() => {
-                        const currencySymbol = String(checkoutDetails?.totalAmount || '').replace(/[\d,.\s]/g, '') || '';
-                        const totalAmount = Number(String(checkoutDetails?.totalAmount || 0).replace(/[₹$€£¥,\s]/g, ''));
-                        const discountOff = Number(String(checkoutDetails?.discountOff || 0).replace(/[₹$€£¥,\s]/g, ''));
-                        const referralDiscountAmount = Number(String(referralDiscount || checkoutDetails?.referralDiscount || 0).replace(/[₹$€£¥,\s]/g, ''));
-                        const afterDiscount = totalAmount - discountOff - referralDiscountAmount;
-                        const gstAmount = (afterDiscount * 18) / 118;
-                        return `${currencySymbol}${gstAmount.toFixed(2)}`;
-                    })()}
-                </span>
-            </div>
-        </div>
+                                                    <div className="flex justify-between text-gray-600">
+                                                        <span className="flex items-center gap-1">
+                                                            <span className="text-slate-400">└</span> GST (18%)
+                                                        </span>
+                                                        <span className="text-gray-700 font-medium">
+                                                            {(() => {
+                                                                const currencySymbol = String(checkoutDetails?.totalAmount || '').replace(/[\d,.\s]/g, '') || '';
+                                                                const totalAmount = Number(String(checkoutDetails?.totalAmount || 0).replace(/[₹$€£¥,\s]/g, ''));
+                                                                const discountOff = Number(String(checkoutDetails?.discountOff || 0).replace(/[₹$€£¥,\s]/g, ''));
+                                                                const referralDiscountAmount = Number(String(referralDiscount || checkoutDetails?.referralDiscount || 0).replace(/[₹$€£¥,\s]/g, ''));
+                                                                const afterDiscount = totalAmount - discountOff - referralDiscountAmount;
+                                                                const gstAmount = (afterDiscount * 18) / 118;
+                                                                return `${currencySymbol}${gstAmount.toFixed(2)}`;
+                                                            })()}
+                                                        </span>
+                                                    </div>
+                                                </div>
 
-        {/* Divider */}
-        <div className="border-t border-dashed border-slate-200 my-1.5"></div>
+                                                {/* Divider */}
+                                                <div className="border-t border-dashed border-slate-200 my-1.5"></div>
 
-        {/* Shipping */}
-        <div className="flex justify-between text-gray-600">
-            <span>{t("payment.price_details.shipping")}</span>
-            <span className="text-black font-medium">
-                +{checkoutDetails?.shippingCharge?.toLocaleString("en-IN") || 0}
-            </span>
-        </div>
+                                                {/* Shipping */}
+                                                <div className="flex justify-between text-gray-600">
+                                                    <span>{t("payment.price_details.shipping")}</span>
+                                                    <span className="text-black font-medium">
+                                                        +{checkoutDetails?.shippingCharge?.toLocaleString("en-IN") || 0}
+                                                    </span>
+                                                </div>
 
-        {/* Divider */}
-        <div className="border-t border-slate-300 my-2"></div>
+                                                {/* Divider */}
+                                                <div className="border-t border-slate-300 my-2"></div>
 
-        {/* Total Amount */}
-        <div className="pt-1">
-            <div className="flex justify-between items-center">
-                <span className="text-black font-bold text-base">
-                    {t("payment.price_details.total_amount")}
-                </span>
-                <span className="text-amber-500 font-bold text-lg">
-                    {checkoutDetails?.grandTotal?.toLocaleString("en-IN") || 0}
-                </span>
-            </div>
-            {/* <div className="flex justify-end mt-0.5">
+                                                {/* Total Amount */}
+                                                <div className="pt-1">
+                                                    <div className="flex justify-between items-center">
+                                                        <span className="text-black font-bold text-base">
+                                                            {t("payment.price_details.total_amount")}
+                                                        </span>
+                                                        <span className="text-amber-500 font-bold text-lg">
+                                                            {checkoutDetails?.grandTotal?.toLocaleString("en-IN") || 0}
+                                                        </span>
+                                                    </div>
+                                                    {/* <div className="flex justify-end mt-0.5">
                 <span className="text-xs text-gray-500 italic">
                     (GST 18% inclusive)
                 </span>
             </div> */}
-        </div>
-    </div>
-</div>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         {/* Checkout Button */}
                                         <button

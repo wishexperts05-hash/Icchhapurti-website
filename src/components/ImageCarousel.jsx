@@ -68,7 +68,7 @@ const ImageCarousel = ({
           fetch(`${import.meta.env.VITE_API_URL}/api/user/banners/getBanner/Desktop Home`),
           fetch(`${import.meta.env.VITE_API_URL}/api/user/banners/getBanner/Mobile Home`),
           fetch(
-            `${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=1&limit=2&countryCode=${countryCurrency || "INR"}`,
+            `${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=1&limit=3&countryCode=${countryCurrency || "INR"}`,
 
           ),
         ]);
@@ -208,7 +208,7 @@ const ImageCarousel = ({
                 <div className="absolute inset-0 top-30 flex items-center z-20">
                   <div className="ml-4 sm:ml-8 md:ml-32">
                     <button
-                      onClick={() => navigate(`/product/${products[0]?._id}/${products[0]?.name?.replace(/\s+/g, '-').toLowerCase()}`)}
+                      onClick={() => navigate(`/product/${products[1]?._id}/${products[1]?.name?.replace(/\s+/g, '-').toLowerCase()}`)}
                       className="px-6 py-3 cursor-pointer text-sm sm:text-base font-bold text-black rounded-sm bg-white shadow-lg hover:scale-105 hover:shadow-xl transition-all"
                     >
                       Shop Now

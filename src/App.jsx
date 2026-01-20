@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import Login from "./pages/LoginPage";
 import Register from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
@@ -150,6 +150,23 @@ function App() {
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/shipping-policy" element={<ShippingPolicy />} />
           <Route path="/refund-cancellation-policy" element={<RefundCancellationPolicy />} />
+          <Route
+            path="*"
+            element={
+              <div className="flex flex-col items-center justify-center h-screen">
+                <h1 className="text-5xl text-white font-bold">404</h1>
+                <p className="text-gray-200 mt-2">Page Not Found</p>
+                <Link
+                  to="/homePage"
+                  className="mt-4 text-blue-600 hover:underline"
+                >
+                  Go back to Home
+                </Link>
+              </div>
+            }
+          />
+
+
         </Route>
       </Routes>
     </>

@@ -56,7 +56,7 @@ const LoginModal = ({ isOpen, onClose, setIsAuthenticated }) => {
       const data = await response.json();
 
       if (data.success) {
-        alert(`OTP sent: ${data.otp}`);
+        // alert(`OTP sent: ${data.otp}`);
         setShowOtpInput(true);
         setError("");
       } else {
