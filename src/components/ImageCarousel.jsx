@@ -44,9 +44,9 @@ const ImageCarousel = ({
   useEffect(() => {
     const fetchBanners = async () => {
       // Check cache first
-      const cachedDesktop = localStorage.getItem('banners_desktop');
-      const cachedMobile = localStorage.getItem('banners_mobile');
-      const cacheTime = localStorage.getItem('banners_cache_time');
+      const cachedDesktop = sessionStorage.getItem('banners_desktop');
+      const cachedMobile = sessionStorage.getItem('banners_mobile');
+      const cacheTime = sessionStorage.getItem('banners_cache_time');
 
       if (cachedDesktop && cachedMobile && cacheTime &&
         Date.now() - cacheTime < CACHE_DURATION) {
@@ -58,7 +58,7 @@ const ImageCarousel = ({
         setMobileImages(mobileData.images || []);
         setMobileVideos(mobileData.videos || []);
         setLoading(false);
-        setProducts(JSON.parse(localStorage.getItem('products')) || []);
+        setProducts(JSON.parse(sessionStorage.getItem('products')) || []);
         return;
       }
 
@@ -85,7 +85,7 @@ const ImageCarousel = ({
 
 
           // Cache desktop banners
-          localStorage.setItem('banners_desktop', JSON.stringify({
+          sessionStorage.setItem('banners_desktop', JSON.stringify({
             images: desktopData.data.images || [],
             videos: desktopData.data.videos || []
           }));
@@ -96,7 +96,7 @@ const ImageCarousel = ({
           setMobileVideos(mobileData.data.videos || []);
 
           // Cache mobile banners
-          localStorage.setItem('banners_mobile', JSON.stringify({
+          sessionStorage.setItem('banners_mobile', JSON.stringify({
             images: mobileData.data.images || [],
             videos: mobileData.data.videos || []
           }));
@@ -104,12 +104,12 @@ const ImageCarousel = ({
         if (productData?.success && productData.data) {
           console.log("Fetched products for carousel:", productData.data);
           setProducts(productData.data);
-          localStorage.setItem('products', JSON.stringify(
+          sessionStorage.setItem('products', JSON.stringify(
             productData.data
           ));
         }
         // Set cache timestamp
-        localStorage.setItem('banners_cache_time', Date.now().toString());
+        sessionStorage.setItem('banners_cache_time', Date.now().toString());
 
       } catch (err) {
         console.error("Failed to fetch banners", err);

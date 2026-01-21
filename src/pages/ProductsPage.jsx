@@ -52,8 +52,8 @@ export default function ProductsPage({ countryCurrency }) {
 
   const fetchProducts = async () => {
     // Check cache first
-    const cached = localStorage.getItem(cacheKey);
-    const cacheTime = localStorage.getItem(`${cacheKey}_time`);
+    const cached = sessionStorage.getItem(cacheKey);
+    const cacheTime = sessionStorage.getItem(`${cacheKey}_time`);
     
     if (cached && cacheTime && Date.now() - cacheTime < CACHE_DURATION) {
       const cachedData = JSON.parse(cached);
@@ -123,12 +123,12 @@ export default function ProductsPage({ countryCurrency }) {
         setTotalPages(pages);
 
         // Cache the results
-        localStorage.setItem(cacheKey, JSON.stringify({
+        sessionStorage.setItem(cacheKey, JSON.stringify({
           products: productsList,
           totalProducts: total,
           totalPages: pages
         }));
-        localStorage.setItem(`${cacheKey}_time`, Date.now().toString());
+        sessionStorage.setItem(`${cacheKey}_time`, Date.now().toString());
       }
     } catch (err) {
       console.error("Error fetching products:", err);
@@ -187,8 +187,8 @@ export default function ProductsPage({ countryCurrency }) {
       )
     );
     // Invalidate cache when wishlist changes
-    localStorage.removeItem(cacheKey);
-    localStorage.removeItem(`${cacheKey}_time`);
+    sessionStorage.removeItem(cacheKey);
+    sessionStorage.removeItem(`${cacheKey}_time`);
   }, [cacheKey]);
 
   const handlePrev = useCallback(() => {
