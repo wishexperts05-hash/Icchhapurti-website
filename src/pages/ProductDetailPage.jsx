@@ -227,17 +227,7 @@ export default function ProductDetails({ countryCurrency }) {
     }
   };
 
-  const StarRating = ({ rating, size = 16 }) => (
-    <div className="flex gap-0.5">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <Star
-          key={star}
-          size={size}
-          className={star <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
-        />
-      ))}
-    </div>
-  );
+ 
   //  const [addedToCart, setAddedToCart] = useState(false);
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -956,6 +946,7 @@ export default function ProductDetails({ countryCurrency }) {
 
 
           <Review
+            // StarRating={StarRating}
             reviewData={reviewData}
             totalPages={totalPages}
             fetchProductReviews={fetchProductReviews}
