@@ -83,6 +83,7 @@ function App() {
   }, [token]);
 
   const [countryCurrency, setCountryCurrency] = useState(null);
+  const [country, setCountry] = useState(null);
   useEffect(() => {
 
     getCountryCode()
@@ -95,6 +96,7 @@ function App() {
       console.log(data, "geocoding")
       setCountryCurrency(data.currency
       );
+      setCountry(data.country_name)
       return data.country_code; // IN, US, GB
     } catch (error) {
       console.error('Failed to get country code:', error);
@@ -115,9 +117,9 @@ function App() {
         {/* Routes with layout */}
         <Route element={<Layout countryCurrency={countryCurrency} />}>
 
-          <Route path="/homePage" element={<HomePage countryCurrency={countryCurrency} />} />
-          <Route path="/products" element={<ProductsPage countryCurrency={countryCurrency} />} />
-          <Route path="/product/:id/:name" element={<ProductDetailPage countryCurrency={countryCurrency} />} />
+          <Route path="/homePage" element={<HomePage countryCurrency={countryCurrency} country={country} />} />
+          <Route path="/products" element={<ProductsPage countryCurrency={countryCurrency} country={country} />} />
+          <Route path="/product/:id/:name" element={<ProductDetailPage countryCurrency={countryCurrency} country={country} />} />
           <Route path="/wallet" element={<WalletPage />} />
           <Route path="/reedem" element={<RedeemPage />} />
           <Route path="/reedem-history" element={<RedeemHistory />} />

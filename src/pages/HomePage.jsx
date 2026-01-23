@@ -8,7 +8,7 @@ import ProductVideoSection from '../components/ProductVideoSection'
 import Testimonials from '../components/Testimonials'
 import { Star } from 'lucide-react'
 
-const HomePage = ({ countryCurrency }) => {
+const HomePage = ({ countryCurrency ,country}) => {
   const { setCount, setList, setUnreadCount } = useHeader();
   const token = localStorage.getItem("token");
   const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes for dynamic data
@@ -137,9 +137,9 @@ const HomePage = ({ countryCurrency }) => {
 
   return (
     <div className='mx-auto'>
-      <ImageCarousel  countryCurrency={countryCurrency}s />
+      <ImageCarousel  countryCurrency={countryCurrency} />
       <WhyChooseUs />
-      <OurProducts countryCurrency={countryCurrency} />
+      <OurProducts countryCurrency={countryCurrency} country={country}/>
       <StoryBanner />
 
       <div className="text-center py-3 my-5">

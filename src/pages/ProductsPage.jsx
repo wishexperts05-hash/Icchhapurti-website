@@ -12,7 +12,7 @@ import { ArrowBigLeft } from "lucide-react";
 import CartSidebar from "../components/CartSidebar";
 import ProductCard from "../components/ProductCard";
 
-export default function ProductsPage({ countryCurrency }) {
+export default function ProductsPage({ countryCurrency,country }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -71,7 +71,7 @@ export default function ProductsPage({ countryCurrency }) {
       // PARALLEL API CALLS - Both fetch at the same time!
       const [productsResponse, wishlistResponse] = await Promise.all([
         fetch(
-          `${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=${page}&limit=${limit}&search=${debounceSearch}&countryCode=${countryCurrency || "INR"}`,
+          `${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=${page}&limit=${limit}&search=${debounceSearch}&currencyCode=${countryCurrency || "INR"}`,
           {
             method: "GET",
             headers: {
@@ -259,6 +259,7 @@ export default function ProductsPage({ countryCurrency }) {
                     <div key={product.id || product._id} className="mb-4">
                       <ProductCard
                         product={product}
+                         country={country}
                         onAddToCart={handleAddToCart}
                         onWishlistUpdate={handleWishlistUpdate}
                         setCartSidebarOpen={setCartSidebarOpen}

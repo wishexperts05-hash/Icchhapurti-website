@@ -9,7 +9,7 @@ export default function Layout({ countryCurrency }) {
     <div className="min-h-screen flex flex-col relative">
 
 
-      {/* <div
+      <div
         className="fixed inset-0 -z-10 bg-center bg-no-repeat bg-cover
              shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]"
         style={{
@@ -23,7 +23,7 @@ export default function Layout({ countryCurrency }) {
       url('/new-bg.jpg')
     `,
         }}
-      /> */}
+      />
 
       <div className="fixed bottom-25 left-6 z-50 group">
         <a

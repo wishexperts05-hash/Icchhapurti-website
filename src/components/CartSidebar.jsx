@@ -47,7 +47,7 @@ export default function CartSidebar({ isOpen, onClose, countryCurrency, onChecko
   const fetchCartData = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems?countryCode=${countryCurrency}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems?currencyCode=${countryCurrency}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

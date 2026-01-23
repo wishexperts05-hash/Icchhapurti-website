@@ -16,7 +16,7 @@ import { useHeader } from "../context/HeaderContext";
 
 import PaymentModal from "../pages/PaymentModal";
 
-export default function ProductCard({ product, countryCurrency, onAddToCart, onWishlistUpdate, openPayment, setOpenPayment, setCartSidebarOpen }) {
+export default function ProductCard({ product,country, countryCurrency, onAddToCart, onWishlistUpdate, openPayment, setOpenPayment, setCartSidebarOpen }) {
     const [addingToCart, setAddingToCart] = useState(false);
     const [buyingNow, setBuyingNow] = useState(false);
     const [addedToCart, setAddedToCart] = useState(false);
@@ -237,7 +237,7 @@ export default function ProductCard({ product, countryCurrency, onAddToCart, onW
     return (
         <div className="relative group h-full">
             {
-                openPayment && <PaymentModal isOpen={openPayment} onClose={() => setOpenPayment(false)} countryCurrency={countryCurrency} />
+                openPayment && <PaymentModal country_name={country} isOpen={openPayment} onClose={() => setOpenPayment(false)} countryCurrency={countryCurrency} />
             }
             <div
                 onClick={handleViewDetails}

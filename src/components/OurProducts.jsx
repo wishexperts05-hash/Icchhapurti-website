@@ -12,7 +12,7 @@ import { useHeader } from "../context/HeaderContext";
 import CartSidebar from "./CartSidebar";
 import ProductCard from "./ProductCard";
 
-export default function OurProducts({ countryCurrency }) {
+export default function OurProducts({ countryCurrency ,country}) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -51,7 +51,7 @@ export default function OurProducts({ countryCurrency }) {
       // PARALLEL FETCH - Both requests happen at the same time!
       const [productsResponse, wishlistResponse] = await Promise.all([
         fetch(
-          `${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=${page}&limit=${limit}&countryCode=${countryCurrency || "INR"}`,
+          `${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=${page}&limit=${limit}&currencyCode=${countryCurrency || "INR"}`,
           {
             method: "GET",
             headers: {
@@ -235,6 +235,7 @@ export default function OurProducts({ countryCurrency }) {
               <div key={product.id || product._id}>
                 <ProductCard
                   product={product}
+                  country={country}
                   onAddToCart={handleAddToCart}
                   onWishlistUpdate={handleWishlistUpdate}
                   setCartSidebarOpen={setCartSidebarOpen}

@@ -18,7 +18,7 @@ import ProgressOfferBar from '../components/ProgressOfferBar';
 import CartSidebar from '../components/CartSidebar';
 
 
-export default function PaymentModal({ isOpen, onClose, countryCurrency }) {
+export default function PaymentModal({ isOpen, onClose,country_name="India", countryCurrency="INR" }) {
     const { pathname } = useLocation();
     const { setCount } = useHeader();
     useEffect(() => {
@@ -200,7 +200,7 @@ export default function PaymentModal({ isOpen, onClose, countryCurrency }) {
 
     const fetchCartData = async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems?countryCode=${countryCurrency || "INR"}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems?currencyCode=${countryCurrency || "INR"}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -264,7 +264,7 @@ export default function PaymentModal({ isOpen, onClose, countryCurrency }) {
             };
 
             const res = await fetch(
-                `${import.meta.env.VITE_API_URL}/api/user/orders/checkout`,
+                `${import.meta.env.VITE_API_URL}/api/user/orders/checkout?currency=${countryCurrency}&country_name=${country_name}`,
                 {
                     method: 'POST',
                     headers: {
@@ -340,7 +340,7 @@ export default function PaymentModal({ isOpen, onClose, countryCurrency }) {
     const createRazorpayOrder = async () => {
         try {
             const res = await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/user/orders/createOrder`,
+                `${import.meta.env.VITE_API_URL}/api/user/orders/createOrder?currency=${countryCurrency}&country_name=${country_name}`,
                 {
                     orderToken,
                     paymentMethod: "Online"
@@ -367,7 +367,7 @@ export default function PaymentModal({ isOpen, onClose, countryCurrency }) {
     const createWalletpayOrder = async () => {
         try {
             const res = await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/user/orders/createOrder`,
+                `${import.meta.env.VITE_API_URL}/api/user/orders/createOrder?currency=${countryCurrency}&country_name=${country_name}`,
                 {
                     orderToken,
                     paymentMethod: "Wallet"

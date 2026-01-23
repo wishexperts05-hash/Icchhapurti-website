@@ -68,7 +68,7 @@ const ImageCarousel = ({
           fetch(`${import.meta.env.VITE_API_URL}/api/user/banners/getBanner/Desktop Home`),
           fetch(`${import.meta.env.VITE_API_URL}/api/user/banners/getBanner/Mobile Home`),
           fetch(
-            `${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=1&limit=3&countryCode=${countryCurrency || "INR"}`,
+            `${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=1&limit=3&currencyCode=${countryCurrency || "INR"}`,
 
           ),
         ]);

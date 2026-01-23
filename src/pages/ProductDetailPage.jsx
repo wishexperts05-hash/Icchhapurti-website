@@ -18,7 +18,7 @@ import { BsFacebook, BsInstagram, BsWhatsapp } from 'react-icons/bs';
 import { PiPinterestLogo } from 'react-icons/pi';
 import Review from '../components/Review';
 
-export default function ProductDetails({ countryCurrency }) {
+export default function ProductDetails({ countryCurrency , country }) {
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [reviewData, setReviewsData] = useState();
@@ -151,7 +151,7 @@ export default function ProductDetails({ countryCurrency }) {
     setError(null);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/v1/products/productById/${productId}?countryCode=${countryCurrency || "INR"}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/v1/products/productById/${productId}?currencyCode=${countryCurrency || "INR"}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -592,7 +592,7 @@ export default function ProductDetails({ countryCurrency }) {
         />
       )}
       {
-        openPayment && <PaymentModal countryCurrency={countryCurrency} isOpen={openPayment} onClose={() => setOpenPayment(false)} />
+        openPayment && <PaymentModal country_name={country} countryCurrency={countryCurrency} isOpen={openPayment} onClose={() => setOpenPayment(false)} />
       }
       {/* Animated background */}
       <div className="absolute inset-0 opacity-20">
