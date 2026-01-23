@@ -16,6 +16,7 @@ import Confetti from "react-confetti";
 import { X, Copy, Gift } from "lucide-react";
 import ProgressOfferBar from '../components/ProgressOfferBar';
 import CartSidebar from '../components/CartSidebar';
+import OfferDisplay from '../components/OfferDisplay';
 
 
 export default function PaymentModal({ isOpen, onClose,country_name="India", countryCurrency="INR" }) {
@@ -1026,10 +1027,12 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
                                     </div>
                                 )}
 
+
+{/* <OfferDisplay/> */}
                                 {isAuthenticated && checkoutDetails && (
                                     <>
-                                        {/* Referral Code Input */}
-                                        <div className="mb-4">
+                                      
+                                        {/* <div className="mb-4">
                                             <label className="flex items-center gap-1.5 text-black text-sm font-medium mb-1.5">
                                                 <span>{t("payment.referral.label")}</span>
                                                 {codeApplied && <CheckCircle size={14} className="text-green-500" />}
@@ -1094,7 +1097,7 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
                                                 </div>
                                                 <span className="text-black text-sm font-medium">{t('payment.referral.default')}</span>
                                             </label>
-                                        )}
+                                        )} */}
 
                                         {/* Payment Methods */}
                                         <div className="mb-4">
