@@ -21,12 +21,12 @@ const ProgressOfferBar = ({
     { label: "Address" },
     { label: "Payment" },
   ];
-const stepIcons = [
-  ShoppingCart,
-  ClipboardCheck,
-  MapPin,
-  CreditCard,
-];
+  const stepIcons = [
+    ShoppingCart,
+    ClipboardCheck,
+    MapPin,
+    CreditCard,
+  ];
 
   /* -------------------- PREVIOUS STEP TRACK -------------------- */
   const prevStepRef = useRef(-1);
@@ -61,10 +61,10 @@ const stepIcons = [
       {/* <div className="text-center text-xs font-semibold text-white bg-[#b88b05] rounded py-1.5 mb-3">
         Step {currentStep + 1} of {steps.length} — {steps[currentStep]?.label}
       </div> */}
- <div className="flex items-center justify-center gap-2 text-xs font-semibold text-white bg-[#b88b05] rounded py-1.5 mb-3">
-  <Truck className="w-4 h-4" />
-  <span>Shop ₹2,500 & Enjoy FREE Shipping</span>
-</div>
+      <div className="flex items-center justify-center gap-2 text-xs font-semibold text-white bg-[#b88b05] rounded py-1.5 mb-3">
+        <Truck className="w-4 h-4" />
+        <span>Shop ₹2,500 & Enjoy FREE Shipping</span>
+      </div>
 
 
       {/* Step Labels */}
@@ -91,26 +91,26 @@ const stepIcons = [
         />
 
         <div className="absolute inset-0 grid grid-cols-4 items-center">
-        {steps.map((_, i) => {
-  const Icon = stepIcons[i];
+          {steps.map((_, i) => {
+            const Icon = stepIcons[i];
 
-  return (
-    <div key={i} className="flex justify-center">
-      <div
-        className={`w-8 h-8 rounded-full border-2 flex items-center justify-center
+            return (
+              <div key={i} className="flex justify-center">
+                <div
+                  className={`w-8 h-8 rounded-full border-2 flex items-center justify-center
           ${i <= currentStep
-            ? "bg-[#b88b05] border-white"
-            : "bg-gray-300 border-white"}`}
-      >
-        {i <= currentStep ? (
-          <Check className="w-4 h-4 text-white" />
-        ) : (
-          <Icon className="w-4 h-4 text-gray-600" />
-        )}
-      </div>
-    </div>
-  );
-})}
+                      ? "bg-[#b88b05] border-white"
+                      : "bg-gray-300 border-white"}`}
+                >
+                  {i <= currentStep ? (
+                    <Check className="w-4 h-4 text-white" />
+                  ) : (
+                    <Icon className="w-4 h-4 text-gray-600" />
+                  )}
+                </div>
+              </div>
+            );
+          })}
 
         </div>
       </div>

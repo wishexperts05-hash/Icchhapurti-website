@@ -17,9 +17,10 @@ import { X, Copy, Gift } from "lucide-react";
 import ProgressOfferBar from '../components/ProgressOfferBar';
 import CartSidebar from '../components/CartSidebar';
 import OfferDisplay from '../components/OfferDisplay';
+import ReferralCode from '../components/RefferalcodeBox';
 
 
-export default function PaymentModal({ isOpen, onClose,country_name="India", countryCurrency="INR" }) {
+export default function PaymentModal({ isOpen, onClose, country_name = "India", countryCurrency = "INR" }) {
     const { pathname } = useLocation();
     const { setCount } = useHeader();
     useEffect(() => {
@@ -33,54 +34,57 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
         });
     }
 
+    // refferal section 
     const [referralCode, setReferralCode] = useState('');
-    const [applyDefault, setApplyDefault] = useState(false);
+    const [referralCoins, setRefferalCoin] = useState(0)
+    //  const [applyingCode, setApplyingCode] = useState(false);
+
     const [selectedMethod, setSelectedMethod] = useState('razorpay');
-    const [codeApplied, setCodeApplied] = useState(false);
+
+
+    // coupons section
+    const [showCoupon, setCoupon] = useState(false);
+    const [couponCode, setCouponCode] = useState("");
+    // const [codeApplied, setCodeApplied] = useState(false);
     const [balance, setBalance] = useState(0);
     const [addresses, setAddresses] = useState([]);
     const [cartItems, setCartItems] = useState([]);
     const [checkoutDetails, setDetails] = useState(null);
-    const [referralDiscount, setDiscount] = useState(0);
-    const [firstDiscount, setFirstDiscount] = useState(0)
-
-    console.log(cartItems, "cartItems")
-    console.log(checkoutDetails, "checkoutDetails")
-    console.log(referralDiscount, "referralDiscount")
-
-    const [showReferralPopup, setShowReferralPopup] = useState(false);
+    const [couponDiscount, setDiscount] = useState(0);
+    const [showCouponPopup, setshowCouponPopup] = useState(false);
+    const [offers, setOffers] = useState([])
 
 
     useEffect(() => {
         const referralValue = Number(
-            String(referralDiscount).replace(/[₹,]/g, "")
-        );
-        const firstValue = Number(
-            String(firstDiscount).replace(/[₹,]/g, "")
+            String(couponDiscount).replace(/[₹,]/g, "")
         );
 
-        if (referralValue > 0 || firstValue > 0) {
-            setShowReferralPopup(true);
+
+        if (referralValue > 0
+
+        ) {
+            setshowCouponPopup(true);
 
             const timer = setTimeout(() => {
-                setShowReferralPopup(false);
+                setshowCouponPopup(false);
             }, 10000); // 10 seconds
 
             return () => clearTimeout(timer);
         }
-    }, [referralDiscount, firstDiscount]);
+    }, [couponDiscount,]);
 
 
 
     // Auth state
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [showAuthModal, setShowAuthModal] = useState(false);
-    console.log(showReferralPopup, "showReferralPopup")
+
 
     // Loading states
     const [initialLoading, setInitialLoading] = useState(true);
     const [checkoutLoading, setCheckoutLoading] = useState(false);
-    const [applyingCode, setApplyingCode] = useState(false);
+
 
     // Error and success states
     const [error, setError] = useState(null);
@@ -119,11 +123,17 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
     }, [isAuthenticated]);
 
 
+    useEffect(() => {
+        if (cartItems.length > 0) {
+            fetchOffers()
+        }
 
+    }, [cartItems])
 
 
     // Load Razorpay Script
     useEffect(() => {
+
         const script = document.createElement('script');
         script.src = 'https://checkout.razorpay.com/v1/checkout.js';
         script.async = true;
@@ -146,7 +156,7 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
             fetchCheckOutDetails();
         }
 
-    }, [isAuthenticated, cartItems, addressIndex])
+    }, [isAuthenticated, cartItems, couponCode, referralCode, addressIndex])
 
 
 
@@ -262,7 +272,11 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
             const body = {
                 items,
                 shippingAddress: addresses[addressIndex || 0],
+                ...(couponCode && { couponCode }),
+                ...(referralCode && { referralCode }),
+
             };
+
 
             const res = await fetch(
                 `${import.meta.env.VITE_API_URL}/api/user/orders/checkout?currency=${countryCurrency}&country_name=${country_name}`,
@@ -279,8 +293,9 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
             const data = await res.json();
 
             if (data.success) {
-                setDiscount(data.data.referralDiscount);
+                setDiscount(data.data.discountOff);
                 setDetails(data.data);
+                setRefferalCoin(data.data.referralCoinEarn)
                 setOrderToken(data.orderToken);
                 if (data.data.referralCode) {
                     setReferralCode(data.data.referralCode);
@@ -296,46 +311,52 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
         }
     };
 
-    const handleApply = async (code) => {
-        if (!code || code.trim() === '') {
-            setError("Please enter a referral code");
-            setTimeout(() => setError(null), 3000);
-            return;
-        }
+    // const handleApply = async (code) => {
+    //     if (!code || code.trim() === '') {
+    //         setError("Please enter a referral code");
+    //         setTimeout(() => setError(null), 3000);
+    //         return;
+    //     }
 
-        setApplyingCode(true);
-        setError(null);
-        setSuccessMsg('');
+    //     setApplyingCode(true);
+    //     setError(null);
+    //     setSuccessMsg('');
 
-        try {
-            const res = await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/user/orders/applyReferralCode`,
-                { referralCode: " " },
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                        "Content-Type": "application/json"
-                    }
-                }
-            );
+    //     try {
+    //         const res = await axios.post(
+    //             `${import.meta.env.VITE_API_URL}/api/user/orders/applyReferralCode`,
+    //             { referralCode: " " },
+    //             {
+    //                 headers: {
+    //                     Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //                     "Content-Type": "application/json"
+    //                 }
+    //             }
+    //         );
 
-            if (res.data.success) {
-                setDiscount(res.data.data.referralDiscountRate);
-                setFirstDiscount(res.data.data.referralDiscountRate);
-                setCodeApplied(true);
-                setSuccessMsg("Referral code applied successfully!");
-                setTimeout(() => setSuccessMsg(''), 3000);
-            } else {
-                throw new Error(res.data.message || "Failed to apply referral code");
-            }
-        } catch (err) {
-            const errorMsg = err.response?.data?.message || err.message || "Failed to apply code";
-            setError(errorMsg);
-            setCodeApplied(false);
-            setTimeout(() => setError(null), 4000);
-        } finally {
-            setApplyingCode(false);
-        }
+    //         if (res.data.success) {
+    //             setDiscount(res.data.data.couponDiscountRate);
+    //             setFirstDiscount(res.data.data.couponDiscountRate);
+    //             setCodeApplied(true);
+    //             setSuccessMsg("Referral code applied successfully!");
+    //             setTimeout(() => setSuccessMsg(''), 3000);
+    //         } else {
+    //             throw new Error(res.data.message || "Failed to apply referral code");
+    //         }
+    //     } catch (err) {
+    //         const errorMsg = err.response?.data?.message || err.message || "Failed to apply code";
+    //         setError(errorMsg);
+    //         setCodeApplied(false);
+    //         setTimeout(() => setError(null), 4000);
+    //     } finally {
+    //         setApplyingCode(false);
+    //     }
+    // };
+
+    const applyCoupon = () => {
+        if (!couponCode) return;
+        console.log("Applying coupon:", couponCode);
+        // call API / validate coupon here
     };
 
     const createRazorpayOrder = async () => {
@@ -517,7 +538,7 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
             if (selectedMethod === 'razorpay') {
                 await handleRazorpayPayment();
             } else if (selectedMethod === 'wallet') {
-                const finalAmount = (checkoutDetails?.grandTotal || 0) - (referralDiscount || 0);
+                const finalAmount = (checkoutDetails?.grandTotal || 0) - (couponDiscount || 0);
                 if (balance < finalAmount) {
                     setError('Insufficient wallet balance');
                     setCheckoutLoading(false);
@@ -535,6 +556,35 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
             scrollToTop();
         }
     };
+
+    const fetchOffers = async () => {
+        try {
+            const productIds = cartItems.map(item => item.product._id)
+            const res = await fetch(
+                `${import.meta.env.VITE_API_URL}/api/user/orders/offers`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                    body: JSON.stringify({ productIds }),
+                }
+            );
+
+            if (!res.ok) {
+                throw new Error("Failed to fetch offers");
+            }
+
+            const data = await res.json();
+            setOffers(data.data || []);
+        } catch (err) {
+            console.error("Error fetching offers:", err.message);
+            setOffers([]);
+        }
+    };
+
+
 
 
     const totalItems = cartItems.reduce((sum, item) => sum + Number(item.quantity), 0);
@@ -566,7 +616,7 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
 
         if (isAuthenticated && checkoutDetails) {
             const total = parseAmount(checkoutDetails.totalAmount);
-            const referral = Number(referralDiscount) || 0;
+            const referral = Number(couponDiscount) || 0;
             amount = Math.max(total - referral, 0);
         } else if (!isAuthenticated && localCartItems?.length) {
             amount = localCartItems.reduce(
@@ -587,7 +637,7 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
         checkoutDetails,
         cartItems,
         localCartItems,
-        referralDiscount
+        couponDiscount
     ]);
 
 
@@ -755,13 +805,13 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
             )}
 
             {/* Referral Popup */}
-            {showReferralPopup && (
+            {showCouponPopup && (
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm px-2">
                     <Confetti numberOfPieces={200} recycle={false} />
 
                     <div className="relative w-full max-w-xs bg-white rounded-xl shadow-lg p-4 text-center animate-scaleIn">
                         <button
-                            onClick={() => setShowReferralPopup(false)}
+                            onClick={() => setshowCouponPopup(false)}
                             className="absolute top-2 right-2 text-gray-500 hover:text-black"
                         >
                             <X />
@@ -774,7 +824,7 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
                         </div>
 
                         <h2 className="text-xl font-bold text-gray-900 mb-1">
-                            🎉 Referral Applied!
+                            🎉 Coupon {couponCode} Applied!
                         </h2>
 
                         <p className="text-gray-600 text-sm mb-2">
@@ -782,11 +832,11 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
                         </p>
 
                         <div className="text-2xl font-extrabold text-green-600 mb-2">
-                            {referralDiscount || firstDiscount} OFF
+                            {couponDiscount} OFF
                         </div>
 
                         <button
-                            onClick={() => setShowReferralPopup(false)}
+                            onClick={() => setshowCouponPopup(false)}
                             className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg text-sm transition"
                         >
                             Continue Checkout 🚀
@@ -811,7 +861,7 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
                                     if (!items?.length) return null;
 
                                     const parseAmount = (amount) => Number(String(amount || 0).replace(/[^0-9.]/g, ""));
-                                    const referral = Number(referralDiscount) || 0;
+                                    const referral = Number(couponDiscount) || 0;
 
                                     const totalAmount = Math.max(
                                         items.reduce((sum, item) => sum + parseAmount(item.totalAmount), 0) - referral,
@@ -898,7 +948,7 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
 
                                     const formatCurrency = (value) => `₹${value.toFixed(2)}`;
                                     if (isAuthenticated && checkoutDetails) {
-                                        const referral = parseAmount(checkoutDetails.referralDiscount);
+                                        const referral = parseAmount(checkoutDetails.couponDiscount);
                                         savings = referral;
                                     }
 
@@ -1027,80 +1077,86 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
                                     </div>
                                 )}
 
+                                {
+                                    offers.length > 0 && <OfferDisplay offers={offers}
+                                    referralCode={referralCode}
+                                        setCouponCode={setCouponCode}
+                                        couponCode={couponCode}
+                                        isAuthenticated={isAuthenticated} />
+                                }
 
-{/* <OfferDisplay/> */}
                                 {isAuthenticated && checkoutDetails && (
                                     <>
-                                      
-                                        {/* <div className="mb-4">
-                                            <label className="flex items-center gap-1.5 text-black text-sm font-medium mb-1.5">
-                                                <span>{t("payment.referral.label")}</span>
-                                                {codeApplied && <CheckCircle size={14} className="text-green-500" />}
-                                            </label>
-
-                                            <div className="rounded-lg overflow-hidden border border-slate-300">
-                                                <div className="flex">
+                                        {/* <div className="my-2">
+                                            {!showCoupon ? (
+                                                <div className="flex justify-end">
+                                                    <button
+                                                        onClick={() => setCoupon(true)}
+                                                        className="text-sm text-orange-400 hover:underline"
+                                                    >
+                                                        Enter a Coupon
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div className="flex items-center gap-2">
                                                     <input
                                                         type="text"
-                                                        value={referralCode}
-                                                        disabled={checkoutDetails?.referralCode || applyingCode}
-                                                        onChange={(e) => {
-                                                            setReferralCode(e.target.value);
-                                                            setCodeApplied(false);
-                                                        }}
-                                                        placeholder={t("payment.referral.placeholder")}
-                                                        className="flex-1 px-3 py-2 text-sm text-black bg-transparent focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        value={couponCode}
+                                                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                                                        placeholder="Enter coupon code"
+                                                        className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-orange-400"
                                                     />
 
-                                                    {!checkoutDetails?.referralCode && (
-                                                        <button
-                                                            onClick={() => handleApply(referralCode)}
-                                                            disabled={codeApplied || applyingCode || !referralCode.trim()}
-                                                            className="px-3 py-2 text-sm font-medium text-amber-500 hover:text-amber-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 border-l border-slate-300 whitespace-nowrap"
-                                                        >
-                                                            {applyingCode ? (
-                                                                <>
-                                                                    <Loader2 size={14} className="animate-spin" />
-                                                                    Applying
-                                                                </>
-                                                            ) : codeApplied ? (
-                                                                "Applied"
-                                                            ) : (
-                                                                t("payment.referral.apply")
-                                                            )}
-                                                        </button>
-                                                    )}
+                                                    <button
+                                                        onClick={applyCoupon}
+                                                        disabled={!couponCode.trim()}
+                                                        className={`px-4 py-2 text-sm font-semibold rounded
+          ${couponCode.trim()
+                                                                ? "bg-orange-500 text-white hover:bg-orange-600"
+                                                                : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                                            }
+        `}
+                                                    >
+                                                        Apply
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => {
+                                                            setCoupon(false);
+                                                            setCouponCode("");
+                                                        }}
+                                                        className="text-xs text-gray-400 hover:text-gray-600"
+                                                    >
+                                                        ✕
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div> */}
+
+
+                                        <ReferralCode
+                                            referralCode={referralCode}
+                                            setReferralCode={setReferralCode}
+                                            couponCode={couponCode}
+                                        />
+
+                                        {/* refferal code applied */}
+
+                                        {
+                                            referralCoins>0 && <div className="flex items-start gap-2 p-3 mt-2 border border-green-200 rounded-md bg-green-50">
+                                                <div className="mt-0.5 text-lg">🪙</div>
+                                                <div className="text-sm text-green-700">
+                                                    <span className="font-semibold">
+                                                        Referral code <span className="uppercase">{referralCode}</span> applied.
+                                                    </span>{" "}
+                                                    You’ll earn <span className="font-semibold">{referralCoins}</span> coins
+                                                    after completing this purchase.
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        {!checkoutDetails?.referralCode && (
-                                            <label className="flex items-center gap-3 mb-6 cursor-pointer group">
-                                                <div
-                                                    onClick={() => {
-                                                        const code = "Default Referral";
-                                                        setReferralCode(code);
-                                                        const newValue = !applyDefault;
-                                                        setApplyDefault(newValue);
-                                                        if (newValue) {
-                                                            handleApply(code);
-                                                        }
-                                                    }}
-                                                    className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${applyDefault ? 'bg-amber-500 border-amber-500 scale-110' : 'border-gray-400 group-hover:border-amber-400'
-                                                        }`}
-                                                >
-                                                    {applyDefault && (
-                                                        <svg className="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                                        </svg>
-                                                    )}
-                                                </div>
-                                                <span className="text-black text-sm font-medium">{t('payment.referral.default')}</span>
-                                            </label>
-                                        )} */}
-
+                                        }
                                         {/* Payment Methods */}
-                                        <div className="mb-4">
+                                        <div className="my-4">
                                             <h3 className="text-black font-medium mb-2 flex items-center gap-2 text-sm">
                                                 <CreditCard size={16} className="text-amber-400" />
                                                 Payment Method
@@ -1179,13 +1235,13 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
                                                 </div>
 
                                                 {/* Referral Discount */}
-                                                <div className="flex justify-between text-gray-600">
+                                                {/* <div className="flex justify-between text-gray-600">
                                                     <span>Referral Discount</span>
                                                     <span className="text-green-600 font-medium">
-                                                        {(Number(String(referralDiscount || checkoutDetails?.referralDiscount || 0).replace(/[₹,\s]/g, ''))) > 0 && "-"}
-                                                        {(referralDiscount || checkoutDetails?.referralDiscount || 0).toLocaleString("en-IN")}
+                                                        {(Number(String(couponDiscount || checkoutDetails?.couponDiscount || 0).replace(/[₹,\s]/g, ''))) > 0 && "-"}
+                                                        {(couponDiscount || checkoutDetails?.couponDiscount || 0).toLocaleString("en-IN")}
                                                     </span>
-                                                </div>
+                                                </div> */}
 
                                                 {/* Divider */}
                                                 <div className="border-t border-dashed border-slate-200 my-1.5"></div>
@@ -1198,8 +1254,8 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
                                                             const currencySymbol = String(checkoutDetails?.totalAmount || '').replace(/[\d,.\s]/g, '') || '';
                                                             const totalAmount = Number(String(checkoutDetails?.totalAmount || 0).replace(/[₹$€£¥,\s]/g, ''));
                                                             const discountOff = Number(String(checkoutDetails?.discountOff || 0).replace(/[₹$€£¥,\s]/g, ''));
-                                                            const referralDiscountAmount = Number(String(referralDiscount || checkoutDetails?.referralDiscount || 0).replace(/[₹$€£¥,\s]/g, ''));
-                                                            const afterDiscount = totalAmount - discountOff - referralDiscountAmount;
+                                                            // const couponDiscountAmount = Number(String(couponDiscount || checkoutDetails?.discountOff || 0).replace(/[₹$€£¥,\s]/g, ''));
+                                                            const afterDiscount = totalAmount  - discountOff;
                                                             return `${currencySymbol}${afterDiscount.toFixed(2)}`;
                                                         })()}
                                                     </span>
@@ -1216,8 +1272,8 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
                                                                 const currencySymbol = String(checkoutDetails?.totalAmount || '').replace(/[\d,.\s]/g, '') || '';
                                                                 const totalAmount = Number(String(checkoutDetails?.totalAmount || 0).replace(/[₹$€£¥,\s]/g, ''));
                                                                 const discountOff = Number(String(checkoutDetails?.discountOff || 0).replace(/[₹$€£¥,\s]/g, ''));
-                                                                const referralDiscountAmount = Number(String(referralDiscount || checkoutDetails?.referralDiscount || 0).replace(/[₹$€£¥,\s]/g, ''));
-                                                                const afterDiscount = totalAmount - discountOff - referralDiscountAmount;
+                                                                // const couponDiscountAmount = Number(String(couponDiscount || checkoutDetails?.couponDiscount || 0).replace(/[₹$€£¥,\s]/g, ''));
+                                                                const afterDiscount = totalAmount - discountOff 
                                                                 const basePrice = afterDiscount - (afterDiscount * 18 / 118);
                                                                 return `${currencySymbol}${basePrice.toFixed(2)}`;
                                                             })()}
@@ -1233,8 +1289,8 @@ export default function PaymentModal({ isOpen, onClose,country_name="India", cou
                                                                 const currencySymbol = String(checkoutDetails?.totalAmount || '').replace(/[\d,.\s]/g, '') || '';
                                                                 const totalAmount = Number(String(checkoutDetails?.totalAmount || 0).replace(/[₹$€£¥,\s]/g, ''));
                                                                 const discountOff = Number(String(checkoutDetails?.discountOff || 0).replace(/[₹$€£¥,\s]/g, ''));
-                                                                const referralDiscountAmount = Number(String(referralDiscount || checkoutDetails?.referralDiscount || 0).replace(/[₹$€£¥,\s]/g, ''));
-                                                                const afterDiscount = totalAmount - discountOff - referralDiscountAmount;
+                                                                // const couponDiscountAmount = Number(String(couponDiscount || checkoutDetails?.couponDiscount || 0).replace(/[₹$€£¥,\s]/g, ''));
+                                                                const afterDiscount = totalAmount - discountOff 
                                                                 const gstAmount = (afterDiscount * 18) / 118;
                                                                 return `${currencySymbol}${gstAmount.toFixed(2)}`;
                                                             })()}
