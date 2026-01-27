@@ -353,11 +353,11 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
     //     }
     // };
 
-    const applyCoupon = () => {
-        if (!couponCode) return;
-        console.log("Applying coupon:", couponCode);
-        // call API / validate coupon here
-    };
+    // const applyCoupon = () => {
+    //     if (!couponCode) return;
+    //     console.log("Applying coupon:", couponCode);
+    //     // call API / validate coupon here
+    // };
 
     const createRazorpayOrder = async () => {
         try {
