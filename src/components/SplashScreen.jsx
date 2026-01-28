@@ -30,7 +30,7 @@ const SplashScreen = () => {
             <img
               src="/logo-white.png"
               alt="Logo"
-              className="w-40 md:w-98 relative z-10 animate-fade-in"
+              className="w-80 md:w-100 relative z-10 animate-fade-in"
               style={{
                 filter: 'drop-shadow(0 0 20px rgba(251, 191, 36, 0.8)) drop-shadow(0 0 40px rgba(217, 119, 6, 0.6))',
               }}

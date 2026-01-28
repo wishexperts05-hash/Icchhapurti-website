@@ -121,7 +121,7 @@ export default function OurProducts({ countryCurrency ,country}) {
       };
 
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/user/cart/addToCart`,
+        `${import.meta.env.VITE_API_URL}/api/user/cart/addToCart?&currencyCode=${countryCurrency || "INR"}`,
         {
           method: "POST",
           headers: {
@@ -139,9 +139,9 @@ export default function OurProducts({ countryCurrency ,country}) {
       }
 
       if (result.success) {
-        const oldCount = Number(localStorage.getItem("cart")) || 0;
-        localStorage.setItem("cart", oldCount + 1);
-        setCount(oldCount + 1);
+     
+        localStorage.setItem("cart", result.data.products.length);
+        setCount(result.data.products.length);
       }
 
       window.dispatchEvent(new CustomEvent("cartUpdated", { detail: result }));

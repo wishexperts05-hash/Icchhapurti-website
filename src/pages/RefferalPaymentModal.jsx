@@ -1,26 +1,45 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { BsCashCoin } from 'react-icons/bs';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Loader2, Lock, AlertCircle, CheckCircle, Package, CreditCard, Wallet, ArrowLeft, ArrowRight, ShieldCheck, Truck } from 'lucide-react';
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+    Loader2,
+    AlertCircle,
+    CheckCircle,
+    Package,
+    CreditCard,
+    ArrowLeft,
+    ArrowRight,
+    ShieldCheck,
+    Truck,
+} from "lucide-react";
 
-import RegistrationModal from '../components/RegistrationModal';
-import LoginModal from '../components/LoginModal';
-import AddressModal from '../components/AddressModal';
-import { AlertTriangle } from 'lucide-react';
-import ErrorModal from '../components/ErrorModal';
-import { useHeader } from '../context/HeaderContext';
+import RegistrationModal from "../components/RegistrationModal";
+import LoginModal from "../components/LoginModal";
+import AddressModal from "../components/AddressModal";
+import { AlertTriangle } from "lucide-react";
+import ErrorModal from "../components/ErrorModal";
+import { useHeader } from "../context/HeaderContext";
 import Confetti from "react-confetti";
 import { X, Gift } from "lucide-react";
-import ProgressOfferBar from '../components/ProgressOfferBar';
-import CartSidebar from '../components/CartSidebar';
-import OfferDisplay from '../components/OfferDisplay';
-import ReferralCode from '../components/RefferalcodeBox';
+import ProgressOfferBar from "../components/ProgressOfferBar";
+import CartSidebar from "../components/CartSidebar";
+import OfferDisplay from "../components/OfferDisplay";
+import ReferralCode from "../components/RefferalcodeBox";
+import ReferralCode1 from "../components/ReferralCode1";
 
-
-export default function PaymentModal({ isOpen, onClose, country_name = "India", countryCurrency = "INR" }) {
+export default function RefferalPaymentModal({
+    isOpen,
+    onClose,
+    country_name = "India",
+    countryCurrency = "INR",
+    productId,
+    productName,
+    price,
+    productImg,
+    refferalCode,
+}) {
     const { pathname } = useLocation();
     const { setCount } = useHeader();
     useEffect(() => {
@@ -32,12 +51,12 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
             top: 0,
             behavior: "smooth",
         });
-    }
+    };
 
-    // refferal section 
-    const [referralCode, setReferralCode] = useState('');
-    const [referralCoins, setRefferalCoin] = useState(0)
-    const [selectedMethod, setSelectedMethod] = useState('razorpay');
+    // refferal section
+    const [referralCode, setReferralCode] = useState(refferalCode);
+    const [referralCoins, setRefferalCoin] = useState(0);
+    const [selectedMethod, setSelectedMethod] = useState("razorpay");
     const [couponCode, setCouponCode] = useState("");
     const [balance, setBalance] = useState(0);
     const [addresses, setAddresses] = useState([]);
@@ -45,18 +64,12 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
     const [checkoutDetails, setDetails] = useState(null);
     const [couponDiscount, setDiscount] = useState(0);
     const [showCouponPopup, setshowCouponPopup] = useState(false);
-    const [offers, setOffers] = useState([])
-
+    const [offers, setOffers] = useState([]);
 
     useEffect(() => {
-        const referralValue = Number(
-            String(couponDiscount).replace(/[₹,]/g, "")
-        );
+        const referralValue = Number(String(couponDiscount).replace(/[₹,]/g, ""));
 
-
-        if (referralValue > 0
-
-        ) {
+        if (referralValue > 0) {
             setshowCouponPopup(true);
 
             const timer = setTimeout(() => {
@@ -65,23 +78,20 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
 
             return () => clearTimeout(timer);
         }
-    }, [couponDiscount,]);
-
-
+    }, [couponDiscount]);
 
     // Auth state
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [showAuthModal, setShowAuthModal] = useState(false);
 
-
+    console.log(cartItems, referralCode, isAuthenticated, addresses, "cartItems");
     // Loading states
     const [initialLoading, setInitialLoading] = useState(true);
     const [checkoutLoading, setCheckoutLoading] = useState(false);
 
-
     // Error and success states
     const [error, setError] = useState(null);
-    const [successMsg, setSuccessMsg] = useState('');
+    const [successMsg, setSuccessMsg] = useState("");
     const [checkoutSuccess, setCheckoutSuccess] = useState(false);
 
     const { t } = useTranslation();
@@ -89,46 +99,55 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
 
     const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-    const [addressIndex, setAddressesIndex] = useState(0)
+    const [addressIndex, setAddressesIndex] = useState(0);
 
     const paymentMethods = [
-        { id: 'wallet', name: t('payment.methods.wallet'), balance: balance, icon: 'wallet' },
-        { id: 'razorpay', name: 'Online (Card/UPI/Netbanking)', icon: 'razorpay' },
+        {
+            id: "wallet",
+            name: t("payment.methods.wallet"),
+            balance: balance,
+            icon: "wallet",
+        },
+        { id: "razorpay", name: "Online (Card/UPI/Netbanking)", icon: "razorpay" },
     ];
 
+   
 
-    const [localCartItems, setItems] = useState([])
-
-
-    // Check authentication on mount
     useEffect(() => {
         const token = localStorage.getItem("token");
+
+        const products = [
+            {
+                productId,
+                productName,
+                price,
+                quantity: 1,
+                image: productImg,
+                totalAmount: price,
+            },
+        ];
+
+        setCartItems(products);
+
         if (token) {
             setIsAuthenticated(true);
             initializePaymentPage();
         } else {
-            const cart = JSON.parse(localStorage.getItem("cartItems"))
-            setItems(cart)
             setIsAuthenticated(false);
             setShowAuthModal(true);
             setInitialLoading(false);
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated]); // ✅ EMPTY dependency
 
 
     useEffect(() => {
-        if (cartItems.length > 0) {
-            fetchOffers()
-        }
-
-    }, [cartItems])
-
+        fetchOffers();
+    }, [productId]);
 
     // Load Razorpay Script
     useEffect(() => {
-
-        const script = document.createElement('script');
-        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
         script.async = true;
         document.body.appendChild(script);
 
@@ -143,14 +162,22 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editAddressId, setEditAddressId] = useState(null);
 
-
     useEffect(() => {
-        if (isAuthenticated && cartItems.length > 0 && addresses.length > 0) {
+        if (
+            isAuthenticated &&
+            cartItems.length > 0 &&
+            addresses.length > 0
+        ) {
             fetchCheckOutDetails();
         }
-
-    }, [isAuthenticated, cartItems, couponCode, referralCode, addressIndex])
-
+    }, [
+        isAuthenticated,
+        cartItems,
+        addresses,      // ✅ MISSING
+        couponCode,
+        referralCode,
+        addressIndex
+    ]);
 
 
     const [currentStep, setCurrentStep] = useState(1);
@@ -168,11 +195,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
         setError(null);
 
         try {
-            await Promise.all([
-                fetchBalance(),
-                fetchCartData(),
-                fetchAddresses()
-            ]);
+            await Promise.all([fetchBalance(), fetchAddresses()]);
         } catch (err) {
             console.error("Initialization error:", err);
             setError("Failed to load payment page. Please try again.");
@@ -185,46 +208,20 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
         try {
             const headers = {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json",
             };
 
             const balanceRes = await fetch(
                 `${import.meta.env.VITE_API_URL}/api/user/walletAndTransaction/getWalletBalance`,
-                { headers }
+                { headers },
             );
 
-            if (!balanceRes.ok) throw new Error('Failed to fetch balance');
+            if (!balanceRes.ok) throw new Error("Failed to fetch balance");
 
             const balanceData = await balanceRes.json();
             setBalance(balanceData.data || 0);
         } catch (err) {
             console.error("Balance fetch failed:", err);
-        }
-    };
-
-    const fetchCartData = async () => {
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems?currencyCode=${countryCurrency || "INR"}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-
-            if (!response.ok) throw new Error('Failed to fetch cart data');
-
-            const data = await response.json();
-
-            if (!data?.data || data.data?.length === 0) {
-                throw new Error('Your cart is empty');
-            }
-
-            setCartItems(data.data || []);
-        } catch (err) {
-            setError(err.message);
-            console.error('Error fetching cart:', err);
-            throw err;
         }
     };
 
@@ -237,7 +234,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
                         "Content-Type": "application/json",
                     },
-                }
+                },
             );
 
             const data = await res.json();
@@ -245,7 +242,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
             if (data.success && data.data && data.data.length > 0) {
                 setAddresses(data.data);
             } else {
-                throw new Error('No delivery address found. Please add an address.');
+                throw new Error("No delivery address found. Please add an address.");
             }
         } catch (error) {
             console.error("Failed to fetch addresses:", error);
@@ -256,9 +253,9 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
 
     const fetchCheckOutDetails = async () => {
         try {
-            setCheckoutLoading(true)
+            setCheckoutLoading(true);
             const items = cartItems.map((item) => ({
-                productId: item.product._id,
+                productId: item.productId,
                 quantity: item.quantity,
             }));
 
@@ -267,20 +264,18 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                 shippingAddress: addresses[addressIndex || 0],
                 ...(couponCode && { couponCode }),
                 ...(referralCode && { referralCode }),
-
             };
-
 
             const res = await fetch(
                 `${import.meta.env.VITE_API_URL}/api/user/orders/checkout?currency=${countryCurrency}&country_name=${country_name}`,
                 {
-                    method: 'POST',
+                    method: "POST",
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(body)
-                }
+                    body: JSON.stringify(body),
+                },
             );
 
             const data = await res.json();
@@ -288,7 +283,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
             if (data.success) {
                 setDiscount(data.data.discountOff);
                 setDetails(data.data);
-                setRefferalCoin(data.data.referralCoinEarn)
+                setRefferalCoin(data.data.referralCoinEarn);
                 setOrderToken(data.orderToken);
                 if (data.data.referralCode) {
                     setReferralCode(data.data.referralCode);
@@ -304,22 +299,20 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
         }
     };
 
-
-
     const createRazorpayOrder = async () => {
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/api/user/orders/createOrder?currency=${countryCurrency}&country_name=${country_name}`,
                 {
                     orderToken,
-                    paymentMethod: "Online"
+                    paymentMethod: "Online",
                 },
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
-                        "Content-Type": "application/json"
-                    }
-                }
+                        "Content-Type": "application/json",
+                    },
+                },
             );
 
             if (res.data.success) {
@@ -339,25 +332,25 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                 `${import.meta.env.VITE_API_URL}/api/user/orders/createOrder?currency=${countryCurrency}&country_name=${country_name}`,
                 {
                     orderToken,
-                    paymentMethod: "Wallet"
+                    paymentMethod: "Wallet",
                 },
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
-                        "Content-Type": "application/json"
-                    }
-                }
+                        "Content-Type": "application/json",
+                    },
+                },
             );
 
             if (res.data.success) {
-                setCurrentStep(3)
+                setCurrentStep(3);
                 setCheckoutSuccess(true);
 
                 setCount(0);
                 setTimeout(() => {
                     setCheckoutSuccess(false);
                     onClose();
-                    Navigate('/orders');
+                    Navigate("/orders");
                 }, 5000);
             } else {
                 throw new Error(res.data.message || "Failed to create order");
@@ -377,9 +370,9 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
-                        "Content-Type": "application/json"
-                    }
-                }
+                        "Content-Type": "application/json",
+                    },
+                },
             );
 
             return res.data.success;
@@ -397,9 +390,10 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                 key: razorpayOrder.key_id,
                 amount: razorpayOrder.amount,
                 currency: razorpayOrder.currency,
-                name: 'ICCHHAPURTI',
-                description: 'Order Payment',
-                image: "https://res.cloudinary.com/dld5dqpz8/image/upload/v1767092536/icchhaPurti_2_onw6az.png",
+                name: "ICHHAPURTI",
+                description: "Order Payment",
+                image:
+                    "https://res.cloudinary.com/dld5dqpz8/image/upload/v1767092536/icchhaPurti_2_onw6az.png",
                 order_id: razorpayOrder.razorpayOrderId,
                 handler: async function (response) {
                     try {
@@ -407,7 +401,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_signature: response.razorpay_signature,
-                            orderId: razorpayOrder.orderId
+                            orderId: razorpayOrder.orderId,
                         });
 
                         if (isVerified) {
@@ -418,43 +412,43 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                             setTimeout(() => {
                                 setCheckoutSuccess(false);
                                 onClose();
-                                Navigate('/orders');
+                                Navigate("/orders");
                             }, 2000);
                         } else {
-                            throw new Error('Payment verification failed');
+                            throw new Error("Payment verification failed");
                         }
                     } catch (err) {
                         setCheckoutLoading(false);
-                        setError(err.message || 'Payment verification failed');
+                        setError(err.message || "Payment verification failed");
                         scrollToTop();
                         setTimeout(() => setError(null), 4000);
                     }
                 },
                 prefill: {
-                    name: user.name || '',
-                    email: user.email || '',
-                    contact: user.phone || ''
+                    name: user.name || "",
+                    email: user.email || "",
+                    contact: user.phone || "",
                 },
                 notes: {
-                    address: addresses[addressIndex || 0]?.address || ''
+                    address: addresses[addressIndex || 0]?.address || "",
                 },
                 theme: {
-                    color: '#F59E0B'
+                    color: "#F59E0B",
                 },
                 modal: {
                     ondismiss: function () {
                         setCheckoutLoading(false);
-                        setError('Payment cancelled by user');
+                        setError("Payment cancelled by user");
                         setTimeout(() => setError(null), 3000);
-                    }
-                }
+                    },
+                },
             };
 
             const razorpay = new window.Razorpay(options);
             razorpay.open();
         } catch (error) {
             console.error("Razorpay payment error:", error);
-            setError(error.message || 'Failed to initiate payment');
+            setError(error.message || "Failed to initiate payment");
             setTimeout(() => setError(null), 4000);
             setCheckoutLoading(false);
             scrollToTop();
@@ -468,12 +462,12 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
         }
 
         if (!cartItems.length) {
-            alert(t('payment.alerts.cart_empty'));
+            alert(t("payment.alerts.cart_empty"));
             return;
         }
 
         if (!addresses[addressIndex || 0]) {
-            alert('Please select a delivery address');
+            alert("Please select a delivery address");
             scrollToTop();
             return;
         }
@@ -482,12 +476,13 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
         setError(null);
 
         try {
-            if (selectedMethod === 'razorpay') {
+            if (selectedMethod === "razorpay") {
                 await handleRazorpayPayment();
-            } else if (selectedMethod === 'wallet') {
-                const finalAmount = (checkoutDetails?.grandTotal || 0) - (couponDiscount || 0);
+            } else if (selectedMethod === "wallet") {
+                const finalAmount =
+                    (checkoutDetails?.grandTotal || 0) - (couponDiscount || 0);
                 if (balance < finalAmount) {
-                    setError('Insufficient wallet balance');
+                    setError("Insufficient wallet balance");
                     setCheckoutLoading(false);
                     scrollToTop();
                     return;
@@ -496,7 +491,10 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
             }
         } catch (error) {
             console.error("Checkout Error:", error);
-            const errorMsg = error.response?.data?.message || error.message || t('payment.alerts.something_wrong');
+            const errorMsg =
+                error.response?.data?.message ||
+                error.message ||
+                t("payment.alerts.something_wrong");
             setError(errorMsg);
             setTimeout(() => setError(null), 4000);
             setCheckoutLoading(false);
@@ -506,17 +504,17 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
 
     const fetchOffers = async () => {
         try {
-            const productIds = cartItems.map(item => item.product._id)
+            const productIds = [productId];
             const res = await fetch(
                 `${import.meta.env.VITE_API_URL}/api/user/orders/offers`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
                     },
                     body: JSON.stringify({ productIds }),
-                }
+                },
             );
 
             if (!res.ok) {
@@ -531,12 +529,12 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
         }
     };
 
+    const totalItems = cartItems.reduce(
+        (sum, item) => sum + Number(item.quantity),
+        0,
+    );
 
-
-
-    const totalItems = cartItems.reduce((sum, item) => sum + Number(item.quantity), 0);
-
-    const [showWarning, setWarning] = useState()
+    const [showWarning, setWarning] = useState();
 
     // Icon Components
     const WalletIcon = () => (
@@ -561,7 +559,6 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
         };
     }, []);
 
-
     if (!isOpen) return null;
 
     // Show critical error modal only for initialization errors
@@ -569,19 +566,14 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
                 <div className="bg-white rounded-xl p-5 w-full max-w-sm shadow-lg text-center">
-
                     {/* Icon */}
                     <AlertCircle className="w-10 h-10 text-red-500 mx-auto mb-3" />
 
                     {/* Title */}
-                    <h3 className="text-lg font-semibold text-gray-900">
-                        Payment Error
-                    </h3>
+                    <h3 className="text-lg font-semibold text-gray-900">Payment Error</h3>
 
                     {/* Message */}
-                    <p className="text-sm text-gray-600 mt-2 mb-5">
-                        {error}
-                    </p>
+                    <p className="text-sm text-gray-600 mt-2 mb-5">{error}</p>
 
                     {/* Actions */}
                     <div className="flex gap-3 justify-center">
@@ -602,17 +594,13 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                             Back to Cart
                         </button>
                     </div>
-
                 </div>
             </div>
         );
     }
 
-
     return (
         <div className="fixed inset-0 z-[9999] h-screen backdrop-blur-[2px] bg-black/20  ">
-
-
             <CartSidebar
                 isOpen={cartSidebarOpen}
                 onClose={() => setCartSidebarOpen(false)}
@@ -629,11 +617,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                     </button>
 
                     <div className="mx-auto">
-                        <img
-                            src="/logo.png"
-                            alt="Ichhapurti"
-                            className="h-12 md:h-14"
-                        />
+                        <img src="/logo.png" alt="Ichhapurti" className="h-12 md:h-14" />
                     </div>
 
                     <div className="absolute right-4">
@@ -662,8 +646,12 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
                             <CheckCircle className="w-8 h-8 text-green-500" />
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-1">Payment completed!</h3>
-                        <p className="text-gray-600 text-sm">Thank you for your purchase. Redirecting...</p>
+                        <h3 className="text-xl font-bold text-gray-900 mb-1">
+                            Payment completed!
+                        </h3>
+                        <p className="text-gray-600 text-sm">
+                            Thank you for your purchase. Redirecting...
+                        </p>
                     </div>
                 </div>
             )}
@@ -681,7 +669,8 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                     Leave Checkout?
                                 </h3>
                                 <p className="text-gray-600 text-sm">
-                                    Your order is not complete yet. If you leave now, your items will remain in your cart.
+                                    Your order is not complete yet. If you leave now, your items
+                                    will remain in your cart.
                                 </p>
                             </div>
                         </div>
@@ -689,17 +678,17 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                         <div className="flex gap-3 mt-6">
                             <button
                                 onClick={() => setWarning(false)}
-                                className="flex-1 px-4 py-2.5 bg-purple-900 text-white rounded-lg font-medium hover:bg-purple-800 transition-colors"
+                                className="flex-1 px-4 py-2.5 bg-purple-900 cursor-pointer text-white rounded-lg font-medium hover:bg-purple-800 transition-colors"
                             >
                                 Continue Checkout
                             </button>
                             <button
                                 onClick={() => {
-                                    setWarning(false);
-                                    setCartSidebarOpen(true);
+                                    // setWarning(false);
+                                    // setCartSidebarOpen(true);
                                     onClose();
                                 }}
-                                className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                                className="flex-1 cursor-pointer px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
                             >
                                 Close
                             </button>
@@ -749,39 +738,50 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                 </div>
             )}
 
-
             <div className="relative z-10 h-[calc(100vh-4rem)] overflow-y-auto pt-[env(safe-area-inset-top)]">
                 <div className="max-w-xl mx-auto">
                     <div className="bg-gray-50">
                         {/* Order Summary Section */}
                         <div className="mx-auto px-2 py-6">
                             <div className="bg-white rounded-lg px-1 shadow-sm overflow-hidden">
-
-                                {<ProgressOfferBar confettiOrigin={{ x: 0.5, y: 0.2 }} currentStep={currentStep} />}
+                                {
+                                    <ProgressOfferBar
+                                        confettiOrigin={{ x: 0.5, y: 0.2 }}
+                                        currentStep={currentStep}
+                                    />
+                                }
 
                                 {(() => {
-                                    let items = isAuthenticated ? cartItems : localCartItems || [];
+                                    let items = cartItems || [];
 
                                     if (!items?.length) return null;
 
-                                    const parseAmount = (amount) => Number(String(amount || 0).replace(/[^0-9.]/g, ""));
+                                    const parseAmount = (amount) =>
+                                        Number(String(amount || 0).replace(/[^0-9.]/g, ""));
                                     const referral = Number(couponDiscount) || 0;
 
                                     const totalAmount = Math.max(
-                                        items.reduce((sum, item) => sum + parseAmount(item.totalAmount), 0) - referral,
-                                        0
+                                        items.reduce(
+                                            (sum, item) => sum + parseAmount(item.totalAmount),
+                                            0,
+                                        ) - referral,
+                                        0,
                                     );
 
                                     const handleQuantityChange = (itemId, delta) => {
                                         const updatedItems = items.map((item) => {
-                                            if (item._id === itemId) {
+                                            if (item.productId === itemId) {
                                                 const newQty = Math.max(item.quantity + delta, 1);
-                                                return { ...item, quantity: newQty, totalAmount: newQty * parseAmount(item.product.price) };
+                                                return {
+                                                    ...item,
+                                                    quantity: newQty,
+                                                    totalAmount: newQty * parseAmount(item.price),
+                                                };
                                             }
                                             return item;
                                         });
                                         if (isAuthenticated) setCartItems(updatedItems);
-                                        else setItems(updatedItems);
+                                        else setCartItems(updatedItems);
                                     };
 
                                     return (
@@ -790,35 +790,67 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                                 <div className="rounded-lg w-full overflow-hidden shadow-sm">
                                                     <div className="flex items-center justify-between p-2 border-b border-gray-100">
                                                         <h3 className="font-bold text-gray-900">
-                                                            Order Details <span className="font-normal ml-1">({items.length} Items)</span>
+                                                            Order Details{" "}
+                                                            <span className="font-normal ml-1">
+                                                                ({items.length} Items)
+                                                            </span>
                                                         </h3>
                                                     </div>
 
                                                     <div className="overflow-y-auto max-h-[35vh] p-2">
                                                         {items.map((item) => (
-                                                            <div key={item._id} className="flex gap-2 p-2 border border-gray-100 rounded hover:shadow transition-shadow">
+                                                            <div
+                                                                key={item._id}
+                                                                className="flex gap-2 p-2 border border-gray-100 rounded hover:shadow transition-shadow"
+                                                            >
                                                                 <img
-                                                                    src={item.product?.image || item.product?.images?.[0]}
+                                                                    src={item?.image}
                                                                     alt={item.name}
                                                                     className="w-16 h-16 object-cover rounded"
                                                                 />
                                                                 <div className="flex-1 min-w-0">
-                                                                    <h4 className="font-semibold text-gray-900 truncate">{item.product.name}</h4>
+                                                                    <h4 className="font-semibold text-gray-900 truncate">
+                                                                        {item.name}
+                                                                    </h4>
                                                                     <div className="flex items-center justify-between mt-1">
                                                                         <div className="flex items-center gap-1">
                                                                             <button
-                                                                                onClick={() => handleQuantityChange(item._id, -1)}
+                                                                                onClick={() =>
+                                                                                    handleQuantityChange(
+                                                                                        item.productId,
+                                                                                        -1,
+                                                                                    )
+                                                                                }
                                                                                 className="px-2 py-0.5 bg-gray-200 rounded"
-                                                                            >−</button>
-                                                                            <span className="px-2">{item.quantity}</span>
+                                                                            >
+                                                                                −
+                                                                            </button>
+                                                                            <span className="px-2">
+                                                                                {item.quantity}
+                                                                            </span>
                                                                             <button
-                                                                                onClick={() => handleQuantityChange(item._id, 1)}
+                                                                                onClick={() =>
+                                                                                    handleQuantityChange(
+                                                                                        item.productId,
+                                                                                        1,
+                                                                                    )
+                                                                                }
                                                                                 className="px-2 py-0.5 bg-gray-200 rounded"
-                                                                            >+</button>
+                                                                            >
+                                                                                +
+                                                                            </button>
                                                                         </div>
-                                                                        <p className="font-medium text-gray-900">{item?.totalAmount?.toLocaleString("en-IN")}</p>
+                                                                        <p className="font-medium text-gray-900">
+                                                                            {item?.totalAmount?.toLocaleString(
+                                                                                "en-IN",
+                                                                            )}
+                                                                        </p>
                                                                     </div>
-                                                                    {item.discount > 0 && <p className="text-green-600 font-medium">{item.discount}% OFF</p>}
+                                                                    {item.discount > 0 && (
+                                                                        <p className="text-green-600 font-medium">
+                                                                            {item.discount}% OFF
+                                                                        </p>
+                                                                    )}
                                                                 </div>
                                                             </div>
                                                         ))}
@@ -833,7 +865,9 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                                         )}
                                                         <div className="flex justify-between font-bold mt-1">
                                                             <span>Total</span>
-                                                            <span>₹{totalAmount.toLocaleString("en-IN")}</span>
+                                                            <span>
+                                                                ₹{totalAmount.toLocaleString("en-IN")}
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -841,38 +875,6 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                         </div>
                                     );
                                 })()}
-
-                                {/* Savings Banner */}
-                                {/* {(() => {
-                                    let savings = 0;
-                                    const parseAmount = (amount) => {
-                                        if (!amount) return 0;
-                                        return Number(String(amount).replace(/[^0-9.]/g, ""));
-                                    };
-
-                                    const formatCurrency = (value) => `₹${value.toFixed(2)}`;
-                                    if (isAuthenticated && checkoutDetails) {
-                                        const referral = parseAmount(checkoutDetails.couponDiscount);
-                                        savings = referral;
-                                    }
-
-                                    if (savings <= 0) return null;
-
-                                    return (
-                                        <div className="text-amber-500 border-l-4 border-amber-500 px-6 py-4 rounded-lg shadow-sm mb-4">
-                                            <p className="text-amber-500 font-bold text-sm sm:text-base">
-                                                🎉 Yay! You've saved{" "}
-                                                <span className="font-bold">
-                                                    {formatCurrency(savings)}
-                                                </span>{" "}
-                                                so far
-                                            </p>
-                                            <p className="text-amber-500 font-semibold text-xs mt-1">
-                                                Extra savings applied automatically at checkout
-                                            </p>
-                                        </div>
-                                    );
-                                })()} */}
 
                                 <RegistrationModal
                                     isOpen={registerModal}
@@ -899,24 +901,31 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                                 Continue to Checkout
                                             </h2>
                                             <p className="text-gray-600 text-sm">
-                                                Choose how you'd like to proceed. It only takes a few seconds ✨
+                                                Choose how you'd like to proceed. It only takes a few
+                                                seconds ✨
                                             </p>
                                         </div>
 
                                         <div className="grid grid-cols-3 gap-3">
                                             <div className="rounded-xl p-3 text-center border border-gray-200 bg-gray-50">
                                                 <ShieldCheck className="w-7 h-7 text-green-500 mx-auto mb-1" />
-                                                <p className="text-gray-800 text-xs font-medium">Secure Payment</p>
+                                                <p className="text-gray-800 text-xs font-medium">
+                                                    Secure Payment
+                                                </p>
                                             </div>
 
                                             <div className="rounded-xl p-3 text-center border border-gray-200 bg-gray-50">
                                                 <Truck className="w-7 h-7 text-blue-500 mx-auto mb-1" />
-                                                <p className="text-gray-800 text-xs font-medium">Fast Delivery</p>
+                                                <p className="text-gray-800 text-xs font-medium">
+                                                    Fast Delivery
+                                                </p>
                                             </div>
 
                                             <div className="rounded-xl p-3 text-center border border-gray-200 bg-gray-50">
                                                 <Package className="w-7 h-7 text-amber-500 mx-auto mb-1" />
-                                                <p className="text-gray-800 text-xs font-medium">Quality Product</p>
+                                                <p className="text-gray-800 text-xs font-medium">
+                                                    Quality Product
+                                                </p>
                                             </div>
                                         </div>
 
@@ -929,7 +938,9 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
 
                                         <div className="flex items-center gap-3">
                                             <div className="flex-1 h-px bg-gray-200"></div>
-                                            <span className="text-gray-400 text-xs uppercase">or</span>
+                                            <span className="text-gray-400 text-xs uppercase">
+                                                or
+                                            </span>
                                             <div className="flex-1 h-px bg-gray-200"></div>
                                         </div>
 
@@ -951,7 +962,9 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                         <div className="flex items-start justify-between gap-3">
                                             <div className="flex-1 text-sm text-gray-800 leading-snug">
                                                 <p>
-                                                    <span className="text-gray-600">{t("cart.deliveryAddress.deliverTo")} </span>
+                                                    <span className="text-gray-600">
+                                                        {t("cart.deliveryAddress.deliverTo")}{" "}
+                                                    </span>
                                                     <span className="font-semibold">
                                                         {addresses[addressIndex]?.fullName}
                                                     </span>
@@ -981,64 +994,19 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                     </div>
                                 )}
 
-                                {
-                                    offers.length > 0 && <OfferDisplay offers={offers}
+                                {offers.length > 0 && (
+                                    <OfferDisplay
+                                        offers={offers}
                                         referralCode={referralCode}
                                         setCouponCode={setCouponCode}
                                         couponCode={couponCode}
-                                        isAuthenticated={isAuthenticated} />
-                                }
+                                        isAuthenticated={isAuthenticated}
+                                    />
+                                )}
 
                                 {isAuthenticated && checkoutDetails && (
                                     <>
-                                        {/* <div className="my-2">
-                                            {!showCoupon ? (
-                                                <div className="flex justify-end">
-                                                    <button
-                                                        onClick={() => setCoupon(true)}
-                                                        className="text-sm text-orange-400 hover:underline"
-                                                    >
-                                                        Enter a Coupon
-                                                    </button>
-                                                </div>
-                                            ) : (
-                                                <div className="flex items-center gap-2">
-                                                    <input
-                                                        type="text"
-                                                        value={couponCode}
-                                                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                                                        placeholder="Enter coupon code"
-                                                        className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-orange-400"
-                                                    />
-
-                                                    <button
-                                                        onClick={applyCoupon}
-                                                        disabled={!couponCode.trim()}
-                                                        className={`px-4 py-2 text-sm font-semibold rounded
-          ${couponCode.trim()
-                                                                ? "bg-orange-500 text-white hover:bg-orange-600"
-                                                                : "bg-gray-200 text-gray-400 cursor-not-allowed"
-                                                            }
-        `}
-                                                    >
-                                                        Apply
-                                                    </button>
-
-                                                    <button
-                                                        onClick={() => {
-                                                            setCoupon(false);
-                                                            setCouponCode("");
-                                                        }}
-                                                        className="text-xs text-gray-400 hover:text-gray-600"
-                                                    >
-                                                        ✕
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div> */}
-
-
-                                        <ReferralCode
+                                        <ReferralCode1
                                             referralCode={referralCode}
                                             setReferralCode={setReferralCode}
                                             couponCode={couponCode}
@@ -1046,19 +1014,21 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
 
                                         {/* refferal code applied */}
 
-                                        {
-                                            referralCoins > 0 && <div className="flex items-start gap-2 p-3 mt-2 border border-green-200 rounded-md bg-green-50">
+                                        {referralCoins > 0 && (
+                                            <div className="flex items-start gap-2 p-3 mt-2 border border-green-200 rounded-md bg-green-50">
                                                 <div className="mt-0.5 text-lg">🪙</div>
                                                 <div className="text-sm text-green-700">
                                                     <span className="font-semibold">
-                                                        Referral code <span className="uppercase">{referralCode}</span> applied.
+                                                        Referral code{" "}
+                                                        <span className="uppercase">{referralCode}</span>{" "}
+                                                        applied.
                                                     </span>{" "}
-                                                    You’ll earn <span className="font-semibold">{referralCoins}</span> coins
-                                                    after completing this purchase.
+                                                    You’ll earn{" "}
+                                                    <span className="font-semibold">{referralCoins}</span>{" "}
+                                                    coins after completing this purchase.
                                                 </div>
                                             </div>
-
-                                        }
+                                        )}
                                         {/* Payment Methods */}
                                         <div className="my-4">
                                             <h3 className="text-black font-medium mb-2 flex items-center gap-2 text-sm">
@@ -1076,10 +1046,16 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                                                    ${selectedMethod === method.id ? "bg-amber-500/10" : ""}`}
                                                     >
                                                         <div className="flex items-center gap-2">
-                                                            <div className={`w-8 h-8 rounded-md flex items-center justify-center
-                                                                       ${selectedMethod === method.id ? "bg-amber-500/20" : "bg-gray-100"}`}>
-                                                                {method.icon === "wallet" && <WalletIcon className="w-4 h-4" />}
-                                                                {method.icon === "razorpay" && <RazorpayIcon className="w-4 h-4" />}
+                                                            <div
+                                                                className={`w-8 h-8 rounded-md flex items-center justify-center
+                                                                       ${selectedMethod === method.id ? "bg-amber-500/20" : "bg-gray-100"}`}
+                                                            >
+                                                                {method.icon === "wallet" && (
+                                                                    <WalletIcon className="w-4 h-4" />
+                                                                )}
+                                                                {method.icon === "razorpay" && (
+                                                                    <RazorpayIcon className="w-4 h-4" />
+                                                                )}
                                                             </div>
 
                                                             <div className="leading-tight">
@@ -1095,8 +1071,10 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                                             </div>
                                                         </div>
 
-                                                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center
-                                                                   ${selectedMethod === method.id ? "border-amber-500" : "border-gray-400"}`}>
+                                                        <div
+                                                            className={`w-4 h-4 rounded-full border flex items-center justify-center
+                                                                   ${selectedMethod === method.id ? "border-amber-500" : "border-gray-400"}`}
+                                                        >
                                                             {selectedMethod === method.id && (
                                                                 <div className="w-2 h-2 rounded-full bg-amber-500" />
                                                             )}
@@ -1116,7 +1094,9 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                                 {/* Total Items */}
                                                 <div className="flex justify-between text-gray-600">
                                                     <span>{t("payment.price_details.total_items")}</span>
-                                                    <span className="text-black font-medium">{totalItems}</span>
+                                                    <span className="text-black font-medium">
+                                                        {totalItems}
+                                                    </span>
                                                 </div>
 
                                                 {/* Divider */}
@@ -1126,7 +1106,9 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                                 <div className="flex justify-between text-gray-600">
                                                     <span>{t("payment.price_details.price")}</span>
                                                     <span className="text-black font-medium">
-                                                        {checkoutDetails?.totalAmount?.toLocaleString("en-IN") || 0}
+                                                        {checkoutDetails?.totalAmount?.toLocaleString(
+                                                            "en-IN",
+                                                        ) || 0}
                                                     </span>
                                                 </div>
 
@@ -1134,18 +1116,12 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                                 <div className="flex justify-between text-gray-600">
                                                     <span>Discount Off</span>
                                                     <span className="text-green-600 font-medium">
-                                                        -{checkoutDetails?.discountOff?.toLocaleString("en-IN") || 0}
+                                                        -
+                                                        {checkoutDetails?.discountOff?.toLocaleString(
+                                                            "en-IN",
+                                                        ) || 0}
                                                     </span>
                                                 </div>
-
-                                                {/* Referral Discount */}
-                                                {/* <div className="flex justify-between text-gray-600">
-                                                    <span>Referral Discount</span>
-                                                    <span className="text-green-600 font-medium">
-                                                        {(Number(String(couponDiscount || checkoutDetails?.couponDiscount || 0).replace(/[₹,\s]/g, ''))) > 0 && "-"}
-                                                        {(couponDiscount || checkoutDetails?.couponDiscount || 0).toLocaleString("en-IN")}
-                                                    </span>
-                                                </div> */}
 
                                                 {/* Divider */}
                                                 <div className="border-t border-dashed border-slate-200 my-1.5"></div>
@@ -1155,10 +1131,21 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                                     <span>Price After Discount</span>
                                                     <span className="text-black">
                                                         {(() => {
-                                                            const currencySymbol = String(checkoutDetails?.totalAmount || '').replace(/[\d,.\s]/g, '') || '';
-                                                            const totalAmount = Number(String(checkoutDetails?.totalAmount || 0).replace(/[₹$€£¥,\s]/g, ''));
-                                                            const discountOff = Number(String(checkoutDetails?.discountOff || 0).replace(/[₹$€£¥,\s]/g, ''));
-                                                            // const couponDiscountAmount = Number(String(couponDiscount || checkoutDetails?.discountOff || 0).replace(/[₹$€£¥,\s]/g, ''));
+                                                            const currencySymbol =
+                                                                String(
+                                                                    checkoutDetails?.totalAmount || "",
+                                                                ).replace(/[\d,.\s]/g, "") || "";
+                                                            const totalAmount = Number(
+                                                                String(
+                                                                    checkoutDetails?.totalAmount || 0,
+                                                                ).replace(/[₹$€£¥,\s]/g, ""),
+                                                            );
+                                                            const discountOff = Number(
+                                                                String(
+                                                                    checkoutDetails?.discountOff || 0,
+                                                                ).replace(/[₹$€£¥,\s]/g, ""),
+                                                            );
+
                                                             const afterDiscount = totalAmount - discountOff;
                                                             return `${currencySymbol}${afterDiscount.toFixed(2)}`;
                                                         })()}
@@ -1169,16 +1156,29 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                                 <div className="bg-slate-50 rounded-md p-2 space-y-1 text-xs">
                                                     <div className="flex justify-between text-gray-600">
                                                         <span className="flex items-center gap-1">
-                                                            <span className="text-slate-400">├</span> Base Price
+                                                            <span className="text-slate-400">├</span> Base
+                                                            Price
                                                         </span>
                                                         <span className="text-gray-700 font-medium">
                                                             {(() => {
-                                                                const currencySymbol = String(checkoutDetails?.totalAmount || '').replace(/[\d,.\s]/g, '') || '';
-                                                                const totalAmount = Number(String(checkoutDetails?.totalAmount || 0).replace(/[₹$€£¥,\s]/g, ''));
-                                                                const discountOff = Number(String(checkoutDetails?.discountOff || 0).replace(/[₹$€£¥,\s]/g, ''));
-                                                                // const couponDiscountAmount = Number(String(couponDiscount || checkoutDetails?.couponDiscount || 0).replace(/[₹$€£¥,\s]/g, ''));
-                                                                const afterDiscount = totalAmount - discountOff
-                                                                const basePrice = afterDiscount - (afterDiscount * 18 / 118);
+                                                                const currencySymbol =
+                                                                    String(
+                                                                        checkoutDetails?.totalAmount || "",
+                                                                    ).replace(/[\d,.\s]/g, "") || "";
+                                                                const totalAmount = Number(
+                                                                    String(
+                                                                        checkoutDetails?.totalAmount || 0,
+                                                                    ).replace(/[₹$€£¥,\s]/g, ""),
+                                                                );
+                                                                const discountOff = Number(
+                                                                    String(
+                                                                        checkoutDetails?.discountOff || 0,
+                                                                    ).replace(/[₹$€£¥,\s]/g, ""),
+                                                                );
+
+                                                                const afterDiscount = totalAmount - discountOff;
+                                                                const basePrice =
+                                                                    afterDiscount - (afterDiscount * 18) / 118;
                                                                 return `${currencySymbol}${basePrice.toFixed(2)}`;
                                                             })()}
                                                         </span>
@@ -1186,15 +1186,27 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
 
                                                     <div className="flex justify-between text-gray-600">
                                                         <span className="flex items-center gap-1">
-                                                            <span className="text-slate-400">└</span> GST (18%)
+                                                            <span className="text-slate-400">└</span> GST
+                                                            (18%)
                                                         </span>
                                                         <span className="text-gray-700 font-medium">
                                                             {(() => {
-                                                                const currencySymbol = String(checkoutDetails?.totalAmount || '').replace(/[\d,.\s]/g, '') || '';
-                                                                const totalAmount = Number(String(checkoutDetails?.totalAmount || 0).replace(/[₹$€£¥,\s]/g, ''));
-                                                                const discountOff = Number(String(checkoutDetails?.discountOff || 0).replace(/[₹$€£¥,\s]/g, ''));
+                                                                const currencySymbol =
+                                                                    String(
+                                                                        checkoutDetails?.totalAmount || "",
+                                                                    ).replace(/[\d,.\s]/g, "") || "";
+                                                                const totalAmount = Number(
+                                                                    String(
+                                                                        checkoutDetails?.totalAmount || 0,
+                                                                    ).replace(/[₹$€£¥,\s]/g, ""),
+                                                                );
+                                                                const discountOff = Number(
+                                                                    String(
+                                                                        checkoutDetails?.discountOff || 0,
+                                                                    ).replace(/[₹$€£¥,\s]/g, ""),
+                                                                );
                                                                 // const couponDiscountAmount = Number(String(couponDiscount || checkoutDetails?.couponDiscount || 0).replace(/[₹$€£¥,\s]/g, ''));
-                                                                const afterDiscount = totalAmount - discountOff
+                                                                const afterDiscount = totalAmount - discountOff;
                                                                 const gstAmount = (afterDiscount * 18) / 118;
                                                                 return `${currencySymbol}${gstAmount.toFixed(2)}`;
                                                             })()}
@@ -1209,7 +1221,10 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                                 <div className="flex justify-between text-gray-600">
                                                     <span>{t("payment.price_details.shipping")}</span>
                                                     <span className="text-black font-medium">
-                                                        +{checkoutDetails?.shippingCharge?.toLocaleString("en-IN") || 0}
+                                                        +
+                                                        {checkoutDetails?.shippingCharge?.toLocaleString(
+                                                            "en-IN",
+                                                        ) || 0}
                                                     </span>
                                                 </div>
 
@@ -1223,14 +1238,12 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                                             {t("payment.price_details.total_amount")}
                                                         </span>
                                                         <span className="text-amber-500 font-bold text-lg">
-                                                            {checkoutDetails?.grandTotal?.toLocaleString("en-IN") || 0}
+                                                            {checkoutDetails?.grandTotal?.toLocaleString(
+                                                                "en-IN",
+                                                            ) || 0}
                                                         </span>
                                                     </div>
-                                                    {/* <div className="flex justify-end mt-0.5">
-                <span className="text-xs text-gray-500 italic">
-                    (GST 18% inclusive)
-                </span>
-            </div> */}
+
                                                 </div>
                                             </div>
                                         </div>
@@ -1272,9 +1285,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
 
                                                     {/* Payment Logos */}
 
-                                                    {
-                                                        selectedMethod === "razorpay" &&
-
+                                                    {selectedMethod === "razorpay" && (
                                                         <div className="flex items-center ml-1">
                                                             {[
                                                                 { src: "/paytm.png", alt: "Paytm" },
@@ -1295,48 +1306,36 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                                                 </div>
                                                             ))}
                                                         </div>
-                                                    }
-
+                                                    )}
 
                                                     <ArrowRight size={18} />
                                                 </>
                                             )}
                                         </button>
 
-
                                         {/* Additional Info */}
                                         <p className="text-center text-gray-400 text-sm mt-4">
-                                            By placing this order, you agree to our terms and conditions
+                                            By placing this order, you agree to our terms and
+                                            conditions
                                         </p>
 
-                                        {selectedMethod === 'razorpay' && (
+                                        {selectedMethod === "razorpay" && (
                                             <div className="text-center mt-3 flex items-center justify-center gap-2">
                                                 <ShieldCheck size={16} className="text-green-400" />
                                                 <p className="text-gray-400 text-xs">
-                                                    Secured by Razorpay - All major cards, UPI & Netbanking accepted
+                                                    Secured by Razorpay - All major cards, UPI &
+                                                    Netbanking accepted
                                                 </p>
                                             </div>
                                         )}
-
-
-                                    </>)
-
-                                }
-
-
-
-
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
 
-
-
                     {/* Alert Messages */}
-                    <ErrorModal
-                        error={error}
-                        onClose={() => setError("")}
-                    />
+                    <ErrorModal error={error} onClose={() => setError("")} />
 
                     {successMsg && (
                         <div className="mb-4 bg-green-500/20 border border-green-500/50 rounded-xl p-4 flex items-start gap-3 animate-slide-down">
@@ -1344,11 +1343,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                             <p className="text-green-300 text-sm">{successMsg}</p>
                         </div>
                     )}
-
-
                 </div>
-
-
             </div>
 
             <style jsx>{`

@@ -82,8 +82,8 @@ function App() {
     fetchWishlist();
   }, [token]);
 
-  const [countryCurrency, setCountryCurrency] = useState(null);
-  const [country, setCountry] = useState(null);
+  const [countryCurrency, setCountryCurrency] = useState("INR");
+  const [country, setCountry] = useState("India");
   useEffect(() => {
 
     getCountryCode()

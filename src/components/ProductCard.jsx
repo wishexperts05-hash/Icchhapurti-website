@@ -89,8 +89,8 @@ export default function ProductCard({ product,country, countryCurrency, onAddToC
                     (sum, item) => sum + item.quantity,
                     0
                 );
-                localStorage.setItem("cart", totalItems);
-                setCount(totalItems);
+                localStorage.setItem("cart", existingCart.length);
+                setCount( existingCart.length);
                 window.dispatchEvent(
                     new CustomEvent("cartUpdated", {
                         detail: { cart: existingCart, count: totalItems },

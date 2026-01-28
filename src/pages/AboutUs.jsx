@@ -191,7 +191,7 @@ export default function AboutUs() {
         {i === 2 ? (
           <video
             src="/coming-soon.mp4"
-            className="w-full  h-[450px] object-cover"
+            className="w-full  h-[350px] object-cover"
             autoPlay
             muted
             loop

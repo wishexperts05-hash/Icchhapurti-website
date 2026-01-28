@@ -301,7 +301,7 @@ const RegistrationModal = ({ isOpen, onClose ,setIsAuthenticated}) => {
         setToken(data.registrationToken);
         setShowOtpModal(true);
         // alert(data.otp);
-         onClose()
+        //  onClose()
       } else {
         setApiError(data.message || "Failed to send OTP");
       }

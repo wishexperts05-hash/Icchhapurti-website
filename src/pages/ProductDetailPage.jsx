@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Star, ShoppingCart, Eye, Share2, X, Copy, ChevronLeft, ChevronRight, Loader2, AlertCircle, Package, Truck, ShieldCheck, RefreshCw } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -17,8 +17,9 @@ import PaymentModal from './PaymentModal';
 import { BsFacebook, BsInstagram, BsWhatsapp } from 'react-icons/bs';
 import { PiPinterestLogo } from 'react-icons/pi';
 import Review from '../components/Review';
+import RefferalPaymentModal from './RefferalPaymentModal';
 
-export default function ProductDetails({ countryCurrency , country }) {
+export default function ProductDetails({ countryCurrency, country }) {
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [reviewData, setReviewsData] = useState();
@@ -33,11 +34,30 @@ export default function ProductDetails({ countryCurrency , country }) {
   const [buyingNow, setBuyingNow] = useState(false);
   const [cartSuccess, setCartSuccess] = useState(false);
   const { setCount } = useHeader();
-  const { id } = useParams();
+  const { id ,name} = useParams();
   const productId = id;
   const Navigate = useNavigate();
   const token = localStorage.getItem("token");
   const [openReview, setOpenReview] = useState(false);
+
+
+  // refferal links
+  const [searchParams] = useSearchParams();
+  const [openPaymentModal, setOpenPaymentModal] = useState(false);
+
+  const referralCode = searchParams.get("ref");
+  const price = searchParams.get("price");
+  const productImg = searchParams.get("productImg");
+  const autoPay = searchParams.get("pay");
+
+  console.log(autoPay,"autoPay")
+  console.log(openPaymentModal,"openPaymentModal")
+
+  useEffect(() => {
+    if (autoPay) {
+      setOpenPaymentModal(true);
+    }
+  }, [autoPay]);
 
 
   const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
@@ -47,7 +67,7 @@ export default function ProductDetails({ countryCurrency , country }) {
     {
       question: "How does the Seven Chakra Pen work?",
       answer:
-        "Charged with multiple rituals like Havans, Mantra Jaap, Mantras Chanting, Moon Charging, and many more rituals that align the energy of the pen to support your emotional balance, clarity, and vibrational alignment with your desires."
+        "Charged with multiple rituals like Mantras Jaaps, Herbs and Minerals Smudging ,Mantras Chanting, Moon Charging, and many more rituals that align the energy of the pen to support your emotional balance, clarity, and vibrational alignment with your desires."
     },
     // {
     //   question: "Can I use the pen for journaling or planning?",
@@ -227,7 +247,7 @@ export default function ProductDetails({ countryCurrency , country }) {
     }
   };
 
- 
+
   //  const [addedToCart, setAddedToCart] = useState(false);
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -280,8 +300,8 @@ export default function ProductDetails({ countryCurrency , country }) {
           (sum, item) => sum + item.quantity,
           0
         );
-        localStorage.setItem("cart", totalItems);
-        setCount(totalItems);
+        localStorage.setItem("cart", existingCart.length);
+        setCount(existingCart.length);
         window.dispatchEvent(
           new CustomEvent("cartUpdated", {
             detail: { cart: existingCart, count: totalItems },
@@ -296,7 +316,7 @@ export default function ProductDetails({ countryCurrency , country }) {
           totalAmount: (product.price || 0) * qty
         };
 
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/addToCart`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/addToCart?currencyCode=${countryCurrency || "INR"}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -311,7 +331,10 @@ export default function ProductDetails({ countryCurrency , country }) {
         }
 
         if (result.success) {
-          setCount(prev => prev + 1)
+    //       setCount(prev => prev + 1)
+    //  localStorage.setItem("cart", result?.data?.products.length);
+        setCount(result.data?.products?.length);
+
           if (isBuyNow) {
             setOpenPayment(true)
           } else {
@@ -410,15 +433,15 @@ export default function ProductDetails({ countryCurrency , country }) {
     ? [currentUserReview, ...reviews.filter(r => !r.isCurrentUser)]
     : reviews;
 
-  const parsedDescription = (() => {
-    try {
-      return typeof product?.description === "string"
-        ? JSON.parse(product.description)
-        : product?.description;
-    } catch {
-      return [];
-    }
-  })();
+  // const parsedDescription = (() => {
+  //   try {
+  //     return typeof product?.description === "string"
+  //       ? JSON.parse(product.description)
+  //       : product?.description;
+  //   } catch {
+  //     return [];
+  //   }
+  // })();
 
 
   if (loading) {
@@ -490,7 +513,19 @@ export default function ProductDetails({ countryCurrency , country }) {
   return (
     <div className="min-h-screen 
  relative overflow-hidden py-4 sm:py-8">
-
+      {openPaymentModal && (
+        <RefferalPaymentModal
+          productId={productId}
+          refferalCode={referralCode}
+          onClose={() => setOpenPaymentModal(false)}
+          isOpen={openPaymentModal}
+          productName={name}
+          price={price}
+          productImg={productImg}
+          country_name={country}
+          countryCurrency={countryCurrency}
+        />
+      )}
 
       {shareOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4">
@@ -611,7 +646,7 @@ export default function ProductDetails({ countryCurrency , country }) {
         <div className="mb-4 sm:mb-6">
           <button
             onClick={() => Navigate(-1)}
-            className="text-cyan-400 hover:text-cyan-300 flex items-center gap-2 text-xs sm:text-sm font-medium transition-colors"
+            className="text-cyan-400 cursor-pointer hover:text-cyan-300 flex items-center gap-2 text-xs sm:text-sm font-medium transition-colors"
           >
             <ChevronLeft size={16} />
             Back to Products
