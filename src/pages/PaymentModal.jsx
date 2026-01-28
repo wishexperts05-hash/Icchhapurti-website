@@ -444,8 +444,8 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                 modal: {
                     ondismiss: function () {
                         setCheckoutLoading(false);
-                        setError('Payment cancelled by user');
-                        setTimeout(() => setError(null), 3000);
+                        // setError('Payment cancelled by You');
+                        // setTimeout(() => setError(null), 3000);
                     }
                 }
             };
