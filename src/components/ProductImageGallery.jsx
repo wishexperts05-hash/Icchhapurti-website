@@ -52,7 +52,7 @@ export default function ProductImageGallery({ images = [], videos = [] }) {
               <img
                 src={currentMedia.url}
                 alt={`Product ${selectedMediaIndex + 1}`}
-                className="w-full h-[450px] object-cover rounded-xl cursor-pointer transition-transform hover:scale-105"
+                className="w-full h-[450px] object-contain rounded-xl cursor-pointer transition-transform hover:scale-105"
                 onError={(e) => {
                   e.target.src = 'https://via.placeholder.com/400x400?text=No+Image';
                 }}
