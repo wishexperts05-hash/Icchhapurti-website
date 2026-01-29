@@ -16,7 +16,7 @@ import { useHeader } from "../context/HeaderContext";
 
 import PaymentModal from "../pages/PaymentModal";
 
-export default function ProductCard({ product,country, countryCurrency, onAddToCart, onWishlistUpdate, openPayment, setOpenPayment, setCartSidebarOpen }) {
+export default function ProductCard({ product, country, countryCurrency, onAddToCart, onWishlistUpdate, openPayment, setOpenPayment, setCartSidebarOpen }) {
     const [addingToCart, setAddingToCart] = useState(false);
     const [buyingNow, setBuyingNow] = useState(false);
     const [addedToCart, setAddedToCart] = useState(false);
@@ -44,6 +44,15 @@ export default function ProductCard({ product,country, countryCurrency, onAddToC
             return () => clearInterval(interval);
         }
     }, [product.images]);
+
+
+    const extractPrice = (price) => {
+        if (typeof price === 'number') return price;
+        if (typeof price === 'string') {
+            return Number(price.replace(/[^0-9.]/g, ''));
+        }
+        return 0;
+    };
 
     const handleAddToCart = async ({ e, isBuyNow }) => {
         e.stopPropagation();
@@ -79,7 +88,7 @@ export default function ProductCard({ product,country, countryCurrency, onAddToC
                 if (existingItemIndex > -1) {
                     existingCart[existingItemIndex].quantity += 1;
                     existingCart[existingItemIndex].totalAmount =
-                        existingCart[existingItemIndex].quantity * product.price;
+                        existingCart[existingItemIndex].quantity * Number(extractPrice(product.price));
                 } else {
                     existingCart.push(cartItem);
                 }
@@ -90,7 +99,7 @@ export default function ProductCard({ product,country, countryCurrency, onAddToC
                     0
                 );
                 localStorage.setItem("cart", existingCart.length);
-                setCount( existingCart.length);
+                setCount(existingCart.length);
                 window.dispatchEvent(
                     new CustomEvent("cartUpdated", {
                         detail: { cart: existingCart, count: totalItems },
