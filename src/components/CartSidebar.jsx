@@ -105,7 +105,7 @@ export default function CartSidebar({ isOpen, onClose, countryCurrency, onChecko
 
     try {
       const numericPrice = extractPrice(price);
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/updateQuantity`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/updateQuantity?currencyCode=${countryCurrency}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
