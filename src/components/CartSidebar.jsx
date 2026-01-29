@@ -220,6 +220,8 @@ export default function CartSidebar({ isOpen, onClose, countryCurrency, onChecko
   };
 
 
+  // const totalPrice = cartItems.reduce((sum, item) => sum + Number(extractPrice(item.totalAmount)), 0);
+  const currencySymbol = cartItems[0]?.currencySymbol ||"₹"
   const totalPrice = cartItems.reduce((sum, item) => sum + Number(extractPrice(item.totalAmount)), 0);
 
   return (
@@ -404,7 +406,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]">
             <div className="sticky bottom-0 z-20 border-t border-gray-200 p-4 bg-white">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-gray-600 font-medium">SubTotal:</span>
-                <span className="text-2xl font-bold text-black">₹{totalPrice.toLocaleString('en-IN')}</span>
+                <span className="text-2xl font-bold text-black">{currencySymbol}{totalPrice.toLocaleString('en-IN')}</span>
               </div>
               <div className="flex items-center justify-between mb-4 text-sm text-gray-500">
                 <p>
