@@ -323,6 +323,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
             );
 
             if (res.data.success) {
+                setCount(0);
                 return res.data.razorpayDetails;
             } else {
                 throw new Error(res.data.message || "Failed to create Razorpay order");

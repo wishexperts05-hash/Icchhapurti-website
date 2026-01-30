@@ -547,7 +547,7 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
                                     <div className="flex gap-2">
-                                        <div ref={el => dropdownRefs.current['countryCode'] = el} className="relative w-28">
+                                        {/* <div ref={el => dropdownRefs.current['countryCode'] = el} className="relative w-28">
                                             <div
                                                 onClick={() => setOpenDropdown(openDropdown === 'countryCode' ? null : 'countryCode')}
                                                 className="border border-gray-300 px-3 py-2.5 rounded-lg text-sm cursor-pointer flex items-center justify-between hover:border-yellow-500 transition-colors"
@@ -587,7 +587,7 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                                                     </div>
                                                 </div>
                                             )}
-                                        </div>
+                                        </div> */}
                                         <input
                                             type="tel"
                                             name="phoneNumber"

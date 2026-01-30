@@ -7,6 +7,7 @@ import StoryBanner from '../components/StoryBanner'
 import ProductVideoSection from '../components/ProductVideoSection'
 import Testimonials from '../components/Testimonials'
 import { Star } from 'lucide-react'
+import ManifestationInfo from '../components/ManifestationInfo'
 
 const HomePage = ({ countryCurrency ,country}) => {
   const { setCount, setList, setUnreadCount } = useHeader();
@@ -140,6 +141,8 @@ const HomePage = ({ countryCurrency ,country}) => {
       <ImageCarousel  countryCurrency={countryCurrency} />
       <WhyChooseUs />
       <OurProducts countryCurrency={countryCurrency} country={country}/>
+
+      <ManifestationInfo/>
       <StoryBanner />
 
       <div className="text-center py-3 my-5">
