@@ -149,14 +149,14 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
             fetchCheckOutDetails();
         }
 
-    }, [isAuthenticated, cartItems, couponCode, referralCode, addressIndex])
+    }, [isAuthenticated, cartItems, couponCode, referralCode, addressIndex,addresses])
 
 
 
     const [currentStep, setCurrentStep] = useState(1);
 
     useEffect(() => {
-        if (addresses.length > 0) {
+        if (addresses?.length > 0) {
             setCurrentStep(2);
         } else {
             setCurrentStep(1);
@@ -170,8 +170,9 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
         try {
             await Promise.all([
                 fetchBalance(),
+
+                fetchAddresses(),
                 fetchCartData(),
-                fetchAddresses()
             ]);
         } catch (err) {
             console.error("Initialization error:", err);
@@ -180,6 +181,10 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
             setInitialLoading(false);
         }
     };
+
+    useEffect(() => {
+        fetchAddresses()
+    }, [addressIndex])
 
     const fetchBalance = async () => {
         try {
@@ -241,12 +246,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
             );
 
             const data = await res.json();
-
-            if (data.success && data.data && data.data.length > 0) {
-                setAddresses(data.data);
-            } else {
-                throw new Error('No delivery address found. Please add an address.');
-            }
+            setAddresses(data.data);
         } catch (error) {
             console.error("Failed to fetch addresses:", error);
             setError(error.message);
@@ -886,6 +886,8 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                 />
 
                                 <AddressModal
+
+                                    addresses={addresses} fetchAddresses={fetchAddresses}
                                     isOpen={isModalOpen}
                                     onClose={() => setIsModalOpen(false)}
                                     addressId={editAddressId}
@@ -946,7 +948,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                     </div>
                                 )}
 
-                                {isAuthenticated && addresses[addressIndex] && (
+                                {isAuthenticated && addresses?.length>0&& (
                                     <div className="mt-1 mb-3 rounded-lg border border-slate-300 p-3">
                                         <div className="flex items-start justify-between gap-3">
                                             <div className="flex-1 text-sm text-gray-800 leading-snug">
@@ -980,16 +982,18 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                         </div>
                                     </div>
                                 )}
-
                                 {
-                                    offers.length > 0 && <OfferDisplay offers={offers}
+                                    addresses?.length == 0 && <button  className="shrink-0 text-xs font-medium cursor-pointer px-3 py-1.5 rounded-md bg-amber-500 hover:bg-amber-600 text-white transition-colors whitespace-nowrap" onClick={() => setIsModalOpen(true)}>Add Address to Continue</button>
+                                }
+                                {
+                                    offers.length > 0 && addresses?.length > 0 && <OfferDisplay offers={offers}
                                         referralCode={referralCode}
                                         setCouponCode={setCouponCode}
                                         couponCode={couponCode}
                                         isAuthenticated={isAuthenticated} />
                                 }
 
-                                {isAuthenticated && checkoutDetails && (
+                                {isAuthenticated && checkoutDetails && addresses.length > 0 &&(
                                     <>
                                         {/* <div className="my-2">
                                             {!showCoupon ? (

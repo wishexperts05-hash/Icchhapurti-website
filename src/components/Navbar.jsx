@@ -434,7 +434,12 @@ bg-center bg-no-repeat
           </div>
 
           {/* Logout Button */}
-          {user && (
+          
+        </div>
+
+       
+        <div className="absolute  bottom-0 left-0 right-0 p-4 sm:p-6 border-t border-gray-200 bg-white">
+         {user && (
             <button
               onClick={() => {
                 localStorage.removeItem("user");
@@ -445,19 +450,12 @@ bg-center bg-no-repeat
                 navigate("/homePage");
                 setMenuOpen(false);
               }}
-              className="mt-6 flex items-center cursor-pointer justify-center gap-3 bg-gradient-to-r from-red-600 to-red-700 text-white py-2.5 sm:py-3 px-4 rounded-lg font-medium hover:shadow-lg hover:shadow-red-600/30 transition-all group text-sm sm:text-base"
+              className=" flex items-center cursor-pointer justify-center gap-3 bg-gradient-to-r from-red-600 to-red-700 text-white py-2.5 sm:py-3 px-4 rounded-lg font-medium hover:shadow-lg hover:shadow-red-600/30 transition-all group text-sm sm:text-base"
             >
               <LogOut size={20} className="group-hover:scale-110 transition-transform" />
               Logout
             </button>
           )}
-        </div>
-
-        {/* Footer */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 border-t border-gray-200 bg-white">
-          <p className="text-xs text-center text-gray-500">
-            © 2024 ICCHAPURTI. All rights reserved.
-          </p>
         </div>
       </div>
 

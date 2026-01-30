@@ -378,7 +378,7 @@ export default function ProductCard({ product, country, countryCurrency, onAddTo
                                 <>
                                     <ShoppingCart size={16} />
                                     <span className="hidden sm:inline">Add to Cart</span>
-                                    <span className="sm:hidden">Add</span>
+                                    <span className="sm:hidden">Add to Cart</span>
                                 </>
                             )}
                         </button>
@@ -397,7 +397,7 @@ export default function ProductCard({ product, country, countryCurrency, onAddTo
                                 <>
                                     <Zap size={16} fill="currentColor" />
                                     <span className="hidden sm:inline">Buy Now</span>
-                                    <span className="sm:hidden">Buy</span>
+                                    <span className="sm:hidden">Buy Now</span>
                                 </>
                             )}
                         </button>

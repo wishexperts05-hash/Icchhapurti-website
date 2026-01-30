@@ -14,6 +14,7 @@ const Register = () => {
     stateIsoCode: "",
     state: "",
     city: "",
+    street: "",
     pinCode: "",
     dob: ""
   });
@@ -193,6 +194,7 @@ const Register = () => {
     if (!formData.country) newErrors.country = "Country is required";
     if (!formData.state) newErrors.state = "State is required";
     if (!formData.city) newErrors.city = "City is required";
+    if (!formData.street) newErrors.street = "street is required";
     if (!formData.pinCode || !/^[0-9]{6}$/.test(formData.pinCode)) newErrors.pinCode = "Pin code must be 6 digits";
     if (!formData.dob) newErrors.dob = "Date of birth is required";
     setErrors(newErrors);
@@ -248,7 +250,7 @@ const Register = () => {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: formData.name, email: formData.email, phoneNumber: formData.phoneNumber, country: formData.country, state: formData.state, city: formData.city, pinCode: formData.pinCode, dob: formData.dob })
+        body: JSON.stringify({ name: formData.name, email: formData.email, phoneNumber: formData.phoneNumber, country: formData.country, state: formData.state, street:formData.street, city: formData.city, pinCode: formData.pinCode, dob: formData.dob })
       });
 
       const data = await response.json();
@@ -456,17 +458,24 @@ const Register = () => {
               {errors.phoneNumber && <p className="text-red-500 text-[10px] mt-0.5">{errors.phoneNumber}</p>}
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-0.5">
-                <label className="block text-md font-medium text-gray-700">Country *</label>
-                <button type="button" onClick={detectUserLocation} disabled={locationLoading} className="text-[10px] text-yellow-600 hover:text-yellow-700 font-semibold flex items-center gap-0.5 disabled:text-gray-400">
-                  <MapPin size={10} />
-                  {locationLoading ? 'Detecting...' : 'Auto-detect'}
-                </button>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <div className="flex items-center justify-between mb-0.5">
+                  <label className="block text-md font-medium text-gray-700">Country *</label>
+                  <button type="button" onClick={detectUserLocation} disabled={locationLoading} className="text-[10px] text-yellow-600 hover:text-yellow-700 font-semibold flex items-center gap-0.5 disabled:text-gray-400">
+                    <MapPin size={10} />
+                    {locationLoading ? 'Detecting...' : 'Auto-detect'}
+                  </button>
+                </div>
+                <SearchDropdown field="country" label="Country" options={filteredCountries} value={formData.country} onSelect={handleSelectCountry} disabled={false} renderOption={(c) => `${c.flag} ${c.name}`} getOptionValue={(c) => c.isoCode} placeholder="Select Country" />
               </div>
-              <SearchDropdown field="country" label="Country" options={filteredCountries} value={formData.country} onSelect={handleSelectCountry} disabled={false} renderOption={(c) => `${c.flag} ${c.name}`} getOptionValue={(c) => c.isoCode} placeholder="Select Country" />
-            </div>
 
+              <div>
+                <label className="block text-md font-medium text-gray-700 mb-0.5">Street*</label>
+                <input type="text" name="street" value={formData.street} onChange={handleChange}  className={`w-full border ${errors.street ? 'border-red-500' : 'border-gray-300'} px-2 py-1.5 rounded text-md focus:outline-none focus:ring-1 focus:ring-yellow-500`} placeholder="Street" />
+                {errors.street && <p className="text-red-500 text-[10px] mt-0.5">{errors.street}</p>}
+              </div>
+            </div>
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="block text-md font-medium text-gray-700 mb-0.5">State *</label>

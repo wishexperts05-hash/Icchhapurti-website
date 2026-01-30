@@ -4,9 +4,9 @@ import { Country, State, City } from 'country-state-city';
 import { Search, ChevronDown, X, MapPin, Edit2, Trash2, Plus } from 'lucide-react';
 import { createPortal } from 'react-dom';
 
-const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) => {
+const AddressModal = ({ isOpen, onClose, setAddressesIndex,addresses, fetchAddresses, addressId = null }) => {
 
-  const [addresses, setAddresses] = useState([]);
+  // const [addresses, setAddresses] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
@@ -23,7 +23,7 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
   const [editMode, setEditMode] = useState(false);
   const [currentEditId, setCurrentEditId] = useState(null);
 
-  
+
 
   // Search states
   const [searchTerms, setSearchTerms] = useState({
@@ -42,16 +42,16 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
   const cities = selectedState ? City.getCitiesOfState(selectedCountry.isoCode, selectedState.isoCode) : [];
 
   // Filtered options based on search
-  const filteredCountryCodes = countries.filter(c => 
+  const filteredCountryCodes = countries.filter(c =>
     `+${c.phonecode} ${c.name}`.toLowerCase().includes(searchTerms.countryCode.toLowerCase())
   );
-  const filteredCountries = countries.filter(c => 
+  const filteredCountries = countries.filter(c =>
     c.name.toLowerCase().includes(searchTerms.country.toLowerCase())
   );
-  const filteredStates = states.filter(s => 
+  const filteredStates = states.filter(s =>
     s.name.toLowerCase().includes(searchTerms.state.toLowerCase())
   );
-  const filteredCities = cities.filter(c => 
+  const filteredCities = cities.filter(c =>
     c.name.toLowerCase().includes(searchTerms.city.toLowerCase())
   );
 
@@ -94,25 +94,25 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
     };
   }, [isOpen]);
 
-  const fetchAddresses = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/address/getAllAddress`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem("token")}`
-        }
-      });
-      if (response.ok) {
-        const { data } = await response.json();
-        setAddresses(data || []);
-      }
-    } catch (error) {
-      console.error('Error fetching addresses:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const fetchAddresses = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/address/getAllAddress`, {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': `Bearer ${localStorage.getItem("token")}`
+  //       }
+  //     });
+  //     if (response.ok) {
+  //       const { data } = await response.json();
+  //       setAddresses(data || []);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching addresses:', error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const resetForm = () => {
     setFormData({
@@ -169,7 +169,7 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
 
   const handleDeleteAddress = async (id) => {
     if (!confirm('Are you sure you want to delete this address?')) return;
-    
+
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/address/deleteAddress/${id}`, {
         method: 'DELETE',
@@ -179,8 +179,9 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
         }
       });
       if (response.ok) {
-        fetchAddresses();
+        await fetchAddresses();
         alert('Address deleted successfully');
+        setAddressesIndex(0)
       }
     } catch (error) {
       console.error('Error deleting address:', error);
@@ -210,8 +211,8 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
   const handleSelectCountryCode = (phonecode) => {
     const matchingCountry = countries.find(c => c.phonecode === phonecode);
     if (matchingCountry) {
-      setFormData(prev => ({ 
-        ...prev, 
+      setFormData(prev => ({
+        ...prev,
         countryCode: phonecode,
         country: matchingCountry.name,
         state: '',
@@ -226,12 +227,12 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
 
   const handleSelectCountry = (countryName) => {
     const country = countries.find(c => c.name === countryName);
-    setFormData(prev => ({ 
-      ...prev, 
-      country: countryName, 
-      countryCode: country?.phonecode || '', 
-      state: '', 
-      city: '' 
+    setFormData(prev => ({
+      ...prev,
+      country: countryName,
+      countryCode: country?.phonecode || '',
+      state: '',
+      city: ''
     }));
     setOpenDropdown(null);
     setSearchTerms(prev => ({ ...prev, country: '' }));
@@ -312,7 +313,7 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
     <div ref={el => dropdownRefs.current[field] = el} className="relative">
       <label className="block text-gray-700 text-sm font-medium mb-2">{label} *</label>
       <div className={`relative ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
-        <div 
+        <div
           onClick={() => !disabled && setOpenDropdown(openDropdown === field ? null : field)}
           className={`w-full bg-white rounded-lg px-4 py-3 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500 cursor-pointer flex items-center justify-between ${errors[field] ? 'ring-2 ring-red-500' : ''}`}
         >
@@ -321,10 +322,10 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
           </span>
           <ChevronDown className="w-5 h-5 text-gray-500" />
         </div>
-        
+
         {openDropdown === field && !disabled && (
           <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-64 overflow-hidden"
-               onMouseDown={(e) => e.preventDefault()}>
+            onMouseDown={(e) => e.preventDefault()}>
             <div className="p-2 border-b border-gray-200">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -402,7 +403,7 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
 
               {loading ? (
                 <div className="text-center py-12 text-gray-500">Loading addresses...</div>
-              ) : addresses.length === 0 ? (
+              ) : addresses?.length === 0 ? (
                 <div className="text-center py-12">
                   <MapPin className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                   <p className="text-gray-500 mb-4">No addresses saved yet</p>
@@ -418,14 +419,14 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {addresses.map((address,i) => (
+                  {addresses?.map((address, i) => (
                     <div
-                    onClick={()=>{
+                      onClick={() => {
                         setAddressesIndex(i)
                         onClose()
-                    }}
+                      }}
                       key={address._id}
-                      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                      className="border cursor-pointer border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
                     >
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-start gap-2">
@@ -442,16 +443,16 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
                         <p className="text-gray-700">{address.country} - {address.pinCode}</p>
                       </div>
                       <div className="ml-7 flex gap-2">
-                      <button
-  onClick={(e) => {
-    e.stopPropagation(); // Add parentheses to actually call the function!
-    handleEditAddress(address._id);
-  }}
-  className="flex items-center gap-1 text-blue-600 hover:text-blue-700 font-medium text-sm"
->
-  <Edit2 className="w-4 h-4" />
-  Edit
-</button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation(); // Add parentheses to actually call the function!
+                            handleEditAddress(address._id);
+                          }}
+                          className="flex items-center gap-1 text-blue-600 hover:text-blue-700 font-medium text-sm"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                          Edit
+                        </button>
                         <button
                           onClick={() => handleDeleteAddress(address._id)}
                           className="flex items-center gap-1 text-red-600 hover:text-red-700 font-medium text-sm"
@@ -472,13 +473,13 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
                 {/* Full Name */}
                 <div>
                   <label className="block text-gray-700 text-sm font-medium mb-2">Full Name *</label>
-                  <input 
-                    type="text" 
-                    name="fullName" 
-                    value={formData.fullName} 
-                    onChange={handleChange} 
-                    placeholder="Enter full name" 
-                    className={inputClass('fullName')} 
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    placeholder="Enter full name"
+                    className={inputClass('fullName')}
                   />
                   {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>}
                 </div>
@@ -488,7 +489,7 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
                   <label className="block text-gray-700 text-sm font-medium mb-2">Mobile Number *</label>
                   <div className="flex gap-2">
                     <div ref={el => dropdownRefs.current['countryCode'] = el} className="relative w-32">
-                      <div 
+                      <div
                         onClick={() => setOpenDropdown(openDropdown === 'countryCode' ? null : 'countryCode')}
                         className={`bg-white border border-gray-300 rounded-lg px-3 py-3 text-gray-800 cursor-pointer flex items-center justify-between ${errors.countryCode ? 'ring-2 ring-red-500' : ''}`}
                       >
@@ -497,10 +498,10 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
                         </span>
                         <ChevronDown className="w-4 h-4 text-gray-500" />
                       </div>
-                      
+
                       {openDropdown === 'countryCode' && (
                         <div className="absolute z-50 w-64 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-64 overflow-hidden"
-                             onMouseDown={(e) => e.preventDefault()}>
+                          onMouseDown={(e) => e.preventDefault()}>
                           <div className="p-2 border-b border-gray-200">
                             <div className="relative">
                               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -535,13 +536,13 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
                         </div>
                       )}
                     </div>
-                    <input 
-                      type="tel" 
-                      name="mobileNumber" 
-                      value={formData.mobileNumber} 
-                      onChange={handleChange} 
-                      placeholder="Enter mobile number" 
-                      className={`flex-1 ${inputClass('mobileNumber')}`} 
+                    <input
+                      type="tel"
+                      name="mobileNumber"
+                      value={formData.mobileNumber}
+                      onChange={handleChange}
+                      placeholder="Enter mobile number"
+                      className={`flex-1 ${inputClass('mobileNumber')}`}
                     />
                   </div>
                   {errors.mobileNumber && <p className="text-red-500 text-xs mt-1">{errors.mobileNumber}</p>}
@@ -589,13 +590,13 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
                 {/* Street */}
                 <div>
                   <label className="block text-gray-700 text-sm font-medium mb-2">Street Address *</label>
-                  <input 
-                    type="text" 
-                    name="street" 
-                    value={formData.street} 
-                    onChange={handleChange} 
-                    placeholder="Enter street address" 
-                    className={inputClass('street')} 
+                  <input
+                    type="text"
+                    name="street"
+                    value={formData.street}
+                    onChange={handleChange}
+                    placeholder="Enter street address"
+                    className={inputClass('street')}
                   />
                   {errors.street && <p className="text-red-500 text-xs mt-1">{errors.street}</p>}
                 </div>
@@ -603,13 +604,13 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
                 {/* Pin Code */}
                 <div>
                   <label className="block text-gray-700 text-sm font-medium mb-2">Pin Code *</label>
-                  <input 
-                    type="text" 
-                    name="pinCode" 
-                    value={formData.pinCode} 
-                    onChange={handleChange} 
-                    placeholder="Enter pin code" 
-                    className={inputClass('pinCode')} 
+                  <input
+                    type="text"
+                    name="pinCode"
+                    value={formData.pinCode}
+                    onChange={handleChange}
+                    placeholder="Enter pin code"
+                    className={inputClass('pinCode')}
                   />
                   {errors.pinCode && <p className="text-red-500 text-xs mt-1">{errors.pinCode}</p>}
                 </div>
@@ -617,15 +618,15 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
 
               {/* Submit Buttons */}
               <div className="flex gap-3 justify-end pt-4 border-t border-gray-200 mt-6">
-                <button 
-                  onClick={handleBackToList} 
+                <button
+                  onClick={handleBackToList}
                   className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
                 >
                   Back to List
                 </button>
-                <button 
-                  onClick={handleSubmit} 
-                  disabled={loading} 
+                <button
+                  onClick={handleSubmit}
+                  disabled={loading}
                   className="px-6 py-2 bg-amber-500 hover:bg-amber-600 disabled:bg-gray-400 text-white font-medium rounded-lg transition-colors disabled:cursor-not-allowed"
                 >
                   {loading ? 'Saving...' : editMode ? 'Update Address' : 'Save Address'}
@@ -635,7 +636,7 @@ const AddressModal = ({ isOpen, onClose,setAddressesIndex, addressId = null }) =
           )}
         </div>
       </div>
-    </div>,document.getElementById('root') || document.body
+    </div>, document.getElementById('root') || document.body
   );
 };
 

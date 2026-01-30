@@ -256,6 +256,15 @@ export default function ProductDetails({ countryCurrency, country }) {
     }
   };
 
+     const extractPrice = (price) => {
+        if (typeof price === 'number') return price;
+        if (typeof price === 'string') {
+            return Number(price.replace(/[^0-9.]/g, ''));
+        }
+        return 0;
+    };
+
+
   const handleAddToCart = async ({ product, e, isBuyNow }) => {
     // e.stopPropagation();
 
@@ -287,13 +296,13 @@ export default function ProductDetails({ countryCurrency, country }) {
           (item) => (item.productId || item.product._id) === cartItem.productId
         );
 
-        if (existingItemIndex > -1) {
-          existingCart[existingItemIndex].quantity += 1;
-          existingCart[existingItemIndex].totalAmount =
-            existingCart[existingItemIndex].quantity * product.price;
-        } else {
-          existingCart.push(cartItem);
-        }
+          if (existingItemIndex > -1) {
+                    existingCart[existingItemIndex].quantity += 1;
+                    existingCart[existingItemIndex].totalAmount =
+                        existingCart[existingItemIndex].quantity * Number(extractPrice(product.price));
+                } else {
+                    existingCart.push(cartItem);
+                }
 
         localStorage.setItem("cartItems", JSON.stringify(existingCart));
         const totalItems = existingCart.reduce(
@@ -820,7 +829,7 @@ export default function ProductDetails({ countryCurrency, country }) {
                     <>
                       <ShoppingCart size={16} className="sm:w-5 sm:h-5" />
                       <span className="hidden sm:inline">Add to Cart</span>
-                      <span className="sm:hidden">Add</span>
+                      <span className="sm:hidden">Add to Cart</span>
                     </>
                   )}
                 </button>
@@ -841,7 +850,7 @@ export default function ProductDetails({ countryCurrency, country }) {
                     <>
                       <Zap size={16} className="sm:w-5 sm:h-5" />
                       <span className="hidden sm:inline">Buy Now</span>
-                      <span className="sm:hidden">Buy</span>
+                      <span className="sm:hidden">Buy Now</span>
                     </>
                   )}
                 </button>
