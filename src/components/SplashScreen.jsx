@@ -14,7 +14,7 @@ const SplashScreen = () => {
 
   return (
     <div className="relative w-full h-screen flex items-center justify-center overflow-hidden">
-      
+
       {/* Background */}
       <div className="background-image absolute inset-0"></div>
       <div className="background-dark-overlay absolute inset-0"></div>
@@ -24,18 +24,19 @@ const SplashScreen = () => {
         <div className="relative">
           {/* Golden Glow Behind Logo */}
           <div className="absolute inset-0 -inset-8 blur-2xl opacity-60 bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 animate-pulse"></div>
-          
+
           {/* Logo Container */}
           <div className="relative">
             <img
               src="/logo-white.png"
               alt="Logo"
+              loading="eager"
               className="w-98 md:w-[400px] relative z-10 animate-fade-in"
               style={{
                 filter: 'drop-shadow(0 0 20px rgba(251, 191, 36, 0.8)) drop-shadow(0 0 40px rgba(217, 119, 6, 0.6))',
               }}
             />
-           
+
           </div>
         </div>
       </div>

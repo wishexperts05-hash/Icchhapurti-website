@@ -52,6 +52,7 @@ export default function ProductImageGallery({ images = [], videos = [] }) {
               <img
                 src={currentMedia.url}
                 alt={`Product ${selectedMediaIndex + 1}`}
+                loading="eager"
                 className="w-full h-[450px] object-contain rounded-xl cursor-pointer transition-transform hover:scale-105"
                 onError={(e) => {
                   e.target.src = 'https://via.placeholder.com/400x400?text=No+Image';
@@ -71,11 +72,11 @@ export default function ProductImageGallery({ images = [], videos = [] }) {
                 </div>
               </div>
             )}
-            
+
             {/* Overlay hint for images */}
             {currentMedia.type === 'image' && (
-              <div 
-                onClick={() => openModal(selectedMediaIndex)} 
+              <div
+                onClick={() => openModal(selectedMediaIndex)}
                 className="absolute cursor-pointer inset-0 bg-black/0 group-hover:bg-black/10 transition-all rounded-xl flex items-center justify-center"
               >
                 <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 px-4 py-2 rounded-lg text-sm font-medium">
@@ -93,16 +94,16 @@ export default function ProductImageGallery({ images = [], videos = [] }) {
               <div
                 key={index}
                 onClick={() => handleThumbnailClick(index)}
-                className={`relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden cursor-pointer transition-all border-2 ${
-                  selectedMediaIndex === index
+                className={`relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden cursor-pointer transition-all border-2 ${selectedMediaIndex === index
                     ? 'border-cyan-500 scale-105 shadow-lg'
                     : 'border-gray-300 hover:border-gray-400 opacity-70 hover:opacity-100'
-                }`}
+                  }`}
               >
                 {media.type === 'image' ? (
                   <img
                     src={media.url}
                     alt={`Thumbnail ${index + 1}`}
+                    loading="lazy"
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       e.target.src = 'https://via.placeholder.com/80x80?text=No+Image';
@@ -194,16 +195,16 @@ export default function ProductImageGallery({ images = [], videos = [] }) {
                 <div
                   key={index}
                   onClick={() => setModalMediaIndex(index)}
-                  className={`relative flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden cursor-pointer transition-all border-2 ${
-                    modalMediaIndex === index
+                  className={`relative flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden cursor-pointer transition-all border-2 ${modalMediaIndex === index
                       ? 'border-cyan-400 scale-110'
                       : 'border-white/30 opacity-60 hover:opacity-100'
-                  }`}
+                    }`}
                 >
                   {media.type === 'image' ? (
                     <img
                       src={media.url}
                       alt={`Thumbnail ${index + 1}`}
+                      loading="lazy"
                       className="w-full h-full object-cover"
                     />
                   ) : (

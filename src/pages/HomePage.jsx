@@ -9,24 +9,25 @@ import Testimonials from '../components/Testimonials'
 import { Star } from 'lucide-react'
 import ManifestationInfo from '../components/ManifestationInfo'
 
-const HomePage = ({ countryCurrency ,country}) => {
+const HomePage = ({ countryCurrency, country }) => {
   const { setCount, setList, setUnreadCount } = useHeader();
   const token = localStorage.getItem("token");
-  const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes for dynamic data
+  const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes cache
+
 
   /* ================= Fetch Cart with Cache ================= */
   const fetchCartData = useCallback(async () => {
-    // Check cache
-    // const cachedCart = localStorage.getItem('cart_data');
-    // const cacheTime = localStorage.getItem('cart_data_time');
+    // Check cache first
+    const cachedCart = localStorage.getItem('cart_data');
+    const cacheTime = localStorage.getItem('cart_data_time');
 
-    // if (cachedCart && cacheTime && Date.now() - cacheTime < CACHE_DURATION) {
-    //   setCount(Number(cachedCart));
-    //   return;
-    // }
+    if (cachedCart && cacheTime && Date.now() - parseInt(cacheTime) < CACHE_DURATION) {
+      setCount(Number(cachedCart));
+      return; // Use cached data
+    }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems?currencyCode=${countryCurrency}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -38,27 +39,27 @@ const HomePage = ({ countryCurrency ,country}) => {
 
       const data = await response.json();
       const cartLength = data?.data?.length || 0;
-      
+
       localStorage.setItem("cart", cartLength);
       localStorage.setItem("cart_data", cartLength);
       localStorage.setItem("cart_data_time", Date.now().toString());
-      
+
       setCount(cartLength);
     } catch (err) {
       console.error('Error fetching cart:', err);
     }
-  }, [token, setCount]);
+  }, [token, setCount, countryCurrency, CACHE_DURATION]);
 
   /* ================= Fetch Notifications with Cache ================= */
   const fetchNotifications = useCallback(async () => {
-    // Check cache
-    // const cachedUnread = localStorage.getItem('unread_count');
-    // const cacheTime = localStorage.getItem('notifications_cache_time');
+    // Check cache first
+    const cachedUnread = localStorage.getItem('unread_count');
+    const cacheTime = localStorage.getItem('notifications_cache_time');
 
-    // if (cachedUnread && cacheTime && Date.now() - cacheTime < CACHE_DURATION) {
-    //   setUnreadCount(Number(cachedUnread));
-    //   return;
-    // }
+    if (cachedUnread && cacheTime && Date.now() - parseInt(cacheTime) < CACHE_DURATION) {
+      setUnreadCount(Number(cachedUnread));
+      return; // Use cached data
+    }
 
     try {
       const res = await fetch(
@@ -76,11 +77,11 @@ const HomePage = ({ countryCurrency ,country}) => {
       const data = await res.json();
       const allNotifications = data.data || [];
       const unreadCount = allNotifications.filter(n => !n.isRead).length;
-      
+
       localStorage.setItem("unreadCount", unreadCount);
       localStorage.setItem("unread_count", unreadCount);
       localStorage.setItem("notifications_cache_time", Date.now().toString());
-      
+
       setUnreadCount(unreadCount);
     } catch (err) {
       console.error("Error fetching notifications:", err);
@@ -89,14 +90,6 @@ const HomePage = ({ countryCurrency ,country}) => {
 
   /* ================= Fetch Wishlist with Cache ================= */
   const fetchWishlist = useCallback(async () => {
-    // Check cache
-    // const cachedWishlist = localStorage.getItem('wishlist_count');
-    // const cacheTime = localStorage.getItem('wishlist_cache_time');
-
-    // if (cachedWishlist && cacheTime && Date.now() - cacheTime < CACHE_DURATION) {
-    //   setList(Number(cachedWishlist));
-    //   return;
-    // }
 
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/wishlist/getWishlist`, {
@@ -112,10 +105,10 @@ const HomePage = ({ countryCurrency ,country}) => {
       if (!res.ok) throw new Error(data.message || "Failed to fetch wishlist");
 
       const wishlistLength = data.data.length;
-      
+
       localStorage.setItem("wishlist_count", wishlistLength);
       localStorage.setItem("wishlist_cache_time", Date.now().toString());
-      
+
       setList(wishlistLength);
     } catch (err) {
       console.error("Error fetching wishlist:", err);
@@ -138,16 +131,16 @@ const HomePage = ({ countryCurrency ,country}) => {
 
   return (
     <div className='mx-auto'>
-      <ImageCarousel  countryCurrency={countryCurrency} />
+      <ImageCarousel countryCurrency={countryCurrency} />
       <WhyChooseUs />
-      <OurProducts countryCurrency={countryCurrency} country={country}/>
+      <OurProducts countryCurrency={countryCurrency} country={country} />
 
-      <ManifestationInfo/>
+      <ManifestationInfo />
       <StoryBanner />
 
       <div className="text-center py-3 my-5">
         <h1
-          className="text-2xl md:text-5xl font-extrabold mb-6 animate-fade-in bg-clip-text text-transparent"
+          className="text-2xl md:text-4xl font-extrabold mb-6 animate-fade-in bg-clip-text text-transparent"
           style={{
             backgroundImage:
               "linear-gradient(120deg, #7a5c00 0%, #f6e27a 15%, #fff6b0 30%, #d4af37 45%, #fff6b0 60%, #f6e27a 75%, #7a5c00 100%)",
@@ -177,7 +170,7 @@ const HomePage = ({ countryCurrency ,country}) => {
         </div>
 
         <h1
-          className="text-2xl my-2 md:text-5xl font-extrabold mb-6 animate-fade-in bg-clip-text text-transparent"
+          className="text-2xl my-2 md:text-4xl font-extrabold mb-6 animate-fade-in bg-clip-text text-transparent"
           style={{
             backgroundImage:
               "linear-gradient(120deg, #7a5c00 0%, #f6e27a 15%, #fff6b0 30%, #d4af37 45%, #fff6b0 60%, #f6e27a 75%, #7a5c00 100%)",

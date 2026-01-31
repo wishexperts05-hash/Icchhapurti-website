@@ -41,11 +41,26 @@ import ShippingPolicy from "./pages/ShippingPolicy";
 import RefundCancellationPolicy from "./components/RefundCancellationPolicy";
 import AboutUs from "./pages/AboutUs";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { checkAndHandleExpiredSession } from "./utils/auth";
 
 
 function App() {
   const token = localStorage.getItem("token");
   const { setList } = useHeader();
+  const navigate = useNavigate();
+
+  /* ================= Check Session Expiry on App Load ================= */
+  useEffect(() => {
+    const isSessionValid = checkAndHandleExpiredSession();
+
+    if (!isSessionValid && token) {
+      // Session expired, redirect to login
+      // alert("Your session has expired. Please login again.");
+      // navigate("/login");
+    }
+  }, []);
+
   useEffect(() => {
 
 

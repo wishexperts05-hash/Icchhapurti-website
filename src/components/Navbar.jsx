@@ -123,6 +123,7 @@ bg-center bg-no-repeat
                         <img
                           src={user?.profileImage || "https://via.placeholder.com/150"}
                           alt="profile"
+                          loading="lazy"
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -189,7 +190,7 @@ bg-center bg-no-repeat
                     {/* Login Button */}
                     <Link
                       to="/login"
-                      className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-[#D3AF37] rounded-full hover:bg-[#D3AF37] transition-all font-medium text-xs sm:text-sm shadow-lg shadow-[#C9A227]/20"
+                      className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-yellow-400 rounded-full hover:bg-yellow-500 transition-all font-medium text-xs sm:text-xs shadow-lg shadow-yellow-400/20"
                     >
                       <User size={16} className="sm:w-4 sm:h-4" />
                       <span>Login</span>
@@ -200,7 +201,7 @@ bg-center bg-no-repeat
                       onClick={openCartSidebar}
                       className="relative p-2 rounded-full cursor-pointer hover:bg-white/10 transition-colors group"
                     >
-                      <div className="relative w-5 h-5 sm:w-6 sm:h-6">
+                      <div className="relative w-5 h-5 sm:w-5 sm:h-5">
                         <LucideShoppingBag size={18} className="w-full h-full transition-transform group-hover:scale-110" />
 
                         {cartCount > 0 && (
@@ -228,6 +229,7 @@ bg-center bg-no-repeat
                   <img
                     src="/logo-black.png"
                     alt="Logo"
+                    loading="eager"
                     className="h-12 sm:h-16 w-auto object-contain transition-transform group-hover:scale-105"
                   />
                 </Link>
@@ -239,7 +241,7 @@ bg-center bg-no-repeat
                   <Link
                     key={index}
                     to={link.href}
-                    className={`text-[16px] lg:text-[18px] cursor-pointer font-medium  relative pb-1 group ${isActive(link.href) ? 'text-[#D3AF37]' : 'hover:text-[#D3AF37]'
+                    className={`text-[16px] lg:text-[17px] cursor-pointer font-medium  relative pb-1 group ${isActive(link.href) ? 'text-[#D3AF37]' : 'hover:text-[#D3AF37]'
                       }`}
                   >
                     {link.label}
@@ -296,6 +298,7 @@ bg-center bg-no-repeat
                     className="w-full h-full object-cover"
                     src={user?.profileImage || "https://via.placeholder.com/150"}
                     alt="profile"
+                    loading="lazy"
                   />
                 </div>
 
@@ -434,12 +437,12 @@ bg-center bg-no-repeat
           </div>
 
           {/* Logout Button */}
-          
+
         </div>
 
-       
+
         <div className="absolute  bottom-0 left-0 right-0 p-4 sm:p-6 border-t border-gray-200 bg-white">
-         {user && (
+          {user && (
             <button
               onClick={() => {
                 localStorage.removeItem("user");

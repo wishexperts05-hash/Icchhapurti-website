@@ -232,6 +232,11 @@ export default function ProductCard({ product, country, countryCurrency, onAddTo
             if (onWishlistUpdate) {
                 onWishlistUpdate(productId, nextLiked);
             }
+
+            // Dispatch event to invalidate wishlist cache
+            window.dispatchEvent(new CustomEvent('wishlistUpdated', {
+                detail: { productId, isWishlisted: nextLiked }
+            }));
         } catch (err) {
             console.error("wishlist error", err);
             alert(err.message || "Failed to update wishlist");
@@ -291,6 +296,7 @@ export default function ProductCard({ product, country, countryCurrency, onAddTo
                     <img
                         src={product.images?.[currentImageIndex] || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600"}
                         alt={product.name}
+                        loading="lazy"
                         className="w-full h-full   transition-transform duration-500 group-hover:scale-105"
                         onError={(e) => {
                             e.target.src = "https://via.placeholder.com/1000x1000?text=No+Image";

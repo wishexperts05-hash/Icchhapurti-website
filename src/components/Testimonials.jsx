@@ -26,7 +26,7 @@ export default function Testimonials() {
   useEffect(() => {
     fetchTestimonials()
   }, [])
-  
+
   const handlePrevious = () => {
     if (isAnimating) return;
     setIsAnimating(true);
@@ -123,7 +123,8 @@ export default function Testimonials() {
                   <img
                     src={image}
                     alt={`Review ${index + 1}`}
-                      className="w-full h-auto object-cover"
+                    loading="lazy"
+                    className="w-full h-auto object-cover"
                   />
                 </div>
               </div>
@@ -171,7 +172,7 @@ export default function Testimonials() {
           ))}
         </div>
       </div>
-      
+
       {/* Modal with zero padding */}
       {selectedImage && (
         <div
@@ -185,6 +186,7 @@ export default function Testimonials() {
             <img
               src={selectedImage}
               alt="Testimonial"
+              loading="eager"
               className="w-full h-auto object-cover"
             />
           </div>

@@ -12,7 +12,7 @@ import { useHeader } from "../context/HeaderContext";
 import CartSidebar from "./CartSidebar";
 import ProductCard from "./ProductCard";
 
-export default function OurProducts({ countryCurrency ,country}) {
+export default function OurProducts({ countryCurrency, country }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -139,7 +139,7 @@ export default function OurProducts({ countryCurrency ,country}) {
       }
 
       if (result.success) {
-     
+
         localStorage.setItem("cart", result.data.products.length);
         setCount(result.data.products.length);
       }
@@ -182,7 +182,7 @@ export default function OurProducts({ countryCurrency ,country}) {
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
 
           <h3 className="text-md font-semibold text-gray-800 mb-2">
-          We couldn’t load the products right now. Please try again
+            We couldn’t load the products right now. Please try again
           </h3>
 
           {/* <p className="text-gray-600 mb-5">
@@ -210,7 +210,7 @@ export default function OurProducts({ countryCurrency ,country}) {
       <div className="max-w-7xl mx-auto md:mt-20">
         <div className="relative flex flex-col md:flex-row items-center gap-4 my-10 md:my-25">
           <h2
-            className="mx-auto text-center text-4xl md:text-5xl font-extrabold animate-fade-in bg-clip-text text-transparent"
+            className="mx-auto text-center text-3xl md:text-4xl font-extrabold animate-fade-in bg-clip-text text-transparent"
             style={{
               backgroundImage:
                 "linear-gradient(120deg, #7a5c00 0%, #f6e27a 15%, #fff6b0 30%, #d4af37 45%, #fff6b0 60%, #f6e27a 75%, #7a5c00 100%)",

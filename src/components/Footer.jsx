@@ -49,7 +49,7 @@ const Footer = () => {
 
           {/* LEFT */}
           <div className="md:col-span-4">
-            <img src="/logo-white.png" alt="IcchhaPurti" className="h-28 mb-6" />
+            <img src="/logo-white.png" alt="IcchhaPurti" loading="lazy" className="h-28 mb-6" />
 
             <p className="text-gray-300 mb-6">
               {t('footer.description')}
@@ -67,7 +67,7 @@ const Footer = () => {
                     background: "linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)",
                   }}
                 >
-                  <img src={social.image} alt={social.label} className="w-6 h-6" />
+                  <img src={social.image} alt={social.label} loading="lazy" className="w-6 h-6" />
                 </a>
               ))}
             </div>
@@ -108,8 +108,8 @@ const Footer = () => {
             </p>
 
             <div className="flex gap-3 mb-8">
-              <img src="/appStore.png" alt="App Store" className="h-12" />
-              <img src="/googlePay.png" alt="Google Play" className="h-12" />
+              <img src="/appStore.png" alt="App Store" loading="lazy" className="h-12" />
+              <img src="/googlePay.png" alt="Google Play" loading="lazy" className="h-12" />
             </div>
 
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">

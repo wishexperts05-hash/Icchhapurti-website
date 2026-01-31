@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Country, State, City } from 'country-state-city';
 import { Link, useNavigate } from "react-router-dom";
 import { MapPin, Loader, Search, ChevronDown, X } from 'lucide-react';
+import { setLoginTimestamp } from "../utils/auth";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -250,7 +251,7 @@ const Register = () => {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: formData.name, email: formData.email, phoneNumber: formData.phoneNumber, country: formData.country, state: formData.state, street:formData.street, city: formData.city, pinCode: formData.pinCode, dob: formData.dob })
+        body: JSON.stringify({ name: formData.name, email: formData.email, phoneNumber: formData.phoneNumber, country: formData.country, state: formData.state, street: formData.street, city: formData.city, pinCode: formData.pinCode, dob: formData.dob })
       });
 
       const data = await response.json();
@@ -307,6 +308,7 @@ const Register = () => {
       if (data.success) {
         localStorage.setItem("user", JSON.stringify(data.data));
         localStorage.setItem("token", data.token);
+        setLoginTimestamp(); // Track login time for auto-logout
         syncLocalCartToServer(data.token);
         setShowOtpModal(false);
         alert("Registration Successful!");
@@ -472,7 +474,7 @@ const Register = () => {
 
               <div>
                 <label className="block text-md font-medium text-gray-700 mb-0.5">Street*</label>
-                <input type="text" name="street" value={formData.street} onChange={handleChange}  className={`w-full border ${errors.street ? 'border-red-500' : 'border-gray-300'} px-2 py-1.5 rounded text-md focus:outline-none focus:ring-1 focus:ring-yellow-500`} placeholder="Street" />
+                <input type="text" name="street" value={formData.street} onChange={handleChange} className={`w-full border ${errors.street ? 'border-red-500' : 'border-gray-300'} px-2 py-1.5 rounded text-md focus:outline-none focus:ring-1 focus:ring-yellow-500`} placeholder="Street" />
                 {errors.street && <p className="text-red-500 text-[10px] mt-0.5">{errors.street}</p>}
               </div>
             </div>
