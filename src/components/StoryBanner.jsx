@@ -99,7 +99,7 @@ const StoryBanner = () => {
 
   return (
     <>
-      <div className="pt-5 px-4 mt-10 relative bg-white overflow-hidden">
+      <div className="pt-5 px-4 mt-3 relative bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <h1
             className="text-4xl md:text-4xl font-extrabold text-center mb-1 animate-fade-in bg-clip-text text-transparent"
