@@ -292,7 +292,7 @@ export default function ProductCard({ product, country, countryCurrency, onAddTo
                 </button>
 
                 {/* Full-width image - FIXED HEIGHT */}
-                <div className="relative  w-full h-[520px] bg-gradient-to-b from-gray-50 to-white overflow-hidden">
+                <div className="relative  w-full  bg-gradient-to-b from-gray-50 to-white overflow-hidden">
                     <img
                         src={product.images?.[currentImageIndex] || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600"}
                         alt={product.name}

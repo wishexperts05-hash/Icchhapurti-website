@@ -34,7 +34,7 @@ export default function ProductDetails({ countryCurrency, country }) {
   const [buyingNow, setBuyingNow] = useState(false);
   const [cartSuccess, setCartSuccess] = useState(false);
   const { setCount } = useHeader();
-  const { id ,name} = useParams();
+  const { id, name } = useParams();
   const productId = id;
   const Navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -50,8 +50,8 @@ export default function ProductDetails({ countryCurrency, country }) {
   const productImg = searchParams.get("productImg");
   const autoPay = searchParams.get("pay");
 
-  console.log(autoPay,"autoPay")
-  console.log(openPaymentModal,"openPaymentModal")
+  console.log(autoPay, "autoPay")
+  console.log(openPaymentModal, "openPaymentModal")
 
   useEffect(() => {
     if (autoPay) {
@@ -256,13 +256,13 @@ export default function ProductDetails({ countryCurrency, country }) {
     }
   };
 
-     const extractPrice = (price) => {
-        if (typeof price === 'number') return price;
-        if (typeof price === 'string') {
-            return Number(price.replace(/[^0-9.]/g, ''));
-        }
-        return 0;
-    };
+  const extractPrice = (price) => {
+    if (typeof price === 'number') return price;
+    if (typeof price === 'string') {
+      return Number(price.replace(/[^0-9.]/g, ''));
+    }
+    return 0;
+  };
 
 
   const handleAddToCart = async ({ product, e, isBuyNow }) => {
@@ -296,13 +296,13 @@ export default function ProductDetails({ countryCurrency, country }) {
           (item) => (item.productId || item.product._id) === cartItem.productId
         );
 
-          if (existingItemIndex > -1) {
-                    existingCart[existingItemIndex].quantity += 1;
-                    existingCart[existingItemIndex].totalAmount =
-                        existingCart[existingItemIndex].quantity * Number(extractPrice(product.price));
-                } else {
-                    existingCart.push(cartItem);
-                }
+        if (existingItemIndex > -1) {
+          existingCart[existingItemIndex].quantity += 1;
+          existingCart[existingItemIndex].totalAmount =
+            existingCart[existingItemIndex].quantity * Number(extractPrice(product.price));
+        } else {
+          existingCart.push(cartItem);
+        }
 
         localStorage.setItem("cartItems", JSON.stringify(existingCart));
         const totalItems = existingCart.reduce(
@@ -340,9 +340,9 @@ export default function ProductDetails({ countryCurrency, country }) {
         }
 
         if (result.success) {
-    //       setCount(prev => prev + 1)
-    //  localStorage.setItem("cart", result?.data?.products.length);
-        setCount(result.data?.products?.length);
+          //       setCount(prev => prev + 1)
+          //  localStorage.setItem("cart", result?.data?.products.length);
+          setCount(result.data?.products?.length);
 
           if (isBuyNow) {
             setOpenPayment(true)
@@ -442,15 +442,8 @@ export default function ProductDetails({ countryCurrency, country }) {
     ? [currentUserReview, ...reviews.filter(r => !r.isCurrentUser)]
     : reviews;
 
-  // const parsedDescription = (() => {
-  //   try {
-  //     return typeof product?.description === "string"
-  //       ? JSON.parse(product.description)
-  //       : product?.description;
-  //   } catch {
-  //     return [];
-  //   }
-  // })();
+  const isSevenChakraPen =
+  product?.name?.toLowerCase().includes("seven chakra premium");
 
 
   if (loading) {
@@ -907,6 +900,15 @@ export default function ProductDetails({ countryCurrency, country }) {
             </div>
           </div>
           {/* faq section  */}
+
+          <div className="banner w-full overflow-hidden">
+            <img
+              src=  {isSevenChakraPen ?"/seven_chakra_pen.jpeg":"/metal_pen_banner.jpeg"}
+              alt="Icchhapurti Metal Manifestation Pen Banner"
+              className="w-full h-auto object-cover"
+            />
+          </div>
+
 
 
           <section className="max-w-4xl mx-auto px-4 py-12">

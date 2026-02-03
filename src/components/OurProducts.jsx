@@ -249,7 +249,7 @@ export default function OurProducts({ countryCurrency, country }) {
             {/* Static Manifestation Kit Card */}
             <div className="relative group h-full">
               <div className="relative bg-white rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl border border-gray-200 hover:border-purple-300 flex flex-col h-full">
-                <div className="relative w-full h-[520px] bg-gradient-to-b from-gray-50 to-white overflow-hidden">
+                <div className="relative w-full h-[410px] bg-gradient-to-b from-gray-50 to-white overflow-hidden">
                   <video
                     src={"/coming-soon.mp4"}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
