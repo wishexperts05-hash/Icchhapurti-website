@@ -117,6 +117,7 @@ const Login = () => {
 
         localStorage.setItem("user", JSON.stringify(data.data));
         localStorage.setItem("token", data.token);
+        localStorage.setItem("referralCode", data.referralCode);
         setLoginTimestamp(); // Track login time for auto-logout
 
         // ⭐ Sync local cart → API cart

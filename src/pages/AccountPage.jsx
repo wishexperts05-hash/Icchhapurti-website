@@ -108,14 +108,14 @@ export default function AccountPage() {
   <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-4 mb-6 border border-amber-200">
     <div className="flex items-center gap-4">
       {/* Gift Icon */}
-      <div className="w-14 h-14 flex-shrink-0">
+      {/* <div className="w-14 h-14 flex-shrink-0">
         <div className="w-full h-full bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center shadow-md">
           <Gift className="text-white" size={28} />
           <div className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 rounded-full ring-2 ring-white" />
         </div>
-      </div>
+      </div> */}
 
-      <div className="flex-1">
+      {/* <div className="flex-1">
         <p className="text-slate-700 text-sm leading-relaxed">
           {t("account.referralBanner.text")}{" "}
           <span className="text-amber-600 font-semibold">
@@ -131,7 +131,7 @@ export default function AccountPage() {
           Refer Now
           <ArrowRight size={12} />
         </button>
-      </div>
+      </div> */}
     </div>
   </div>
 

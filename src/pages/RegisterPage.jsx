@@ -190,14 +190,14 @@ const Register = () => {
   const validate = () => {
     const newErrors = {};
     if (!formData.name.trim() || formData.name.trim().length < 3) newErrors.name = "Name must be at least 3 characters";
-    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = "Invalid email format";
+    // if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = "Invalid email format";
     if (!formData.phoneNumber || !/^[0-9]{10}$/.test(formData.phoneNumber)) newErrors.phoneNumber = "Phone number must be 10 digits";
     if (!formData.country) newErrors.country = "Country is required";
     if (!formData.state) newErrors.state = "State is required";
     if (!formData.city) newErrors.city = "City is required";
     if (!formData.street) newErrors.street = "street is required";
     if (!formData.pinCode || !/^[0-9]{6}$/.test(formData.pinCode)) newErrors.pinCode = "Pin code must be 6 digits";
-    if (!formData.dob) newErrors.dob = "Date of birth is required";
+    // if (!formData.dob) newErrors.dob = "Date of birth is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -308,6 +308,7 @@ const Register = () => {
       if (data.success) {
         localStorage.setItem("user", JSON.stringify(data.data));
         localStorage.setItem("token", data.token);
+         localStorage.setItem("referralCode", data.refferralCode);
         setLoginTimestamp(); // Track login time for auto-logout
         syncLocalCartToServer(data.token);
         setShowOtpModal(false);
@@ -394,17 +395,17 @@ const Register = () => {
 
           {(locationLoading || locationError || apiError) && (
             <div className="mb-3">
-              {locationLoading && (
+              {/* {locationLoading && (
                 <div className="bg-blue-50 border-l-2 border-blue-500 text-blue-700 px-2 py-1.5 rounded flex items-center text-md">
                   <Loader className="animate-spin mr-1.5 flex-shrink-0" size={14} />
                   <p>Detecting location...</p>
                 </div>
-              )}
-              {locationError && (
+              )} */}
+              {/* {locationError && (
                 <div className="bg-yellow-50 border-l-2 border-yellow-500 text-yellow-700 px-2 py-1.5 rounded text-md">
                   <p>{locationError}</p>
                 </div>
-              )}
+              )} */}
               {apiError && (
                 <div className="bg-red-50 border-l-2 border-red-500 text-red-700 px-2 py-1.5 rounded text-md">
                   <p>{apiError}</p>
@@ -422,9 +423,9 @@ const Register = () => {
               </div>
 
               <div>
-                <label className="block text-md font-medium text-gray-700 mb-0.5">Email *</label>
+                <label className="block text-md font-medium text-gray-700 mb-0.5">Email </label>
                 <input type="email" name="email" value={formData.email} onChange={handleChange} className={`w-full border ${errors.email ? 'border-red-500' : 'border-gray-300'} px-2 py-1.5 rounded text-md focus:outline-none focus:ring-1 focus:ring-yellow-500`} placeholder="email@example.com" />
-                {errors.email && <p className="text-red-500 text-[10px] mt-0.5">{errors.email}</p>}
+                {/* {errors.email && <p className="text-red-500 text-[10px] mt-0.5">{errors.email}</p>} */}
               </div>
             </div>
 
@@ -464,10 +465,10 @@ const Register = () => {
               <div>
                 <div className="flex items-center justify-between mb-0.5">
                   <label className="block text-md font-medium text-gray-700">Country *</label>
-                  <button type="button" onClick={detectUserLocation} disabled={locationLoading} className="text-[10px] text-yellow-600 hover:text-yellow-700 font-semibold flex items-center gap-0.5 disabled:text-gray-400">
+                  {/* <button type="button" onClick={detectUserLocation} disabled={locationLoading} className="text-[10px] text-yellow-600 hover:text-yellow-700 font-semibold flex items-center gap-0.5 disabled:text-gray-400">
                     <MapPin size={10} />
                     {locationLoading ? 'Detecting...' : 'Auto-detect'}
-                  </button>
+                  </button> */}
                 </div>
                 <SearchDropdown field="country" label="Country" options={filteredCountries} value={formData.country} onSelect={handleSelectCountry} disabled={false} renderOption={(c) => `${c.flag} ${c.name}`} getOptionValue={(c) => c.isoCode} placeholder="Select Country" />
               </div>
@@ -498,9 +499,9 @@ const Register = () => {
               </div>
 
               <div>
-                <label className="block text-md font-medium text-gray-700 mb-0.5">Date of Birth *</label>
+                <label className="block text-md font-medium text-gray-700 mb-0.5">Date of Birth </label>
                 <input type="date" name="dob" value={formData.dob} onChange={handleChange} className={`w-full border ${errors.dob ? 'border-red-500' : 'border-gray-300'} px-2 py-1.5 rounded text-md focus:outline-none focus:ring-1 focus:ring-yellow-500`} />
-                {errors.dob && <p className="text-red-500 text-[10px] mt-0.5">{errors.dob}</p>}
+                {/* {errors.dob && <p className="text-red-500 text-[10px] mt-0.5">{errors.dob}</p>} */}
               </div>
             </div>
 

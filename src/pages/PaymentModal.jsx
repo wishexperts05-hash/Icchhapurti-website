@@ -46,6 +46,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
     const [couponDiscount, setDiscount] = useState(0);
     const [showCouponPopup, setshowCouponPopup] = useState(false);
     const [offers, setOffers] = useState([])
+    const [spinOffers, setspinOffers] = useState([])
 
 
     useEffect(() => {
@@ -149,7 +150,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
             fetchCheckOutDetails();
         }
 
-    }, [isAuthenticated, cartItems, couponCode, referralCode, addressIndex,addresses])
+    }, [isAuthenticated, cartItems, couponCode, referralCode, addressIndex, addresses])
 
 
 
@@ -525,7 +526,8 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
             }
 
             const data = await res.json();
-            setOffers(data.data || []);
+            setOffers(data.data.offers || []);
+            setspinOffers(data.data.spinRewards || [])
         } catch (err) {
             console.error("Error fetching offers:", err.message);
             setOffers([]);
@@ -762,6 +764,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
 
                                 {(() => {
                                     let items = isAuthenticated ? cartItems : localCartItems || [];
+                                    const currencySymbol = items[0]?.currencySymbol || "₹"
 
                                     if (!items?.length) return null;
 
@@ -834,7 +837,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                                         )}
                                                         <div className="flex justify-between font-bold mt-1">
                                                             <span>Total</span>
-                                                            <span>₹{totalAmount.toLocaleString("en-IN")}</span>
+                                                            <span>{currencySymbol}{totalAmount.toLocaleString("en-IN")}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -949,7 +952,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                     </div>
                                 )}
 
-                                {isAuthenticated && addresses?.length>0&& (
+                                {isAuthenticated && addresses?.length > 0 && (
                                     <div className="mt-1 mb-3 rounded-lg border border-slate-300 p-3">
                                         <div className="flex items-start justify-between gap-3">
                                             <div className="flex-1 text-sm text-gray-800 leading-snug">
@@ -984,17 +987,24 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                     </div>
                                 )}
                                 {
-                                    addresses?.length == 0 && <button  className="shrink-0 text-xs font-medium cursor-pointer px-3 py-1.5 rounded-md bg-amber-500 hover:bg-amber-600 text-white transition-colors whitespace-nowrap" onClick={() => setIsModalOpen(true)}>Add Address to Continue</button>
+                                    addresses?.length == 0 && <button className="shrink-0 text-xs font-medium cursor-pointer px-3 py-1.5 rounded-md bg-amber-500 hover:bg-amber-600 text-white transition-colors whitespace-nowrap" onClick={() => setIsModalOpen(true)}>Add Address to Continue</button>
                                 }
                                 {
-                                    offers.length > 0 && addresses?.length > 0 && <OfferDisplay offers={offers}
-                                        referralCode={referralCode}
-                                        setCouponCode={setCouponCode}
-                                        couponCode={couponCode}
-                                        isAuthenticated={isAuthenticated} />
+                                    ((offers?.length ?? 0) > 0 || (spinOffers?.length ?? 0) > 0) &&
+                                    (addresses?.length ?? 0) > 0 && (
+                                        <OfferDisplay
+                                            offers={offers}
+                                            spinOffers={spinOffers}
+                                            referralCode={referralCode}
+                                            setCouponCode={setCouponCode}
+                                            couponCode={couponCode}
+                                            isAuthenticated={isAuthenticated}
+                                        />
+                                    )
                                 }
 
-                                {isAuthenticated && checkoutDetails && addresses.length > 0 &&(
+
+                                {isAuthenticated && checkoutDetails && addresses.length > 0 && (
                                     <>
                                         {/* <div className="my-2">
                                             {!showCoupon ? (

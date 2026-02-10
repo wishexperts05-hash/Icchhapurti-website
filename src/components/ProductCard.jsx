@@ -76,6 +76,7 @@ export default function ProductCard({ product, country, countryCurrency, onAddTo
                     },
                     quantity: 1,
                     totalAmount: product.price || 0,
+                    currencySymbol:product.currencySymbol||"₹"
                 };
 
                 const existingCart = JSON.parse(

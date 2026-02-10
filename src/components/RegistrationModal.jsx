@@ -489,12 +489,12 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                         </div>
 
                         {/* Location Loading Alert */}
-                        {locationLoading && (
+                        {/* {locationLoading && (
                             <div className="bg-blue-50 border-l-4 border-blue-500 text-blue-700 px-4 py-3 rounded mb-4 flex items-center text-sm">
                                 <Loader className="animate-spin mr-2 flex-shrink-0" size={16} />
                                 <p>Detecting your location...</p>
                             </div>
-                        )}
+                        )} */}
 
                         {/* Location Error Alert */}
                         {/* {locationError && (

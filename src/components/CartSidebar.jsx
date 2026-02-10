@@ -221,7 +221,7 @@ export default function CartSidebar({ isOpen, onClose, countryCurrency, onChecko
 
 
   // const totalPrice = cartItems.reduce((sum, item) => sum + Number(extractPrice(item.totalAmount)), 0);
-  const currencySymbol = cartItems[0]?.currencySymbol ||"₹"
+  const currencySymbol = cartItems[0]?.currencySymbol || "₹"
   const totalPrice = cartItems.reduce((sum, item) => sum + Number(extractPrice(item.totalAmount)), 0);
 
   return (
@@ -263,7 +263,7 @@ shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]">
         {cartItems && cartItems.length > 0 && (
           <ProgressOfferBar
             confettiOrigin={{ x: 0.95, y: 0.6 }}
-         currentStep={0}
+            currentStep={0}
           />
         )}
 

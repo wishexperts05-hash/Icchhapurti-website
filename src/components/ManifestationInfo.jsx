@@ -1,42 +1,27 @@
-export default function ManifestationInfo() {
+import React from "react";
+
+function ManifestationInfo() {
   return (
     <div className="flex flex-col my-8 items-center px-4">
-
-      {/* Heading */}
-      {/* <h2
-        className="my-10 text-center text-3xl md:text-4xl font-extrabold bg-clip-text text-transparent"
-        style={{
-          backgroundImage:
-            "linear-gradient(120deg, #7a5c00 0%, #f6e27a 15%, #fff6b0 30%, #d4af37 45%, #fff6b0 60%, #f6e27a 75%, #7a5c00 100%)",
-          backgroundSize: "200% 200%",
-          animation: "goldShine 3s linear infinite",
-        }}
-      >
-        What Is The Manifestation
-      </h2> */}
-
       {/* Main Card */}
       <div className="w-full max-w-7xl bg-white rounded-3xl shadow-2xl overflow-hidden mx-auto">
-
         {/* Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-7">
-
-          {/* Left – Image (1/3) */}
+          {/* Left – Image */}
           <div className="relative h-84 sm:h-80 lg:h-auto lg:col-span-3">
             <img
               src="/manifestion.jpg"
               alt="Manifestation Meditation"
-              className="w-full h-full "
+              className="w-full h-full"
+                loading="lazy"
             />
           </div>
 
-          {/* Right – Content (2/3) */}
-          <div className="lg:col-span-4  bg-gradient-to-br from-gray-50 to-amber-50">
-
-
-            <div className="bg-[#0a2540] mb-3 py-4 ">
+          {/* Right – Content */}
+          <div className="lg:col-span-4 bg-gradient-to-br from-gray-50 to-amber-50">
+            <div className="bg-[#0a2540] mb-3 py-4">
               <h2
-                className=" text-center text-lg md:text-3xl font-extrabold bg-clip-text text-transparent"
+                className="text-center text-lg md:text-3xl font-extrabold bg-clip-text text-transparent"
                 style={{
                   backgroundImage:
                     "linear-gradient(120deg, #7a5c00 0%, #f6e27a 15%, #fff6b0 30%, #d4af37 45%, #fff6b0 60%, #f6e27a 75%, #7a5c00 100%)",
@@ -47,13 +32,11 @@ export default function ManifestationInfo() {
                 What Is Manifestation ?
               </h2>
             </div>
+
             <div className="p-5">
-
-
-
               <p className="text-md text-gray-900 font-semibold mb-3 leading-relaxed text-center lg:text-left">
-                Manifestation is the process of turning your thoughts and beliefs into reality through
-                focused intention and aligned action.
+                Manifestation is the process of turning your thoughts and beliefs
+                into reality through focused intention and aligned action.
               </p>
 
               <p className="text-md text-gray-900 font-semibold mb-3 leading-relaxed text-center lg:text-left">
@@ -98,3 +81,6 @@ export default function ManifestationInfo() {
     </div>
   );
 }
+
+
+export default React.memo(ManifestationInfo);

@@ -3,12 +3,17 @@ import OurProducts from '../components/OurProducts'
 import ImageCarousel from '../components/ImageCarousel'
 import { useHeader } from '../context/HeaderContext'
 import WhyChooseUs from '../components/WhyChooseUs'
-import StoryBanner from '../components/StoryBanner'
-import ProductVideoSection from '../components/ProductVideoSection'
+// import StoryBanner from '../components/StoryBanner'
+import { Suspense ,lazy} from 'react'
+const StoryBanner = lazy(() => import('../components/StoryBanner'));
+const ProductVideoSection = lazy(() => import('../components/ProductVideoSection'));
+// import ProductVideoSection from '../components/ProductVideoSection'
 import Testimonials from '../components/Testimonials'
 import { Star } from 'lucide-react'
 import ManifestationInfo from '../components/ManifestationInfo'
 import HowToUseManifestation from '../components/HowToUseManifestation'
+import SpinToWin from '../components/spinner/SpinToWin'
+
 
 const HomePage = ({ countryCurrency, country }) => {
   const { setCount, setList, setUnreadCount } = useHeader();
@@ -132,13 +137,24 @@ const HomePage = ({ countryCurrency, country }) => {
 
   return (
     <div className='mx-auto'>
+
+      
       <ImageCarousel countryCurrency={countryCurrency} />
       <WhyChooseUs />
       <OurProducts countryCurrency={countryCurrency} country={country} />
 
       <ManifestationInfo />
       <HowToUseManifestation />
-      <StoryBanner />
+      <Suspense
+        fallback={
+          <div className="h-[300px] flex items-center justify-center">
+            <p className="text-gray-400 text-lg">Loading story...</p>
+          </div>
+        }
+      >
+        <StoryBanner />
+      </Suspense>
+
 
       <div className="text-center py-3 my-5">
         <h1
@@ -162,7 +178,17 @@ const HomePage = ({ countryCurrency, country }) => {
         <img src="/shape1.png" alt="" className="w-full block" loading="lazy" />
       </div>
 
-      <ProductVideoSection />
+ <Suspense
+        fallback={
+          <div className="h-[300px] flex items-center justify-center">
+            <p className="text-gray-400 text-lg">Loading Videos...</p>
+          </div>
+        }
+      >
+        <ProductVideoSection />
+      </Suspense>
+
+   
 
       <div className="text-center mt-2">
         <div className="flex justify-center gap-1.5">

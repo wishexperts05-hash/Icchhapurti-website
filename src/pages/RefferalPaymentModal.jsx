@@ -65,6 +65,7 @@ export default function RefferalPaymentModal({
     const [couponDiscount, setDiscount] = useState(0);
     const [showCouponPopup, setshowCouponPopup] = useState(false);
     const [offers, setOffers] = useState([]);
+const [spinOffers, setspinOffers] = useState([])
 
     useEffect(() => {
         const referralValue = Number(String(couponDiscount).replace(/[₹,]/g, ""));
@@ -111,7 +112,7 @@ export default function RefferalPaymentModal({
         { id: "razorpay", name: "Online (Card/UPI/Netbanking)", icon: "razorpay" },
     ];
 
-   
+
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -522,7 +523,8 @@ export default function RefferalPaymentModal({
             }
 
             const data = await res.json();
-            setOffers(data.data || []);
+              setOffers(data.data.offers || []);
+            setspinOffers(data.data.spinRewards || [])
         } catch (err) {
             console.error("Error fetching offers:", err.message);
             setOffers([]);
@@ -805,12 +807,12 @@ export default function RefferalPaymentModal({
                                                             >
                                                                 <img
                                                                     src={item?.image}
-                                                                    alt={item.name}
+                                                                    alt={item.productName}
                                                                     className="w-16 h-16 object-cover rounded"
                                                                 />
                                                                 <div className="flex-1 min-w-0">
                                                                     <h4 className="font-semibold text-gray-900 truncate">
-                                                                        {item.name}
+                                                                        {item.productName}
                                                                     </h4>
                                                                     <div className="flex items-center justify-between mt-1">
                                                                         <div className="flex items-center gap-1">
@@ -888,6 +890,7 @@ export default function RefferalPaymentModal({
                                 />
 
                                 <AddressModal
+                                 addresses={addresses} fetchAddresses={fetchAddresses}
                                     isOpen={isModalOpen}
                                     onClose={() => setIsModalOpen(false)}
                                     addressId={editAddressId}
@@ -994,16 +997,20 @@ export default function RefferalPaymentModal({
                                     </div>
                                 )}
 
-                                {offers.length > 0 && (
-                                    <OfferDisplay
-                                        offers={offers}
-                                        referralCode={referralCode}
-                                        setCouponCode={setCouponCode}
-                                        couponCode={couponCode}
-                                        isAuthenticated={isAuthenticated}
-                                    />
-                                )}
-
+                                {
+                                                                   ((offers?.length ?? 0) > 0 || (spinOffers?.length ?? 0) > 0) &&
+                                                                   (addresses?.length ?? 0) > 0 && (
+                                                                       <OfferDisplay
+                                                                           offers={offers}
+                                                                           spinOffers={spinOffers}
+                                                                           referralCode={referralCode}
+                                                                           setCouponCode={setCouponCode}
+                                                                           couponCode={couponCode}
+                                                                           isAuthenticated={isAuthenticated}
+                                                                       />
+                                                                   )
+                                                               }
+                               
                                 {isAuthenticated && checkoutDetails && (
                                     <>
                                         <ReferralCode1

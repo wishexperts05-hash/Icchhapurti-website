@@ -43,59 +43,59 @@ import AboutUs from "./pages/AboutUs";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { checkAndHandleExpiredSession } from "./utils/auth";
+import SpinToWin from "./components/spinner/SpinToWin";
 
 
 function App() {
   const token = localStorage.getItem("token");
   const { setList } = useHeader();
-  const navigate = useNavigate();
+ 
 
   /* ================= Check Session Expiry on App Load ================= */
   useEffect(() => {
-    const isSessionValid = checkAndHandleExpiredSession();
 
-    if (!isSessionValid && token) {
-      // Session expired, redirect to login
-      // alert("Your session has expired. Please login again.");
-      // navigate("/login");
-    }
+
+
   }, []);
 
   useEffect(() => {
 
+    const isSessionValid = checkAndHandleExpiredSession();
 
-    const fetchWishlist = async () => {
-      // setLoading(true);
-      // setError(null);
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/wishlist/getWishlist`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+    if (isSessionValid) {
+      fetchWishlist();
+    }
 
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.message || "Failed to fetch wishlist");
-        }
-
-        // adjust if your field is different
-        // setItems(data.data || []);
-
-        setList(data.data.length)
-      } catch (err) {
-        console.error("Error fetching wishlist:", err);
-        // setError(err.message);
-      } finally {
-        // setLoading(false);
-      }
-    };
-
-    fetchWishlist();
   }, [token]);
+
+
+  const fetchWishlist = async () => {
+   
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/wishlist/getWishlist`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to fetch wishlist");
+      }
+
+      
+
+      setList(data.data.length)
+    } catch (err) {
+      console.error("Error fetching wishlist:", err);
+      // setError(err.message);
+    } finally {
+      // setLoading(false);
+    }
+  };
 
   const [countryCurrency, setCountryCurrency] = useState("INR");
   const [country, setCountry] = useState("India");
@@ -123,7 +123,7 @@ function App() {
   return (
     <>
       <ScrollToTop />
-
+      <SpinToWin />
       <Routes>
         {/* Public routes without layout */}
         <Route path="/login" element={<Login />} />

@@ -1,15 +1,57 @@
 import React, { useRef, useState } from "react";
 import { Volume2, VolumeX } from "lucide-react";
-
+import { useEffect } from "react";
+const SESSION_KEY = "whyChooseUsContent";
 const WhyChooseUs = () => {
   const videoRef = useRef(null);
   const [muted, setMuted] = useState(true);
+  const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const toggleMute = () => {
     if (!videoRef.current) return;
     videoRef.current.muted = !muted;
     setMuted(!muted);
   };
+console.log(content,"content")
+
+  useEffect(() => {
+    const loadContent = async () => {
+      // 1. Check sessionStorage cache first
+      const cached = sessionStorage.getItem(SESSION_KEY);
+      if (cached) {
+        setContent(JSON.parse(cached));
+        setLoading(false);
+        return;
+      }
+
+      // 2. Fetch from API
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/user/ourStories?type=why_we_Special`,
+          { headers: { "Content-Type": "application/json" } }
+        );
+        const data = await res.json();
+
+        if (res.ok && data.success && data.data) {
+          // API returned data — cache it and use it
+          sessionStorage.setItem(SESSION_KEY, JSON.stringify(data.data[0]));
+          setContent(data.data[0]);
+        } else {
+          // API returned no usable data — use static fallback
+          setContent(STATIC_CONTENT);
+        }
+      } catch (err) {
+        // Network/API error — use static fallback silently
+        console.warn("WhyChooseUs: API unavailable, using static content.", err);
+        setContent(STATIC_CONTENT);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadContent();
+  }, []);
 
   return (
     <section
@@ -33,7 +75,7 @@ const WhyChooseUs = () => {
 
 
         <h1
-          className="text-4xl md:text-4xl  font-extrabold text-center mb-10 animate-fade-in bg-clip-text text-transparent"
+          className="text-4xl md:text-4xl mb-4  font-extrabold text-center py-2  mb-20 animate-fade-in bg-clip-text text-transparent"
           style={{
             backgroundImage:
               "linear-gradient(120deg, #0a2540 0%, #0a2540 15%, #0a2540 30%, #0a2540 45%, #1e6091 60%, #0d3b66 75%, #0a2540 100%)",
@@ -44,7 +86,7 @@ const WhyChooseUs = () => {
           Why We Are Special
         </h1>
         {/* Content + Video */}
-        <div className="flex flex-col md:mt-10 lg:flex-row gap-8 items-start">
+        <div className="flex flex-col md:mt-8 lg:flex-row gap-8 items-start">
 
           {/* Left Content */}
           <div className="w-full lg:w-5/7 md:mt-13 text-left">
@@ -100,7 +142,11 @@ const WhyChooseUs = () => {
           <div className="w-full lg:w-2/7 flex justify-center lg:sticky lg:top-4">
             <div className="relative w-full h-[600px] rounded-2xl overflow-hidden">
 
-              {/* Video */}
+              {
+                content?.videoUrl &&
+
+                <>
+                   {/* Video */}
               <video
                 ref={videoRef}
                 className="w-full h-auto object-cover"
@@ -109,7 +155,7 @@ const WhyChooseUs = () => {
                 muted={muted}
                 playsInline
               >
-                <source src="/hero_video.mp4" type="video/mp4" />
+                <source src={content.videoUrl} type="video/mp4" />
               </video>
 
               {/* Mute Button */}
@@ -118,7 +164,10 @@ const WhyChooseUs = () => {
                 className="absolute bottom-4 left-4 bg-black/60 text-white p-2 rounded-full hover:bg-black/80 transition"
               >
                 {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-              </button>
+              </button></>
+              }
+
+           
 
             </div>
 

@@ -287,6 +287,7 @@ export default function ProductDetails({ countryCurrency, country }) {
           },
           quantity: 1,
           totalAmount: product.price || 0,
+          currencySymbol: product.currencySymbol || "₹"
         };
 
         const existingCart = JSON.parse(
@@ -422,11 +423,22 @@ export default function ProductDetails({ countryCurrency, country }) {
 
   };
 
+  const getUserData = () => {
+    try {
+      const userData = localStorage?.getItem("user");
+      return userData ? JSON.parse(userData) : null;
+    } catch {
+      return null;
+    }
+  };
 
+  const user = getUserData();
 
   // share option 
   const [shareOpen, setShareOpen] = useState(false);
-  const shareUrl = window.location.href;
+  const refferalCode = localStorage.getItem("referralCode")
+  const shareUrl = user ?`${window.location.origin}/product/${product?._id}/${product?.name}?pay=true&ref=${refferalCode}&price=${product?.price}&productImg=${product?.images[0]}`:`${window.location.origin}/product/${product?._id}/${product?.name}`;
+  navigator.clipboard.writeText(shareUrl);
   const shareTitle = product?.name || "Check this product";
   const handleShare = async () => {
     setShareOpen(true);
@@ -443,7 +455,7 @@ export default function ProductDetails({ countryCurrency, country }) {
     : reviews;
 
   const isSevenChakraPen =
-  product?.name?.toLowerCase().includes("seven chakra premium");
+    product?.name?.toLowerCase().includes("seven chakra premium");
 
 
   if (loading) {
@@ -903,7 +915,7 @@ export default function ProductDetails({ countryCurrency, country }) {
 
           <div className="banner w-full overflow-hidden">
             <img
-              src=  {isSevenChakraPen ?"/seven_chakra_pen.jpeg":"/metal_pen_banner.jpeg"}
+              src={isSevenChakraPen ? "/seven_chakra_pen.jpeg" : "/metal_pen_banner.jpeg"}
               alt="Icchhapurti Metal Manifestation Pen Banner"
               className="w-full h-auto object-cover"
             />

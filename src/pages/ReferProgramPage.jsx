@@ -18,7 +18,7 @@ const ReferProgramPage = () => {
   const [error, setError] = useState(null);
   const [referAc, setReferAc] = useState({})
   const [commissonCoins, setCommissionCoins] = useState()
-  const referralCode = "RW40850";
+
   // let commissonCoins ;
   const { t } = useTranslation();
   // Fetch coins rate
@@ -382,7 +382,7 @@ const ReferProgramPage = () => {
   </div>
 
   {/* Refer Friend Card */}
-  <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg p-6 mb-6 shadow-xl text-center">
+  {/* <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg p-6 mb-6 shadow-xl text-center">
     <p className="text-blue-200 text-sm mb-2">
       {t("referProgramme.referFriend")}
     </p>
@@ -390,7 +390,7 @@ const ReferProgramPage = () => {
       {t("referProgramme.get")} 1 {t("referProgramme.referal")} ={" "}
       {commissonCoins || 0} {t("referProgramme.coin")}
     </p>
-  </div>
+  </div> */}
 
   {/* Referral Code */}
   <div className="mb-6">
@@ -435,35 +435,69 @@ const ReferProgramPage = () => {
       {t("referProgramme.noReferal")}
     </div>
   ) : (
-    <div className="space-y-3 mb-6">
-      {referrals.map((referral) => (
-        <div
-          key={referral.id}
-          className="bg-white border border-slate-200 rounded-lg p-4 flex justify-between items-center hover:bg-slate-50"
-        >
-          <div className="flex items-center gap-3">
-            <img
-              src={referral.userProfileImage}
-              alt=""
-              className="w-10 h-10 rounded-full object-cover"
-            />
-            <div>
-              <p className="text-slate-800 text-sm font-medium">
-                {referral.userName}
-              </p>
-              <p className="text-slate-500 text-xs">
-                {referral.dateEarned}
-              </p>
-            </div>
-          </div>
+   <div className="space-y-3 mb-6">
+  {referrals.map((referral) => {
+    const isReferral = referral.sourceType == "REFERRAL";
 
+    return (
+      <div
+        key={referral.id}
+        className="bg-white border border-slate-200 rounded-lg p-4 flex justify-between items-center hover:bg-slate-50"
+      >
+        {/* Left */}
+        <div className="flex items-center gap-3">
+          <img
+            src={referral.userProfileImage || "https://cdn-icons-png.flaticon.com/512/219/219988.png"}
+            alt=""
+            className="w-10 h-10 rounded-full object-cover"
+          />
+
+          <div>
+            {/* Primary text */}
+            <p className="text-slate-800 text-sm font-medium">
+              {isReferral
+                ? `Referral reward from ${referral.userName}`
+                : "Purchase reward"}
+            </p>
+
+            {/* Secondary info */}
+            <p className="text-slate-500 text-xs">
+              {isReferral
+                ? "Coins earned when your referral made a purchase"
+                : "Coins earned from your purchase"}
+            </p>
+
+            {/* Date */}
+            <p className="text-slate-400 text-[11px] mt-0.5">
+              {referral.dateEarned}
+            </p>
+          </div>
+        </div>
+
+        {/* Right */}
+        <div className="flex flex-col items-end gap-1">
+          {/* Source badge */}
+          <span
+            className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+              isReferral
+                ? "bg-indigo-50 text-indigo-600"
+                : "bg-emerald-50 text-emerald-600"
+            }`}
+          >
+            {isReferral ? "REFERRAL BONUS" : "PURCHASE BONUS"}
+          </span>
+
+          {/* Coins */}
           <div className="flex items-center gap-1 text-amber-500 font-semibold">
             <Coins className="w-4 h-4" />
             +{referral.coinsEarned}
           </div>
         </div>
-      ))}
-    </div>
+      </div>
+    );
+  })}
+</div>
+
   )}
 
   {/* Refer Button */}
