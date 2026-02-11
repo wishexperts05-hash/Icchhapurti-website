@@ -414,7 +414,7 @@ const [spinOffers, setspinOffers] = useState([])
                                 setCheckoutSuccess(false);
                                 onClose();
                                 Navigate("/orders");
-                            }, 2000);
+                            }, 5000);
                         } else {
                             throw new Error("Payment verification failed");
                         }
@@ -422,7 +422,7 @@ const [spinOffers, setspinOffers] = useState([])
                         setCheckoutLoading(false);
                         setError(err.message || "Payment verification failed");
                         scrollToTop();
-                        setTimeout(() => setError(null), 4000);
+                        setTimeout(() => setError(null), 5000);
                     }
                 },
                 prefill: {

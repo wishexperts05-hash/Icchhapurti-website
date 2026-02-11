@@ -421,7 +421,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                 setCheckoutSuccess(false);
                                 onClose();
                                 Navigate('/orders');
-                            }, 2000);
+                            }, 5000);
                         } else {
                             throw new Error('Payment verification failed');
                         }
@@ -429,7 +429,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                         setCheckoutLoading(false);
                         setError(err.message || 'Payment verification failed');
                         scrollToTop();
-                        setTimeout(() => setError(null), 4000);
+                        setTimeout(() => setError(null), 5000);
                     }
                 },
                 prefill: {

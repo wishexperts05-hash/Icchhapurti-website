@@ -370,6 +370,7 @@ const SpinToWin = ({ isImmediate = false }) => {
                 localStorage.setItem("user", JSON.stringify(data.data));
                 localStorage.setItem("token", data.token);
                 localStorage.setItem('spinRegistered', 'true');
+                localStorage.setItem("referralCode", data.refferralCode);
                 setHasRegistered(true);
                 setIsLoggedIn(true);
                 setShowOtpVerification(false);
@@ -397,6 +398,12 @@ const SpinToWin = ({ isImmediate = false }) => {
     const handleSpin = async () => {
         if (isSpinning || hasSpun) return;
 
+        if (!prizes || prizes.length === 0) {
+            alert("Prizes not loaded yet, please try again.");
+            setIsSpinning(false);
+            return;
+        }
+
         setIsSpinning(true);
         setShowResult(false);
 
@@ -419,17 +426,28 @@ const SpinToWin = ({ isImmediate = false }) => {
 
             // Find the exact prize returned by the API
             const displayPrizes = prizes.slice(0, 6);
-            const prizeIndex = displayPrizes.findIndex(p => p._id === rewardId);
+            const prizeIndex = displayPrizes.findIndex(p => p._id == rewardId);
             const targetIndex = prizeIndex !== -1 ? prizeIndex : 0;
             const prize = displayPrizes[targetIndex];
 
             // Calculate rotation to land on the exact prize
             const segmentAngle = 360 / displayPrizes.length;
-            const baseRotation = 360 * 5;
-            const prizeRotation = (displayPrizes.length - targetIndex) * segmentAngle - segmentAngle / 2;
-            const totalRotation = baseRotation + prizeRotation;
 
-            setRotation(totalRotation);
+            // Because segments start from 0deg on RIGHT
+            // And pointer is at TOP (−90deg)
+            const correctionOffset = -90;
+
+            // Center of the winning segment
+            const prizeCenterAngle =
+                targetIndex * segmentAngle + segmentAngle / 2;
+
+            // Final rotation
+            const totalRotation =
+                360 * 5 + (360 - prizeCenterAngle) + correctionOffset;
+                console.log(totalRotation,"totalRotation")
+
+            setRotation(Number(totalRotation+155));
+
 
             // Show result after spin animation completes
             setTimeout(() => {
@@ -475,7 +493,7 @@ const SpinToWin = ({ isImmediate = false }) => {
             {showModal && (
                 <div
                     className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 animate-fadeIn"
-                    onClick={(e) => e.target === e.currentTarget && closeModal()}
+                // onClick={(e) => e.target === e.currentTarget && closeModal()}
                 >
                     <div className="bg-gradient-to-b from-pink-100 to-pink-100 rounded-3xl max-w-2xl w-full relative animate-slideIn shadow-2xl max-h-[90vh] overflow-y-auto">
                         {/* Close Button */}
