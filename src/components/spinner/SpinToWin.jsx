@@ -444,14 +444,14 @@ const SpinToWin = ({ isImmediate = false }) => {
             // Final rotation
             const totalRotation =
                 360 * 5 + (360 - prizeCenterAngle) + correctionOffset;
-                console.log(totalRotation,"totalRotation")
+            console.log(totalRotation, "totalRotation")
 
-            setRotation(Number(totalRotation+155));
+            setRotation(Number(totalRotation + 155));
 
 
             // Show result after spin animation completes
             setTimeout(() => {
-                setSelectedPrize({ ...prize, couponCode });
+                setSelectedPrize(data.data);
                 setShowResult(true);
                 setIsSpinning(false);
                 setHasSpun(true);
@@ -838,23 +838,38 @@ const SpinToWin = ({ isImmediate = false }) => {
 
                                     {/* Result Message */}
                                     {showResult && selectedPrize && (
-                                        <div className="mt-6 bg-white p-6 rounded-xl animate-bounceIn shadow-lg">
-                                            <h3 className="text-2xl font-bold text-red-500 mb-3">
-                                                🎉 Congratulations!
-                                            </h3>
-                                            <p className="text-gray-700 text-base mb-3">
-                                                You won: <span className="font-bold">{selectedPrize.title}</span>  {/* ✅ was .text */}
-                                            </p>
-                                            {selectedPrize.couponCode && (
-                                                <>
-                                                    <div className="bg-[#f5f5dc] py-3 px-4 rounded-lg font-bold text-gray-800 text-xl tracking-widest my-3">
-                                                        {selectedPrize.couponCode}
-                                                    </div>
-                                                    <p className="text-sm text-gray-600">apply this code at checkout</p>
-                                                </>
-                                            )}
-                                        </div>
-                                    )}
+    <div className="mt-4 bg-white p-4 rounded-lg animate-bounceIn shadow-lg">
+        <h3 className="text-xl font-bold text-red-500 mb-2">
+            🎉 Congratulations!
+        </h3>
+        <p className="text-gray-700 text-sm font-bold mb-1">
+            {selectedPrize.rewardTitle}
+        </p>
+        <p className="text-gray-600 text-xs mb-2">
+            on {selectedPrize.productName}
+        </p>
+        {selectedPrize.couponCode && (
+            <>
+                <div className="bg-[#f5f5dc] py-2 px-3 rounded-lg font-bold text-gray-800 text-lg tracking-wider my-2">
+                    {selectedPrize.couponCode}
+                </div>
+                <p className="text-xs text-gray-600">apply at checkout</p>
+            </>
+        )}
+        {selectedPrize.expiresAt && (
+            <p className="text-xs text-red-400 mt-2">
+                ⏰ Expires: {new Date(selectedPrize.expiresAt).toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric', 
+                    year: 'numeric' ,
+                    minute: '2-digit',
+                    hour: '2-digit'
+                    
+                })}
+            </p>
+        )}
+    </div>
+)}
                                 </div>
                             )}
                         </div>
