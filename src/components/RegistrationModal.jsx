@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { Country, State, City } from 'country-state-city';
 import { MapPin, Loader, Search, ChevronDown, X } from 'lucide-react';
@@ -297,11 +296,8 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
 
             const data = await response.json();
             if (data.success) {
-
                 setToken(data.registrationToken);
                 setShowOtpModal(true);
-                // alert(data.otp);
-                //  onClose()
             } else {
                 setApiError(data.message || "Failed to send OTP");
             }
@@ -324,7 +320,6 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                     body: JSON.stringify({ productId: item.productId, quantity: item.quantity, totalAmount: item.totalAmount })
                 });
             }
-            //   localStorage.removeItem("cartItems");
             window.dispatchEvent(new CustomEvent("cartUpdated"));
         } catch (error) {
             console.error("Error syncing cart:", error);
@@ -353,14 +348,11 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                 localStorage.setItem("token", data.token);
                 await syncLocalCartToServer(data.token);
 
-                // await saveAddress()
                 setShowOtpModal(false);
-                // alert("Registration Successful!");
-                setFormData({ name: "", email: "", phoneNumber: "", stree: "", countryCode: "+91", countryIsoCode: "IN", country: "", stateIsoCode: "", state: "", city: "", pinCode: "", dob: "" });
+                setFormData({ name: "", email: "", phoneNumber: "", street: "", countryCode: "+91", countryIsoCode: "IN", country: "", stateIsoCode: "", state: "", city: "", pinCode: "", dob: "" });
                 setOtp("");
                 setIsAuthenticated(true)
                 onClose()
-                // Navigate("/homePage");
             } else {
                 setApiError(data.message || "Invalid OTP");
             }
@@ -375,9 +367,9 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
         <div ref={el => dropdownRefs.current[field] = el} className="relative">
             <div
                 onClick={() => !disabled && setOpenDropdown(openDropdown === field ? null : field)}
-                className={`w-full border ${errors[field] ? 'border-red-500' : 'border-gray-300'} ${disabled ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer hover:border-yellow-500'} px-3 py-2.5 rounded-lg text-sm flex items-center justify-between transition-colors`}
+                className={`w-full px-4 py-3 bg-gray-50 border ${errors[field] ? 'border-red-500' : 'border-gray-200'} ${disabled ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer'} rounded-lg flex items-center justify-between hover:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all`}
             >
-                <span className={value ? 'text-gray-800' : 'text-gray-400'}>{value || placeholder}</span>
+                <span className={value ? 'text-gray-900' : 'text-gray-400'}>{value || placeholder}</span>
                 <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${openDropdown === field ? 'rotate-180' : ''}`} />
             </div>
 
@@ -391,7 +383,7 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                                 value={searchTerms[field]}
                                 onChange={(e) => setSearchTerms(prev => ({ ...prev, [field]: e.target.value }))}
                                 placeholder={`Search ${label.toLowerCase()}...`}
-                                className="w-full pl-10 pr-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                                className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
                                 autoFocus
                             />
                         </div>
@@ -407,7 +399,7 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                                         e.preventDefault();
                                         onSelect(getOptionValue(option));
                                     }}
-                                    className="px-4 py-2 hover:bg-yellow-50 cursor-pointer text-sm text-gray-800 transition-colors"
+                                    className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-900"
                                 >
                                     {renderOption(option)}
                                 </div>
@@ -419,42 +411,8 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
         </div>
     );
 
-
-    // const saveAddress = async () => {
-
-    //     // setLoading(true);
-    //     try {
-    //         const addressData = {
-    //             fullName: formData.name,
-    //             phoneNumber: formData.phoneNumber,
-    //             country: formData.country,
-    //             state: formData.state,
-    //             city: formData.city,
-    //             street: formData.street,
-    //             pinCode: formData.pinCode
-    //         };
-    //         const url = `${import.meta.env.VITE_API_URL}/api/user/address/addAddress`;
-    //         const method = 'POST';
-    //         const response = await fetch(url, {
-    //             method,
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'Authorization': `Bearer ${localStorage.getItem("token")}`
-    //             },
-    //             body: JSON.stringify(addressData)
-    //         });
-
-    //     } catch (error) {
-    //         console.error('Error submitting:', error);
-    //         alert(t('addressForm.messages.networkError'));
-    //     } finally {
-    //         //   setLoading(false);
-    //     }
-    // };
-
     useEffect(() => {
         if (isOpen) {
-            // Disable background scroll
             document.body.style.overflow = "hidden";
         } else {
             document.body.style.overflow = "";
@@ -465,13 +423,12 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
         };
     }, [isOpen]);
 
-
     if (!isOpen) return null;
 
     return createPortal(
         <>
             {/* Main Registration Modal */}
-            <div className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
                 <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl">
                     {/* Close Button */}
                     <button
@@ -484,28 +441,13 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                     <div className="p-6 sm:p-8">
                         {/* Header */}
                         <div className="text-center mb-6">
-                            <h2 className="text-3xl font-bold text-gray-800 mb-2">Create Account</h2>
-                            <p className="text-gray-600 text-sm">Join us today and get started</p>
+                            <h2 className="text-3xl font-serif font-bold text-gray-900 mb-2">Create Account</h2>
+                            <p className="text-gray-500 text-sm">Join us today and start your journey</p>
                         </div>
-
-                        {/* Location Loading Alert */}
-                        {/* {locationLoading && (
-                            <div className="bg-blue-50 border-l-4 border-blue-500 text-blue-700 px-4 py-3 rounded mb-4 flex items-center text-sm">
-                                <Loader className="animate-spin mr-2 flex-shrink-0" size={16} />
-                                <p>Detecting your location...</p>
-                            </div>
-                        )} */}
-
-                        {/* Location Error Alert */}
-                        {/* {locationError && (
-                            <div className="bg-yellow-50 border-l-4 border-yellow-500 text-yellow-700 px-4 py-3 rounded mb-4 text-sm">
-                                <p>{locationError}</p>
-                            </div>
-                        )} */}
 
                         {/* API Error Alert */}
                         {apiError && (
-                            <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded mb-4 text-sm">
+                            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm">
                                 <p>{apiError}</p>
                             </div>
                         )}
@@ -514,98 +456,51 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                         <form onSubmit={handleGetOtp} className="space-y-4">
                             {/* Full Name */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
                                 <input
                                     type="text"
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
-                                    className={`w-full border ${errors.name ? 'border-red-500' : 'border-gray-300'} px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all`}
+                                    className={`w-full px-4 py-3 bg-gray-50 border ${errors.name ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900`}
                                     placeholder="Enter your full name"
                                 />
                                 {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                             </div>
 
-                            {/* Email */}
-
-                            <div className="grid grid-cols-2 gap-4">
-
+                            {/* Email and Phone Number Row */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Email Address </label>
                                     <input
                                         type="email"
                                         name="email"
                                         value={formData.email}
                                         onChange={handleChange}
-                                        className={`w-full border ${errors.email ? 'border-red-500' : 'border-gray-300'} px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all`}
-                                        placeholder="email"
+                                        className={`w-full px-4 py-3 bg-gray-50 border ${errors.email ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900`}
+                                        placeholder="email@example.com"
                                     />
                                     {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                                 </div>
 
-                                {/* Phone Number */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
-                                    <div className="flex gap-2">
-                                        {/* <div ref={el => dropdownRefs.current['countryCode'] = el} className="relative w-28">
-                                            <div
-                                                onClick={() => setOpenDropdown(openDropdown === 'countryCode' ? null : 'countryCode')}
-                                                className="border border-gray-300 px-3 py-2.5 rounded-lg text-sm cursor-pointer flex items-center justify-between hover:border-yellow-500 transition-colors"
-                                            >
-                                                <span>{formData.countryCode}</span>
-                                                <ChevronDown className={`w-3 h-3 transition-transform ${openDropdown === 'countryCode' ? 'rotate-180' : ''}`} />
-                                            </div>
-
-                                            {openDropdown === 'countryCode' && (
-                                                <div className="absolute z-50 w-64 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-64 overflow-hidden" onMouseDown={(e) => e.preventDefault()}>
-                                                    <div className="p-2 border-b border-gray-200">
-                                                        <div className="relative">
-                                                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                                                            <input
-                                                                type="text"
-                                                                value={searchTerms.countryCode}
-                                                                onChange={(e) => setSearchTerms(prev => ({ ...prev, countryCode: e.target.value }))}
-                                                                placeholder="Search code..."
-                                                                className="w-full pl-10 pr-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                                                                autoFocus
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="max-h-48 overflow-y-auto">
-                                                        {filteredCountryCodes.map((cc) => (
-                                                            <div
-                                                                key={cc.code}
-                                                                onMouseDown={(e) => {
-                                                                    e.preventDefault();
-                                                                    handleSelectCountryCode(cc.code);
-                                                                }}
-                                                                className="px-4 py-2 hover:bg-yellow-50 cursor-pointer text-sm transition-colors"
-                                                            >
-                                                                {cc.flag} {cc.code} - {cc.country}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div> */}
-                                        <input
-                                            type="tel"
-                                            name="phoneNumber"
-                                            value={formData.phoneNumber}
-                                            onChange={handleChange}
-                                            maxLength="10"
-                                            className={`flex-1 border ${errors.phoneNumber ? 'border-red-500' : 'border-gray-300'} px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all`}
-                                            placeholder="10-digit mobile"
-                                        />
-                                    </div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+                                    <input
+                                        type="tel"
+                                        name="phoneNumber"
+                                        value={formData.phoneNumber}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value.replace(/\D/g, '') }))}
+                                        maxLength="10"
+                                        className={`w-full px-4 py-3 bg-gray-50 border ${errors.phoneNumber ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900`}
+                                        placeholder="10-digit mobile"
+                                    />
                                     {errors.phoneNumber && <p className="text-red-500 text-xs mt-1">{errors.phoneNumber}</p>}
                                 </div>
                             </div>
 
-
                             {/* Country */}
                             <div>
-
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Country *</label>
                                 <SearchDropdown
                                     field="country"
                                     label="Country"
@@ -621,9 +516,9 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                             </div>
 
                             {/* State and City */}
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">State *</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">State *</label>
                                     <SearchDropdown
                                         field="state"
                                         label="State"
@@ -639,7 +534,7 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">City *</label>
                                     <SearchDropdown
                                         field="city"
                                         label="City"
@@ -655,30 +550,31 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                                 </div>
                             </div>
 
-                            {/* Pin Code and DOB */}
-                            <div className="grid grid-cols-2 gap-4">
+                            {/* Pin Code and Street */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Pin Code *</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Pin Code *</label>
                                     <input
                                         type="text"
                                         name="pinCode"
                                         value={formData.pinCode}
-                                        onChange={handleChange}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, pinCode: e.target.value.replace(/\D/g, '') }))}
                                         maxLength="6"
-                                        className={`w-full border ${errors.pinCode ? 'border-red-500' : 'border-gray-300'} px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all`}
+                                        className={`w-full px-4 py-3 bg-gray-50 border ${errors.pinCode ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900`}
                                         placeholder="6-digit PIN"
                                     />
                                     {errors.pinCode && <p className="text-red-500 text-xs mt-1">{errors.pinCode}</p>}
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Street *</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Street *</label>
                                     <input
                                         type="text"
                                         name="street"
                                         value={formData.street}
                                         onChange={handleChange}
-                                        className={`w-full border ${errors.street ? 'border-red-500' : 'border-gray-300'} px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all`}
+                                        className={`w-full px-4 py-3 bg-gray-50 border ${errors.street ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900`}
+                                        placeholder="Street address"
                                     />
                                     {errors.street && <p className="text-red-500 text-xs mt-1">{errors.street}</p>}
                                 </div>
@@ -688,55 +584,42 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-semibold py-3 rounded-lg shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed transition-all"
+                                className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow-md mt-2"
                             >
                                 {loading ? 'Sending OTP...' : 'Get OTP'}
                             </button>
                         </form>
-
-                        {/* Footer Links */}
-                        {/* <div className="mt-6 text-center space-y-3">
-                            <p className="text-gray-600 text-sm">
-                                Already have an account?
-                                <button 
-                                    onClick={onClose}
-                                    className="ml-1 text-yellow-600 hover:text-yellow-700 font-semibold transition-colors"
-                                >
-                                    Login here
-                                </button>
-                            </p>
-                        </div> */}
                     </div>
                 </div>
             </div>
 
             {/* OTP Verification Modal */}
             {showOtpModal && (
-                <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+                <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
                     <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl">
                         <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-2xl font-bold text-gray-800">Verify OTP</h3>
+                            <h3 className="text-2xl font-serif font-bold text-gray-900">Verify OTP</h3>
                             <button
                                 onClick={() => {
                                     setShowOtpModal(false);
                                     setOtp("");
                                     setApiError("");
                                 }}
-                                className="text-gray-400 hover:text-gray-600 transition-colors"
+                                className="text-gray-400 hover:text-gray-600 text-3xl font-light leading-none w-8 h-8 flex items-center justify-center"
                             >
-                                <X className="w-6 h-6" />
+                                ×
                             </button>
                         </div>
 
                         {apiError && (
-                            <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded mb-6">
-                                <p className="text-sm">{apiError}</p>
+                            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm">
+                                <p>{apiError}</p>
                             </div>
                         )}
 
                         <div className="mb-6">
-                            <p className="text-gray-600 mb-2">We've sent a 6-digit code to</p>
-                            <p className="text-lg font-semibold text-gray-800 mb-4">
+                            <p className="text-sm text-gray-600 mb-2">We've sent a 6-digit code to</p>
+                            <p className="text-base font-semibold text-gray-900 mb-6">
                                 {formData.countryCode} {formData.phoneNumber}
                             </p>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Enter OTP</label>
@@ -744,8 +627,8 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                                 type="text"
                                 value={otp}
                                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                                className="w-full border border-gray-300 px-4 py-3 rounded-lg text-center text-2xl tracking-widest font-semibold focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all"
-                                placeholder="000000"
+                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-center text-2xl tracking-widest font-semibold focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
+                                placeholder="• • • • • •"
                                 maxLength="6"
                             />
                         </div>
@@ -753,7 +636,7 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                         <button
                             onClick={handleVerifyOtp}
                             disabled={loading}
-                            className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 rounded-lg shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed mb-3 transition-all"
+                            className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed mb-3 transition-all shadow-sm hover:shadow-md"
                         >
                             {loading ? 'Verifying...' : 'Verify & Register'}
                         </button>
@@ -761,7 +644,7 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                         <button
                             onClick={handleGetOtp}
                             disabled={loading}
-                            className="w-full text-yellow-600 hover:text-yellow-700 font-semibold py-2 disabled:text-gray-400 transition-colors"
+                            className="w-full text-gray-700 hover:text-gray-900 font-medium disabled:text-gray-400 py-2 transition-colors"
                         >
                             Resend OTP
                         </button>
@@ -777,5 +660,4 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
     );
 };
 
-
-export default RegistrationModal
+export default RegistrationModal;

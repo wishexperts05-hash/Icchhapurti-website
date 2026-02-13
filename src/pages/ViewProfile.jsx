@@ -281,16 +281,18 @@ export default function ViewProfile() {
         }}
       />
 
-      <InputField
-        label={t("profile.personal_info.mobile_number")}
-        name="phoneNumber"
-        rules={{
-          pattern: {
-            value: /^\d{10}$/,
-            message: "Mobile must be exactly 10 digits",
-          },
-        }}
-      />
+     <InputField
+  label={t("profile.personal_info.mobile_number")}
+  name="phoneNumber"
+  rules={{
+    pattern: {
+      value: /^[1-9]\d{9}$/,
+      message: "Mobile number must be 10 digits and cannot start with 0",
+    },
+    required: "Mobile number is required",
+  }}
+/>
+
 
       <InputField
         label={t("profile.personal_info.email")}

@@ -175,20 +175,7 @@ const OrdersPage = () => {
         </div>
       </div>
 
-      {/* Stars background */}
-      <div className="absolute inset-0">
-        {[...Array(50)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-white rounded-full opacity-70"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animation: `twinkle ${2 + Math.random() * 3}s infinite ${Math.random() * 2}s`
-            }}
-          ></div>
-        ))}
-      </div>
+     
 
       {/* Content */}
       <div className="relative z-10 max-w-4xl bg-white mx-auto p-6">
@@ -215,13 +202,14 @@ const OrdersPage = () => {
               return (
                 <div
                   key={order._id}
-                  className="bg-gray-50 backdrop-blur-sm border border-slate-700/50 rounded-lg p-4 hover:bg-gray-100 transition-all duration-300"
+                     onClick={() => Navigate(`/orders/${order._id}`)}
+                  className="bg-gray-50 cursor-pointer backdrop-blur-sm border border-slate-700/50 rounded-lg p-4 hover:bg-gray-100 transition-all duration-300"
                 >
                   <div className="flex items-center gap-4">
                     {/* Product Image */}
                     <div
-                      onClick={() => Navigate(`/orders/${order._id}`)}
-                      className="w-16 h-16 rounded cursor-pointer overflow-hidden flex-shrink-0 bg-slate-700"
+                   
+                      className="w-16 h-16 rounded  overflow-hidden flex-shrink-0 bg-slate-700"
                     >
                       {order.image ? (
                         <img

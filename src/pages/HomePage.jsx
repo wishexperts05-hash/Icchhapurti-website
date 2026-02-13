@@ -152,7 +152,7 @@ const HomePage = ({ countryCurrency, country }) => {
           </div>
         }
       >
-        <StoryBanner />
+        {/* <StoryBanner /> */}
       </Suspense>
 
 
@@ -185,7 +185,7 @@ const HomePage = ({ countryCurrency, country }) => {
           </div>
         }
       >
-        <ProductVideoSection />
+        {/* <ProductVideoSection /> */}
       </Suspense>
 
    

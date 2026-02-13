@@ -2,33 +2,30 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { setLoginTimestamp } from "../utils/auth";
 
-
 const Login = () => {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const Navigate = useNavigate()
+  const [rememberMe, setRememberMe] = useState(false);
+  const Navigate = useNavigate();
+
   const handleNavigate = (path) => {
-    Navigate(path)
+    Navigate(path);
   };
-
-
-
 
   const syncLocalCartToServer = async (token) => {
     try {
       const localCart = JSON.parse(localStorage.getItem("cartItems")) || [];
-
-      if (localCart.length === 0) return; // nothing to sync
+      if (localCart.length === 0) return;
 
       for (let item of localCart) {
         await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/addToCart`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             productId: item.productId,
@@ -38,18 +35,13 @@ const Login = () => {
         });
       }
 
-      // Clear localStorage after syncing
       localStorage.removeItem("cartItems");
-
-      // Update header / cart count
       window.dispatchEvent(new CustomEvent("cartUpdated"));
-
     } catch (error) {
       console.error("Error syncing local cart:", error);
     }
   };
 
-  // Send OTP API call
   const handleGetOtp = async () => {
     if (!phone || phone.length < 10) {
       setError("Please enter a valid mobile number");
@@ -60,18 +52,20 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ phoneNumber: Number(phone) }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ phoneNumber: Number(phone) }),
+        }
+      );
 
       const data = await response.json();
 
       if (data.success) {
-        // alert(`otp sent ${data.otp}`)
         setShowOtpModal(true);
         setError("");
       } else {
@@ -85,7 +79,6 @@ const Login = () => {
     }
   };
 
-  // Verify OTP API call
   const handleVerifyOtp = async () => {
     if (!otp || otp.length !== 6) {
       setError("Please enter a valid 6-digit OTP");
@@ -118,9 +111,8 @@ const Login = () => {
         localStorage.setItem("user", JSON.stringify(data.data));
         localStorage.setItem("token", data.token);
         localStorage.setItem("referralCode", data.referralCode);
-        setLoginTimestamp(); // Track login time for auto-logout
+        setLoginTimestamp();
 
-        // ⭐ Sync local cart → API cart
         await syncLocalCartToServer(data.token);
 
         setShowOtpModal(false);
@@ -140,15 +132,15 @@ const Login = () => {
   };
 
   return (
-    <div className="flex h-screen w-full relative">
-      {/* BACKGROUND VIDEO - Full screen on mobile, left side on desktop */}
-      <div className="absolute md:relative w-full md:w-1/2 h-full">
+    <div className="flex h-screen w-full">
+      {/* LEFT SIDE - VIDEO BACKGROUND */}
+      <div className="hidden md:flex md:w-1/2 relative">
         {/* Logo positioned on top - centered */}
-        <div className="absolute top-18 left-1/2 transform -translate-x-1/2 z-10">
+        <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-10">
           <img
             src="/logo-white.png"
             alt="Logo"
-            className="h-20 md:h-24 w-auto drop-shadow-2xl"
+            className="h-20 w-auto drop-shadow-2xl"
           />
         </div>
 
@@ -163,49 +155,77 @@ const Login = () => {
           <source src="/bg-video.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
-
-        {/* Dark overlay for mobile to make form more readable */}
-        <div className="absolute inset-0 bg-black/40 md:hidden"></div>
       </div>
 
-      {/* FORM CONTAINER */}
-      <div className="relative md:static w-full md:w-1/2 flex items-center justify-center z-10">
-        <div className="w-[90%] max-w-md bg-white/95 md:bg-white backdrop-blur-sm shadow-xl rounded-lg p-8">
-          <h2 className="text-center text-xl font-bold mb-6 text-gray-800">
-            Enter Mobile Number
-          </h2>
+      {/* RIGHT SIDE - LOGIN FORM */}
+      <div className="w-full md:w-1/2 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
+        <div className="w-full max-w-md">
+          {/* Logo for mobile only */}
+          <div className="text-center mb-8 ">
+            <img
+              src="/logo-black.png"
+              alt="Logo"
+              className="h-16 mx-auto mb-4"
+            />
+          </div>
 
+          {/* Main Card */}
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">
+              Welcome Back
+            </h1>
+            <p className="text-gray-500 text-sm">
+              Enter your mobile number to access your account
+            </p>
+          </div>
+
+          {/* Error Message */}
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm">
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm">
               {error}
             </div>
           )}
 
-          <label className="text-sm font-medium text-gray-700">
-            Mobile Number
-          </label>
-          <input
-            type="text"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1 mb-4 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-            placeholder="Enter mobile number"
-            maxLength="10"
-          />
+          {/* Form */}
+          <div className="space-y-5">
+            {/* Mobile Number Input */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Mobile Number
+              </label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900"
+                placeholder="Enter your mobile number"
+                maxLength="10"
+              />
+            </div>
 
-          <button
-            onClick={handleGetOtp}
-            disabled={loading}
-            className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-          >
-            {loading ? "Sending..." : "Get OTP"}
-          </button>
+            {/* Remember Me & Forgot Password */}
+           
 
-          <p className="mt-4 text-center text-sm text-gray-700">
-            Don't have an account?
+            {/* Get OTP Button */}
+            <button
+              onClick={handleGetOtp}
+              disabled={loading}
+              className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow-md"
+            >
+              {loading ? "Sending..." : "Sign In"}
+            </button>
+
+           
+          </div>
+
+          {/* Register Link */}
+          <p className="mt-6 text-center text-sm text-gray-600">
+            Don't have an account?{" "}
             <Link
               to="/register"
-              className="text-blue-600 font-semibold ml-1 hover:underline"
+              className="text-gray-900 font-semibold hover:underline"
             >
               Register Now
             </Link>
@@ -215,71 +235,80 @@ const Login = () => {
           <button
             type="button"
             onClick={() => Navigate("/homePage")}
-            className="mt-3 w-full text-sm font-semibold text-gray-700 border border-gray-300 py-2 rounded-md hover:bg-gray-100 transition-colors"
+            className="mt-4 w-full text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
           >
-            Back to Home
+            ← Back to Home
           </button>
         </div>
       </div>
 
       {/* OTP MODAL */}
       {showOtpModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-8 w-[90%] max-w-md shadow-2xl">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-gray-800">Verify OTP</h3>
+              <h3 className="text-2xl font-serif font-bold text-gray-900">
+                Verify OTP
+              </h3>
               <button
                 onClick={() => {
                   setShowOtpModal(false);
                   setOtp("");
                   setError("");
                 }}
-                className="text-gray-500 hover:text-gray-700 text-2xl font-bold leading-none"
+                className="text-gray-400 hover:text-gray-600 text-3xl font-light leading-none w-8 h-8 flex items-center justify-center"
               >
                 ×
               </button>
             </div>
 
             {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm">
+              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm">
                 {error}
               </div>
             )}
 
-            <p className="text-sm text-gray-600 mb-4">
-              Enter the 6-digit OTP sent to {phone}
+            <p className="text-sm text-gray-600 mb-6">
+              Enter the 6-digit OTP sent to <span className="font-semibold">+91 {phone}</span>
             </p>
 
-            <label className="text-sm font-medium text-gray-700">OTP</label>
-            <input
-              type="text"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1 mb-4 focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="Enter 6-digit OTP"
-              maxLength="6"
-            />
+            <div className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  OTP
+                </label>
+                <input
+                  type="text"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-center text-2xl tracking-widest font-semibold"
+                  placeholder="• • • • • •"
+                  maxLength="6"
+                />
+              </div>
 
-            <button
-              onClick={handleVerifyOtp}
-              disabled={loading}
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-            >
-              {loading ? "Verifying..." : "Verify OTP"}
-            </button>
+              <button
+                onClick={handleVerifyOtp}
+                disabled={loading}
+                className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow-md"
+              >
+                {loading ? "Verifying..." : "Verify OTP"}
+              </button>
 
-            <button
-              onClick={handleGetOtp}
-              disabled={loading}
-              className="w-full mt-3 text-blue-600 hover:text-blue-700 font-semibold disabled:text-gray-400"
-            >
-              Resend OTP
-            </button>
+              <button
+                onClick={handleGetOtp}
+                disabled={loading}
+                className="w-full text-gray-700 hover:text-gray-900 font-medium disabled:text-gray-400 py-2"
+              >
+                Resend OTP
+              </button>
+            </div>
           </div>
         </div>
       )}
     </div>
+    </div>
   );
-};
+}
 
-export default Login;
+export default Login

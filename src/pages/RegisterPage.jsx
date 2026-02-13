@@ -190,14 +190,12 @@ const Register = () => {
   const validate = () => {
     const newErrors = {};
     if (!formData.name.trim() || formData.name.trim().length < 3) newErrors.name = "Name must be at least 3 characters";
-    // if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = "Invalid email format";
     if (!formData.phoneNumber || !/^[0-9]{10}$/.test(formData.phoneNumber)) newErrors.phoneNumber = "Phone number must be 10 digits";
     if (!formData.country) newErrors.country = "Country is required";
     if (!formData.state) newErrors.state = "State is required";
     if (!formData.city) newErrors.city = "City is required";
-    if (!formData.street) newErrors.street = "street is required";
+    if (!formData.street) newErrors.street = "Street is required";
     if (!formData.pinCode || !/^[0-9]{6}$/.test(formData.pinCode)) newErrors.pinCode = "Pin code must be 6 digits";
-    // if (!formData.dob) newErrors.dob = "Date of birth is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -251,14 +249,23 @@ const Register = () => {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: formData.name, email: formData.email, phoneNumber: formData.phoneNumber, country: formData.country, state: formData.state, street: formData.street, city: formData.city, pinCode: formData.pinCode, dob: formData.dob })
+        body: JSON.stringify({ 
+          name: formData.name, 
+          email: formData.email, 
+          phoneNumber: formData.phoneNumber, 
+          country: formData.country, 
+          state: formData.state, 
+          street: formData.street, 
+          city: formData.city, 
+          pinCode: formData.pinCode, 
+          dob: formData.dob 
+        })
       });
 
       const data = await response.json();
       if (data.success) {
         setToken(data.registrationToken);
         setShowOtpModal(true);
-        // alert(data.otp);
       } else {
         setApiError(data.message || "Failed to send OTP");
       }
@@ -308,12 +315,25 @@ const Register = () => {
       if (data.success) {
         localStorage.setItem("user", JSON.stringify(data.data));
         localStorage.setItem("token", data.token);
-         localStorage.setItem("referralCode", data.refferralCode);
-        setLoginTimestamp(); // Track login time for auto-logout
+        localStorage.setItem("referralCode", data.refferralCode);
+        setLoginTimestamp();
         syncLocalCartToServer(data.token);
         setShowOtpModal(false);
         alert("Registration Successful!");
-        setFormData({ name: "", email: "", phoneNumber: "", countryCode: "+91", countryIsoCode: "IN", country: "", stateIsoCode: "", state: "", city: "", pinCode: "", dob: "" });
+        setFormData({ 
+          name: "", 
+          email: "", 
+          phoneNumber: "", 
+          countryCode: "+91", 
+          countryIsoCode: "IN", 
+          country: "", 
+          stateIsoCode: "", 
+          state: "", 
+          city: "", 
+          street: "",
+          pinCode: "", 
+          dob: "" 
+        });
         setOtp("");
         Navigate("/homePage");
       } else {
@@ -330,30 +350,30 @@ const Register = () => {
     <div ref={el => dropdownRefs.current[field] = el} className="relative">
       <div
         onClick={() => !disabled && setOpenDropdown(openDropdown === field ? null : field)}
-        className={`w-full border ${errors[field] ? 'border-red-500' : 'border-gray-300'} ${disabled ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer'} px-2 py-1.5 rounded text-md flex items-center justify-between hover:border-yellow-400 transition-colors`}
+        className={`w-full px-4 py-3 bg-gray-50 border ${errors[field] ? 'border-red-500' : 'border-gray-200'} ${disabled ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer'} rounded-lg flex items-center justify-between hover:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all`}
       >
-        <span className={value ? 'text-gray-800' : 'text-gray-400 text-md'}>{value || placeholder}</span>
-        <ChevronDown className="w-3 h-3 text-gray-500" />
+        <span className={value ? 'text-gray-900' : 'text-gray-400'}>{value || placeholder}</span>
+        <ChevronDown className="w-4 h-4 text-gray-500" />
       </div>
 
       {openDropdown === field && !disabled && (
         <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-64 overflow-hidden" onMouseDown={(e) => e.preventDefault()}>
           <div className="p-2 border-b border-gray-200">
             <div className="relative">
-              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
               <input
                 type="text"
                 value={searchTerms[field]}
                 onChange={(e) => setSearchTerms(prev => ({ ...prev, [field]: e.target.value }))}
                 placeholder={`Search ${label.toLowerCase()}...`}
-                className="w-full pl-8 pr-2 py-1.5 text-md border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-yellow-500"
+                className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
                 autoFocus
               />
             </div>
           </div>
           <div className="max-h-48 overflow-y-auto">
             {options.length === 0 ? (
-              <div className="px-3 py-2 text-md text-gray-500">No results found</div>
+              <div className="px-4 py-3 text-sm text-gray-500">No results found</div>
             ) : (
               options.map((option, idx) => (
                 <div
@@ -362,7 +382,7 @@ const Register = () => {
                     e.preventDefault();
                     onSelect(getOptionValue(option));
                   }}
-                  className="px-3 py-1.5 hover:bg-yellow-50 cursor-pointer text-md text-gray-800"
+                  className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-900"
                 >
                   {renderOption(option)}
                 </div>
@@ -371,189 +391,346 @@ const Register = () => {
           </div>
         </div>
       )}
-      {errors[field] && <p className="text-red-500 text-[10px] mt-0.5">{errors[field]}</p>}
+      {errors[field] && <p className="text-red-500 text-xs mt-1">{errors[field]}</p>}
     </div>
   );
 
   return (
-    <div className="flex min-h-screen w-full">
-      <div className="hidden lg:block w-1/2 h-screen sticky top-0 relative">
+    <div className="flex h-screen w-full">
+      {/* LEFT SIDE - VIDEO BACKGROUND */}
+      <div className="hidden md:flex md:w-1/2 relative">
         <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-10">
-          <img src="/logo-white.png" alt="Logo" className="h-20 w-auto" />
+          <img src="/logo-white.png" alt="Logo" className="h-20 w-auto drop-shadow-2xl" />
         </div>
         <video autoPlay loop muted playsInline className="w-full h-full object-cover">
           <source src="/bg-video.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
         </video>
       </div>
 
-      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50 p-3 overflow-y-auto">
-        <div className="w-full max-w-lg bg-white shadow-xl rounded-xl p-4 my-4">
-          <div className="text-center mb-3">
-            <h2 className="text-xl font-bold text-gray-800 mb-1">Create Account</h2>
-            <p className="text-gray-600 text-md">Join us today</p>
+      {/* RIGHT SIDE - REGISTER FORM */}
+      <div className="w-full md:w-1/2 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4 overflow-y-auto">
+        <div className="w-full max-w-lg my-8">
+          {/* Logo for mobile */}
+          <div className="text-center mb-6 ">
+            <img src="/logo-white.png" alt="Logo" className="h-16 mx-auto mb-4" />
           </div>
 
-          {(locationLoading || locationError || apiError) && (
-            <div className="mb-3">
-              {/* {locationLoading && (
-                <div className="bg-blue-50 border-l-2 border-blue-500 text-blue-700 px-2 py-1.5 rounded flex items-center text-md">
-                  <Loader className="animate-spin mr-1.5 flex-shrink-0" size={14} />
-                  <p>Detecting location...</p>
-                </div>
-              )} */}
-              {/* {locationError && (
-                <div className="bg-yellow-50 border-l-2 border-yellow-500 text-yellow-700 px-2 py-1.5 rounded text-md">
-                  <p>{locationError}</p>
-                </div>
-              )} */}
-              {apiError && (
-                <div className="bg-red-50 border-l-2 border-red-500 text-red-700 px-2 py-1.5 rounded text-md">
-                  <p>{apiError}</p>
-                </div>
-              )}
-            </div>
-          )}
-
-          <div className="space-y-2.5">
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className="block text-md font-medium text-gray-700 mb-0.5">Full Name *</label>
-                <input type="text" name="name" value={formData.name} onChange={handleChange} className={`w-full border ${errors.name ? 'border-red-500' : 'border-gray-300'} px-2 py-1.5 rounded text-md focus:outline-none focus:ring-1 focus:ring-yellow-500`} placeholder="Your name" />
-                {errors.name && <p className="text-red-500 text-[10px] mt-0.5">{errors.name}</p>}
-              </div>
-
-              <div>
-                <label className="block text-md font-medium text-gray-700 mb-0.5">Email </label>
-                <input type="email" name="email" value={formData.email} onChange={handleChange} className={`w-full border ${errors.email ? 'border-red-500' : 'border-gray-300'} px-2 py-1.5 rounded text-md focus:outline-none focus:ring-1 focus:ring-yellow-500`} placeholder="email@example.com" />
-                {/* {errors.email && <p className="text-red-500 text-[10px] mt-0.5">{errors.email}</p>} */}
-              </div>
+          {/* Main Card */}
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            {/* Header */}
+            <div className="text-center mb-6">
+              <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">
+                Create Account
+              </h1>
+              <p className="text-gray-500 text-sm">
+                Join us today and start your journey
+              </p>
             </div>
 
-            <div>
-              <label className="block text-md font-medium text-gray-700 mb-0.5">Phone Number *</label>
-              <div className="flex gap-1.5">
-                <div ref={el => dropdownRefs.current['countryCode'] = el} className="relative w-16">
-                  <div onClick={() => setOpenDropdown(openDropdown === 'countryCode' ? null : 'countryCode')} className="border border-gray-300 px-1.5 py-1.5 rounded text-md cursor-pointer flex items-center justify-between hover:border-yellow-400 transition-colors">
-                    <span>{formData.countryCode}</span>
-                    <ChevronDown className="w-2.5 h-2.5" />
-                  </div>
+            {/* Error Message */}
+            {apiError && (
+              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm">
+                {apiError}
+              </div>
+            )}
 
-                  {openDropdown === 'countryCode' && (
-                    <div className="absolute z-50 w-64 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-64 overflow-hidden" onMouseDown={(e) => e.preventDefault()}>
-                      <div className="p-2 border-b border-gray-200">
-                        <div className="relative">
-                          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" />
-                          <input type="text" value={searchTerms.countryCode} onChange={(e) => setSearchTerms(prev => ({ ...prev, countryCode: e.target.value }))} placeholder="Search..." className="w-full pl-8 pr-2 py-1.5 text-md border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-yellow-500" autoFocus />
+            {/* Form */}
+            <form onSubmit={handleGetOtp} className="space-y-4">
+              {/* Name and Email Row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 bg-gray-50 border ${errors.name ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900`}
+                    placeholder="Enter your full name"
+                  />
+                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email (Optional)
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900"
+                    placeholder="email@example.com"
+                  />
+                </div>
+              </div>
+
+              {/* Phone Number */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number *
+                </label>
+                <div className="flex gap-2">
+                  <div ref={el => dropdownRefs.current['countryCode'] = el} className="relative w-28">
+                    <div 
+                      onClick={() => setOpenDropdown(openDropdown === 'countryCode' ? null : 'countryCode')} 
+                      className="w-full px-3 py-3 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer flex items-center justify-between hover:border-gray-900 transition-all"
+                    >
+                      <span className="text-gray-900 text-sm">{formData.countryCode}</span>
+                      <ChevronDown className="w-4 h-4 text-gray-500" />
+                    </div>
+
+                    {openDropdown === 'countryCode' && (
+                      <div className="absolute z-50 w-72 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-64 overflow-hidden" onMouseDown={(e) => e.preventDefault()}>
+                        <div className="p-2 border-b border-gray-200">
+                          <div className="relative">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                            <input 
+                              type="text" 
+                              value={searchTerms.countryCode} 
+                              onChange={(e) => setSearchTerms(prev => ({ ...prev, countryCode: e.target.value }))} 
+                              placeholder="Search..." 
+                              className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900" 
+                              autoFocus 
+                            />
+                          </div>
+                        </div>
+                        <div className="max-h-48 overflow-y-auto">
+                          {filteredCountryCodes.map((cc) => (
+                            <div 
+                              key={cc.code} 
+                              onMouseDown={(e) => { e.preventDefault(); handleSelectCountryCode(cc.code); }} 
+                              className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm"
+                            >
+                              {cc.flag} {cc.code} - {cc.country}
+                            </div>
+                          ))}
                         </div>
                       </div>
-                      <div className="max-h-48 overflow-y-auto">
-                        {filteredCountryCodes.map((cc) => (
-                          <div key={cc.code} onMouseDown={(e) => { e.preventDefault(); handleSelectCountryCode(cc.code); }} className="px-3 py-1.5 hover:bg-yellow-50 cursor-pointer text-md">
-                            {cc.flag} {cc.code} - {cc.country}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
+                  <input
+                    type="tel"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value.replace(/\D/g, '') }))}
+                    maxLength="10"
+                    className={`flex-1 px-4 py-3 bg-gray-50 border ${errors.phoneNumber ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900`}
+                    placeholder="10-digit mobile number"
+                  />
                 </div>
-                <input type="tel" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} maxLength="10" className={`flex-1 border ${errors.phoneNumber ? 'border-red-500' : 'border-gray-300'} px-2 py-1.5 rounded text-md focus:outline-none focus:ring-1 focus:ring-yellow-500`} placeholder="10-digit mobile" />
+                {errors.phoneNumber && <p className="text-red-500 text-xs mt-1">{errors.phoneNumber}</p>}
               </div>
-              {errors.phoneNumber && <p className="text-red-500 text-[10px] mt-0.5">{errors.phoneNumber}</p>}
-            </div>
 
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <div className="flex items-center justify-between mb-0.5">
-                  <label className="block text-md font-medium text-gray-700">Country *</label>
-                  {/* <button type="button" onClick={detectUserLocation} disabled={locationLoading} className="text-[10px] text-yellow-600 hover:text-yellow-700 font-semibold flex items-center gap-0.5 disabled:text-gray-400">
-                    <MapPin size={10} />
-                    {locationLoading ? 'Detecting...' : 'Auto-detect'}
-                  </button> */}
+              {/* Country and Street Row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Country *
+                  </label>
+                  <SearchDropdown 
+                    field="country" 
+                    label="Country" 
+                    options={filteredCountries} 
+                    value={formData.country} 
+                    onSelect={handleSelectCountry} 
+                    disabled={false} 
+                    renderOption={(c) => `${c.flag} ${c.name}`} 
+                    getOptionValue={(c) => c.isoCode} 
+                    placeholder="Select Country" 
+                  />
                 </div>
-                <SearchDropdown field="country" label="Country" options={filteredCountries} value={formData.country} onSelect={handleSelectCountry} disabled={false} renderOption={(c) => `${c.flag} ${c.name}`} getOptionValue={(c) => c.isoCode} placeholder="Select Country" />
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Street *
+                  </label>
+                  <input
+                    type="text"
+                    name="street"
+                    value={formData.street}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 bg-gray-50 border ${errors.street ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900`}
+                    placeholder="Street address"
+                  />
+                  {errors.street && <p className="text-red-500 text-xs mt-1">{errors.street}</p>}
+                </div>
               </div>
 
-              <div>
-                <label className="block text-md font-medium text-gray-700 mb-0.5">Street*</label>
-                <input type="text" name="street" value={formData.street} onChange={handleChange} className={`w-full border ${errors.street ? 'border-red-500' : 'border-gray-300'} px-2 py-1.5 rounded text-md focus:outline-none focus:ring-1 focus:ring-yellow-500`} placeholder="Street" />
-                {errors.street && <p className="text-red-500 text-[10px] mt-0.5">{errors.street}</p>}
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className="block text-md font-medium text-gray-700 mb-0.5">State *</label>
-                <SearchDropdown field="state" label="State" options={filteredStates} value={formData.state} onSelect={handleSelectState} disabled={!formData.countryIsoCode} renderOption={(s) => s.name} getOptionValue={(s) => s.isoCode} placeholder="Select State" />
+              {/* State and City Row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    State *
+                  </label>
+                  <SearchDropdown 
+                    field="state" 
+                    label="State" 
+                    options={filteredStates} 
+                    value={formData.state} 
+                    onSelect={handleSelectState} 
+                    disabled={!formData.countryIsoCode} 
+                    renderOption={(s) => s.name} 
+                    getOptionValue={(s) => s.isoCode} 
+                    placeholder="Select State" 
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    City *
+                  </label>
+                  <SearchDropdown 
+                    field="city" 
+                    label="City" 
+                    options={filteredCities} 
+                    value={formData.city} 
+                    onSelect={handleSelectCity} 
+                    disabled={!formData.stateIsoCode} 
+                    renderOption={(c) => c.name} 
+                    getOptionValue={(c) => c.name} 
+                    placeholder="Select City" 
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="block text-md font-medium text-gray-700 mb-0.5">City *</label>
-                <SearchDropdown field="city" label="City" options={filteredCities} value={formData.city} onSelect={handleSelectCity} disabled={!formData.stateIsoCode} renderOption={(c) => c.name} getOptionValue={(c) => c.name} placeholder="Select City" />
+              {/* Pin Code and DOB Row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Pin Code *
+                  </label>
+                  <input
+                    type="text"
+                    name="pinCode"
+                    value={formData.pinCode}
+                    onChange={(e) => setFormData(prev => ({ ...prev, pinCode: e.target.value.replace(/\D/g, '') }))}
+                    maxLength="6"
+                    className={`w-full px-4 py-3 bg-gray-50 border ${errors.pinCode ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900`}
+                    placeholder="6-digit PIN code"
+                  />
+                  {errors.pinCode && <p className="text-red-500 text-xs mt-1">{errors.pinCode}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Date of Birth (Optional)
+                  </label>
+                  <input
+                    type="date"
+                    name="dob"
+                    value={formData.dob}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900"
+                  />
+                </div>
               </div>
-            </div>
 
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className="block text-md font-medium text-gray-700 mb-0.5">Pin Code *</label>
-                <input type="text" name="pinCode" value={formData.pinCode} onChange={handleChange} maxLength="6" className={`w-full border ${errors.pinCode ? 'border-red-500' : 'border-gray-300'} px-2 py-1.5 rounded text-md focus:outline-none focus:ring-1 focus:ring-yellow-500`} placeholder="6-digit PIN" />
-                {errors.pinCode && <p className="text-red-500 text-[10px] mt-0.5">{errors.pinCode}</p>}
-              </div>
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow-md mt-2"
+              >
+                {loading ? 'Sending OTP...' : 'Get OTP'}
+              </button>
+            </form>
 
-              <div>
-                <label className="block text-md font-medium text-gray-700 mb-0.5">Date of Birth </label>
-                <input type="date" name="dob" value={formData.dob} onChange={handleChange} className={`w-full border ${errors.dob ? 'border-red-500' : 'border-gray-300'} px-2 py-1.5 rounded text-md focus:outline-none focus:ring-1 focus:ring-yellow-500`} />
-                {/* {errors.dob && <p className="text-red-500 text-[10px] mt-0.5">{errors.dob}</p>} */}
-              </div>
-            </div>
-
-            <button onClick={handleGetOtp} disabled={loading} className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-semibold py-2 rounded shadow-lg disabled:bg-gray-400 text-sm mt-3">
-              {loading ? 'Sending OTP...' : 'Get OTP'}
-            </button>
-          </div>
-
-          <div className="mt-4 text-center space-y-2">
-            <p className="text-gray-600 text-md">
-              Already have an account?
-              <Link to="/login" className="ml-1 text-yellow-600 hover:text-yellow-700 font-semibold">Login</Link>
+            {/* Login Link */}
+            <p className="mt-6 text-center text-sm text-gray-600">
+              Already have an account?{" "}
+              <Link
+                to="/login"
+                className="text-gray-900 font-semibold hover:underline"
+              >
+                Login
+              </Link>
             </p>
-            <Link to="/homePage" className="inline-flex items-center justify-center w-full text-md font-semibold text-gray-700 border border-gray-300 py-2 rounded hover:bg-gray-100">
-              Back to Home
-            </Link>
+
+            {/* Back to Home */}
+            <button
+              type="button"
+              onClick={() => Navigate("/homePage")}
+              className="mt-4 w-full text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              ← Back to Home
+            </button>
           </div>
         </div>
       </div>
 
+      {/* OTP MODAL */}
       {showOtpModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold text-gray-800">Verify OTP</h3>
-              <button onClick={() => { setShowOtpModal(false); setOtp(""); setApiError(""); }} className="text-gray-400 hover:text-gray-600">
-                <X className="w-5 h-5" />
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-serif font-bold text-gray-900">
+                Verify OTP
+              </h3>
+              <button
+                onClick={() => {
+                  setShowOtpModal(false);
+                  setOtp("");
+                  setApiError("");
+                }}
+                className="text-gray-400 hover:text-gray-600 text-3xl font-light leading-none w-8 h-8 flex items-center justify-center"
+              >
+                ×
               </button>
             </div>
 
             {apiError && (
-              <div className="bg-red-50 border-l-2 border-red-500 text-red-700 px-3 py-2 rounded mb-4">
-                <p className="text-md">{apiError}</p>
+              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm">
+                {apiError}
               </div>
             )}
 
-            <div className="mb-4">
-              <p className="text-gray-600 text-sm mb-2">We've sent a 6-digit code to</p>
-              <p className="text-base font-semibold text-gray-800 mb-3">{formData.countryCode} {formData.phoneNumber}</p>
-              <label className="block text-md font-medium text-gray-700 mb-1.5">Enter OTP</label>
-              <input type="text" value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))} className="w-full border border-gray-300 px-3 py-2 rounded-lg text-center text-xl tracking-widest font-semibold focus:outline-none focus:ring-2 focus:ring-yellow-500" placeholder="000000" maxLength="6" />
+            <p className="text-sm text-gray-600 mb-2">
+              We've sent a 6-digit code to
+            </p>
+            <p className="text-base font-semibold text-gray-900 mb-6">
+              {formData.countryCode} {formData.phoneNumber}
+            </p>
+
+            <div className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  OTP
+                </label>
+                <input
+                  type="text"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-center text-2xl tracking-widest font-semibold"
+                  placeholder="• • • • • •"
+                  maxLength="6"
+                />
+              </div>
+
+              <button
+                onClick={handleVerifyOtp}
+                disabled={loading}
+                className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow-md"
+              >
+                {loading ? 'Verifying...' : 'Verify & Register'}
+              </button>
+
+              <button
+                onClick={handleGetOtp}
+                disabled={loading}
+                className="w-full text-gray-700 hover:text-gray-900 font-medium disabled:text-gray-400 py-2"
+              >
+                Resend OTP
+              </button>
             </div>
 
-            <button onClick={handleVerifyOtp} disabled={loading} className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-2.5 rounded-lg shadow-lg disabled:bg-gray-400 mb-2">
-              {loading ? 'Verifying...' : 'Verify & Register'}
-            </button>
-
-            <button onClick={handleGetOtp} disabled={loading} className="w-full text-yellow-600 hover:text-yellow-700 font-semibold py-2 disabled:text-gray-400 text-sm">
-              Resend OTP
-            </button>
-
-            <p className="text-[10px] text-gray-500 text-center mt-3">Didn't receive the code? Try resending.</p>
+            <p className="text-xs text-gray-500 text-center mt-4">
+              Didn't receive the code? Try resending.
+            </p>
           </div>
         </div>
       )}

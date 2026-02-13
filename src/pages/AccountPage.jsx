@@ -15,7 +15,7 @@ export default function AccountPage() {
   const menuItems = [
     { link: "/view-profile", icon: User, label: t('account.menuItems.profile') },
     { link: "/addresses", icon: MapPin, label: t('account.menuItems.shippingAddress') },
-    { link: "/cart", icon: ShoppingCart, label: t('account.menuItems.myCart') },
+    // { link: "/cart", icon: ShoppingCart, label: t('account.menuItems.myCart') },
     { link: "/orders", icon: Package, label: t('account.menuItems.myOrders') },
     { link: "/refer-programme", icon: Gift, label: t('account.menuItems.referralProgram') },
     { link: "/chat-support", icon: MessageCircle, label: t('account.menuItems.chatSupport') },
@@ -104,36 +104,7 @@ export default function AccountPage() {
     <h2 className="text-slate-900 font-medium">{user?.name}</h2>
   </div>
 
-  {/* Referral Banner */}
-  <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-4 mb-6 border border-amber-200">
-    <div className="flex items-center gap-4">
-      {/* Gift Icon */}
-      {/* <div className="w-14 h-14 flex-shrink-0">
-        <div className="w-full h-full bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center shadow-md">
-          <Gift className="text-white" size={28} />
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 rounded-full ring-2 ring-white" />
-        </div>
-      </div> */}
 
-      {/* <div className="flex-1">
-        <p className="text-slate-700 text-sm leading-relaxed">
-          {t("account.referralBanner.text")}{" "}
-          <span className="text-amber-600 font-semibold">
-            {t("account.referralBanner.coins")}
-          </span>{" "}
-          {t("account.referralBanner.coinsText")}
-        </p>
-
-        <button
-          onClick={handleShare}
-          className="mt-2 inline-flex items-center gap-1 bg-amber-500 hover:bg-amber-600 text-white text-xs px-3 py-1.5 rounded transition"
-        >
-          Refer Now
-          <ArrowRight size={12} />
-        </button>
-      </div> */}
-    </div>
-  </div>
 
   {/* Menu Items */}
   <div className="space-y-1">

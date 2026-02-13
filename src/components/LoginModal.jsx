@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 const LoginModal = ({ isOpen, onClose, setIsAuthenticated }) => {
   const [phone, setPhone] = useState("");
@@ -6,6 +7,30 @@ const LoginModal = ({ isOpen, onClose, setIsAuthenticated }) => {
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Close modal on Escape key
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        handleClose();
+      }
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen]);
+
+  // Prevent background scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   const syncLocalCartToServer = async (token) => {
     try {
@@ -28,7 +53,6 @@ const LoginModal = ({ isOpen, onClose, setIsAuthenticated }) => {
         });
       }
 
-    //   localStorage.removeItem("cartItems");
       window.dispatchEvent(new CustomEvent("cartUpdated"));
     } catch (error) {
       console.error("Error syncing local cart:", error);
@@ -56,7 +80,6 @@ const LoginModal = ({ isOpen, onClose, setIsAuthenticated }) => {
       const data = await response.json();
 
       if (data.success) {
-        // alert(`OTP sent: ${data.otp}`);
         setShowOtpInput(true);
         setError("");
       } else {
@@ -97,8 +120,6 @@ const LoginModal = ({ isOpen, onClose, setIsAuthenticated }) => {
       const data = await response.json();
 
       if (data.success) {
-        // alert("Login Successful!");
-
         localStorage.setItem("user", JSON.stringify(data.data));
         localStorage.setItem("token", data.token);
 
@@ -108,9 +129,6 @@ const LoginModal = ({ isOpen, onClose, setIsAuthenticated }) => {
         setPhone("");
         setOtp("");
         setIsAuthenticated(true)
-        // if (onLoginSuccess) {
-        //   onLoginSuccess(data);
-        // }
         
         onClose();
       } else {
@@ -134,82 +152,81 @@ const LoginModal = ({ isOpen, onClose, setIsAuthenticated }) => {
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg p-8 w-[90%] max-w-md shadow-2xl">
+  return createPortal(
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
+      <div className="bg-white rounded-2xl p-8 w-[90%] max-w-md shadow-2xl">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-800">
-            {showOtpInput ? "Verify OTP" : "Login"}
+          <h2 className="text-2xl font-serif font-bold text-gray-900">
+            {showOtpInput ? "Verify OTP" : "Welcome Back"}
           </h2>
           <button
             onClick={handleClose}
-            className="text-gray-500 hover:text-gray-700 text-2xl font-bold leading-none"
+            className="text-gray-400 hover:text-gray-600 text-3xl font-light leading-none w-8 h-8 flex items-center justify-center transition-colors"
           >
             ×
           </button>
         </div>
 
+        {!showOtpInput && (
+          <p className="text-gray-500 text-sm mb-6 text-center">
+            Enter your mobile number to access your account
+          </p>
+        )}
+
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm">
+          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm">
             {error}
           </div>
         )}
 
         {!showOtpInput ? (
-          <>
-            <label className="text-sm font-medium text-gray-700">
-              Mobile Number
-            </label>
-            <input
-              type="text"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1 mb-4 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-              placeholder="Enter mobile number"
-              maxLength="10"
-            />
+          <div className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Mobile Number
+              </label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900"
+                placeholder="Enter mobile number"
+                maxLength="10"
+              />
+            </div>
 
             <button
               onClick={handleGetOtp}
               disabled={loading}
-              className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow-md"
             >
               {loading ? "Sending..." : "Get OTP"}
             </button>
-
-            {/* <p className="mt-4 text-center text-sm text-gray-700">
-              Don't have an account?
-              <button
-                onClick={() => {
-                  handleClose();
-                  // Trigger registration modal or navigation
-                }}
-                className="text-blue-600 font-semibold ml-1 hover:underline"
-              >
-                Register Now
-              </button>
-            </p> */}
-          </>
+          </div>
         ) : (
-          <>
+          <div className="space-y-5">
             <p className="text-sm text-gray-600 mb-4">
-              Enter the 6-digit OTP sent to {phone}
+              Enter the 6-digit OTP sent to <span className="font-semibold text-gray-900">+91 {phone}</span>
             </p>
 
-            <label className="text-sm font-medium text-gray-700">OTP</label>
-            <input
-              type="text"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1 mb-4 focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="Enter 6-digit OTP"
-              maxLength="6"
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                OTP
+              </label>
+              <input
+                type="text"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-center text-2xl tracking-widest font-semibold"
+                placeholder="• • • • • •"
+                maxLength="6"
+              />
+            </div>
 
             <button
               onClick={handleVerifyOtp}
               disabled={loading}
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow-md"
             >
               {loading ? "Verifying..." : "Verify OTP"}
             </button>
@@ -217,7 +234,7 @@ const LoginModal = ({ isOpen, onClose, setIsAuthenticated }) => {
             <button
               onClick={handleGetOtp}
               disabled={loading}
-              className="w-full mt-3 text-blue-600 hover:text-blue-700 font-semibold disabled:text-gray-400"
+              className="w-full text-gray-700 hover:text-gray-900 font-medium disabled:text-gray-400 py-2 transition-colors"
             >
               Resend OTP
             </button>
@@ -228,17 +245,16 @@ const LoginModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                 setOtp("");
                 setError("");
               }}
-              className="w-full mt-2 text-gray-600 hover:text-gray-800 text-sm"
+              className="w-full text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors"
             >
               ← Back to phone number
             </button>
-          </>
+          </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.getElementById('root') || document.body
   );
 };
-
-// Demo component to show how to use the modal
 
 export default LoginModal;
