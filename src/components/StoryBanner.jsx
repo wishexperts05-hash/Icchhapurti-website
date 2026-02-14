@@ -5,10 +5,13 @@ const StoryBanner = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [visibleVideos, setVisibleVideos] = useState(new Set());
 
   const videoRef = useRef(null);
   const sliderRef = useRef(null);
   const hasFetchedRef = useRef(false);
+  const observerRef = useRef(null);
+  const videoRefsMap = useRef(new Map());
 
   const [storyVideos, setStoryVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,6 +48,44 @@ const StoryBanner = () => {
     }
   };
 
+  // Intersection Observer for lazy loading
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const videoId = entry.target.getAttribute('data-video-id');
+          if (entry.isIntersecting) {
+            setVisibleVideos(prev => new Set([...prev, videoId]));
+          } else {
+            // Pause and unload video when out of view
+            const videoElement = videoRefsMap.current.get(videoId);
+            if (videoElement) {
+              videoElement.pause();
+              videoElement.src = '';
+              videoElement.load();
+            }
+            setVisibleVideos(prev => {
+              const newSet = new Set(prev);
+              newSet.delete(videoId);
+              return newSet;
+            });
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: '50px',
+        threshold: 0.1
+      }
+    );
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
@@ -54,6 +95,21 @@ const StoryBanner = () => {
 
   useEffect(() => {
     fetchStorys();
+  }, []);
+
+  // Cleanup all videos on unmount
+  useEffect(() => {
+    return () => {
+      // Pause and clear all video elements
+      videoRefsMap.current.forEach((videoElement) => {
+        if (videoElement) {
+          videoElement.pause();
+          videoElement.src = '';
+          videoElement.load();
+        }
+      });
+      videoRefsMap.current.clear();
+    };
   }, []);
 
   const handleVideoClick = (story) => {
@@ -70,6 +126,8 @@ const StoryBanner = () => {
     if (videoRef.current) {
       videoRef.current.pause();
       videoRef.current.currentTime = 0;
+      videoRef.current.src = '';
+      videoRef.current.load();
     }
     setIsModalOpen(false);
     setTimeout(() => setSelectedVideo(null), 300);
@@ -77,11 +135,20 @@ const StoryBanner = () => {
 
   const handleScroll = (direction) => {
     if (!sliderRef.current) return;
-    const scrollAmount = isMobile ? 156 : 284; // card width + gap
+    const scrollAmount = isMobile ? 156 : 284;
     sliderRef.current.scrollBy({
       left: direction === 'next' ? scrollAmount : -scrollAmount,
       behavior: 'smooth'
     });
+  };
+
+  const setVideoRef = (element, videoId) => {
+    if (element) {
+      videoRefsMap.current.set(videoId, element);
+      if (observerRef.current) {
+        observerRef.current.observe(element.parentElement);
+      }
+    }
   };
 
   if (isLoading) {
@@ -116,9 +183,7 @@ const StoryBanner = () => {
             Watch our latest updates and highlights
           </p>
 
-          {/* Slider Container */}
           <div className="relative px-12">
-            {/* Previous Button - Outside */}
             <button
               onClick={() => handleScroll('prev')}
               className="absolute left-0 top-1/2 -translate-y-1/2 z-20 
@@ -130,7 +195,6 @@ const StoryBanner = () => {
               <ChevronLeft className="w-5 h-5 text-gray-700" />
             </button>
 
-            {/* Next Button - Outside */}
             <button
               onClick={() => handleScroll('next')}
               className="absolute right-0 top-1/2 -translate-y-1/2 z-20 
@@ -142,7 +206,6 @@ const StoryBanner = () => {
               <ChevronRight className="w-5 h-5 text-gray-700" />
             </button>
 
-            {/* Scrollable Content */}
             <div
               ref={sliderRef}
               className="flex gap-6 overflow-x-auto hide-scrollbar py-4"
@@ -159,6 +222,7 @@ const StoryBanner = () => {
                               transition-all duration-300 ease-out
                               md:hover:scale-105 md:hover:shadow-2xl md:hover:shadow-purple-500/50
                               md:hover:ring-2 md:hover:ring-purple-500/70"
+                    data-video-id={story.id}
                   >
                     {story.type === "instagram" ? (
                       <div className="w-full h-full bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 flex items-center justify-center">
@@ -170,16 +234,29 @@ const StoryBanner = () => {
                         </div>
                       </div>
                     ) : (
-                      <video
-                        src={story.videoUrl}
-                        className="w-full h-full object-cover pointer-events-none"
-                        muted
-                        playsInline
-                        preload="metadata"
-                      />
+                      <>
+                        {/* Thumbnail Image */}
+                        {story.thumbnailUrl && (
+                          <img
+                            src={story.thumbnailUrl}
+                            alt={story.title}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                        )}
+                        
+                        {/* Hidden video element for future use */}
+                        <video
+                          ref={(el) => setVideoRef(el, story.id)}
+                          src={visibleVideos.has(story.id) ? story.videoUrl : ''}
+                          className="hidden"
+                          muted
+                          playsInline
+                          preload="none"
+                        />
+                      </>
                     )}
 
-                    {/* Play Icon Overlay */}
                     <div className="absolute inset-0 bg-black/0 md:group-hover:bg-black/30 
                                 transition-all duration-300 flex items-center justify-center">
                       <div
@@ -193,7 +270,6 @@ const StoryBanner = () => {
                       </div>
                     </div>
 
-                    {/* Shine effect */}
                     <div
                       className="absolute inset-0 opacity-0 md:group-hover:opacity-100 
                                 transition-opacity duration-500 pointer-events-none"
@@ -206,7 +282,6 @@ const StoryBanner = () => {
                     ></div>
                   </div>
 
-                  {/* Title */}
                   <p className="text-gray-800 text-xs mt-2 text-center font-medium truncate px-1">
                     {story.title}
                   </p>
@@ -216,7 +291,6 @@ const StoryBanner = () => {
           </div>
         </div>
 
-        {/* MODAL */}
         {isModalOpen && selectedVideo && (
           <div
             className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"

@@ -5,10 +5,13 @@ const StoryVideoSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [visibleVideos, setVisibleVideos] = useState(new Set());
 
   const videoRef = useRef(null);
   const sliderRef = useRef(null);
   const hasFetchedRef = useRef(false);
+  const observerRef = useRef(null);
+  const videoRefsMap = useRef(new Map());
 
   const [storyVideos, setStoryVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,6 +48,44 @@ const StoryVideoSection = () => {
     }
   };
 
+  // Intersection Observer for lazy loading
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const videoId = entry.target.getAttribute('data-video-id');
+          if (entry.isIntersecting) {
+            setVisibleVideos(prev => new Set([...prev, videoId]));
+          } else {
+            // Pause and unload video when out of view
+            const videoElement = videoRefsMap.current.get(videoId);
+            if (videoElement) {
+              videoElement.pause();
+              videoElement.src = '';
+              videoElement.load();
+            }
+            setVisibleVideos(prev => {
+              const newSet = new Set(prev);
+              newSet.delete(videoId);
+              return newSet;
+            });
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: '50px',
+        threshold: 0.1
+      }
+    );
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
@@ -54,6 +95,21 @@ const StoryVideoSection = () => {
 
   useEffect(() => {
     fetchStorys();
+  }, []);
+
+  // Cleanup all videos on unmount
+  useEffect(() => {
+    return () => {
+      // Pause and clear all video elements
+      videoRefsMap.current.forEach((videoElement) => {
+        if (videoElement) {
+          videoElement.pause();
+          videoElement.src = '';
+          videoElement.load();
+        }
+      });
+      videoRefsMap.current.clear();
+    };
   }, []);
 
   const openVideo = (video) => {
@@ -66,6 +122,8 @@ const StoryVideoSection = () => {
     if (videoRef.current) {
       videoRef.current.pause();
       videoRef.current.currentTime = 0;
+      videoRef.current.src = '';
+      videoRef.current.load();
     }
     setIsModalOpen(false);
     setTimeout(() => setSelectedVideo(null), 300);
@@ -73,11 +131,20 @@ const StoryVideoSection = () => {
 
   const handleScroll = (direction) => {
     if (!sliderRef.current) return;
-    const scrollAmount = isMobile ? 216 : 304; // card width + gap
+    const scrollAmount = isMobile ? 216 : 304;
     sliderRef.current.scrollBy({
       left: direction === 'next' ? scrollAmount : -scrollAmount,
       behavior: 'smooth'
     });
+  };
+
+  const setVideoRef = (element, videoId) => {
+    if (element) {
+      videoRefsMap.current.set(videoId, element);
+      if (observerRef.current) {
+        observerRef.current.observe(element.parentElement);
+      }
+    }
   };
 
   if (isLoading) {
@@ -97,9 +164,7 @@ const StoryVideoSection = () => {
     <>
       <div className="sm:py-5 bg-white relative overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
-          {/* Slider Container */}
           <div className="relative px-12">
-            {/* Navigation Buttons - Outside */}
             <button
               onClick={() => handleScroll('prev')}
               className="absolute left-0 top-1/2 -translate-y-1/2 z-20 
@@ -122,7 +187,6 @@ const StoryVideoSection = () => {
               <ChevronRight className="w-5 h-5 text-gray-700" />
             </button>
 
-            {/* Slider */}
             <div
               ref={sliderRef}
               className="flex gap-4 sm:gap-6 overflow-x-auto hide-scrollbar py-4 sm:py-6"
@@ -144,16 +208,28 @@ const StoryVideoSection = () => {
                               transition-all duration-300 ease-out
                               md:hover:scale-105 md:hover:shadow-2xl md:hover:shadow-amber-500/50
                               md:hover:ring-2 md:hover:ring-amber-500/70"
+                    data-video-id={video.id}
                   >
-                    <video
-                      src={video.videoUrl}
-                      className="w-full h-full object-cover pointer-events-none"
+                    {/* Thumbnail Image */}
+                    {video.thumbnailUrl && (
+                      <img
+                        src={video.thumbnailUrl}
+                        alt={video.title}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    )}
+                    
+                    {/* Hidden video element for future use */}
+                    {/* <video
+                      ref={(el) => setVideoRef(el, video.id)}
+                      src={visibleVideos.has(video.id) ? video.videoUrl : ''}
+                      className="hidden"
                       muted
                       playsInline
-                      preload="metadata"
-                    />
+                      preload="none"
+                    /> */}
 
-                    {/* Play Icon Overlay */}
                     <div className="absolute inset-0 bg-black/20 md:group-hover:bg-black/40 
                                 flex items-center justify-center transition-all duration-300">
                       <div
@@ -166,7 +242,6 @@ const StoryVideoSection = () => {
                       </div>
                     </div>
 
-                    {/* Shine effect */}
                     <div
                       className="absolute inset-0 opacity-0 md:group-hover:opacity-100 
                                 transition-opacity duration-500 pointer-events-none"
@@ -177,7 +252,6 @@ const StoryVideoSection = () => {
                       }}
                     ></div>
 
-                    {/* Video Info */}
                     <div
                       className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 
                                 bg-gradient-to-t from-black/95 via-black/70 to-transparent 
@@ -207,7 +281,6 @@ const StoryVideoSection = () => {
           </div>
         </div>
 
-        {/* Video Modal */}
         {isModalOpen && selectedVideo && (
           <div
             className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
