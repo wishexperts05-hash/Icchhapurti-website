@@ -4,7 +4,7 @@ import { setLoginTimestamp } from '../../utils/auth';
 
 const SpinToWin = ({ isImmediate = false }) => {
     // Configuration
-    const SHOW_POPUP_AFTER = 10; // seconds (change to 180 for 3 minutes)
+    const SHOW_POPUP_AFTER = 60; // seconds (change to 180 for 3 minutes)
     const SHOW_AGAIN_AFTER_CLOSE = 5 * 60 * 1000; // 5 minutes in milliseconds
     const [token, setToken] = useState("");
 
@@ -133,6 +133,7 @@ const SpinToWin = ({ isImmediate = false }) => {
 
     // fetch spin reward
     useEffect(() => {
+        if (!showWheel || !accessToken) return;
         fetchSpinReward()
     }, [showWheel, accessToken])
 
@@ -797,7 +798,7 @@ const SpinToWin = ({ isImmediate = false }) => {
                                             style={{ transform: `rotate(${rotation}deg)` }}
                                         >
                                             {/* Wheel Segments - Only show first 6 prizes */}
-                                            {prizes?.slice(0, 6).map((prize, index) => {
+                                            {prizes?.map((prize, index) => {
                                                 const isBlack = index % 2 === 0;
                                                 return (
                                                     <div

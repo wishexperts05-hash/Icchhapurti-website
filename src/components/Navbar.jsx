@@ -86,7 +86,7 @@ export default function Navbar({ countryCurrency }) {
   };
 
 
-  const { cartCount, wishlistCount, unreadCount } = useHeader();
+  const { cartCount, wishlistCount, unreadCount ,setCount} = useHeader();
 
   // Function to open cart sidebar
   const openCartSidebar = (e) => {
@@ -665,6 +665,7 @@ bg-center bg-no-repeat
                 localStorage.removeItem("cartItems");
                 localStorage.setItem("cart", 0);
                 localStorage.removeItem("unreadCount");
+                setCount(0)
                 navigate("/homePage");
                 setMenuOpen(false);
               }}

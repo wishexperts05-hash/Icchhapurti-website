@@ -246,14 +246,14 @@ const StoryBanner = () => {
                         )}
                         
                         {/* Hidden video element for future use */}
-                        <video
+                        {/* <video
                           ref={(el) => setVideoRef(el, story.id)}
                           src={visibleVideos.has(story.id) ? story.videoUrl : ''}
                           className="hidden"
                           muted
                           playsInline
                           preload="none"
-                        />
+                        /> */}
                       </>
                     )}
 

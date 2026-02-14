@@ -199,7 +199,7 @@ const StoryVideoSection = () => {
             >
               {storyVideos.map((video, index) => (
                 <div
-                  key={video.id}
+                  key={index}
                   onClick={() => openVideo(video)}
                   className="flex-shrink-0 w-[200px] sm:w-[240px] md:w-[280px] cursor-pointer group"
                 >
