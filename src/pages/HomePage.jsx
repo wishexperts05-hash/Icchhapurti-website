@@ -1,29 +1,31 @@
+// Add this to your HomePage.jsx
+
 import React, { useEffect, useCallback } from 'react'
 import OurProducts from '../components/OurProducts'
 import ImageCarousel from '../components/ImageCarousel'
 import { useHeader } from '../context/HeaderContext'
 import WhyChooseUs from '../components/WhyChooseUs'
-// import StoryBanner from '../components/StoryBanner'
 import { Suspense, lazy } from 'react'
+import { messaging, getToken, onMessage } from '../utils/firebaseConfig' // ✅ Import Firebase
 const StoryBanner = lazy(() => import('../components/StoryBanner'));
 const ProductVideoSection = lazy(() => import('../components/ProductVideoSection'));
-// import ProductVideoSection from '../components/ProductVideoSection'
 import Testimonials from '../components/Testimonials'
 import { Star } from 'lucide-react'
 import ManifestationInfo from '../components/ManifestationInfo'
 import HowToUseManifestation from '../components/HowToUseManifestation'
-import useNotifications from '../../hooks/useNotifications'
 
 
 
 
 const HomePage = ({ countryCurrency, country }) => {
+
+
   const { setCount, setList, setUnreadCount } = useHeader();
   const token = localStorage.getItem("token");
   const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes cache
 
 
- 
+
   const fetchCartData = useCallback(async () => {
     // Check cache first
     const cachedCart = localStorage.getItem('cart_data');
@@ -96,7 +98,7 @@ const HomePage = ({ countryCurrency, country }) => {
     }
   }, [token, setUnreadCount]);
 
- 
+
   const fetchWishlist = useCallback(async () => {
 
     try {
@@ -124,21 +126,105 @@ const HomePage = ({ countryCurrency, country }) => {
   }, [token, setList]);
 
 
+  // ✅ NEW: Setup FCM notifications
+  const setupNotifications = useCallback(async () => {
+    try {
+      // Check if user is logged in
+      if (!token) return;
+
+      // Check if browser supports notifications
+      if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+        console.log('⚠️ Notifications not supported');
+        return;
+      }
+
+      // ✅ Check if permission is already granted
+      if (Notification.permission === 'granted') {
+        console.log('✅ Permission already granted, getting token...');
+        
+        // Get FCM token
+        const fcmToken = await getToken(messaging, {
+          vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY
+        });
+
+        if (!fcmToken) {
+          console.error('❌ Failed to get FCM token');
+          return;
+        }
+
+        console.log('🔥 FCM Token:', fcmToken);
+
+        // ✅ Save token to backend
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/user/fcm/add-token`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ 
+              token: fcmToken,
+              deviceType:"web"
+              
+            })
+          }
+        );
+
+        if (response.ok) {
+          console.log('✅ FCM token saved to backend');
+        } else {
+          console.error('❌ Failed to save token to backend');
+        }
+      } else {
+        console.log('⚠️ Notification permission not granted');
+      }
+    } catch (error) {
+      console.error('❌ Error setting up notifications:', error);
+    }
+  }, [token]);
+
+
+  // ✅ Setup foreground notification handler
+  useEffect(() => {
+    if (!token) return;
+
+    // Handle notifications when app is in foreground
+    const unsubscribe = onMessage(messaging, (payload) => {
+      console.log('📨 Foreground notification received:', payload);
+
+      // Show notification
+      if (Notification.permission === 'granted') {
+        const { title, body, icon, image } = payload.notification || {};
+        
+        new Notification(title || 'New Notification', {
+          body: body || 'You have a new message',
+          icon: icon || '/firebase-logo.png',
+          image: image,
+          badge: '/badge-icon.png',
+          data: payload.data
+        });
+      }
+    });
+
+    return () => unsubscribe();
+  }, [token]);
+
+
   useEffect(() => {
     if (token) {
-      // Parallel fetch - all three at once!
+      // ✅ Fetch everything in parallel (including notifications setup)
       Promise.all([
         fetchCartData(),
         fetchNotifications(),
-        fetchWishlist()
+        fetchWishlist(),
+        setupNotifications() // ✅ Add this
       ]);
     } else {
       setCount(localStorage.getItem("cart") || 0);
     }
-  }, [token, fetchCartData, fetchNotifications, fetchWishlist, setCount]);
+  }, [token, fetchCartData, fetchNotifications, fetchWishlist, setupNotifications, setCount]);
 
-
-  useNotifications();
 
   return (
     <div className='mx-auto'>

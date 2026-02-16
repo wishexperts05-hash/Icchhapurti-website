@@ -3,13 +3,13 @@ import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+  apiKey: "AIzaSyAZahzZjbMlLzOJXSTCTLmEupZ1KzD1W1I",
+  authDomain: "ichhapurti-1ed59.firebaseapp.com",
+  projectId: "ichhapurti-1ed59",
+  storageBucket: "ichhapurti-1ed59.firebasestorage.app",
+  messagingSenderId: "381193660617",
+  appId: "1:381193660617:web:0aacb6816e7f2e5a1f4518",
+  measurementId: "G-DL88SNKCB1"
 };
 
 // ✅ Initialize ONCE
