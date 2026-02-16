@@ -4,6 +4,17 @@
 <head>
   <meta charset="UTF-8" />
 
+  <!-- Google Tag Manager -->
+  <script>(function (w, d, s, l, i) {
+      w[l] = w[l] || []; w[l].push({
+        'gtm.start':
+          new Date().getTime(), event: 'gtm.js'
+      }); var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-WW3WSCVJ');</script>
+  <!-- End Google Tag Manager -->
+
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="/logo-white.png" />
 
@@ -21,19 +32,7 @@
   <meta name="author" content="Ichhapurti" />
   <meta name="robots" content="index, follow" />
 
-  <!-- Open Graph (WhatsApp, Facebook, LinkedIn) -->
-  <meta property="og:title" content="Ichhapurti Manifestation Pen" />
-  <meta property="og:description"
-    content="Write your intentions. Manifest your reality with the Ichhapurti Manifestation Pen." />
-  <meta property="og:type" content="product" />
-  <meta property="og:url" content="https://www.ichhapurti.com/" />
-  <meta property="og:image" content="https://www.ichhapurti.com/logo-black.png" />
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Ichhapurti Manifestation Pen" />
-  <meta name="twitter:description" content="Write your intentions. Manifest your reality." />
-  <meta name="twitter:image" content="https://www.ichhapurti.com/logo-black.png" />
+ 
 
   <!-- Theme Color (Mobile) -->
   <meta name="theme-color" content="#ffffff" />
@@ -47,15 +46,10 @@
   <script type="module" src="/src/main.jsx"></script>
 
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HR5TJ9L103"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-
-    gtag('config', 'G-HR5TJ9L103');
-  </script>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WW3WSCVJ" height="0" width="0"
+      style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
 
   <!-- Fixed Google Translate Widget -->
 
@@ -75,6 +69,37 @@
   </script> -->
   <!--End of Tawk.to Script-->
   <!--End of Tawk.to Script-->
+
+
+  <!-- to generate FCM token for push notifications --> 
+  <!-- <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging.js";
+
+   
+     const firebaseConfig = {
+    apiKey: "AIzaSyAZahzZjbMlLzOJXSTCTLmEupZ1KzD1W1I",
+    authDomain: "ichhapurti-1ed59.firebaseapp.com",
+    projectId: "ichhapurti-1ed59",
+    storageBucket: "ichhapurti-1ed59.firebasestorage.app",
+    messagingSenderId: "381193660617",
+    appId: "1:381193660617:web:0aacb6816e7f2e5a1f4518",
+    measurementId: "G-DL88SNKCB1"
+  };
+
+
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging(app);
+
+    Notification.requestPermission().then(async (permission) => {
+      if (permission === "granted") {
+        const token = await getToken(messaging, {
+          vapidKey: "BMuPrDjnT0t5gMBvdaLFnICGiWHe0soudOMRIc_2eA4_un4pJXQj66RTbsQqv7sNwqwysED5LMvhCZWHwx6viFQ"
+        });
+        console.log("🔥 FCM TOKEN:", token);
+      }
+    });
+  </script> -->
 </body>
 
 </html>

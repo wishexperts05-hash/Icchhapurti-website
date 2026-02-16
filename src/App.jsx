@@ -51,12 +51,7 @@ function App() {
   const { setList } = useHeader();
  
 
-  /* ================= Check Session Expiry on App Load ================= */
-  useEffect(() => {
-
-
-
-  }, []);
+ 
 
   useEffect(() => {
 

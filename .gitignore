@@ -26,3 +26,7 @@ dist-ssr
 deploy.sh
 .env.production
 package-lock.json
+
+/* Firebase config file */
+scripts/firebaseConfig.js
+public/firebase-messaging-sw.js

@@ -4,7 +4,7 @@ import ImageCarousel from '../components/ImageCarousel'
 import { useHeader } from '../context/HeaderContext'
 import WhyChooseUs from '../components/WhyChooseUs'
 // import StoryBanner from '../components/StoryBanner'
-import { Suspense ,lazy} from 'react'
+import { Suspense, lazy } from 'react'
 const StoryBanner = lazy(() => import('../components/StoryBanner'));
 const ProductVideoSection = lazy(() => import('../components/ProductVideoSection'));
 // import ProductVideoSection from '../components/ProductVideoSection'
@@ -12,7 +12,9 @@ import Testimonials from '../components/Testimonials'
 import { Star } from 'lucide-react'
 import ManifestationInfo from '../components/ManifestationInfo'
 import HowToUseManifestation from '../components/HowToUseManifestation'
-import SpinToWin from '../components/spinner/SpinToWin'
+import useNotifications from '../../hooks/useNotifications'
+
+
 
 
 const HomePage = ({ countryCurrency, country }) => {
@@ -21,7 +23,7 @@ const HomePage = ({ countryCurrency, country }) => {
   const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes cache
 
 
-  /* ================= Fetch Cart with Cache ================= */
+ 
   const fetchCartData = useCallback(async () => {
     // Check cache first
     const cachedCart = localStorage.getItem('cart_data');
@@ -56,7 +58,7 @@ const HomePage = ({ countryCurrency, country }) => {
     }
   }, [token, setCount, countryCurrency, CACHE_DURATION]);
 
-  /* ================= Fetch Notifications with Cache ================= */
+
   const fetchNotifications = useCallback(async () => {
     // Check cache first
     const cachedUnread = localStorage.getItem('unread_count');
@@ -94,7 +96,7 @@ const HomePage = ({ countryCurrency, country }) => {
     }
   }, [token, setUnreadCount]);
 
-  /* ================= Fetch Wishlist with Cache ================= */
+ 
   const fetchWishlist = useCallback(async () => {
 
     try {
@@ -121,7 +123,7 @@ const HomePage = ({ countryCurrency, country }) => {
     }
   }, [token, setList]);
 
-  /* ================= Initial Load ================= */
+
   useEffect(() => {
     if (token) {
       // Parallel fetch - all three at once!
@@ -135,10 +137,13 @@ const HomePage = ({ countryCurrency, country }) => {
     }
   }, [token, fetchCartData, fetchNotifications, fetchWishlist, setCount]);
 
+
+  useNotifications();
+
   return (
     <div className='mx-auto'>
 
-      
+
       <ImageCarousel countryCurrency={countryCurrency} />
       <WhyChooseUs />
       <OurProducts countryCurrency={countryCurrency} country={country} />
@@ -178,7 +183,7 @@ const HomePage = ({ countryCurrency, country }) => {
         <img src="/shape1.png" alt="" className="w-full block" loading="lazy" />
       </div>
 
- <Suspense
+      <Suspense
         fallback={
           <div className="h-[300px] flex items-center justify-center">
             <p className="text-gray-400 text-lg">Loading Videos...</p>
@@ -188,7 +193,7 @@ const HomePage = ({ countryCurrency, country }) => {
         <ProductVideoSection />
       </Suspense>
 
-   
+
 
       <div className="text-center mt-2">
         <div className="flex justify-center gap-1.5">
