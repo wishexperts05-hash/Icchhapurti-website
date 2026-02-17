@@ -125,67 +125,109 @@ const HomePage = ({ countryCurrency, country }) => {
     }
   }, [token, setList]);
 
+  // ✅ Add this at the top of your component (outside any function)
+  let isSettingUpNotifications = false;
 
-  // ✅ NEW: Setup FCM notifications
-  const setupNotifications = useCallback(async () => {
-    try {
-      // Check if user is logged in
-      if (!token) return;
+  // ✅ Setup notifications ONCE when component mounts
+  useEffect(() => {
+    if (!token) return;
 
-      // Check if browser supports notifications
-      if (!('Notification' in window) || !('serviceWorker' in navigator)) {
-        console.log('⚠️ Notifications not supported');
+    const setupNotifications = async () => {
+      // ✅ Prevent concurrent calls
+      if (isSettingUpNotifications) {
+        console.log('⏸️ Already setting up notifications, skipping...');
         return;
       }
 
-      // ✅ Check if permission is already granted
-      if (Notification.permission === 'granted') {
-        console.log('✅ Permission already granted, getting token...');
-        
-        // Get FCM token
-        const fcmToken = await getToken(messaging, {
-          vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY
-        });
+      try {
+        isSettingUpNotifications = true; // Lock
 
-        if (!fcmToken) {
-          console.error('❌ Failed to get FCM token');
+        // Check if browser supports notifications
+        if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+          console.log('⚠️ Notifications not supported');
           return;
         }
 
-        console.log('🔥 FCM Token:', fcmToken);
+        console.log('🔔 Setting up notifications...', Notification.permission);
 
-        // ✅ Save token to backend
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/user/fcm/add-token`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ 
-              token: fcmToken,
-              deviceType:"web"
-              
-            })
+        // 🟡 CASE 1: Not decided yet → ASK permission
+        if (Notification.permission === "default") {
+          const permission = await Notification.requestPermission();
+
+          if (permission !== 'granted') {
+            console.log('⚠️ Notification permission denied');
+            return;
           }
-        );
-
-        if (response.ok) {
-          console.log('✅ FCM token saved to backend');
-        } else {
-          console.error('❌ Failed to save token to backend');
         }
-      } else {
-        console.log('⚠️ Notification permission not granted');
+
+        // ✅ Check if permission is granted
+        if (Notification.permission === 'granted') {
+          console.log('✅ Permission granted, getting token...');
+
+          // ✅ Wait a bit to ensure service worker is ready
+          await new Promise(resolve => setTimeout(resolve, 500));
+
+          // Get FCM token
+          const fcmToken = await getToken(messaging, {
+            vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY
+          });
+
+          if (!fcmToken) {
+            console.error('❌ Failed to get FCM token');
+            return;
+          }
+
+          console.log('🔥 FCM Token:', fcmToken);
+
+          // ✅ CHECK: Only save if token is NEW or DIFFERENT
+          const savedToken = localStorage.getItem('fcm_token');
+
+          if (savedToken === fcmToken) {
+            console.log('ℹ️ Token already saved, skipping API call');
+            return;
+          }
+
+          // ✅ Save NEW token to backend
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/api/user/fcm/add-token`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({
+                token: fcmToken,
+                deviceType: "web"
+              })
+            }
+          );
+
+          if (response.ok) {
+            console.log('✅ FCM token saved to backend');
+            localStorage.setItem('fcm_token', fcmToken);
+          } else {
+            console.error('❌ Failed to save token to backend');
+          }
+        } else {
+          console.log('⚠️ Notification permission not granted');
+        }
+      } catch (error) {
+        console.error('❌ Error setting up notifications:', error);
+      } finally {
+        // ✅ Release lock after a delay
+        setTimeout(() => {
+          isSettingUpNotifications = false;
+        }, 1000);
       }
-    } catch (error) {
-      console.error('❌ Error setting up notifications:', error);
-    }
-  }, [token]);
+    };
 
+    setupNotifications();
 
-  // ✅ Setup foreground notification handler
+   
+  }, []); // ✅ Empty deps - runs once
+
+  // ✅ Separate useEffect for foreground notifications
   useEffect(() => {
     if (!token) return;
 
@@ -196,7 +238,7 @@ const HomePage = ({ countryCurrency, country }) => {
       // Show notification
       if (Notification.permission === 'granted') {
         const { title, body, icon, image } = payload.notification || {};
-        
+
         new Notification(title || 'New Notification', {
           body: body || 'You have a new message',
           icon: icon || '/firebase-logo.png',
@@ -211,6 +253,9 @@ const HomePage = ({ countryCurrency, country }) => {
   }, [token]);
 
 
+
+
+
   useEffect(() => {
     if (token) {
       // ✅ Fetch everything in parallel (including notifications setup)
@@ -218,12 +263,12 @@ const HomePage = ({ countryCurrency, country }) => {
         fetchCartData(),
         fetchNotifications(),
         fetchWishlist(),
-        setupNotifications() // ✅ Add this
+
       ]);
     } else {
       setCount(localStorage.getItem("cart") || 0);
     }
-  }, [token, fetchCartData, fetchNotifications, fetchWishlist, setupNotifications, setCount]);
+  }, [token, fetchCartData, fetchNotifications, fetchWishlist, setCount]);
 
 
   return (
