@@ -10,7 +10,7 @@ export default function AccountPage() {
   const [copied, setCopied] = useState(false);
 
   // Generate referral link - adjust this based on your actual referral system
-  const referralLink = `${window.location.origin}/homePage?ref=${user?.referralCode || user?._id || 'default'}`;
+  const referralLink = `${window.location.origin}/?ref=${user?.referralCode || user?._id || 'default'}`;
 
   const menuItems = [
     { link: "/view-profile", icon: User, label: t('account.menuItems.profile') },

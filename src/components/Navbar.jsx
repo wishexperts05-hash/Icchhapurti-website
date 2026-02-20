@@ -49,7 +49,7 @@ export default function Navbar({ countryCurrency }) {
       href: "/account",
       auth: true,
     },
-    { icon: Home, label: t(`nav.home`), href: "/homePage", auth: false },
+    { icon: Home, label: t(`nav.home`), href: "/", auth: false },
     {
       icon: ShoppingBag,
       label: t(`nav.products`),
@@ -63,7 +63,7 @@ export default function Navbar({ countryCurrency }) {
   const menuItems = baseMenu.filter((item) => !item.auth || token);
 
   const navLinks = [
-    { label: t(`nav.home`), href: "/homePage" },
+    { label: t(`nav.home`), href: "/" },
     { label: t(`nav.about`), href: "/about-us" },
     { label: t(`nav.blogs`), href: "/blogs" },
     { label: "Shop", href: "/products" },
@@ -271,7 +271,7 @@ bg-center bg-no-repeat
             <div className="flex items-center justify-between gap-4">
               {/* Logo */}
               <div className="flex-shrink-0">
-                <Link to="/homePage" className="flex items-center group">
+                <Link to="/" className="flex items-center group">
                   <img
                     src="/logo-black.png"
                     alt="Logo"
@@ -285,6 +285,7 @@ bg-center bg-no-repeat
               <div className="hidden lg:flex items-center gap-8 flex-1 justify-center">
                 {navLinks.map((link, index) => (
                   <Link
+                     style={{ fontFamily: 'Tenor Sans, sans-serif' }}
                     key={index}
                     to={link.href}
                     className={`text-[16px] lg:text-[17px] font-bold cursor-pointer relative pb-1 group ${isActive(link.href)
@@ -294,6 +295,7 @@ bg-center bg-no-repeat
                   >
                     {link.label}
                     <span
+                    
                       className={`absolute bottom-0 left-0 h-0.5 bg-[#D3AF37]  ${isActive(link.href)
                         ? "w-full"
                         : "w-0 group-hover:w-full"
@@ -562,6 +564,7 @@ bg-center bg-no-repeat
             return (
               <Link
                 key={index}
+             
                 to={item.href}
                 onClick={() => setMenuOpen(false)}
                 className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isItemActive
@@ -573,7 +576,7 @@ bg-center bg-no-repeat
                   size={20}
                   className="group-hover:scale-110 transition-transform"
                 />
-                <span className="font-medium flex-1 text-sm sm:text-base">
+                <span  className="font-medium flex-1 text-sm sm:text-base">
                   {item.label}
                 </span>
                 <ChevronRight
@@ -666,7 +669,7 @@ bg-center bg-no-repeat
                 localStorage.setItem("cart", 0);
                 localStorage.removeItem("unreadCount");
                 setCount(0)
-                navigate("/homePage");
+                navigate("/");
                 setMenuOpen(false);
               }}
               className=" flex items-center cursor-pointer justify-center gap-3 bg-gradient-to-r from-red-600 to-red-700 text-white py-2.5 sm:py-3 px-4 rounded-lg font-medium hover:shadow-lg hover:shadow-red-600/30 transition-all group text-sm sm:text-base"

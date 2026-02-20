@@ -91,7 +91,7 @@ console.log(content,"content")
           {/* Left Content */}
           <div className="w-full lg:w-5/7 md:mt-13 text-left">
 
-            <div className="text-base md:text-md leading-relaxed space-y-4">
+            <div className="text-base md:text-lg leading-relaxed space-y-4">
 
               <p className="font-bold text-[#a17b0a]">
                 We Don't Sell a Pen. We Offer a Powerpack Tool To Unlock Your Dreams.

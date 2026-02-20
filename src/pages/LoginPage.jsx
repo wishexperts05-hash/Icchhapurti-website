@@ -119,7 +119,7 @@ const Login = () => {
         setPhone("");
         setOtp("");
 
-        handleNavigate("/homePage");
+        handleNavigate("/");
       } else {
         setError(data.message || "Invalid OTP. Please try again.");
       }
@@ -234,7 +234,7 @@ const Login = () => {
           {/* Back to Home */}
           <button
             type="button"
-            onClick={() => Navigate("/homePage")}
+            onClick={() => Navigate("/")}
             className="mt-4 w-full text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
           >
             ← Back to Home

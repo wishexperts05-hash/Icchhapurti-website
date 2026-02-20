@@ -49,9 +49,9 @@ import SpinToWin from "./components/spinner/SpinToWin";
 function App() {
   const token = localStorage.getItem("token");
   const { setList } = useHeader();
- 
 
- 
+
+
 
   useEffect(() => {
 
@@ -65,7 +65,7 @@ function App() {
 
 
   const fetchWishlist = async () => {
-   
+
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/wishlist/getWishlist`, {
         method: "GET",
@@ -81,7 +81,7 @@ function App() {
         throw new Error(data.message || "Failed to fetch wishlist");
       }
 
-      
+
 
       setList(data.data.length)
     } catch (err) {
@@ -113,21 +113,39 @@ function App() {
       return null; // fallback
     }
   }
+  const [showSplash, setShowSplash] = useState(
+    !sessionStorage.getItem("splashShown")
+  );
 
+  useEffect(() => {
+    if (!showSplash) return;
 
+    const timer = setTimeout(() => {
+      sessionStorage.setItem("splashShown", "true");
+      setShowSplash(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [showSplash]);
+
+  if (showSplash) {
+    return <SplashScreen />;
+  }
   return (
     <>
+
       <ScrollToTop />
       <SpinToWin />
+
       <Routes>
         {/* Public routes without layout */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/" element={<SplashScreen />} />
+        {/* <Route path="/" element={<SplashScreen />} /> */}
         {/* Routes with layout */}
         <Route element={<Layout countryCurrency={countryCurrency} />}>
 
-          <Route path="/homePage" element={<HomePage countryCurrency={countryCurrency} country={country} />} />
+          <Route path="/" element={<HomePage countryCurrency={countryCurrency} country={country} />} />
           <Route path="/products" element={<ProductsPage countryCurrency={countryCurrency} country={country} />} />
           <Route path="/product/:id/:name" element={<ProductDetailPage countryCurrency={countryCurrency} country={country} />} />
           <Route path="/wallet" element={<WalletPage />} />
@@ -169,7 +187,7 @@ function App() {
                 <h1 className="text-5xl text-white font-bold">404</h1>
                 <p className="text-gray-200 mt-2">Page Not Found</p>
                 <Link
-                  to="/homePage"
+                  to="/"
                   className="mt-4 text-blue-600 hover:underline"
                 >
                   Go back to Home

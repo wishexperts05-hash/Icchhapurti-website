@@ -335,7 +335,7 @@ const Register = () => {
           dob: "" 
         });
         setOtp("");
-        Navigate("/homePage");
+        Navigate("/");
       } else {
         setApiError(data.message || "Invalid OTP");
       }
@@ -654,7 +654,7 @@ const Register = () => {
             {/* Back to Home */}
             <button
               type="button"
-              onClick={() => Navigate("/homePage")}
+              onClick={() => Navigate("/")}
               className="mt-4 w-full text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
             >
               ← Back to Home

@@ -197,7 +197,7 @@ const ReferProgramPage = () => {
 
   const [showShareModal, setShowShareModal] = useState(false);
   // Generate referral link - adjust this based on your actual referral system
-  const referralLink = `${window.location.origin}/homePage?ref=${user?.referralCode || user?._id || 'default'}`;
+  const referralLink = `${window.location.origin}/?ref=${user?.referralCode || user?._id || 'default'}`;
 
   const handleShare = async () => {
     const shareData = {

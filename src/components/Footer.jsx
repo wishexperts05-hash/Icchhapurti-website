@@ -5,10 +5,10 @@ import { Link, useLocation } from 'react-router-dom';
 const Footer = () => {
   const { t } = useTranslation();
   const location = useLocation();
-  const isHomePage = location.pathname === "/" || location.pathname === "/homePage";
+  const isHomePage = location.pathname === "/" || location.pathname === "/";
 
   const quickLinks = [
-    { label: t('footer.links.home'), href: "/homePage" },
+    { label: t('footer.links.home'), href: "/" },
     { label: t('footer.links.aboutUs'), href: "/about-us" },
     { label: t('footer.links.products'), href: "/products" },
     { label: t('footer.links.blogs'), href: "/blogs" },

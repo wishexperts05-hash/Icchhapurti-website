@@ -9,6 +9,10 @@ html, body {
   scroll-behavior: smooth;
 }
 
+p ,span {
+  font-family: 'Jost', sans-serif;
+}
+
 .splash-container {
   position: relative;
   width: 100vw;
@@ -64,6 +68,15 @@ html, body {
   height: auto;
 }
 
+
+h1, h2, h3, h4, h5, h6  ,Link ,a{
+  font-family: 'Tenor Sans', sans-serif;
+
+  
+}
+.tenor-heading {
+  font-family: 'Tenor Sans', sans-serif;
+}
 /* Fullscreen video */
 .centered-video {
   position: absolute;
@@ -241,6 +254,7 @@ html, body {
   opacity: 1;
   border-radius: 50% 50% 0 0 / 70% 70% 0 0;
 }
+
 
 /* Option 4: Clip-path Wave */
 .wave-divider-clip {

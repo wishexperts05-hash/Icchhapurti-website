@@ -4,7 +4,7 @@ const AnnouncementMarquee = () => {
       <div className="flex whitespace-nowrap animate-marquee">
 
         {/* First set of 3 announcements */}
-        <div className="flex items-center flex-shrink-0">
+        <div    style={{ fontFamily: 'Tenor Sans, sans-serif' }} className="flex items-center flex-shrink-0">
           <div className="flex items-center gap-4 px-8 md:px-16">
             <span className="px-4 py-1 text-xs font-bold rounded-full bg-yellow-400 text-[#5a3a0a]">
               FREE SHIPPING
