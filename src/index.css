@@ -27,7 +27,7 @@ p ,span {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('/bg-img.webp');
+  background-image: url('/bg-img_compressed.jpeg');
   background-size: cover;
   background-position: center;
   z-index: 0;

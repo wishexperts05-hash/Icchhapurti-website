@@ -188,7 +188,7 @@ const ImageCarousel = ({
                 <img
                   src={media.src}
                   alt={`Slide ${i + 1}`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full "
                   loading={i === 0 ? "eager" : "lazy"}
                 />
               ) : (
@@ -204,24 +204,31 @@ const ImageCarousel = ({
               )}
 
               {/* SHOP NOW BUTTON – ONLY ON 2ND BANNER */}
-              {i === 1 && (
-                <div className="absolute inset-0 top-30 flex items-center z-20">
-                  <div className="ml-4 sm:ml-8 md:ml-32">
-                    <button
-                      onClick={() => navigate(`/product/${products[1]?._id}/${products[1]?.name?.replace(/\s+/g, '-').toLowerCase()}`)}
-                      className="px-6 py-3 cursor-pointer text-sm sm:text-base font-bold text-black rounded-sm bg-white shadow-lg hover:scale-105 hover:shadow-xl transition-all"
-                    >
-                      Shop Now
-                    </button>
-                  </div>
+              <div className="absolute inset-0 top-30 flex items-center z-20">
+                <div className="ml-4 sm:ml-8 md:ml-32">
+                  <button
+                    onClick={() => {
+                      const product = products[i];
+                      if (!product) return;
+
+                      navigate(
+                        `/product/${product._id}/${product.name
+                          ?.replace(/\s+/g, "-")
+                          .toLowerCase()}`
+                      );
+                    }}
+                    className="px-6 py-3 cursor-pointer text-sm sm:text-base font-bold text-black rounded-sm bg-white shadow-lg hover:scale-105 hover:shadow-xl transition-all"
+                  >
+                    Shop Now
+                  </button>
                 </div>
-              )}
+              </div>
             </div>
           ))}
         </div>
 
         {/* ================= Decorative Bottom Edge ================= */}
-        <div className="absolute -bottom-2 md:-bottom-8 left-0 right-0 w-full z-10 pointer-events-none">
+        <div className="absolute -bottom-2 md:-bottom-7 left-0 right-0 w-full z-10 pointer-events-none">
           <img src="/shape1.png" alt="" className="w-full block" loading="lazy" />
         </div>
       </div>
