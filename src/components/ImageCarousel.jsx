@@ -204,7 +204,7 @@ const ImageCarousel = ({
               )}
 
               {/* SHOP NOW BUTTON – ONLY ON 2ND BANNER */}
-              <div className="absolute inset-0 top-45 md:top-78 flex items-center z-20">
+              <div className="absolute inset-0 top-55 md:top-78 flex items-center z-20">
                 <div className="ml-4 sm:ml-8 md:ml-32">
                   <button
                     onClick={() => {
