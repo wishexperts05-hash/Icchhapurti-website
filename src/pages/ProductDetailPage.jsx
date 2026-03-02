@@ -437,7 +437,7 @@ export default function ProductDetails({ countryCurrency, country }) {
   // share option 
   const [shareOpen, setShareOpen] = useState(false);
   const refferalCode = localStorage.getItem("referralCode")
-  const shareUrl = user ?`${window.location.origin}/product/${product?._id}/${product?.name}?pay=true&ref=${refferalCode}&price=${product?.price}&productImg=${product?.images[0]}`:`${window.location.origin}/product/${product?._id}/${product?.name}`;
+  const shareUrl = user ? `${window.location.origin}/product/${product?._id}/${product?.name}?pay=true&ref=${refferalCode}&price=${product?.price}&productImg=${product?.images[0]}` : `${window.location.origin}/product/${product?._id}/${product?.name}`;
   navigator.clipboard.writeText(shareUrl);
   const shareTitle = product?.name || "Check this product";
   const handleShare = async () => {
@@ -775,20 +775,38 @@ export default function ProductDetails({ countryCurrency, country }) {
                         }`}
                     >
                       <button
-                        onClick={() => toggleFAQ(faqId)}
-                        className="w-full px-4 py-3 flex items-center justify-between text-left cursor-pointer hover:bg-gray-50 transition-colors"
-                      >
+                      onClick={() => toggleFAQ(faqId)}
+                      className="w-full px-4 py-3 flex items-center gap-3 text-left"
+                    >
+                      {/* Thumbnail */}
+                      {faq?.thumbnail && (
+                        <div className="flex-shrink-0">
+                          <img
+                            src={faq.thumbnail}
+                            alt="thumbnail"
+                            className="w-14 h-14 rounded-lg  border"
+                          />
+                        </div>
+                      )}
+
+                      {/* Title */}
+                      <div className="flex-1">
                         <h3
-                          className="text-sm font-semibold text-black pr-3"
+                          className="text-sm font-semibold  leading-snug"
                           dangerouslySetInnerHTML={{ __html: faq.title }}
                         />
-                        <div
-                          className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${isOpen ? "bg-blue-500 rotate-180" : "bg-slate-500"
-                            }`}
-                        >
-                          <ChevronDown className="w-4 h-4 text-white" />
-                        </div>
-                      </button>
+                      </div>
+
+                      {/* Toggle Icon */}
+                      <div
+                        className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-300 ${isOpen
+                            ? "bg-blue-500 rotate-180"
+                            : "bg-slate-400 group-hover:bg-slate-500"
+                          }`}
+                      >
+                        <ChevronDown className="w-4 h-4 text-white" />
+                      </div>
+                    </button>
 
                       {/* Grid-based animation - Most performant */}
                       <div
@@ -876,14 +894,32 @@ export default function ProductDetails({ countryCurrency, country }) {
                   >
                     <button
                       onClick={() => toggleFAQ(faqId)}
-                      className="w-full px-4 py-2 flex items-center justify-between text-left cursor-pointer hover:bg-gray-50 transition-colors"
+                      className="w-full px-4 py-3 flex items-center gap-3 text-left"
                     >
-                      <h3
-                        className="text-sm font-semibold text-black pr-3"
-                        dangerouslySetInnerHTML={{ __html: faq.title }}
-                      />
+                      {/* Thumbnail */}
+                      {faq?.thumbnail && (
+                        <div className="flex-shrink-0">
+                          <img
+                            src={faq.thumbnail}
+                            alt="thumbnail"
+                            className="w-14 h-14 rounded-lg object-cover border"
+                          />
+                        </div>
+                      )}
+
+                      {/* Title */}
+                      <div className="flex-1">
+                        <h3
+                          className="text-sm font-semibold  leading-snug"
+                          dangerouslySetInnerHTML={{ __html: faq.title }}
+                        />
+                      </div>
+
+                      {/* Toggle Icon */}
                       <div
-                        className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${isOpen ? "bg-blue-500 rotate-180" : "bg-slate-500"
+                        className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-300 ${isOpen
+                            ? "bg-blue-500 rotate-180"
+                            : "bg-slate-400 group-hover:bg-slate-500"
                           }`}
                       >
                         <ChevronDown className="w-4 h-4 text-white" />
@@ -924,42 +960,45 @@ export default function ProductDetails({ countryCurrency, country }) {
 
 
           <section className="max-w-4xl mx-auto px-4 py-12">
-            <h2 className="text-3xl font-bold text-center mb-8 text-gray-900">
-              Frequently Asked Questions
-            </h2>
             {
               product?.name.includes("Elegant Metal Roller") &&
+              <>
+                <h2 className="text-3xl font-bold text-center mb-8 text-gray-900">
+                  Frequently Asked Questions
+                </h2>
 
-              <div className="space-y-4">
-                {faq1.map((faq, index) => (
-                  <div
-                    key={index}
-                    className="border border-gray-200 rounded-xl shadow-sm bg-white"
-                  >
-                    <button
-                      onClick={() =>
-                        setOpenIndex(openIndex === index ? null : index)
-                      }
-                      className="w-full flex justify-between items-center px-5 py-4 text-left"
+
+                <div className="space-y-4">
+                  {faq1.map((faq, index) => (
+                    <div
+                      key={index}
+                      className="border border-gray-200 rounded-xl shadow-sm bg-white"
                     >
-                      <span className="font-semibold text-gray-800">
-                        {faq.question}
-                      </span>
+                      <button
+                        onClick={() =>
+                          setOpenIndex(openIndex === index ? null : index)
+                        }
+                        className="w-full flex justify-between items-center px-5 py-4 text-left"
+                      >
+                        <span className="font-semibold text-gray-800">
+                          {faq.question}
+                        </span>
 
-                      <ChevronDown
-                        className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${openIndex === index ? "rotate-180" : ""
-                          }`}
-                      />
-                    </button>
+                        <ChevronDown
+                          className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${openIndex === index ? "rotate-180" : ""
+                            }`}
+                        />
+                      </button>
 
-                    {openIndex === index && (
-                      <div className="px-5 pb-5 text-gray-600 leading-relaxed">
-                        {faq.answer}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+                      {openIndex === index && (
+                        <div className="px-5 pb-5 text-gray-600 leading-relaxed">
+                          {faq.answer}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </>
             }
 
             {

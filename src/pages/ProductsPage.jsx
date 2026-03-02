@@ -12,7 +12,7 @@ import { ArrowBigLeft } from "lucide-react";
 import CartSidebar from "../components/CartSidebar";
 import ProductCard from "../components/ProductCard";
 
-export default function ProductsPage({ countryCurrency,country }) {
+export default function ProductsPage({ countryCurrency, country }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,8 +31,8 @@ export default function ProductsPage({ countryCurrency,country }) {
   const [openPayment, setOpenPayment] = useState(false);
 
   // Memoize cache key
-  const cacheKey = useMemo(() => 
-    `products_${countryCurrency}_${page}_${limit}_${debounceSearch}`, 
+  const cacheKey = useMemo(() =>
+    `products_${countryCurrency}_${page}_${limit}_${debounceSearch}`,
     [countryCurrency, page, limit, debounceSearch]
   );
   const CACHE_DURATION = 3 * 60 * 1000; // 3 minutes
@@ -54,7 +54,7 @@ export default function ProductsPage({ countryCurrency,country }) {
     // Check cache first
     const cached = sessionStorage.getItem(cacheKey);
     const cacheTime = sessionStorage.getItem(`${cacheKey}_time`);
-    
+
     if (cached && cacheTime && Date.now() - cacheTime < CACHE_DURATION) {
       const cachedData = JSON.parse(cached);
       setProducts(cachedData.products);
@@ -68,7 +68,6 @@ export default function ProductsPage({ countryCurrency,country }) {
     setError(null);
 
     try {
-      // PARALLEL API CALLS - Both fetch at the same time!
       const [productsResponse, wishlistResponse] = await Promise.all([
         fetch(
           `${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=${page}&limit=${limit}&search=${debounceSearch}&currencyCode=${countryCurrency || "INR"}`,
@@ -104,12 +103,11 @@ export default function ProductsPage({ countryCurrency,country }) {
       if (productsData.success) {
         let productsList = productsData.products || productsData.data || [];
 
-        // Enrich with wishlist status if available
         if (wishlistData?.success && wishlistData.data) {
           const wishlistedIds = new Set(
             wishlistData.data.map(item => item?._id || item.productId)
           );
-          
+
           productsList = productsList.map(product => ({
             ...product,
             isWishlisted: wishlistedIds.has(product._id || product.id),
@@ -122,7 +120,6 @@ export default function ProductsPage({ countryCurrency,country }) {
         setTotalProducts(total);
         setTotalPages(pages);
 
-        // Cache the results
         sessionStorage.setItem(cacheKey, JSON.stringify({
           products: productsList,
           totalProducts: total,
@@ -138,7 +135,6 @@ export default function ProductsPage({ countryCurrency,country }) {
     }
   };
 
-  // Memoize callbacks
   const handleAddToCart = useCallback(async (product) => {
     try {
       const cartData = {
@@ -185,7 +181,6 @@ export default function ProductsPage({ countryCurrency,country }) {
           : product
       )
     );
-    // Invalidate cache when wishlist changes
     sessionStorage.removeItem(cacheKey);
     sessionStorage.removeItem(`${cacheKey}_time`);
   }, [cacheKey]);
@@ -230,9 +225,9 @@ export default function ProductsPage({ countryCurrency,country }) {
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-8">
+    <div className="min-h-screen p-3 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between gap-4 mb-8">
+        <div className="flex flex-col md:flex-row justify-between gap-4 mb-6 md:mb-8">
           <div>
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">{t("common.ourProducts")}</h2>
             <p className="text-gray-400 text-sm">{t("home.tagline")}</p>
@@ -249,59 +244,21 @@ export default function ProductsPage({ countryCurrency,country }) {
         </div>
 
         {products.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-            {products.length === 2 ? (
-              <>
-                {/* MOBILE (stacked) */}
-                <div className="md:hidden col-span-1">
-                  {products.map((product) => (
-                    <div key={product.id || product._id} className="mb-4">
-                      <ProductCard
-                        product={product}
-                         country={country}
-                        onAddToCart={handleAddToCart}
-                        onWishlistUpdate={handleWishlistUpdate}
-                        setCartSidebarOpen={setCartSidebarOpen}
-                        openPayment={openPayment}
-                        setOpenPayment={setOpenPayment}
-                        countryCurrency={countryCurrency}
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                {/* DESKTOP (centered side-by-side) */}
-                <div className="hidden md:flex md:col-span-3 justify-center">
-                  <div className="grid grid-cols-2 gap-20 w-[80.66%]">
-                    {products.map((product) => (
-                      <ProductCard
-                        key={product.id || product._id}
-                        product={product}
-                        onAddToCart={handleAddToCart}
-                        onWishlistUpdate={handleWishlistUpdate}
-                        setCartSidebarOpen={setCartSidebarOpen}
-                        openPayment={openPayment}
-                        setOpenPayment={setOpenPayment}
-                        countryCurrency={countryCurrency}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </>
-            ) : (
-              products.map((product) => (
-                <ProductCard
-                  key={product.id || product._id}
-                  product={product}
-                  onAddToCart={handleAddToCart}
-                  onWishlistUpdate={handleWishlistUpdate}
-                  setCartSidebarOpen={setCartSidebarOpen}
-                  openPayment={openPayment}
-                  setOpenPayment={setOpenPayment}
-                  countryCurrency={countryCurrency}
-                />
-              ))
-            )}
+          /* Always 2-col on mobile, 3-col on desktop */
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-6">
+            {products.map((product) => (
+              <ProductCard
+                key={product.id || product._id}
+                product={product}
+                country={country}
+                onAddToCart={handleAddToCart}
+                onWishlistUpdate={handleWishlistUpdate}
+                setCartSidebarOpen={setCartSidebarOpen}
+                openPayment={openPayment}
+                setOpenPayment={setOpenPayment}
+                countryCurrency={countryCurrency}
+              />
+            ))}
           </div>
         ) : (
           <div className="text-center py-20 px-4">
@@ -319,35 +276,6 @@ export default function ProductsPage({ countryCurrency,country }) {
           </div>
         )}
 
-        {/* Pagination */}
-        {/* <div className="mt-10 flex items-center justify-center gap-4">
-          <button
-            disabled={page === 1}
-            onClick={handlePrev}
-            className="px-4 py-2 rounded-lg text-white text-sm disabled:opacity-40"
-            style={{ background: 'linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)' }}
-          >
-            <ArrowBigLeft />
-          </button>
-
-          <span className="text-white font-semibold text-lg">
-            {page} / {totalPages}
-          </span>
-
-          <button
-            disabled={page === totalPages}
-            onClick={handleNext}
-            className="px-4 py-2 rounded-lg text-white text-sm disabled:opacity-40"
-            style={{ background: 'linear-gradient(135deg, #C9A227 0%, #a07d1c 100%)' }}
-          >
-            <ArrowBigRight />
-          </button>
-        </div> */}
-
-        {/* <p className="text-center text-gray-400 mt-3 text-sm">
-          Showing {(page - 1) * limit + 1} – {Math.min(page * limit, totalProducts)} of {totalProducts} products
-        </p> */}
-
         <CartSidebar
           countryCurrency={countryCurrency}
           isOpen={cartSidebarOpen}
@@ -355,9 +283,9 @@ export default function ProductsPage({ countryCurrency,country }) {
           onCheckout={() => {
             setCartSidebarOpen(false);
             setOpenPayment(true);
-          }} 
+          }}
         />
-        
+
         {cartSidebarOpen && (
           <div className="fixed inset-0 bg-black/15 backdrop-blur-[1px] z-51 animate-fadeIn" />
         )}

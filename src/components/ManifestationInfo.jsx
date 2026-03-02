@@ -10,7 +10,7 @@ function ManifestationInfo() {
           {/* Left – Image */}
           <div className="relative h-84 sm:h-80 lg:h-auto lg:col-span-3">
             <img
-              src="/manifestion.jpg"
+              src="/manifestion1.jpg"
               alt="Manifestation Meditation"
               className="w-full h-full"
                 loading="lazy"

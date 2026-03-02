@@ -17,7 +17,7 @@ export default function OurProducts({ countryCurrency, country }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page] = useState(1);
-  const [limit] = useState(3);
+  const [limit] = useState(4);
   const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
   const [openPayment, setOpenPayment] = useState(false);
 
@@ -25,16 +25,14 @@ export default function OurProducts({ countryCurrency, country }) {
   const Navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  // Memoize cache key to prevent recalculation
   const cacheKey = useMemo(() => `products_${countryCurrency}_${page}_${limit}`, [countryCurrency, page, limit]);
-  const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+  const CACHE_DURATION = 5 * 60 * 1000;
 
   useEffect(() => {
     fetchProducts();
   }, [countryCurrency, page]);
 
   const fetchProducts = async () => {
-    // Check cache first
     const cached = sessionStorage.getItem(cacheKey);
     const cacheTime = sessionStorage.getItem(`${cacheKey}_time`);
 
@@ -48,7 +46,6 @@ export default function OurProducts({ countryCurrency, country }) {
     setError(null);
 
     try {
-      // PARALLEL FETCH - Both requests happen at the same time!
       const [productsResponse, wishlistResponse] = await Promise.all([
         fetch(
           `${import.meta.env.VITE_API_URL}/api/user/v1/products/getAllProducts?page=${page}&limit=${limit}&currencyCode=${countryCurrency || "INR"}`,
@@ -84,7 +81,6 @@ export default function OurProducts({ countryCurrency, country }) {
       if (productsData.success) {
         let productsList = productsData.products || productsData.data || [];
 
-        // Enrich with wishlist status if we have wishlist data
         if (wishlistData?.success && wishlistData.data) {
           const wishlistedIds = new Set(
             wishlistData.data.map(item => item?._id || item.productId)
@@ -97,8 +93,6 @@ export default function OurProducts({ countryCurrency, country }) {
         }
 
         setProducts(productsList);
-
-        // Cache the enriched data
         sessionStorage.setItem(cacheKey, JSON.stringify(productsList));
         sessionStorage.setItem(`${cacheKey}_time`, Date.now().toString());
       }
@@ -110,14 +104,12 @@ export default function OurProducts({ countryCurrency, country }) {
     }
   };
 
-  // Memoize callback to prevent re-creating on every render
   const handleAddToCart = useCallback(async (product) => {
     try {
       const cartData = {
         productId: product._id || product.id,
         quantity: 1,
         totalAmount: Number(String(product.price).replace(/[^0-9.]/g, "")) || 0,
-
       };
 
       const response = await fetch(
@@ -139,7 +131,6 @@ export default function OurProducts({ countryCurrency, country }) {
       }
 
       if (result.success) {
-
         localStorage.setItem("cart", result.data.products.length);
         setCount(result.data.products.length);
       }
@@ -150,7 +141,6 @@ export default function OurProducts({ countryCurrency, country }) {
     }
   }, [token, setCount]);
 
-  // Memoize callback
   const handleWishlistUpdate = useCallback((productId, isWishlisted) => {
     setProducts((prevProducts) =>
       prevProducts.map((product) =>
@@ -159,7 +149,6 @@ export default function OurProducts({ countryCurrency, country }) {
           : product
       )
     );
-    // Invalidate cache when wishlist changes
     sessionStorage.removeItem(cacheKey);
     sessionStorage.removeItem(`${cacheKey}_time`);
   }, [cacheKey]);
@@ -177,27 +166,20 @@ export default function OurProducts({ countryCurrency, country }) {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 ">
+      <div className="min-h-screen flex items-center justify-center p-4">
         <div className="rounded-lg p-6 max-w-sm w-full text-center border bg-white border-gray-200 shadow-sm">
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-
           <h3 className="text-md font-semibold text-gray-800 mb-2">
-            We couldn’t load the products right now. Please try again
+            We couldn't load the products right now. Please try again
           </h3>
-
-          {/* <p className="text-gray-600 mb-5">
-            {error}
-          </p> */}
-
           <button
             onClick={fetchProducts}
-            className="px-3 py-2  text-md  rounded-md text-white font-medium bg-red-500 hover:bg-red-600 transition"
+            className="px-3 py-2 text-md rounded-md text-white font-medium bg-red-500 hover:bg-red-600 transition"
           >
             Try Again
           </button>
         </div>
       </div>
-
     );
   }
 
@@ -230,89 +212,21 @@ export default function OurProducts({ countryCurrency, country }) {
         </div>
 
         {products.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-            {products.map((product) => (
-              <div key={product.id || product._id}>
-                <ProductCard
-                  product={product}
-                  country={country}
-                  onAddToCart={handleAddToCart}
-                  onWishlistUpdate={handleWishlistUpdate}
-                  setCartSidebarOpen={setCartSidebarOpen}
-                  openPayment={openPayment}
-                  setOpenPayment={setOpenPayment}
-                  countryCurrency={countryCurrency}
-                />
-              </div>
+          /* 2-col on mobile, 3-col on desktop — matches ProductsPage */
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-6">
+            {products.slice(0,3).map((product) => (
+              <ProductCard
+                key={product.id || product._id}
+                product={product}
+                country={country}
+                onAddToCart={handleAddToCart}
+                onWishlistUpdate={handleWishlistUpdate}
+                setCartSidebarOpen={setCartSidebarOpen}
+                openPayment={openPayment}
+                setOpenPayment={setOpenPayment}
+                countryCurrency={countryCurrency}
+              />
             ))}
-
-            {/* Static Manifestation Kit Card */}
-            <div className="relative group h-full">
-              <div className="relative bg-white rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl border border-gray-200 hover:border-purple-300 flex flex-col h-full">
-                <div className="relative w-full h-[410px] bg-gradient-to-b from-gray-50 to-white overflow-hidden">
-                  <video
-                    src={"/coming-soon.mp4"}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    loading="lazy"
-                    onError={(e) => {
-                      e.target.poster = "https://via.placeholder.com/1000x1000?text=No+Video";
-                    }}
-                  />
-                </div>
-
-                <div className="p-4 bg-white flex flex-col flex-1">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 min-h-[3.5rem]">
-                    Manifestation Kit
-                  </h3>
-
-                  <p className="text-xs text-gray-500 mb-3 line-clamp-2">
-                    Premium quality materials with complete manifestation guide included
-                  </p>
-
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-yellow-50 border border-yellow-200">
-                      <Star size={12} fill="#eab308" stroke="#eab308" />
-                      <span className="text-sm font-bold text-yellow-600">New</span>
-                    </div>
-                    <span className="text-xs text-gray-400">(Coming Soon)</span>
-                  </div>
-
-                  <div className="flex items-center gap-3 mb-3 text-xs text-gray-600 border-t border-gray-100 pt-3">
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-4 h-4 bg-green-100 rounded-full flex items-center justify-center">
-                        <Check size={10} className="text-green-600" />
-                      </div>
-                      <span>Premium</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-4 h-4 bg-blue-100 rounded-full flex items-center justify-center">
-                        <Zap size={10} className="text-blue-600" />
-                      </div>
-                      <span>Complete Kit</span>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2 mt-auto">
-                    <button
-                      disabled
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl font-bold text-sm text-white bg-amber-600 opacity-70 cursor-not-allowed"
-                    >
-                      <span className="hidden sm:inline">Coming Soon</span>
-                      <span className="sm:hidden">Soon</span>
-                    </button>
-                  </div>
-
-                  <div className="mt-3 flex items-center justify-center gap-2 text-xs">
-                    <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
-                    <span className="text-amber-600 font-semibold">Launching Soon</span>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         ) : (
           <div className="text-center py-20 px-4">
@@ -332,7 +246,7 @@ export default function OurProducts({ countryCurrency, country }) {
 
         <button
           onClick={() => Navigate("/products")}
-          className="md:absolute my-5 md:hidden block right-0 text-white px-6 py-2 rounded-lg bg-[#a17b0a] font-semibold shadow-lg hover:shadow-purple-500/50 transition-all"
+          className="my-5 md:hidden block text-white px-6 py-2 rounded-lg bg-[#a17b0a] font-semibold shadow-lg hover:shadow-purple-500/50 transition-all"
         >
           View All
         </button>
