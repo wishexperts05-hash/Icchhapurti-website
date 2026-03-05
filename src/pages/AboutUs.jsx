@@ -8,17 +8,18 @@ export default function AboutUs() {
 
   const products = [
 
+   
     {
       id: 1,
-      name: "Icchhapurti -  Elegant Metal Roller Manifestation Pen",
-      description: "A minimal Elegant Metallic Look, stone-free manifestation pen ideal for students and corporate professionals who want a subtle yet powerful intention-focused writing tool suitable for schools and offices.",
-      icon: "🖊️"
-    },
-    {
-      id: 2,
       name: "Icchhapurti - Seven Chakra Premium Manifestation Pen",
       description: "A luxury metal pen embedded with seven chakra stones and topped with genuine pyrite—designed to balance energy centers, boost confidence, and attract abundance.",
       icon: "✨"
+    },
+     {
+      id: 2,
+      name: "Icchhapurti -  Elegant Metal Roller Manifestation Pen",
+      description: "A minimal Elegant Metallic Look, stone-free manifestation pen ideal for students and corporate professionals who want a subtle yet powerful intention-focused writing tool suitable for schools and offices.",
+      icon: "🖊️"
     },
     {
       id: 3,
@@ -156,7 +157,7 @@ export default function AboutUs() {
                   That is why this pen is something magical for everyone only if you show trust and believe in it.
                 </p>
                 <div className="mt-6 bg-purple-50 border-l-4 border-purple-600 p-4 rounded">
-                
+
 
                   <div className="mt-8 space-y-2 text-center">
                     <p className="font-bold text-xl text-[#a17b0a]">Don't question it,</p>
@@ -175,70 +176,68 @@ export default function AboutUs() {
           </div>
 
           {/* Products Grid */}
-         <div className="grid md:grid-cols-3 gap-6">
-  {products.map((product, i) => (
-    <div
-      key={product.id}
-      className="
+          <div className="grid md:grid-cols-3 gap-6">
+            {products.map((product, i) => (
+              <div
+                key={product.id}
+                className="
         bg-white rounded-xl shadow-lg 
         hover:shadow-2xl transition-all duration-300
         transform hover:-translate-y-1
         flex flex-col
       "
-    >
-      {/* MEDIA CONTAINER */}
-      <div className="w-full  mb-4 rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center">
-        {i === 2 ? (
-          <video
-            src="/coming-soon.mp4"
-            className="w-full  h-[350px] object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-          />
-        ) : (
-          <img
-            src={allProducts[i]?.images?.[0]}
-            alt={product.name}
-            className="w-full h-full object-cover"
-          />
-        )}
-      </div>
+              >
+                {/* MEDIA CONTAINER */}
+                <div className="w-full  mb-4 rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center">
+                  {i === 2 ? (
+                    <video
+                      src="/coming-soon.mp4"
+                      className="w-full  h-[350px] object-cover"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                    />
+                  ) : (
+                    <img
+                      src={allProducts[i]?.images?.[0]}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </div>
 
-      {/* TITLE */}
-      <h3
-        onClick={() => naviagte(`/product/${allProducts[i]._id}`)}
-        className="text-xl font-bold cursor-pointer text-[#a17b0a] mb-3 text-center"
-      >
-        {product.name}
-      </h3>
+                {/* TITLE */}
+                <h3
+                  onClick={() => naviagte(`/product/${allProducts[i]._id}`)}
+                  className="text-xl font-bold cursor-pointer text-[#a17b0a] mb-3 text-center"
+                >
+                  {product.name}
+                </h3>
 
-      {/* DESCRIPTION */}
-      <p
-        className={`text-gray-600 p-2 leading-relaxed text-sm flex-1 ${
-          expandedProduct === product.id ? '' : 'line-clamp-3'
-        }`}
-      >
-        {product.description}
-      </p>
+                {/* DESCRIPTION */}
+                <p
+                  className={`text-gray-600 p-2 leading-relaxed text-sm flex-1 ${expandedProduct === product.id ? '' : 'line-clamp-3'
+                    }`}
+                >
+                  {product.description}
+                </p>
 
-      {/* EXPAND ICON */}
-      <div
-        onClick={() =>
-          setExpandedProduct(expandedProduct === product.id ? null : product.id)
-        }
-        className="flex justify-center cursor-pointer mt-4"
-      >
-        <ChevronDown
-          className={`w-5 h-5 text-[#a17b0a] transition-transform ${
-            expandedProduct === product.id ? 'rotate-180' : ''
-          }`}
-        />
-      </div>
-    </div>
-  ))}
-</div>
+                {/* EXPAND ICON */}
+                <div
+                  onClick={() =>
+                    setExpandedProduct(expandedProduct === product.id ? null : product.id)
+                  }
+                  className="flex justify-center cursor-pointer mt-4"
+                >
+                  <ChevronDown
+                    className={`w-5 h-5 text-[#a17b0a] transition-transform ${expandedProduct === product.id ? 'rotate-180' : ''
+                      }`}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
 
         </div>
       </div>
