@@ -1,8 +1,10 @@
 import { Star } from 'lucide-react';
-import { ChevronLeft, ChevronRight, Loader2, AlertCircle } from 'lucide-react';
-
-
+import { ChevronLeft, ChevronRight, Loader2, AlertCircle, X } from 'lucide-react';
+import { useState } from 'react';
+import ReactDOM from 'react-dom';
 const Review = ({ reviewData, hasReviewed, totalPages, reviewsLoading, reviewsError, fetchProductReviews, reviews, setOpenReview, orderedReviews, handlePageChange, currentPage }) => {
+
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const StarRating = ({ rating, size = 16 }) => (
     <div className="flex gap-0.5">
@@ -20,6 +22,29 @@ const Review = ({ reviewData, hasReviewed, totalPages, reviewsLoading, reviewsEr
 
   return (
     <div className="border-t border-slate-700/50 p-4 sm:p-6 lg:p-8">
+
+      {/* ─── Image Lightbox ───────────────────────────────────────────────────── */}
+      {/* ─── Image Lightbox Portal ───────────────────────────────────────────── */}
+{selectedImage && ReactDOM.createPortal(
+  <div
+    className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm"
+    onClick={() => setSelectedImage(null)}
+  >
+    <button
+      className="absolute top-4 right-4 text-white bg-black/50 hover:bg-black/80 rounded-full p-1.5 transition"
+      onClick={() => setSelectedImage(null)}
+    >
+      <X size={22} />
+    </button>
+    <img
+      src={selectedImage}
+      alt="review enlarged"
+      className="max-w-[90vw] max-h-[90vh] rounded-xl object-contain shadow-2xl"
+      onClick={(e) => e.stopPropagation()}
+    />
+  </div>,
+  document.body
+)}
       <h2 className="text-black font-bold text-lg sm:text-xl lg:text-2xl mb-4 sm:mb-6 flex items-center gap-2">
         <Star className="text-yellow-400 fill-yellow-400" size={20} />
         Customer Reviews
@@ -90,19 +115,16 @@ const Review = ({ reviewData, hasReviewed, totalPages, reviewsLoading, reviewsEr
         </div>
       ) : reviews.length === 0 ? (
         <div className="w-full flex justify-center py-10">
-          {/* Outer glow wrapper */}
           <div
             className="
       relative rounded-xl w-full
       shadow-[0_0_80px_30px_rgba(245,158,11,0.35)]
     "
           >
-            {/* Inner white card */}
             <div
               className="
         bg-white rounded-xl
         px-8 py-6
-      
         text-center
       "
             >
@@ -150,12 +172,10 @@ const Review = ({ reviewData, hasReviewed, totalPages, reviewsLoading, reviewsEr
       shadow-[0_0_80px_30px_rgba(245,158,11,0.35)]
     "
               >
-                {/* Inner white card */}
                 <div
                   className="
         bg-white rounded-xl
         px-8 py-6
-      
         text-center
       "
                 >
@@ -172,31 +192,24 @@ const Review = ({ reviewData, hasReviewed, totalPages, reviewsLoading, reviewsEr
                     ))}
                   </div>
 
-                  {/* <p className="text-sm text-gray-400 mb-4">
-                      Be the first to write a review
-                    </p> */}
-
-                    <button
-                onClick={() => token && setOpenReview(true)}
-                title={!token ? "Please login to write a review" : ""}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition
+                  <button
+                    onClick={() => token && setOpenReview(true)}
+                    title={!token ? "Please login to write a review" : ""}
+                    className={`px-6 py-2 rounded-full text-sm font-medium transition
     ${token
-                    ? "bg-blue-500 text-white hover:bg-blue-600 cursor-pointer"
-                    : "bg-gray-300 text-gray-600 cursor-not-allowed"
-                  }
+                        ? "bg-blue-500 text-white hover:bg-blue-600 cursor-pointer"
+                        : "bg-gray-300 text-gray-600 cursor-not-allowed"
+                      }
   `}
-              >
-                Write a review
-              </button>
+                  >
+                    Write a review
+                  </button>
                 </div>
               </div>
             )}
 
             {orderedReviews?.map((review, index) => {
-              const media =
-                review.images ||
-
-                [];
+              const media = review.images || [];
 
               return (
                 <div
@@ -215,11 +228,6 @@ const Review = ({ reviewData, hasReviewed, totalPages, reviewsLoading, reviewsEr
                         <div className="min-w-0">
                           <h4 className="text-black font-semibold text-sm truncate">
                             {review.reviewerName || "Anonymous"}
-                            {/* {review.isCurrentUser && (
-                                    <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">
-                                      You
-                                    </span>
-                                  )} */}
                           </h4>
                           <p className="text-black text-[11px]">
                             {review.date || review.createdAt
@@ -262,6 +270,7 @@ const Review = ({ reviewData, hasReviewed, totalPages, reviewsLoading, reviewsEr
                                 src={url}
                                 alt="review"
                                 className="w-20 h-20 rounded-lg border object-cover cursor-pointer hover:scale-105 transition"
+                                onClick={() => setSelectedImage(url)}
                               />
                             )
                           )}
@@ -272,8 +281,6 @@ const Review = ({ reviewData, hasReviewed, totalPages, reviewsLoading, reviewsEr
                 </div>
               );
             })}
-
-
           </div>
 
           {/* Pagination */}

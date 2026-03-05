@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Coins, Wallet, AlertCircle, CheckCircle2, X } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 
 // load Razorpay script
@@ -336,6 +336,8 @@ const BuyCoinsPage = () => {
     }
   };
 
+const navigate = useNavigate()
+
   const isActionDisabled =
     loading || loadingWallet || !coinQuantity || Number(coinQuantity) <= 0;
 
@@ -374,6 +376,25 @@ const BuyCoinsPage = () => {
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto p-6 py-12 space-y-6 bg-slate-50">
 
+
+<div className="w-full flex justify-start">
+        <button
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center my-2 gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 hover:text-gray-900 transition"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back
+        </button>
+      </div>
         {/* Header */}
         <div className="text-center space-y-2 mb-8">
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">

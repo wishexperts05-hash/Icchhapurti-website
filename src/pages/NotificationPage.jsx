@@ -46,9 +46,9 @@ export default function Notification() {
             setLoading(false);
         }
     };
-    
+
     const { setCount, setList, setUnreadCount, wishlistCount } = useHeader();
-    
+
     const markAsRead = async (notificationId) => {
         try {
             setMarkingAsRead(prev => ({ ...prev, [notificationId]: true }));
@@ -91,7 +91,7 @@ export default function Notification() {
     const handleNotificationClick = async (notification) => {
         setSelectedNotification(notification);
         setIsModalOpen(true);
-        
+
         // If notification is unread, mark it as read
         if (!notification.isRead) {
             await markAsRead(notification._id);
@@ -102,6 +102,7 @@ export default function Notification() {
         setIsModalOpen(false);
         setSelectedNotification(null);
     };
+
 
     const markAllAsRead = async () => {
         try {
@@ -130,6 +131,7 @@ export default function Notification() {
             setLoading(false);
         }
     };
+    
 
     useEffect(() => {
         const filtered = notifications.filter(notif => {
@@ -216,8 +218,8 @@ export default function Notification() {
                         <div className="text-center py-10 text-gray-400">{t("home.loading")}</div>
                     ) : filteredNotifications.length > 0 ? (
                         filteredNotifications.map((item) => (
-                            <div 
-                                key={item._id} 
+                            <div
+                                key={item._id}
                                 onClick={() => handleNotificationClick(item)}
                                 className="flex items-center justify-between py-4 border-b border-slate-700/50 hover:bg-slate-800/20 transition-colors px-2 rounded group cursor-pointer"
                             >
@@ -232,7 +234,8 @@ export default function Notification() {
 
                                 <div className="flex items-center gap-3">
                                     <div className="text-xs text-gray-500 whitespace-nowrap">
-                                        {new Date(item.createdAt).toLocaleDateString()} {new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        {new Date(item.createdAt).toLocaleDateString("en-GB")}{" "}
+                                        {new Date(item.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                                     </div>
 
                                     {!item.isRead && (
@@ -292,65 +295,65 @@ export default function Notification() {
             </div>
 
             {/* Notification Details Modal */}
-         {isModalOpen && selectedNotification && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-    <div className="bg-white rounded-lg w-full max-w-md shadow-xl border border-gray-200">
-      
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b">
-        <h2 className="text-base font-semibold text-gray-800">
-          {selectedNotification.title}
-        </h2>
-        <button
-          onClick={closeModal}
-          className="p-1 rounded hover:bg-gray-100 text-gray-500 hover:text-gray-700"
-        >
-          <X size={18} />
-        </button>
-      </div>
+            {isModalOpen && selectedNotification && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white rounded-lg w-full max-w-md shadow-xl border border-gray-200">
 
-      {/* Content */}
-      <div className="px-4 py-3 space-y-3">
-        <div className="flex justify-between text-xs text-gray-500">
-          <span>
-            {new Date(selectedNotification.createdAt).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            })}
-          </span>
-          <span>
-            {new Date(selectedNotification.createdAt).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </span>
-        </div>
+                        {/* Header */}
+                        <div className="flex items-center justify-between px-4 py-3 border-b">
+                            <h2 className="text-base font-semibold text-gray-800">
+                                {selectedNotification.title}
+                            </h2>
+                            <button
+                                onClick={closeModal}
+                                className="p-1 rounded hover:bg-gray-100 text-gray-500 hover:text-gray-700"
+                            >
+                                <X size={18} />
+                            </button>
+                        </div>
 
-        <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
-          {selectedNotification.message}
-        </div>
+                        {/* Content */}
+                        <div className="px-4 py-3 space-y-3">
+                            <div className="flex justify-between text-xs text-gray-500">
+                                <span>
+                                    {new Date(selectedNotification.createdAt).toLocaleDateString("en-US", {
+                                        year: "numeric",
+                                        month: "short",
+                                        day: "numeric",
+                                    })}
+                                </span>
+                                <span>
+                                    {new Date(selectedNotification.createdAt).toLocaleTimeString([], {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                    })}
+                                </span>
+                            </div>
 
-        {selectedNotification.isRead && (
-          <div className="inline-flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
-            <Check size={14} />
-            <span>Read</span>
-          </div>
-        )}
-      </div>
+                            <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
+                                {selectedNotification.message}
+                            </div>
 
-      {/* Footer */}
-      <div className="px-4 py-3 border-t flex justify-end">
-        <button
-          onClick={closeModal}
-          className="px-4 py-1.5 text-sm bg-orange-500 hover:bg-orange-600 text-white rounded-md"
-        >
-          Close
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+                            {selectedNotification.isRead && (
+                                <div className="inline-flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+                                    <Check size={14} />
+                                    <span>Read</span>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Footer */}
+                        <div className="px-4 py-3 border-t flex justify-end">
+                            <button
+                                onClick={closeModal}
+                                className="px-4 py-1.5 text-sm bg-orange-500 hover:bg-orange-600 text-white rounded-md"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
         </div>
     );

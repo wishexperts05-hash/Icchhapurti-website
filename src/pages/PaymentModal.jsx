@@ -1153,14 +1153,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                                     </span>
                                                 </div>
 
-                                                {/* Referral Discount */}
-                                                {/* <div className="flex justify-between text-gray-600">
-                                                    <span>Referral Discount</span>
-                                                    <span className="text-green-600 font-medium">
-                                                        {(Number(String(couponDiscount || checkoutDetails?.couponDiscount || 0).replace(/[₹,\s]/g, ''))) > 0 && "-"}
-                                                        {(couponDiscount || checkoutDetails?.couponDiscount || 0).toLocaleString("en-IN")}
-                                                    </span>
-                                                </div> */}
+                                           
 
                                                 {/* Divider */}
                                                 <div className="border-t border-dashed border-slate-200 my-1.5"></div>

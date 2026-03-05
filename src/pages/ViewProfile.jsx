@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { Camera, ChevronDown } from "lucide-react";
 import { Country, State, City } from "country-state-city";
 import { useTranslation } from "react-i18next";
+import {useNavigate} from "react-router-dom"
 
 export default function ViewProfile() {
   const [loading, setLoading] = useState(false);
@@ -171,60 +172,61 @@ export default function ViewProfile() {
 
   /* ---------------- REUSABLE INPUT ---------------- */
 
- const InputField = ({
-  label,
-  name,
-  type = "text",
-  isSelect,
-  options,
-  rules = {},
-  required = true,
-  ...rest
-}) => (
-  <div className="flex flex-col gap-1">
-    <label className="text-amber-400 text-sm font-medium">{label}</label>
+  const InputField = ({
+    label,
+    name,
+    type = "text",
+    isSelect,
+    options,
+    rules = {},
+    required = true,
+    ...rest
+  }) => (
+    <div className="flex flex-col gap-1">
+      <label className="text-amber-400 text-sm font-medium">{label}</label>
 
-    {isSelect ? (
-      <div className="relative">
-        <select
+      {isSelect ? (
+        <div className="relative">
+          <select
+            {...register(name, {
+              ...(required && { required: `${label} is required` }),
+              ...rules,
+            })}
+            className="w-full bg-gray-200 text-gray-800 rounded-lg py-3 px-4 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-amber-400"
+          >
+            <option value="">{label}</option>
+            {options?.map((opt, i) => (
+              <option key={i} value={opt.name || opt}>
+                {opt.name || opt}
+              </option>
+            ))}
+          </select>
+          <ChevronDown
+            size={16}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+          />
+        </div>
+      ) : (
+        <input
+          type={type}
           {...register(name, {
             ...(required && { required: `${label} is required` }),
             ...rules,
           })}
-          className="w-full bg-gray-200 text-gray-800 rounded-lg py-3 px-4 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-amber-400"
-        >
-          <option value="">{label}</option>
-          {options?.map((opt, i) => (
-            <option key={i} value={opt.name || opt}>
-              {opt.name || opt}
-            </option>
-          ))}
-        </select>
-        <ChevronDown
-          size={16}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+          className="w-full bg-gray-200 text-gray-800 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+          {...rest}
         />
-      </div>
-    ) : (
-      <input
-        type={type}
-        {...register(name, {
-          ...(required && { required: `${label} is required` }),
-          ...rules,
-        })}
-        className="w-full bg-gray-200 text-gray-800 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-        {...rest}
-      />
-    )}
+      )}
 
-    {errors[name] && (
-      <small className="text-red-400 text-xs">
-        {errors[name]?.message?.toString()}
-      </small>
-    )}
-  </div>
-);
+      {errors[name] && (
+        <small className="text-red-400 text-xs">
+          {errors[name]?.message?.toString()}
+        </small>
+      )}
+    </div>
+  );
 
+  const navigate = useNavigate()
 
   if (pageLoading) {
     return (
@@ -241,171 +243,188 @@ export default function ViewProfile() {
 
   return (
     <div className="min-h-screen">
-    <div className="max-w-4xl mx-auto p-6 bg-white text-slate-900">
+    
+      <div className="max-w-4xl mx-auto p-6 bg-white text-slate-900">
+  <button
+        onClick={() => navigate(-1)}
+        className="inline-flex my-2 items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 hover:text-gray-900 transition"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        Back
+      </button>
 
-  {/* Page Title */}
-  <h1 className="font-bold text-xl mb-6 text-slate-900">
-    {t("profile.title")}
-  </h1>
+        {/* Page Title */}
+        <h1 className="font-bold text-xl mb-6 text-slate-900">
+          {t("profile.title")}
+        </h1>
 
-  {/* Avatar */}
-  <div className="flex justify-center mb-6">
-    <div className="relative">
-      <img
-        src={avatar}
-        className="w-24 h-24 rounded-full object-cover border-2 border-amber-400"
-      />
-      <label className="absolute bottom-0 right-0 bg-amber-500 hover:bg-amber-600 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition">
-        <Camera size={15} className="text-white" />
-        <input
-          type="file"
-          className="hidden"
-          onChange={onAvatarChange}
-        />
-      </label>
-    </div>
-  </div>
+        {/* Avatar */}
+        <div className="flex justify-center mb-6">
+          <div className="relative">
+            <img
+              src={avatar}
+              className="w-24 h-24 rounded-full object-cover border-2 border-amber-400"
+            />
+            <label className="absolute bottom-0 right-0 bg-amber-500 hover:bg-amber-600 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition">
+              <Camera size={15} className="text-white" />
+              <input
+                type="file"
+                className="hidden"
+                onChange={onAvatarChange}
+              />
+            </label>
+          </div>
+        </div>
 
-  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
-    {/* Personal Info */}
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <InputField
-        label={t("profile.personal_info.full_name")}
-        name="name"
-        rules={{
-          pattern: {
-            value: /^[A-Za-z\s]{2,}$/,
-            message: "Only letters & spaces (min 2 chars)",
-          },
-        }}
-      />
+          {/* Personal Info */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputField
+              label={t("profile.personal_info.full_name")}
+              name="name"
+              rules={{
+                pattern: {
+                  value: /^[A-Za-z\s]{2,}$/,
+                  message: "Only letters & spaces (min 2 chars)",
+                },
+              }}
+            />
 
-     <InputField
-  label={t("profile.personal_info.mobile_number")}
-  name="phoneNumber"
-  rules={{
-    pattern: {
-      value: /^[1-9]\d{9}$/,
-      message: "Mobile number must be 10 digits and cannot start with 0",
-    },
-    required: "Mobile number is required",
-  }}
-/>
+            <InputField
+              label={t("profile.personal_info.mobile_number")}
+              name="phoneNumber"
+              rules={{
+                pattern: {
+                  value: /^[1-9]\d{9}$/,
+                  message: "Mobile number must be 10 digits and cannot start with 0",
+                },
+                required: "Mobile number is required",
+              }}
+            />
 
 
-      <InputField
-        label={t("profile.personal_info.email")}
-        type="email"
-        name="email"
-        required={false}
-        rules={{
-          validate: (value) =>
-            !value ||
-            /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
-            "Invalid email address",
-        }}
-      />
+            <InputField
+              label={t("profile.personal_info.email")}
+              type="email"
+              name="email"
+              required={false}
+              rules={{
+                validate: (value) =>
+                  !value ||
+                  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
+                  "Invalid email address",
+              }}
+            />
 
-      <InputField
-        label={t("profile.personal_info.dob")}
-        name="dob"
-        type="date"
-        required={false}
-      />
+            <InputField
+              label={t("profile.personal_info.dob")}
+              name="dob"
+              type="date"
+              required={false}
+            />
 
-      <InputField
-        label={t("profile.personal_info.country")}
-        name="country"
-        isSelect
-        options={countries}
-      />
+            <InputField
+              label={t("profile.personal_info.country")}
+              name="country"
+              isSelect
+              options={countries}
+            />
 
-      <InputField
-        label={t("profile.personal_info.state")}
-        name="state"
-        isSelect
-        options={states}
-      />
+            <InputField
+              label={t("profile.personal_info.state")}
+              name="state"
+              isSelect
+              options={states}
+            />
 
-      <InputField
-        label={t("profile.personal_info.city")}
-        name="city"
-        isSelect
-        options={cities}
-      />
-    </div>
+            <InputField
+              label={t("profile.personal_info.city")}
+              name="city"
+              isSelect
+              options={cities}
+            />
+          </div>
 
-    {/* Bank Details */}
-    <h2 className="text-slate-800 font-semibold mt-6">
-      {t("profile.bank_details.title")}
-    </h2>
+          {/* Bank Details */}
+          <h2 className="text-slate-800 font-semibold mt-6">
+            {t("profile.bank_details.title")}
+          </h2>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <InputField
-        label={t("profile.bank_details.bank_name")}
-        name="bankName"
-      />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputField
+              label={t("profile.bank_details.bank_name")}
+              name="bankName"
+            />
 
-      <InputField
-        label={t("profile.bank_details.account_number")}
-        name="accountNumber"
-        rules={{
-          pattern: {
-            value: /^[0-9]{9,18}$/,
-            message: "Account number must be 9–18 digits",
-          },
-        }}
-        inputMode="numeric"
-      />
+            <InputField
+              label={t("profile.bank_details.account_number")}
+              name="accountNumber"
+              rules={{
+                pattern: {
+                  value: /^[0-9]{9,18}$/,
+                  message: "Account number must be 9–18 digits",
+                },
+              }}
+              inputMode="numeric"
+            />
 
-      <InputField
-        label={t("profile.bank_details.ifsc")}
-        name="ifscCode"
-        rules={{
-          setValueAs: (v) => v?.toUpperCase() || "",
-          pattern: {
-            value: /^[A-Z]{4}0[A-Z0-9]{6}$/,
-            message: "Invalid IFSC (e.g. SBIN0001234)",
-          },
-          maxLength: {
-            value: 11,
-            message: "IFSC must be 11 characters",
-          },
-        }}
-        maxLength={11}
-      />
+            <InputField
+              label={t("profile.bank_details.ifsc")}
+              name="ifscCode"
+              rules={{
+                setValueAs: (v) => v?.toUpperCase() || "",
+                pattern: {
+                  value: /^[A-Z]{4}0[A-Z0-9]{6}$/,
+                  message: "Invalid IFSC (e.g. SBIN0001234)",
+                },
+                maxLength: {
+                  value: 11,
+                  message: "IFSC must be 11 characters",
+                },
+              }}
+              maxLength={11}
+            />
 
-      <InputField
-        label={t("profile.bank_details.account_type")}
-        name="accountType"
-        isSelect
-        options={["Savings", "Current", "Salary"]}
-      />
-    </div>
+            <InputField
+              label={t("profile.bank_details.account_type")}
+              name="accountType"
+              isSelect
+              options={["Savings", "Current", "Salary"]}
+            />
+          </div>
 
-    <InputField
-      label={t("profile.bank_details.account_holder_name")}
-      name="accountHolderName"
-      rules={{
-        pattern: {
-          value: /^[A-Za-z\s]{2,}$/,
-          message: "Only letters & spaces (min 2 chars)",
-        },
-      }}
-    />
+          <InputField
+            label={t("profile.bank_details.account_holder_name")}
+            name="accountHolderName"
+            rules={{
+              pattern: {
+                value: /^[A-Za-z\s]{2,}$/,
+                message: "Only letters & spaces (min 2 chars)",
+              },
+            }}
+          />
 
-    {/* Save Button */}
-    <button
-      className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-60"
-      disabled={loading}
-    >
-      {loading
-        ? t("profile.buttons.saving")
-        : t("profile.buttons.save")}
-    </button>
-  </form>
-</div>
+          {/* Save Button */}
+          <button
+            className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-60"
+            disabled={loading}
+          >
+            {loading
+              ? t("profile.buttons.saving")
+              : t("profile.buttons.save")}
+          </button>
+        </form>
+      </div>
 
     </div>
   );

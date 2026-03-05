@@ -147,6 +147,7 @@ const ReferProgramPage = () => {
         alert(`Successfully converted ${availableCoins} coins to ₹${(availableCoins / coinsRate.coins * coinsRate.rate).toFixed(2)}`);
         // Refresh the page data
         setCurrentPage(1);
+       window.location.reload();
       } else {
         setError(data.message || 'Failed to convert coins');
         alert(data.message || 'Failed to convert coins');
@@ -160,38 +161,7 @@ const ReferProgramPage = () => {
     }
   };
 
-  const handleBuyCoins = async () => {
-    if (buyingCoins) return;
-
-    setBuyingCoins(true);
-    setError(null);
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/refer-account/buy-coins-from-walle`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        alert('Coins purchased successfully!');
-        // Refresh the page data
-        setCurrentPage(1);
-      } else {
-        setError(data.message || 'Failed to buy coins');
-        alert(data.message || 'Failed to buy coins');
-      }
-    } catch (err) {
-      console.error('Error buying coins:', err);
-      setError('Failed to buy coins from wallet');
-      alert('Failed to buy coins from wallet');
-    } finally {
-      setBuyingCoins(false);
-    }
-  };
+ 
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -222,6 +192,7 @@ const ReferProgramPage = () => {
     }
   };
 
+const navigate = useNavigate()
 
   const renderPagination = () => {
     const pages = [];
@@ -331,6 +302,24 @@ const ReferProgramPage = () => {
 
       {/* Content */}
       <div className="relative z-10 max-w-4xl bg-white mx-auto p-6">
+        <div className="w-full flex justify-start">
+        <button
+          onClick={() => navigate(-1)}
+          className="inline-flex cursor-pointer items-center my-2 gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 hover:text-gray-900 transition"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back
+        </button>
+      </div>
 
   {/* Page Title */}
   <h1 className="text-3xl font-bold text-slate-900 mb-6">
@@ -501,12 +490,12 @@ const ReferProgramPage = () => {
   )}
 
   {/* Refer Button */}
-  <button
+  {/* <button
     onClick={handleShare}
     className="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 rounded-lg shadow-lg text-lg"
   >
     Refer Now
-  </button>
+  </button> */}
 </div>
 
 

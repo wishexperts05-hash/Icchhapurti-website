@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -8,7 +8,7 @@ const ShippingAddressPage = () => {
   const [selected, setSelected] = useState(null);
   const [loading, setLoading] = useState(true);
   const [deleteLoading, setDeleteLoading] = useState(null); // track delete button state
-const { t } = useTranslation();
+  const { t } = useTranslation();
   useEffect(() => {
     fetchAddresses();
   }, []);
@@ -70,6 +70,8 @@ const { t } = useTranslation();
     }
   };
 
+  const navigate = useNavigate()
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center ">
@@ -79,80 +81,97 @@ const { t } = useTranslation();
   }
 
 
-  
+
 
   return (
-   <div className=" bg-white max-w-4xl mx-auto flex flex-col items-center justify-start py-10 px-4">
-
-  {/* Title */}
-  <h2 className="text-slate-900 text-lg font-semibold mb-6">
-    {t("addresses.shippingAddress")}
-  </h2>
-
-  {/* Empty State */}
-  {addresses.length === 0 ? (
-    <p className="text-slate-500 mb-6">
-      {t("addresses.noAddress")}
-    </p>
-  ) : (
-    <div className="w-full flex flex-col gap-4">
-
-      {addresses.map((addr) => (
-        <div
-          key={addr._id}
-          className="relative bg-white border border-slate-200 rounded-lg p-4 flex items-start justify-between gap-4 hover:border-amber-300 transition"
+    <div className=" bg-white max-w-4xl mx-auto flex flex-col items-center justify-start py-10 px-4">
+      <div className="w-full flex justify-start">
+        <button
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center my-2 gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 hover:text-gray-900 transition"
         >
-          <div>
-            <div className="flex items-center gap-4 mb-1">
-              <span className="text-slate-800 font-medium">
-                {addr.fullName}
-              </span>
-              <span className="text-slate-600 text-sm">
-                {addr.phoneNumber}
-              </span>
-            </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back
+        </button>
+      </div>
+      {/* Title */}
+      <h2 className="text-slate-900 text-lg font-semibold mb-6">
+        {t("addresses.shippingAddress")}
+      </h2>
 
-            <div className="text-slate-600 text-sm mb-2">
-              {addr.street}, {addr.city}, {addr.state}, {addr.country},{" "}
-              {addr.pinCode}
-            </div>
+      {/* Empty State */}
+      {addresses.length === 0 ? (
+        <p className="text-slate-500 mb-6">
+          {t("addresses.noAddress")}
+        </p>
+      ) : (
+        <div className="w-full flex flex-col gap-4">
 
-            <Link
-              to={`/address-form/${addr._id}`}
-              className="text-amber-600 text-sm mr-4 hover:underline"
+          {addresses.map((addr) => (
+            <div
+              key={addr._id}
+              className="relative bg-white border border-slate-200 rounded-lg p-4 flex items-start justify-between gap-4 hover:border-amber-300 transition"
             >
-              Edit
-            </Link>
+              <div>
+                <div className="flex items-center gap-4 mb-1">
+                  <span className="text-slate-800 font-medium">
+                    {addr.fullName}
+                  </span>
+                  <span className="text-slate-600 text-sm">
+                    {addr.phoneNumber}
+                  </span>
+                </div>
 
-            <button
-              onClick={() => handleDelete(addr._id)}
-              className="text-red-500 text-sm hover:underline disabled:opacity-50"
-              disabled={deleteLoading === addr._id}
-            >
-              {deleteLoading === addr._id ? "Removing..." : "Remove"}
-            </button>
-          </div>
+                <div className="text-slate-600 text-sm mb-2">
+                  {addr.street}, {addr.city}, {addr.state}, {addr.country},{" "}
+                  {addr.pinCode}
+                </div>
 
-          <input
-            type="radio"
-            className="accent-amber-500 w-5 h-5 mt-2"
-            checked={selected === addr._id}
-            onChange={() => setSelected(addr._id)}
-            name="selectedAddress"
-          />
+                <Link
+                  to={`/address-form/${addr._id}`}
+                  className="text-amber-600 text-sm mr-4 hover:underline"
+                >
+                  Edit
+                </Link>
+
+                <button
+                  onClick={() => handleDelete(addr._id)}
+                  className="text-red-500 text-sm hover:underline disabled:opacity-50"
+                  disabled={deleteLoading === addr._id}
+                >
+                  {deleteLoading === addr._id ? "Removing..." : "Remove"}
+                </button>
+              </div>
+
+              <input
+                type="radio"
+                className="accent-amber-500 w-5 h-5 mt-2"
+                checked={selected === addr._id}
+                onChange={() => setSelected(addr._id)}
+                name="selectedAddress"
+              />
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  )}
+      )}
 
-  {/* Add Address Button */}
-  <Link
-    to="/address-form"
-    className="mt-8 px-10 py-3 rounded-md bg-gradient-to-r from-amber-500 to-orange-500 text-white text-lg font-semibold transition hover:opacity-90"
-  >
-    {t("addresses.addAddress")}
-  </Link>
-</div>
+      {/* Add Address Button */}
+      <Link
+        to="/address-form"
+        className="mt-8 px-10 py-3 rounded-md bg-gradient-to-r from-amber-500 to-orange-500 text-white text-lg font-semibold transition hover:opacity-90"
+      >
+        {t("addresses.addAddress")}
+      </Link>
+    </div>
 
   );
 };

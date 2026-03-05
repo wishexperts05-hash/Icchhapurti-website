@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 export default function CosmicChatSupport() {
   const [messages, setMessages] = useState([]);
@@ -11,7 +12,7 @@ export default function CosmicChatSupport() {
   const [currentUser, setCurrentUser] = useState(null);
   const chatAreaRef = useRef(null);
   const { t } = useTranslation();
-  
+
   // Get current user info from localStorage
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -51,11 +52,25 @@ export default function CosmicChatSupport() {
   };
 
   // Send message
-  const sendMessage = async () => {
+ const sendMessage = async () => {
     if (inputValue.trim() === '') return;
 
     const messageToSend = inputValue;
     setInputValue('');
+
+    // ─── Show dummy acknowledgement message immediately ────────────────────────
+    const dummyMsg = {
+      _id: `dummy-${Date.now()}`,
+      message: "Your message has been received. Our team will respond shortly.",
+      sender: {
+        userType: 'Admin',
+        Username: 'Support',
+        profileImage: null,
+      },
+      createdAt: new Date().toISOString(),
+      isDummy: true,
+    };
+    setMessages(prev => [...prev, dummyMsg]);
 
     try {
       setSending(true);
@@ -81,11 +96,17 @@ export default function CosmicChatSupport() {
       const data = await res.json();
 
       if (data.success) {
-        fetchChatHistory()
+        // Remove dummy message and load real history
+       setTimeout(() => {
+    setMessages(prev => prev.filter(m => !m.isDummy));
+    fetchChatHistory();
+  }, 3000);
       }
     } catch (err) {
       console.error("Error sending message:", err);
       setInputValue(messageToSend);
+      // Remove dummy message on failure
+      setMessages(prev => prev.filter(m => !m.isDummy));
     } finally {
       setSending(false);
     }
@@ -112,6 +133,8 @@ export default function CosmicChatSupport() {
       sendMessage();
     }
   };
+
+  const navigate = useNavigate()
 
   const formatTime = (dateString) => {
     const date = new Date(dateString);
@@ -145,9 +168,27 @@ export default function CosmicChatSupport() {
 
       {/* Spiral */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-gradient-radial from-orange-300/80 via-orange-400/60 to-transparent blur-sm animate-pulse pointer-events-none"></div>
-
+      <div className="w-full flex justify-start">
+        <button
+          onClick={() => navigate(-1)}
+          className="inline-flex cursor-pointer items-center my-2 gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 hover:text-gray-900 transition"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back
+        </button>
+      </div>
       {/* Main Container */}
- <div className="relative z-10 flex flex-col h-[80vh] overflow-y-auto bg-white max-w-4xl mx-auto w-full">
+      <div className="relative z-10 flex flex-col h-[60vh] overflow-y-auto bg-white max-w-4xl mx-auto w-full">
+
         {/* Header */}
         <div className="flex-shrink-0 px-10 py-5 bg-slate-900 backdrop-blur-sm">
           <div className="flex items-center justify-between">
@@ -223,36 +264,36 @@ export default function CosmicChatSupport() {
         </div>
 
         {/* Input Area */}
-      <div className="flex-shrink-0 px-3 sm:px-6 md:px-10 py-3 sm:py-4 md:py-5 bg-slate-900 backdrop-blur-lg">
-  <div className="flex gap-2 sm:gap-3 bg-white/10 rounded-full px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 border border-white/20">
-    <input
-      type="text"
-      value={inputValue}
-      onChange={(e) => setInputValue(e.target.value)}
-      onKeyPress={handleKeyPress}
-      placeholder={t("chat.msgType")}
-      disabled={sending || loading}
-      className="flex-1 bg-transparent border-none outline-none text-white text-xs sm:text-sm placeholder-white/50 disabled:opacity-50 min-w-0"
-    />
-    <button
-      onClick={sendMessage}
-      disabled={sending || loading || inputValue.trim() === ''}
-      className="bg-blue-500/80 cursor-pointer hover:bg-blue-500 text-white px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 sm:gap-2 whitespace-nowrap flex-shrink-0"
-    >
-      {sending ? (
-        <>
-          <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
-          <span className="hidden sm:inline">{t("chat.sending")}</span>
-        </>
-      ) : (
-        <>
-          <Send className="w-3 h-3 sm:w-4 sm:h-4" />
-          <span className="hidden sm:inline">{t("chat.send")}</span>
-        </>
-      )}
-    </button>
-  </div>
-</div>
+        <div className="flex-shrink-0 px-3 sm:px-6 md:px-10 py-3 sm:py-4 md:py-5 bg-slate-900 backdrop-blur-lg">
+          <div className="flex gap-2 sm:gap-3 bg-white/10 rounded-full px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 border border-white/20">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder={t("chat.msgType")}
+              disabled={sending || loading}
+              className="flex-1 bg-transparent border-none outline-none text-white text-xs sm:text-sm placeholder-white/50 disabled:opacity-50 min-w-0"
+            />
+            <button
+              onClick={sendMessage}
+              disabled={sending || loading || inputValue.trim() === ''}
+              className="bg-blue-500/80 cursor-pointer hover:bg-blue-500 text-white px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 sm:gap-2 whitespace-nowrap flex-shrink-0"
+            >
+              {sending ? (
+                <>
+                  <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
+                  <span className="hidden sm:inline">{t("chat.sending")}</span>
+                </>
+              ) : (
+                <>
+                  <Send className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">{t("chat.send")}</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
       </div>
 
       <style>{`

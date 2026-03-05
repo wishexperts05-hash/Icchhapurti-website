@@ -4,7 +4,7 @@ import { setLoginTimestamp } from '../../utils/auth';
 
 const SpinToWin = ({ isImmediate = false }) => {
     // Configuration
-    const SHOW_POPUP_AFTER = 60; // seconds (change to 180 for 3 minutes)
+    const SHOW_POPUP_AFTER = 240; // seconds (change to 180 for 3 minutes)
     const SHOW_AGAIN_AFTER_CLOSE = 5 * 60 * 1000; // 5 minutes in milliseconds
     const [token, setToken] = useState("");
 

@@ -65,7 +65,7 @@ export default function RefferalPaymentModal({
     const [couponDiscount, setDiscount] = useState(0);
     const [showCouponPopup, setshowCouponPopup] = useState(false);
     const [offers, setOffers] = useState([]);
-const [spinOffers, setspinOffers] = useState([])
+    const [spinOffers, setspinOffers] = useState([])
 
     useEffect(() => {
         const referralValue = Number(String(couponDiscount).replace(/[₹,]/g, ""));
@@ -238,13 +238,9 @@ const [spinOffers, setspinOffers] = useState([])
                 },
             );
 
+          
             const data = await res.json();
-
-            if (data.success && data.data && data.data.length > 0) {
-                setAddresses(data.data);
-            } else {
-                throw new Error("No delivery address found. Please add an address.");
-            }
+            setAddresses(data.data);
         } catch (error) {
             console.error("Failed to fetch addresses:", error);
             setError(error.message);
@@ -523,7 +519,7 @@ const [spinOffers, setspinOffers] = useState([])
             }
 
             const data = await res.json();
-              setOffers(data.data.offers || []);
+            setOffers(data.data.offers || []);
             setspinOffers(data.data.spinRewards || [])
         } catch (err) {
             console.error("Error fetching offers:", err.message);
@@ -890,7 +886,7 @@ const [spinOffers, setspinOffers] = useState([])
                                 />
 
                                 <AddressModal
-                                 addresses={addresses} fetchAddresses={fetchAddresses}
+                                    addresses={addresses} fetchAddresses={fetchAddresses}
                                     isOpen={isModalOpen}
                                     onClose={() => setIsModalOpen(false)}
                                     addressId={editAddressId}
@@ -960,14 +956,12 @@ const [spinOffers, setspinOffers] = useState([])
                                     </div>
                                 )}
 
-                                {isAuthenticated && addresses[addressIndex] && (
+                                 {isAuthenticated && addresses?.length > 0 && (
                                     <div className="mt-1 mb-3 rounded-lg border border-slate-300 p-3">
                                         <div className="flex items-start justify-between gap-3">
                                             <div className="flex-1 text-sm text-gray-800 leading-snug">
                                                 <p>
-                                                    <span className="text-gray-600">
-                                                        {t("cart.deliveryAddress.deliverTo")}{" "}
-                                                    </span>
+                                                    <span className="text-gray-600">{t("cart.deliveryAddress.deliverTo")} </span>
                                                     <span className="font-semibold">
                                                         {addresses[addressIndex]?.fullName}
                                                     </span>
@@ -997,21 +991,25 @@ const [spinOffers, setspinOffers] = useState([])
                                     </div>
                                 )}
 
+  {
+                                    addresses?.length == 0 && <button className="shrink-0 text-xs font-medium cursor-pointer px-3 py-1.5 rounded-md bg-amber-500 hover:bg-amber-600 text-white transition-colors whitespace-nowrap" onClick={() => setIsModalOpen(true)}>Add Address to Continue</button>
+                                }
+
                                 {
-                                                                   ((offers?.length ?? 0) > 0 || (spinOffers?.length ?? 0) > 0) &&
-                                                                   (addresses?.length ?? 0) > 0 && (
-                                                                       <OfferDisplay
-                                                                           offers={offers}
-                                                                           spinOffers={spinOffers}
-                                                                           referralCode={referralCode}
-                                                                           setCouponCode={setCouponCode}
-                                                                           couponCode={couponCode}
-                                                                           isAuthenticated={isAuthenticated}
-                                                                       />
-                                                                   )
-                                                               }
-                               
-                                {isAuthenticated && checkoutDetails && (
+                                    ((offers?.length ?? 0) > 0 || (spinOffers?.length ?? 0) > 0) &&
+                                    (addresses?.length ?? 0) > 0 && (
+                                        <OfferDisplay
+                                            offers={offers}
+                                            spinOffers={spinOffers}
+                                            referralCode={referralCode}
+                                            setCouponCode={setCouponCode}
+                                            couponCode={couponCode}
+                                            isAuthenticated={isAuthenticated}
+                                        />
+                                    )
+                                }
+
+                                {isAuthenticated && checkoutDetails &&addresses.length > 0 && (
                                     <>
                                         <ReferralCode1
                                             referralCode={referralCode}

@@ -69,11 +69,7 @@ export default function ProductDetails({ countryCurrency, country }) {
       answer:
         "Charged with multiple rituals like Mantras Jaaps, Herbs and Minerals Smudging ,Mantras Chanting, Moon Charging, and many more rituals that align the energy of the pen to support your emotional balance, clarity, and vibrational alignment with your desires."
     },
-    // {
-    //   question: "Can I use the pen for journaling or planning?",
-    //   answer:
-    //     "Yes, the pen is perfect for journaling, scripting, planning goals, or writing manifestation statements."
-    // },
+
     {
       question: "Is the Seven Chakra Pen suitable for beginners in manifestation?",
       answer:
@@ -211,7 +207,7 @@ export default function ProductDetails({ countryCurrency, country }) {
       const apiPath = token ? "" : "/v1";
 
       const response = await fetch(
-        `${baseUrl}${apiPath}/reviews/getProductReviews/${productId}?page=${page}&limit=10`,
+        `${baseUrl}${apiPath}/reviews/getProductReviews/${productId}?page=${page}&limit=4`,
         {
           method: "GET",
           headers: {
@@ -252,7 +248,7 @@ export default function ProductDetails({ countryCurrency, country }) {
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -775,38 +771,38 @@ export default function ProductDetails({ countryCurrency, country }) {
                         }`}
                     >
                       <button
-                      onClick={() => toggleFAQ(faqId)}
-                      className="w-full px-4 py-3 flex items-center gap-3 text-left"
-                    >
-                      {/* Thumbnail */}
-                      {faq?.thumbnail && (
-                        <div className="flex-shrink-0">
-                          <img
-                            src={faq.thumbnail}
-                            alt="thumbnail"
-                            className="w-14 h-14 rounded-lg  border"
+                        onClick={() => toggleFAQ(faqId)}
+                        className="w-full px-4 py-3 flex items-center gap-3 text-left"
+                      >
+                        {/* Thumbnail */}
+                        {faq?.thumbnail && (
+                          <div className="flex-shrink-0">
+                            <img
+                              src={faq.thumbnail}
+                              alt="thumbnail"
+                              className="w-14 h-14 rounded-lg  border"
+                            />
+                          </div>
+                        )}
+
+                        {/* Title */}
+                        <div className="flex-1">
+                          <h3
+                            className="text-sm font-semibold  leading-snug"
+                            dangerouslySetInnerHTML={{ __html: faq.title }}
                           />
                         </div>
-                      )}
 
-                      {/* Title */}
-                      <div className="flex-1">
-                        <h3
-                          className="text-sm font-semibold  leading-snug"
-                          dangerouslySetInnerHTML={{ __html: faq.title }}
-                        />
-                      </div>
-
-                      {/* Toggle Icon */}
-                      <div
-                        className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-300 ${isOpen
+                        {/* Toggle Icon */}
+                        <div
+                          className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-300 ${isOpen
                             ? "bg-blue-500 rotate-180"
                             : "bg-slate-400 group-hover:bg-slate-500"
-                          }`}
-                      >
-                        <ChevronDown className="w-4 h-4 text-white" />
-                      </div>
-                    </button>
+                            }`}
+                        >
+                          <ChevronDown className="w-4 h-4 text-white" />
+                        </div>
+                      </button>
 
                       {/* Grid-based animation - Most performant */}
                       <div
@@ -918,8 +914,8 @@ export default function ProductDetails({ countryCurrency, country }) {
                       {/* Toggle Icon */}
                       <div
                         className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-300 ${isOpen
-                            ? "bg-blue-500 rotate-180"
-                            : "bg-slate-400 group-hover:bg-slate-500"
+                          ? "bg-blue-500 rotate-180"
+                          : "bg-slate-400 group-hover:bg-slate-500"
                           }`}
                       >
                         <ChevronDown className="w-4 h-4 text-white" />
@@ -949,92 +945,63 @@ export default function ProductDetails({ countryCurrency, country }) {
           </div>
           {/* faq section  */}
 
-          <div className="banner w-full overflow-hidden">
+         {
+          product?.banner &&  <div className="banner w-full overflow-hidden">
             <img
-              src={isSevenChakraPen ? "/seven_chakra_pen.jpeg" : "/metal_pen_banner.jpeg"}
+              src={product.banner}
               alt="Icchhapurti Metal Manifestation Pen Banner"
               className="w-full h-auto object-cover"
             />
           </div>
+         }
 
 
 
           <section className="max-w-4xl mx-auto px-4 py-12">
             {
-              product?.name.includes("Elegant Metal Roller") &&
+              product?.faqs?.length > 0 &&
               <>
                 <h2 className="text-3xl font-bold text-center mb-8 text-gray-900">
                   Frequently Asked Questions
                 </h2>
 
-
-                <div className="space-y-4">
-                  {faq1.map((faq, index) => (
-                    <div
-                      key={index}
-                      className="border border-gray-200 rounded-xl shadow-sm bg-white"
-                    >
-                      <button
-                        onClick={() =>
-                          setOpenIndex(openIndex === index ? null : index)
-                        }
-                        className="w-full flex justify-between items-center px-5 py-4 text-left"
+                {
+                  <div className="space-y-4">
+                    {product?.faqs.map((faq, index) => (
+                      <div
+                        key={index}
+                        className="border border-gray-200 rounded-xl shadow-sm bg-white"
                       >
-                        <span className="font-semibold text-gray-800">
-                          {faq.question}
-                        </span>
+                        <button
+                          onClick={() =>
+                            setOpenIndex(openIndex === index ? null : index)
+                          }
+                          className="w-full flex justify-between items-center px-5 py-4 text-left"
+                        >
+                          <span className="font-semibold text-gray-800">
+                            {faq.question}
+                          </span>
 
-                        <ChevronDown
-                          className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${openIndex === index ? "rotate-180" : ""
-                            }`}
-                        />
-                      </button>
+                          <ChevronDown
+                            className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${openIndex === index ? "rotate-180" : ""
+                              }`}
+                          />
+                        </button>
 
-                      {openIndex === index && (
-                        <div className="px-5 pb-5 text-gray-600 leading-relaxed">
-                          {faq.answer}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                        {openIndex === index && (
+                          <div className="px-5 pb-5 text-gray-600 leading-relaxed">
+                            {faq.answer}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                }
+
               </>
             }
 
-            {
-              product?.name.includes("Seven Chakra") &&
-              <div className="space-y-4">
-                {faqs.map((faq, index) => (
-                  <div
-                    key={index}
-                    className="border border-gray-200 rounded-xl shadow-sm bg-white"
-                  >
-                    <button
-                      onClick={() =>
-                        setOpenIndex(openIndex === index ? null : index)
-                      }
-                      className="w-full flex justify-between items-center px-5 py-4 text-left"
-                    >
-                      <span className="font-semibold text-gray-800">
-                        {faq.question}
-                      </span>
 
-                      <ChevronDown
-                        className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${openIndex === index ? "rotate-180" : ""
-                          }`}
-                      />
-                    </button>
-
-                    {openIndex === index && (
-                      <div className="px-5 pb-5 text-gray-600 leading-relaxed">
-                        {faq.answer}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-            }
 
           </section>
 

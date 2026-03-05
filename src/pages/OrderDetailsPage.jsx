@@ -53,10 +53,10 @@ const OrderDetailsPage = () => {
   }, [orderId]);
 
   const Navigate = useNavigate()
-  const handleAddReview = (productId, e) => {
-    e.stopPropagation();
-    Navigate(`/add/review/${productId}`)
-  };
+
+
+
+
 
   if (loading) {
     return (
@@ -90,7 +90,24 @@ const OrderDetailsPage = () => {
       {/* Background elements omitted for brevity, keep same as your original code */}
 
      <div className="relative bg-white z-10 max-w-4xl mx-auto p-6 text-slate-900">
-
+<div className="w-full flex justify-start">
+        <button
+          onClick={() => Navigate(-1)}
+          className="inline-flex cursor-pointer items-center my-2 gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 hover:text-gray-900 transition"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back
+        </button>
+      </div>
   {/* Header */}
   <h1 className="text-3xl font-bold text-slate-900 mb-2">
     {t("orders.orderDetails")}
