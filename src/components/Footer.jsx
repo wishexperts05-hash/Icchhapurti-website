@@ -21,9 +21,9 @@ const Footer = () => {
 
   const socialLinks = [
     { image: '/twitter.png', label: 'X (Twitter)', href: 'https://twitter.com' },
-    { image: '/facebook.png', label: 'Facebook', href: 'https://facebook.com' },
+    { image: '/facebook.png', label: 'Facebook', href: 'https://www.facebook.com/icchhapurtiofficial' },
     { image: '/instagram.png', label: 'Instagram', href: 'https://www.instagram.com/icchhapurtiofficial' },
-    { image: '/linkdin.png', label: 'LinkedIn', href: 'https://linkedin.com' },
+    // { image: '/linkdin.png', label: 'LinkedIn', href: 'https://linkedin.com' },
     { image: '/youtube.png', label: 'YouTube', href: 'https://youtube.com' },
   ];
 
@@ -99,18 +99,18 @@ const Footer = () => {
 
           {/* RIGHT */}
           <div className="md:col-span-5">
-            <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
+            {/* <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
               <span className="w-8 h-0.5 bg-[#C9A227]" /> {t('footer.downloadApp')}
-            </h3>
+            </h3> */}
 
-            <p className="text-gray-300 mb-4">
+            {/* <p className="text-gray-300 mb-4">
               {t('footer.downloadAppDesc')}
-            </p>
+            </p> */}
 
-            <div className="flex gap-3 mb-8">
+            {/* <div className="flex gap-3 mb-8">
               <img src="/appStore.png" alt="App Store" loading="lazy" className="h-12" />
               <img src="/googlePay.png" alt="Google Play" loading="lazy" className="h-12" />
-            </div>
+            </div> */}
 
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <span className="w-8 h-0.5 bg-[#C9A227]" /> {t('footer.contactInfo')}

@@ -31,7 +31,7 @@ export default function AboutUs() {
 
   const [allProducts, setProducts] = useState([]);
   console.log(allProducts, "allProducts")
-  const naviagte = useNavigate()
+ 
 
   useEffect(() => {
     fetchProducts();
@@ -94,6 +94,8 @@ export default function AboutUs() {
       description: "Charged through dedicated spiritual practices and mindful preparation"
     }
   ];
+
+   const navigate = useNavigate()
 
   return (
     <div className="min-h-screen ">
@@ -209,7 +211,8 @@ export default function AboutUs() {
 
                 {/* TITLE */}
                 <h3
-                  onClick={() => naviagte(`/product/${allProducts[i]._id}`)}
+                  onClick={() =>  navigate(`/product/${allProducts[i].id || allProducts[i]._id}/${encodeURIComponent(allProducts[i].name || "product")}`)}
+                 
                   className="text-xl font-bold cursor-pointer text-[#a17b0a] mb-3 text-center"
                 >
                   {product.name}

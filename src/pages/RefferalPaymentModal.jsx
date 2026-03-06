@@ -313,6 +313,7 @@ export default function RefferalPaymentModal({
             );
 
             if (res.data.success) {
+                  sessionStorage.setItem("orderNumber", res.data.razorpayDetails.orderNumber)
                 return res.data.razorpayDetails;
             } else {
                 throw new Error(res.data.message || "Failed to create Razorpay order");
@@ -527,6 +528,46 @@ export default function RefferalPaymentModal({
         }
     };
 
+
+
+  const cancelledOrder = async () => {
+  const orderId = sessionStorage.getItem("orderNumber");
+  const token = localStorage.getItem("token");
+
+  if (!orderId) {
+    console.warn("No orderNumber found in sessionStorage");
+    return;
+  }
+
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/orders/order-cancelled`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ orderId }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Request failed with status ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    if (data.success) {
+      console.log("Order cancelled successfully");
+      sessionStorage.removeItem("orderNumber");
+    } else {
+      console.warn("Cancel failed:", data.message);
+    }
+
+  } catch (error) {
+    console.error("Cancel order error:", error.message);
+  }
+};
+
+
     const totalItems = cartItems.reduce(
         (sum, item) => sum + Number(item.quantity),
         0,
@@ -684,6 +725,7 @@ export default function RefferalPaymentModal({
                                 onClick={() => {
                                     // setWarning(false);
                                     // setCartSidebarOpen(true);
+                                    cancelledOrder()
                                     onClose();
                                 }}
                                 className="flex-1 cursor-pointer px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"

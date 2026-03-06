@@ -324,7 +324,8 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
             );
 
             if (res.data.success) {
-                setCount(0);
+                // setCount(0);
+                sessionStorage.setItem("orderNumber", res.data.razorpayDetails.orderNumber)
                 return res.data.razorpayDetails;
             } else {
                 throw new Error(res.data.message || "Failed to create Razorpay order");
@@ -426,6 +427,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                             throw new Error('Payment verification failed');
                         }
                     } catch (err) {
+                        console.log("f34")
                         setCheckoutLoading(false);
                         setError(err.message || 'Payment verification failed');
                         scrollToTop();
@@ -534,8 +536,42 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
         }
     };
 
+    const cancelledOrder = async () => {
+  const orderId = sessionStorage.getItem("orderNumber");
+  const token = localStorage.getItem("token");
 
+  if (!orderId) {
+    console.warn("No orderNumber found in sessionStorage");
+    return;
+  }
 
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/orders/order-cancelled`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ orderId }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Request failed with status ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    if (data.success) {
+      console.log("Order cancelled successfully");
+      sessionStorage.removeItem("orderNumber");
+    } else {
+      console.warn("Cancel failed:", data.message);
+    }
+
+  } catch (error) {
+    console.error("Cancel order error:", error.message);
+  }
+};
 
     const totalItems = cartItems.reduce((sum, item) => sum + Number(item.quantity), 0);
 
@@ -698,6 +734,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                             </button>
                             <button
                                 onClick={() => {
+                                    cancelledOrder()
                                     setWarning(false);
                                     setCartSidebarOpen(true);
                                     onClose();
@@ -1153,7 +1190,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                                     </span>
                                                 </div>
 
-                                           
+
 
                                                 {/* Divider */}
                                                 <div className="border-t border-dashed border-slate-200 my-1.5"></div>
