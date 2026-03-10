@@ -84,6 +84,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
     const [error, setError] = useState(null);
     const [successMsg, setSuccessMsg] = useState('');
     const [checkoutSuccess, setCheckoutSuccess] = useState(false);
+    const [estimatedDelivery, setEstimatedDelivery] = useState(null);
 
     const { t } = useTranslation();
     const Navigate = useNavigate();
@@ -91,6 +92,8 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
     const user = JSON.parse(localStorage.getItem("user") || "{}");
 
     const [addressIndex, setAddressesIndex] = useState(0)
+    const [pincodeServiceable, setPincodeServiceable] = useState(null); // null = loading/unknown, true/false
+    const [pincodeChecking, setPincodeChecking] = useState(false);
 
     const paymentMethods = [
         { id: 'wallet', name: t('payment.methods.wallet'), balance: balance, icon: 'wallet' },
@@ -151,6 +154,16 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
         }
 
     }, [isAuthenticated, cartItems, couponCode, referralCode, addressIndex, addresses])
+
+    // Check pincode serviceability whenever the selected address changes
+    useEffect(() => {
+        if (!Array.isArray(addresses) || addresses.length === 0) return;
+        const idx = addressIndex ?? 0;
+        const pinCode = addresses[idx]?.pinCode;
+        if (isAuthenticated && pinCode) {
+            checkPincodeServiceability(pinCode);
+        }
+    }, [addressIndex, addresses, isAuthenticated]);
 
 
 
@@ -255,6 +268,30 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
         }
     };
 
+    const checkPincodeServiceability = async (pinCode) => {
+        if (!pinCode) return;
+        setPincodeChecking(true);
+        setPincodeServiceable(null);
+        try {
+            const res = await fetch(
+                `${import.meta.env.VITE_API_URL}/api/user/shipping/check-pincode/${pinCode}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            const data = await res.json();
+            setPincodeServiceable(data.serviceable === true);
+        } catch (err) {
+            console.error("Pincode check failed:", err);
+            setPincodeServiceable(null);
+        } finally {
+            setPincodeChecking(false);
+        }
+    };
+
     const fetchCheckOutDetails = async () => {
         try {
             setCheckoutLoading(true)
@@ -355,13 +392,13 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
             if (res.data.success) {
                 setCurrentStep(3)
                 setCheckoutSuccess(true);
-
+                fetchEstimatedDelivery();
                 setCount(0);
                 setTimeout(() => {
                     setCheckoutSuccess(false);
                     onClose();
                     Navigate('/orders');
-                }, 5000);
+                }, 8000);
             } else {
                 throw new Error(res.data.message || "Failed to create order");
             }
@@ -418,11 +455,12 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                             setCheckoutSuccess(true);
                             setCount(0);
                             scrollToTop();
+                            fetchEstimatedDelivery();
                             setTimeout(() => {
                                 setCheckoutSuccess(false);
                                 onClose();
                                 Navigate('/orders');
-                            }, 5000);
+                            }, 8000);
                         } else {
                             throw new Error('Payment verification failed');
                         }
@@ -536,42 +574,62 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
         }
     };
 
+    const fetchEstimatedDelivery = async () => {
+        try {
+            const pinCode = addresses[addressIndex ?? 0]?.pinCode;
+            if (!pinCode) return;
+            const res = await axios.get(
+                `${import.meta.env.VITE_API_URL}/api/user/shipping/edd?pincode=${pinCode}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    }
+                }
+            );
+            if (res.data.success) {
+                setEstimatedDelivery(res.data);
+            }
+        } catch (error) {
+            console.error("Failed to fetch EDD:", error);
+        }
+    };
+
     const cancelledOrder = async () => {
-  const orderId = sessionStorage.getItem("orderNumber");
-  const token = localStorage.getItem("token");
+        const orderId = sessionStorage.getItem("orderNumber");
+        const token = localStorage.getItem("token");
 
-  if (!orderId) {
-    console.warn("No orderNumber found in sessionStorage");
-    return;
-  }
+        if (!orderId) {
+            console.warn("No orderNumber found in sessionStorage");
+            return;
+        }
 
-  try {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/orders/order-cancelled`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ orderId }),
-    });
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/orders/order-cancelled`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ orderId }),
+            });
 
-    if (!res.ok) {
-      throw new Error(`Request failed with status ${res.status}`);
-    }
+            if (!res.ok) {
+                throw new Error(`Request failed with status ${res.status}`);
+            }
 
-    const data = await res.json();
+            const data = await res.json();
 
-    if (data.success) {
-      console.log("Order cancelled successfully");
-      sessionStorage.removeItem("orderNumber");
-    } else {
-      console.warn("Cancel failed:", data.message);
-    }
+            if (data.success) {
+                console.log("Order cancelled successfully");
+                sessionStorage.removeItem("orderNumber");
+            } else {
+                console.warn("Cancel failed:", data.message);
+            }
 
-  } catch (error) {
-    console.error("Cancel order error:", error.message);
-  }
-};
+        } catch (error) {
+            console.error("Cancel order error:", error.message);
+        }
+    };
 
     const totalItems = cartItems.reduce((sum, item) => sum + Number(item.quantity), 0);
 
@@ -697,12 +755,31 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
             {/* Success Modal */}
             {checkoutSuccess && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
-                    <div className="bg-white rounded-xl p-4 max-w-xs w-full text-center shadow-md border border-green-300">
+                    <div className="bg-white rounded-xl p-5 max-w-sm w-full text-center shadow-xl border border-green-300">
                         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <CheckCircle className="w-8 h-8 text-green-500" />
+                            <CheckCircle className="w-9 h-9 text-green-500" />
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-1">Payment completed!</h3>
-                        <p className="text-gray-600 text-sm">Thank you for your purchase. Redirecting...</p>
+                        <h3 className="text-xl font-bold text-gray-900 mb-1">Payment Successful! 🎉</h3>
+                        <p className="text-gray-500 text-sm mb-4">Thank you for your order. Redirecting to orders...</p>
+
+                        {estimatedDelivery ? (
+                            <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-left">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <Truck className="w-4 h-4 text-amber-500 shrink-0" />
+                                    <span className="text-xs font-semibold text-amber-700 uppercase tracking-wide">Estimated Delivery</span>
+                                </div>
+                                <p className="text-base font-bold text-gray-900">{estimatedDelivery.deliveryDate}</p>
+                                <p className="text-xs text-gray-500 mt-0.5">{estimatedDelivery.message}</p>
+                                {estimatedDelivery.destination && (
+                                    <p className="text-xs text-gray-400 mt-0.5">To: {estimatedDelivery.destination}</p>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
+                                <div className="w-3 h-3 border border-gray-300 border-t-amber-400 rounded-full animate-spin" />
+                                Fetching delivery estimate...
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
@@ -1021,6 +1098,30 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                                 {t("cart.deliveryAddress.changeAddress")}
                                             </button>
                                         </div>
+
+                                        {/* Pincode Serviceability Status */}
+                                        {pincodeChecking && (
+                                            <div className="mt-2 flex items-center gap-2 text-xs text-gray-500 px-1">
+                                                <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin" />
+                                                Checking delivery availability...
+                                            </div>
+                                        )}
+                                        {!pincodeChecking && pincodeServiceable === false && (
+                                            <div className="mt-2 flex items-start gap-2 px-3 py-2 bg-red-50 border border-red-200 rounded-md">
+                                                <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                                                <p className="text-xs text-red-600 font-medium">
+                                                    Pincode not serviceable. Please use another pincode.
+                                                </p>
+                                            </div>
+                                        )}
+                                        {!pincodeChecking && pincodeServiceable === true && (
+                                            <div className="mt-2 flex items-center gap-2 px-3 py-2 bg-green-50 border border-green-200 rounded-md">
+                                                <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
+                                                <p className="text-xs text-green-600 font-medium">
+                                                    Delivery available to your location.
+                                                </p>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                                 {
@@ -1283,7 +1384,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                         {/* Checkout Button */}
                                         <button
                                             onClick={handleCheckout}
-                                            disabled={!isAuthenticated || checkoutLoading}
+                                            disabled={!isAuthenticated || checkoutLoading || pincodeServiceable === false}
                                             className="
     w-full max-w-md mx-auto cursor-pointer
     bg-gradient-to-r from-amber-500 to-orange-500

@@ -24,7 +24,7 @@ const Footer = () => {
     { image: '/facebook.png', label: 'Facebook', href: 'https://www.facebook.com/icchhapurtiofficial' },
     { image: '/instagram.png', label: 'Instagram', href: 'https://www.instagram.com/icchhapurtiofficial' },
     // { image: '/linkdin.png', label: 'LinkedIn', href: 'https://linkedin.com' },
-    { image: '/youtube.png', label: 'YouTube', href: 'https://youtube.com' },
+    { image: '/youtube.png', label: 'YouTube', href: 'https://www.youtube.com/@IcchhapurtiOfficial-w1d' },
   ];
 
   return (

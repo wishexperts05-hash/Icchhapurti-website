@@ -129,7 +129,7 @@ const OrderDetailsPage = () => {
       >
         <div className="flex items-center gap-4">
           <div
-            onClick={() => Navigate(`/product/${item.productId}`)}
+            onClick={() => Navigate(`/product/${item.productId}/${encodeURIComponent(item.name || "product")}`)}
             className="w-12 h-12 bg-slate-200 rounded flex items-center justify-center overflow-hidden cursor-pointer"
           >
             {item.images?.[0] ? (
