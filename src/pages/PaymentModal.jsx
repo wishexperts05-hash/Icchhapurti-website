@@ -460,7 +460,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = "India", 
                                 setCheckoutSuccess(false);
                                 onClose();
                                 Navigate('/orders');
-                            }, 8000);
+                            }, 10000);
                         } else {
                             throw new Error('Payment verification failed');
                         }
