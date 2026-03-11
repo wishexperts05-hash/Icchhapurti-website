@@ -8,14 +8,14 @@ export default function AboutUs() {
 
   const products = [
 
-   
+
     {
       id: 1,
       name: "Icchhapurti - Seven Chakra Premium Manifestation Pen",
       description: "A luxury metal pen embedded with seven chakra stones and topped with genuine pyrite—designed to balance energy centers, boost confidence, and attract abundance.",
       icon: "✨"
     },
-     {
+    {
       id: 2,
       name: "Icchhapurti -  Elegant Metal Roller Manifestation Pen",
       description: "A minimal Elegant Metallic Look, stone-free manifestation pen ideal for students and corporate professionals who want a subtle yet powerful intention-focused writing tool suitable for schools and offices.",
@@ -31,7 +31,7 @@ export default function AboutUs() {
 
   const [allProducts, setProducts] = useState([]);
   console.log(allProducts, "allProducts")
- 
+
 
   useEffect(() => {
     fetchProducts();
@@ -95,7 +95,7 @@ export default function AboutUs() {
     }
   ];
 
-   const navigate = useNavigate()
+  const navigate = useNavigate()
 
   return (
     <div className="min-h-screen ">
@@ -191,28 +191,17 @@ export default function AboutUs() {
               >
                 {/* MEDIA CONTAINER */}
                 <div className="w-full  mb-4 rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center">
-                  {i === 2 ? (
-                    <video
-                      src="/coming-soon.mp4"
-                      className="w-full  h-[350px] object-cover"
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                    />
-                  ) : (
-                    <img
-                      src={allProducts[i]?.images?.[0]}
-                      alt={product.name}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
+                  <img
+                    src={allProducts[i]?.images?.[0]}
+                    alt={product.name}
+                    className="w-full h-full md:max-h-[350px] max-h-[300px]   "
+                  />
                 </div>
 
                 {/* TITLE */}
                 <h3
-                  onClick={() =>  navigate(`/product/${allProducts[i].id || allProducts[i]._id}/${encodeURIComponent(allProducts[i].name || "product")}`)}
-                 
+                  onClick={() => navigate(`/product/${allProducts[i].id || allProducts[i]._id}/${encodeURIComponent(allProducts[i].name || "product")}`)}
+
                   className="text-xl font-bold cursor-pointer text-[#a17b0a] mb-3 text-center"
                 >
                   {product.name}
