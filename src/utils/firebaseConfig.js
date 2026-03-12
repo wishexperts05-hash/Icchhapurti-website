@@ -2,7 +2,7 @@
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
- // ✅ Log the API key to verify it's being read correctly
+// ✅ Log the API key to verify it's being read correctly
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,

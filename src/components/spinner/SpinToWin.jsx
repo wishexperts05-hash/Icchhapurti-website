@@ -137,7 +137,7 @@ const SpinToWin = ({ isImmediate = false }) => {
         fetchSpinReward()
     }, [showWheel, accessToken])
 
-    // Check localStorage and login status on mount
+    // Check localStorage and login status on mount + listen for login changes
     useEffect(() => {
         const registered = localStorage.getItem('spinRegistered') === 'true';
         const spun = localStorage.getItem('hasSpun') === 'true';
@@ -151,6 +151,52 @@ const SpinToWin = ({ isImmediate = false }) => {
         // Load countries
         const allCountries = Country.getAllCountries();
         setCountries(allCountries);
+
+        // Listen for login/logout changes in localStorage (same tab)
+        const handleStorageChange = (e) => {
+            if (e.key === 'token' || e.key === 'user') {
+                const newToken = localStorage.getItem('token');
+                const newUser = localStorage.getItem('user');
+                const loggedIn = !!(newToken && newUser);
+                setIsLoggedIn(loggedIn);
+                // If user just logged in, immediately close and block the modal
+                if (loggedIn) {
+                    setShowModal(false);
+                    setModalManuallyClosed(true);
+                    if (timerRef.current) {
+                        clearInterval(timerRef.current);
+                        timerRef.current = null;
+                    }
+                }
+            }
+        };
+
+        // Also poll every second to catch same-tab localStorage changes
+        // (storage event only fires for cross-tab changes in most browsers)
+        const loginPollRef = setInterval(() => {
+            const currentToken = localStorage.getItem('token');
+            const currentUser = localStorage.getItem('user');
+            const loggedIn = !!(currentToken && currentUser);
+            setIsLoggedIn(prev => {
+                if (!prev && loggedIn) {
+                    // User just logged in — close modal and stop timer
+                    setShowModal(false);
+                    setModalManuallyClosed(true);
+                    if (timerRef.current) {
+                        clearInterval(timerRef.current);
+                        timerRef.current = null;
+                    }
+                }
+                return loggedIn;
+            });
+        }, 1000);
+
+        window.addEventListener('storage', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+            clearInterval(loginPollRef);
+        };
     }, []);
 
     // Handle click outside to close dropdowns
