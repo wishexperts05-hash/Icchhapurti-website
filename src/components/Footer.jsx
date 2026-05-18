@@ -122,6 +122,13 @@ const Footer = () => {
               </div>
               <span>Official@icchhapurti.com</span>
             </a>
+            <a href="tel:+919084435569" className="flex items-center gap-3 my-2">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-[#C9A227]/20">
+                <Phone size={18} className="text-[#C9A227]" />
+              </div>
+              <span>+91-9084435569</span>
+            </a>
+
           </div>
         </div>
       </div>

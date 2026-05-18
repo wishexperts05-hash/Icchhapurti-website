@@ -6,7 +6,7 @@ import ImageCarousel from '../components/ImageCarousel'
 import { useHeader } from '../context/HeaderContext'
 import WhyChooseUs from '../components/WhyChooseUs'
 import { Suspense, lazy } from 'react'
-import { messaging, getToken, onMessage } from '../utils/firebaseConfig' // ✅ Import Firebase
+// import { messaging, getToken, onMessage } from '../utils/firebaseConfig' // ✅ Import Firebase
 const StoryBanner = lazy(() => import('../components/StoryBanner'));
 const ProductVideoSection = lazy(() => import('../components/ProductVideoSection'));
 import Testimonials from '../components/Testimonials'
@@ -129,128 +129,128 @@ const HomePage = ({ countryCurrency, country }) => {
   let isSettingUpNotifications = false;
 
   // ✅ Setup notifications ONCE when component mounts
-  useEffect(() => {
-    if (!token) return;
+  // useEffect(() => {
+  //   if (!token) return;
 
-    const setupNotifications = async () => {
-      // ✅ Prevent concurrent calls
-      if (isSettingUpNotifications) {
-        console.log('⏸️ Already setting up notifications, skipping...');
-        return;
-      }
+  //   const setupNotifications = async () => {
+  //     // ✅ Prevent concurrent calls
+  //     if (isSettingUpNotifications) {
+  //       console.log('⏸️ Already setting up notifications, skipping...');
+  //       return;
+  //     }
 
-      try {
-        isSettingUpNotifications = true; // Lock
+  //     try {
+  //       isSettingUpNotifications = true; // Lock
 
-        // Check if browser supports notifications
-        if (!('Notification' in window) || !('serviceWorker' in navigator)) {
-          console.log('⚠️ Notifications not supported');
-          return;
-        }
+  //       // Check if browser supports notifications
+  //       if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+  //         console.log('⚠️ Notifications not supported');
+  //         return;
+  //       }
 
-        console.log('🔔 Setting up notifications...', Notification.permission);
+  //       console.log('🔔 Setting up notifications...', Notification.permission);
 
-        // 🟡 CASE 1: Not decided yet → ASK permission
-        if (Notification.permission === "default") {
-          const permission = await Notification.requestPermission();
+  //       // 🟡 CASE 1: Not decided yet → ASK permission
+  //       if (Notification.permission === "default") {
+  //         const permission = await Notification.requestPermission();
 
-          if (permission !== 'granted') {
-            console.log('⚠️ Notification permission denied');
-            return;
-          }
-        }
+  //         if (permission !== 'granted') {
+  //           console.log('⚠️ Notification permission denied');
+  //           return;
+  //         }
+  //       }
 
-        // ✅ Check if permission is granted
-        if (Notification.permission === 'granted') {
-          console.log('✅ Permission granted, getting token...');
+  //       // ✅ Check if permission is granted
+  //       if (Notification.permission === 'granted') {
+  //         console.log('✅ Permission granted, getting token...');
 
-          // ✅ Wait a bit to ensure service worker is ready
-          await new Promise(resolve => setTimeout(resolve, 500));
+  //         // ✅ Wait a bit to ensure service worker is ready
+  //         await new Promise(resolve => setTimeout(resolve, 500));
 
-          // Get FCM token
-          const fcmToken = await getToken(messaging, {
-            vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY
-          });
+  //         // Get FCM token
+  //         const fcmToken = await getToken(messaging, {
+  //           vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY
+  //         });
 
-          if (!fcmToken) {
-            console.error('❌ Failed to get FCM token');
-            return;
-          }
+  //         if (!fcmToken) {
+  //           console.error('❌ Failed to get FCM token');
+  //           return;
+  //         }
 
-          console.log('🔥 FCM Token:', fcmToken);
+  //         console.log('🔥 FCM Token:', fcmToken);
 
-          // ✅ CHECK: Only save if token is NEW or DIFFERENT
-          const savedToken = localStorage.getItem('fcm_token');
+  //         // ✅ CHECK: Only save if token is NEW or DIFFERENT
+  //         const savedToken = localStorage.getItem('fcm_token');
 
-          if (savedToken === fcmToken) {
-            console.log('ℹ️ Token already saved, skipping API call');
-            return;
-          }
+  //         if (savedToken === fcmToken) {
+  //           console.log('ℹ️ Token already saved, skipping API call');
+  //           return;
+  //         }
 
-          // ✅ Save NEW token to backend
-          const response = await fetch(
-            `${import.meta.env.VITE_API_URL}/api/user/fcm/add-token`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-              },
-              body: JSON.stringify({
-                token: fcmToken,
-                deviceType: "web"
-              })
-            }
-          );
+  //         // ✅ Save NEW token to backend
+  //         const response = await fetch(
+  //           `${import.meta.env.VITE_API_URL}/api/user/fcm/add-token`,
+  //           {
+  //             method: 'POST',
+  //             headers: {
+  //               'Content-Type': 'application/json',
+  //               'Authorization': `Bearer ${token}`
+  //             },
+  //             body: JSON.stringify({
+  //               token: fcmToken,
+  //               deviceType: "web"
+  //             })
+  //           }
+  //         );
 
-          if (response.ok) {
-            console.log('✅ FCM token saved to backend');
-            localStorage.setItem('fcm_token', fcmToken);
-          } else {
-            console.error('❌ Failed to save token to backend');
-          }
-        } else {
-          console.log('⚠️ Notification permission not granted');
-        }
-      } catch (error) {
-        console.error('❌ Error setting up notifications:', error);
-      } finally {
-        // ✅ Release lock after a delay
-        setTimeout(() => {
-          isSettingUpNotifications = false;
-        }, 1000);
-      }
-    };
+  //         if (response.ok) {
+  //           console.log('✅ FCM token saved to backend');
+  //           localStorage.setItem('fcm_token', fcmToken);
+  //         } else {
+  //           console.error('❌ Failed to save token to backend');
+  //         }
+  //       } else {
+  //         console.log('⚠️ Notification permission not granted');
+  //       }
+  //     } catch (error) {
+  //       console.error('❌ Error setting up notifications:', error);
+  //     } finally {
+  //       // ✅ Release lock after a delay
+  //       setTimeout(() => {
+  //         isSettingUpNotifications = false;
+  //       }, 1000);
+  //     }
+  //   };
 
-    setupNotifications();
+  //   setupNotifications();
 
-   
-  }, []); // ✅ Empty deps - runs once
+
+  // }, []); 
 
   // ✅ Separate useEffect for foreground notifications
-  useEffect(() => {
-    if (!token) return;
+  // useEffect(() => {
+  //   if (!token) return;
 
-    // Handle notifications when app is in foreground
-    const unsubscribe = onMessage(messaging, (payload) => {
-      console.log('📨 Foreground notification received:', payload);
+  //   // Handle notifications when app is in foreground
+  //   const unsubscribe = onMessage(messaging, (payload) => {
+  //     console.log('📨 Foreground notification received:', payload);
 
-      // Show notification
-      if (Notification.permission === 'granted') {
-        const { title, body, icon, image } = payload.notification || {};
+  //     // Show notification
+  //     if (Notification.permission === 'granted') {
+  //       const { title, body, icon, image } = payload.notification || {};
 
-        new Notification(title || 'New Notification', {
-          body: body || 'You have a new message',
-          icon: icon || '/firebase-logo.png',
-          image: image,
-          badge: '/badge-icon.png',
-          data: payload.data
-        });
-      }
-    });
+  //       new Notification(title || 'New Notification', {
+  //         body: body || 'You have a new message',
+  //         icon: icon || '/firebase-logo.png',
+  //         image: image,
+  //         badge: '/badge-icon.png',
+  //         data: payload.data
+  //       });
+  //     }
+  //   });
 
-    return () => unsubscribe();
-  }, [token]);
+  //   return () => unsubscribe();
+  // }, [token]);
 
 
 

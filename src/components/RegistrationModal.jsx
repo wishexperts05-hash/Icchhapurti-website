@@ -1,7 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Country, State, City } from 'country-state-city';
-import { MapPin, Loader, Search, ChevronDown, X } from 'lucide-react';
+import { Loader, Search, ChevronDown, X } from 'lucide-react';
 import { createPortal } from "react-dom";
+
+const BASE_URL = import.meta.env.VITE_API_URL;
+
+// ── sessionStorage cache helpers ──────────────────────────────
+const cache = {
+    get: (key) => {
+        try {
+            const item = sessionStorage.getItem(key);
+            return item ? JSON.parse(item) : null;
+        } catch { return null; }
+    },
+    set: (key, value) => {
+        try { sessionStorage.setItem(key, JSON.stringify(value)); } catch { }
+    }
+};
 
 const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
     const [formData, setFormData] = useState({
@@ -24,8 +38,6 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
     const [loading, setLoading] = useState(false);
     const [apiError, setApiError] = useState("");
     const [token, setToken] = useState("");
-    const [locationLoading, setLocationLoading] = useState(false);
-    const [locationError, setLocationError] = useState("");
 
     const [searchTerms, setSearchTerms] = useState({
         countryCode: '',
@@ -36,82 +48,116 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
     const [openDropdown, setOpenDropdown] = useState(null);
     const dropdownRefs = useRef({});
 
+    // Data from API
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
 
-    const countryCodes = [
-        { code: "+1", country: "USA/Canada", flag: "🇺🇸" },
-        { code: "+44", country: "UK", flag: "🇬🇧" },
-        { code: "+91", country: "India", flag: "🇮🇳" },
-        { code: "+86", country: "China", flag: "🇨🇳" },
-        { code: "+81", country: "Japan", flag: "🇯🇵" },
-        { code: "+49", country: "Germany", flag: "🇩🇪" },
-        { code: "+33", country: "France", flag: "🇫🇷" },
-        { code: "+61", country: "Australia", flag: "🇦🇺" },
-        { code: "+55", country: "Brazil", flag: "🇧🇷" },
-        { code: "+7", country: "Russia", flag: "🇷🇺" },
-        { code: "+234", country: "Nigeria", flag: "🇳🇬" },
-        { code: "+27", country: "South Africa", flag: "🇿🇦" },
-        { code: "+20", country: "Egypt", flag: "🇪🇬" },
-        { code: "+971", country: "UAE", flag: "🇦🇪" },
-        { code: "+966", country: "Saudi Arabia", flag: "🇸🇦" },
-        { code: "+82", country: "South Korea", flag: "🇰🇷" },
-        { code: "+65", country: "Singapore", flag: "🇸🇬" },
-        { code: "+60", country: "Malaysia", flag: "🇲🇾" },
-        { code: "+62", country: "Indonesia", flag: "🇮🇩" },
-        { code: "+63", country: "Philippines", flag: "🇵🇭" },
-        { code: "+66", country: "Thailand", flag: "🇹🇭" },
-        { code: "+84", country: "Vietnam", flag: "🇻🇳" },
-        { code: "+92", country: "Pakistan", flag: "🇵🇰" },
-        { code: "+880", country: "Bangladesh", flag: "🇧🇩" },
-        { code: "+94", country: "Sri Lanka", flag: "🇱🇰" },
-        { code: "+977", country: "Nepal", flag: "🇳🇵" },
-        { code: "+52", country: "Mexico", flag: "🇲🇽" },
-        { code: "+34", country: "Spain", flag: "🇪🇸" },
-        { code: "+39", country: "Italy", flag: "🇮🇹" },
-        { code: "+31", country: "Netherlands", flag: "🇳🇱" },
-        { code: "+46", country: "Sweden", flag: "🇸🇪" }
-    ];
+    // Per-dropdown loading spinners
+    const [loadingStates, setLoadingStates] = useState({
+        countries: false,
+        states: false,
+        cities: false
+    });
 
-    const filteredCountryCodes = countryCodes.filter(cc =>
-        `${cc.code} ${cc.country}`.toLowerCase().includes(searchTerms.countryCode.toLowerCase())
+    // ── API CALLS ────────────────────────────────────────────────
+
+    const fetchCountries = async () => {
+        const cached = cache.get('all_countries');
+        if (cached) { setCountries(cached); return cached; }
+
+        setLoadingStates(prev => ({ ...prev, countries: true }));
+        try {
+            const res = await fetch(`${BASE_URL}/api/user/location/countries`);
+            const data = await res.json();
+            if (data.success) {
+                cache.set('all_countries', data.data);
+                setCountries(data.data);
+                return data.data;
+            }
+        } catch (err) {
+            console.error('Failed to fetch countries:', err);
+        } finally {
+            setLoadingStates(prev => ({ ...prev, countries: false }));
+        }
+        return [];
+    };
+
+    const fetchStates = async (countryIsoCode) => {
+        if (!countryIsoCode) return [];
+        const cacheKey = `states_${countryIsoCode}`;
+        const cached = cache.get(cacheKey);
+        if (cached) { setStates(cached); return cached; }
+
+        setLoadingStates(prev => ({ ...prev, states: true }));
+        setCities([]);
+        try {
+            const res = await fetch(`${BASE_URL}/api/user/location/states?country=${countryIsoCode}`);
+            const data = await res.json();
+            if (data.success) {
+                cache.set(cacheKey, data.data);
+                setStates(data.data);
+                return data.data;
+            }
+        } catch (err) {
+            console.error('Failed to fetch states:', err);
+        } finally {
+            setLoadingStates(prev => ({ ...prev, states: false }));
+        }
+        return [];
+    };
+
+    const fetchCities = async (countryIsoCode, stateIsoCode) => {
+        if (!countryIsoCode || !stateIsoCode) return [];
+        const cacheKey = `cities_${countryIsoCode}_${stateIsoCode}`;
+        const cached = cache.get(cacheKey);
+        if (cached) { setCities(cached); return cached; }
+
+        setLoadingStates(prev => ({ ...prev, cities: true }));
+        try {
+            const res = await fetch(`${BASE_URL}/api/user/location/cities?country=${countryIsoCode}&state=${stateIsoCode}`);
+            const data = await res.json();
+            if (data.success) {
+                cache.set(cacheKey, data.data);
+                setCities(data.data);
+                return data.data;
+            }
+        } catch (err) {
+            console.error('Failed to fetch cities:', err);
+        } finally {
+            setLoadingStates(prev => ({ ...prev, cities: false }));
+        }
+        return [];
+    };
+
+    // ── FILTERED OPTIONS ─────────────────────────────────────────
+
+    // countries array items: { isoCode, country, phonecode, flag? }
+    const filteredCountryCodes = countries.filter(c =>
+        `+${c.phonecode} ${c.country}`.toLowerCase().includes(searchTerms.countryCode.toLowerCase())
     );
     const filteredCountries = countries.filter(c =>
-        c.name.toLowerCase().includes(searchTerms.country.toLowerCase())
+        c.country.toLowerCase().includes(searchTerms.country.toLowerCase())
     );
     const filteredStates = states.filter(s =>
         s.name.toLowerCase().includes(searchTerms.state.toLowerCase())
     );
+    // cities from API are plain strings
     const filteredCities = cities.filter(c =>
-        c.name.toLowerCase().includes(searchTerms.city.toLowerCase())
+        c.toLowerCase().includes(searchTerms.city.toLowerCase())
     );
 
-    useEffect(() => {
-        const allCountries = Country.getAllCountries();
-        setCountries(allCountries);
-    }, []);
+    // ── EFFECTS ──────────────────────────────────────────────────
 
     useEffect(() => {
-        if (formData.countryIsoCode) {
-            const countryStates = State.getStatesOfCountry(formData.countryIsoCode);
-            setStates(countryStates);
-            setCities([]);
+        if (isOpen) {
+            fetchCountries().then(async (allCountries) => {
+                // Pre-load India's states since default country is India
+                const india = allCountries.find(c => c.isoCode === 'IN');
+                if (india) await fetchStates('IN');
+            });
         }
-    }, [formData.countryIsoCode]);
-
-    useEffect(() => {
-        if (formData.countryIsoCode && formData.stateIsoCode) {
-            const stateCities = City.getCitiesOfState(formData.countryIsoCode, formData.stateIsoCode);
-            setCities(stateCities);
-        }
-    }, [formData.stateIsoCode]);
-
-    useEffect(() => {
-        if (countries.length > 0) {
-            detectUserLocation();
-        }
-    }, [countries]);
+    }, [isOpen]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -125,95 +171,89 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [openDropdown]);
 
-    // Close modal on Escape key
     useEffect(() => {
         const handleEscape = (e) => {
-            if (e.key === 'Escape' && isOpen && !showOtpModal) {
-                onClose();
-            }
+            if (e.key === 'Escape' && isOpen && !showOtpModal) onClose();
         };
         document.addEventListener('keydown', handleEscape);
         return () => document.removeEventListener('keydown', handleEscape);
     }, [isOpen, showOtpModal, onClose]);
 
-    const detectUserLocation = async () => {
-        if (countries.length === 0) return;
-        setLocationLoading(true);
-        setLocationError("");
+    useEffect(() => {
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+        return () => { document.body.style.overflow = ''; };
+    }, [isOpen]);
 
-        if (!navigator.geolocation) {
-            setLocationError("Geolocation is not supported");
-            setLocationLoading(false);
-            return;
-        }
+    // ── HANDLERS ─────────────────────────────────────────────────
 
-        navigator.geolocation.getCurrentPosition(
-            async (position) => {
-                const { latitude, longitude } = position.coords;
-                try {
-                    const response = await fetch(
-                        `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=YOUR_API_KEY`
-                    );
-                    const data = await response.json();
-
-                    if (data.results && data.results.length > 0) {
-                        const components = data.results[0].components;
-                        const countryCode = components.country_code?.toUpperCase();
-                        const foundCountry = countries.find(c => c.isoCode === countryCode);
-
-                        if (foundCountry) {
-                            setFormData(prev => ({
-                                ...prev,
-                                countryIsoCode: foundCountry.isoCode,
-                                country: foundCountry.name,
-                                pinCode: components.postcode || prev.pinCode
-                            }));
-                            const countryStates = State.getStatesOfCountry(foundCountry.isoCode);
-                            setStates(countryStates);
-
-                            const stateName = components.state;
-                            if (stateName) {
-                                const foundState = countryStates.find(s => s.name.toLowerCase() === stateName.toLowerCase());
-                                if (foundState) {
-                                    setFormData(prev => ({
-                                        ...prev,
-                                        stateIsoCode: foundState.isoCode,
-                                        state: foundState.name
-                                    }));
-                                    const stateCities = City.getCitiesOfState(foundCountry.isoCode, foundState.isoCode);
-                                    setCities(stateCities);
-
-                                    const cityName = components.city || components.town;
-                                    if (cityName) {
-                                        const foundCity = stateCities.find(c => c.name.toLowerCase() === cityName.toLowerCase());
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            city: foundCity ? foundCity.name : cityName
-                                        }));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } catch (error) {
-                    setLocationError("Could not detect location");
-                } finally {
-                    setLocationLoading(false);
-                }
-            },
-            (error) => {
-                setLocationError("Location permission denied");
-                setLocationLoading(false);
-            },
-            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-        );
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+        if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }));
     };
+
+    const handleSelectCountryCode = (phonecode) => {
+        const matched = countries.find(c => c.phonecode === phonecode);
+        setFormData(prev => ({
+            ...prev,
+            countryCode: `+${phonecode}`,
+            ...(matched ? {
+                countryIsoCode: matched.isoCode,
+                country: matched.country,
+                stateIsoCode: '', state: '', city: ''
+            } : {})
+        }));
+        if (matched) { setStates([]); setCities([]); fetchStates(matched.isoCode); }
+        setOpenDropdown(null);
+        setSearchTerms(prev => ({ ...prev, countryCode: '' }));
+    };
+
+    const handleSelectCountry = async (isoCode) => {
+        const selected = countries.find(c => c.isoCode === isoCode);
+        if (!selected) return;
+        setFormData(prev => ({
+            ...prev,
+            countryIsoCode: selected.isoCode,
+            country: selected.country,
+            countryCode: selected.phonecode ? `+${selected.phonecode}` : prev.countryCode,
+            stateIsoCode: '', state: '', city: ''
+        }));
+        setStates([]); setCities([]);
+        if (errors.country) setErrors(prev => ({ ...prev, country: "" }));
+        await fetchStates(selected.isoCode);
+        setOpenDropdown(null);
+        setSearchTerms(prev => ({ ...prev, country: '' }));
+    };
+
+    const handleSelectState = async (isoCode) => {
+        const selected = states.find(s => s.isoCode === isoCode);
+        if (!selected) return;
+        setFormData(prev => ({
+            ...prev,
+            stateIsoCode: selected.isoCode,
+            state: selected.name,
+            city: ''
+        }));
+        setCities([]);
+        if (errors.state) setErrors(prev => ({ ...prev, state: "" }));
+        await fetchCities(formData.countryIsoCode, isoCode);
+        setOpenDropdown(null);
+        setSearchTerms(prev => ({ ...prev, state: '' }));
+    };
+
+    const handleSelectCity = (cityName) => {
+        setFormData(prev => ({ ...prev, city: cityName }));
+        if (errors.city) setErrors(prev => ({ ...prev, city: "" }));
+        setOpenDropdown(null);
+        setSearchTerms(prev => ({ ...prev, city: '' }));
+    };
+
+    // ── VALIDATION ───────────────────────────────────────────────
 
     const validate = () => {
         const newErrors = {};
         if (!formData.name.trim() || formData.name.trim().length < 3)
             newErrors.name = "Name must be at least 3 characters";
-
         if (!formData.phoneNumber || !/^[0-9]{10}$/.test(formData.phoneNumber))
             newErrors.phoneNumber = "Phone number must be 10 digits";
         if (!formData.country)
@@ -230,70 +270,29 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-        if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }));
-    };
-
-    const handleSelectCountryCode = (code) => {
-        setFormData(prev => ({ ...prev, countryCode: code }));
-        setOpenDropdown(null);
-        setSearchTerms(prev => ({ ...prev, countryCode: '' }));
-    };
-
-    const handleSelectCountry = (countryIsoCode) => {
-        const selectedCountry = countries.find(c => c.isoCode === countryIsoCode);
-        if (selectedCountry) {
-            setFormData(prev => ({
-                ...prev,
-                countryIsoCode: selectedCountry.isoCode,
-                country: selectedCountry.name,
-                state: "",
-                stateIsoCode: "",
-                city: ""
-            }));
-            if (errors.country) setErrors(prev => ({ ...prev, country: "" }));
-        }
-        setOpenDropdown(null);
-        setSearchTerms(prev => ({ ...prev, country: '' }));
-    };
-
-    const handleSelectState = (stateIsoCode) => {
-        const selectedState = states.find(s => s.isoCode === stateIsoCode);
-        if (selectedState) {
-            setFormData(prev => ({
-                ...prev,
-                stateIsoCode: selectedState.isoCode,
-                state: selectedState.name,
-                city: ""
-            }));
-            if (errors.state) setErrors(prev => ({ ...prev, state: "" }));
-        }
-        setOpenDropdown(null);
-        setSearchTerms(prev => ({ ...prev, state: '' }));
-    };
-
-    const handleSelectCity = (cityName) => {
-        setFormData(prev => ({ ...prev, city: cityName }));
-        if (errors.city) setErrors(prev => ({ ...prev, city: "" }));
-        setOpenDropdown(null);
-        setSearchTerms(prev => ({ ...prev, city: '' }));
-    };
+    // ── API SUBMIT ───────────────────────────────────────────────
 
     const handleGetOtp = async (e) => {
         e.preventDefault();
         setApiError("");
         if (!validate()) return;
         setLoading(true);
-
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/register`, {
+            const response = await fetch(`${BASE_URL}/api/user/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name: formData.name, phoneNumber: formData.phoneNumber, email: formData.email, street: formData.street, country: formData.country, state: formData.state, city: formData.city, pinCode: formData.pinCode, dob: formData.dob })
+                body: JSON.stringify({
+                    name: formData.name,
+                    phoneNumber: formData.phoneNumber,
+                    email: formData.email,
+                    street: formData.street,
+                    country: formData.country,
+                    state: formData.state,
+                    city: formData.city,
+                    pinCode: formData.pinCode,
+                    dob: formData.dob
+                })
             });
-
             const data = await response.json();
             if (data.success) {
                 setToken(data.registrationToken);
@@ -312,9 +311,8 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
         try {
             const localCart = JSON.parse(localStorage.getItem("cartItems")) || [];
             if (localCart.length === 0) return;
-
             for (let item of localCart) {
-                await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/addToCart`, {
+                await fetch(`${BASE_URL}/api/user/cart/addToCart`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                     body: JSON.stringify({ productId: item.productId, quantity: item.quantity, totalAmount: item.totalAmount })
@@ -331,28 +329,28 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
             setApiError("Please enter valid 6-digit OTP");
             return;
         }
-
         setLoading(true);
         setApiError("");
-
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/verifyRegisterOtp`, {
+            const response = await fetch(`${BASE_URL}/api/user/verifyRegisterOtp`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ otp })
             });
-
             const data = await response.json();
             if (data.success) {
                 localStorage.setItem("user", JSON.stringify(data.data));
                 localStorage.setItem("token", data.token);
                 await syncLocalCartToServer(data.token);
-
                 setShowOtpModal(false);
-                setFormData({ name: "", email: "", phoneNumber: "", street: "", countryCode: "+91", countryIsoCode: "IN", country: "", stateIsoCode: "", state: "", city: "", pinCode: "", dob: "" });
+                setFormData({
+                    name: "", email: "", phoneNumber: "", street: "",
+                    countryCode: "+91", countryIsoCode: "IN", country: "India",
+                    stateIsoCode: "", state: "", city: "", pinCode: "", dob: ""
+                });
                 setOtp("");
-                setIsAuthenticated(true)
-                onClose()
+                setIsAuthenticated(true);
+                onClose();
             } else {
                 setApiError(data.message || "Invalid OTP");
             }
@@ -363,65 +361,65 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
         }
     };
 
-    const SearchDropdown = ({ field, label, options, value, onSelect, disabled, renderOption, getOptionValue, placeholder }) => (
-        <div ref={el => dropdownRefs.current[field] = el} className="relative">
-            <div
-                onClick={() => !disabled && setOpenDropdown(openDropdown === field ? null : field)}
-                className={`w-full px-4 py-3 bg-gray-50 border ${errors[field] ? 'border-red-500' : 'border-gray-200'} ${disabled ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer'} rounded-lg flex items-center justify-between hover:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all`}
-            >
-                <span className={value ? 'text-gray-900' : 'text-gray-400'}>{value || placeholder}</span>
-                <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${openDropdown === field ? 'rotate-180' : ''}`} />
-            </div>
+    // ── SEARCHABLE DROPDOWN ───────────────────────────────────────
 
-            {openDropdown === field && !disabled && (
-                <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-64 overflow-hidden" onMouseDown={(e) => e.preventDefault()}>
-                    <div className="p-2 border-b border-gray-200">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                            <input
-                                type="text"
-                                value={searchTerms[field]}
-                                onChange={(e) => setSearchTerms(prev => ({ ...prev, [field]: e.target.value }))}
-                                placeholder={`Search ${label.toLowerCase()}...`}
-                                className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
-                                autoFocus
-                            />
+    const SearchDropdown = ({
+        field, label, options, value, onSelect,
+        disabled, renderOption, getOptionValue, placeholder, isLoading
+    }) => (
+        <div ref={el => dropdownRefs.current[field] = el} className="relative">
+            <div className={disabled || isLoading ? 'opacity-50 cursor-not-allowed' : ''}>
+                <div
+                    onClick={() => !disabled && !isLoading && setOpenDropdown(openDropdown === field ? null : field)}
+                    className={`w-full px-4 py-3 bg-gray-50 border ${errors[field] ? 'border-red-500' : 'border-gray-200'} ${disabled || isLoading ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer'} rounded-lg flex items-center justify-between hover:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all`}
+                >
+                    <span className={value ? 'text-gray-900' : 'text-gray-400'}>
+                        {isLoading ? 'Loading...' : (value || placeholder)}
+                    </span>
+                    {isLoading
+                        ? <Loader className="w-4 h-4 text-gray-400 animate-spin" />
+                        : <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${openDropdown === field ? 'rotate-180' : ''}`} />
+                    }
+                </div>
+
+                {openDropdown === field && !disabled && !isLoading && (
+                    <div
+                        className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-64 overflow-hidden"
+                        onMouseDown={(e) => e.preventDefault()}
+                    >
+                        <div className="p-2 border-b border-gray-200">
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                                <input
+                                    type="text"
+                                    value={searchTerms[field]}
+                                    onChange={(e) => setSearchTerms(prev => ({ ...prev, [field]: e.target.value }))}
+                                    placeholder={`Search ${label.toLowerCase()}...`}
+                                    className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
+                                    autoFocus
+                                />
+                            </div>
+                        </div>
+                        <div className="max-h-48 overflow-y-auto">
+                            {options.length === 0 ? (
+                                <div className="px-4 py-3 text-sm text-gray-500">No results found</div>
+                            ) : (
+                                options.map((option, idx) => (
+                                    <div
+                                        key={idx}
+                                        onMouseDown={(e) => { e.preventDefault(); onSelect(getOptionValue(option)); }}
+                                        className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-900"
+                                    >
+                                        {renderOption(option)}
+                                    </div>
+                                ))
+                            )}
                         </div>
                     </div>
-                    <div className="max-h-48 overflow-y-auto">
-                        {options.length === 0 ? (
-                            <div className="px-4 py-3 text-sm text-gray-500">No results found</div>
-                        ) : (
-                            options.map((option, idx) => (
-                                <div
-                                    key={idx}
-                                    onMouseDown={(e) => {
-                                        e.preventDefault();
-                                        onSelect(getOptionValue(option));
-                                    }}
-                                    className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-900"
-                                >
-                                    {renderOption(option)}
-                                </div>
-                            ))
-                        )}
-                    </div>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
-
-    useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "";
-        }
-
-        return () => {
-            document.body.style.overflow = "";
-        };
-    }, [isOpen]);
 
     if (!isOpen) return null;
 
@@ -471,7 +469,7 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                             {/* Email and Phone Number Row */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Email Address </label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                                     <input
                                         type="email"
                                         name="email"
@@ -485,15 +483,64 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
 
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
-                                    <input
-                                        type="tel"
-                                        name="phoneNumber"
-                                        value={formData.phoneNumber}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value.replace(/\D/g, '') }))}
-                                        maxLength="10"
-                                        className={`w-full px-4 py-3 bg-gray-50 border ${errors.phoneNumber ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900`}
-                                        placeholder="10-digit mobile"
-                                    />
+                                    <div className="flex gap-2">
+                                        {/* Country Code Dropdown */}
+                                        <div ref={el => dropdownRefs.current['countryCode'] = el} className="relative w-28">
+                                            <div
+                                                onClick={() => setOpenDropdown(openDropdown === 'countryCode' ? null : 'countryCode')}
+                                                className="w-full px-3 py-3 bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-between cursor-pointer hover:border-gray-900 transition-all"
+                                            >
+                                                <span className="text-gray-900 text-sm">{formData.countryCode || '+91'}</span>
+                                                <ChevronDown className="w-3 h-3 text-gray-500" />
+                                            </div>
+
+                                            {openDropdown === 'countryCode' && (
+                                                <div
+                                                    className="absolute z-50 w-64 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-64 overflow-hidden"
+                                                    onMouseDown={(e) => e.preventDefault()}
+                                                >
+                                                    <div className="p-2 border-b border-gray-200">
+                                                        <div className="relative">
+                                                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                                                            <input
+                                                                type="text"
+                                                                value={searchTerms.countryCode}
+                                                                onChange={(e) => setSearchTerms(prev => ({ ...prev, countryCode: e.target.value }))}
+                                                                placeholder="Search country code..."
+                                                                className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
+                                                                autoFocus
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="max-h-48 overflow-y-auto">
+                                                        {filteredCountryCodes.length === 0 ? (
+                                                            <div className="px-4 py-3 text-sm text-gray-500">No results found</div>
+                                                        ) : (
+                                                            filteredCountryCodes.map(c => (
+                                                                <div
+                                                                    key={c.isoCode}
+                                                                    onMouseDown={(e) => { e.preventDefault(); handleSelectCountryCode(c.phonecode); }}
+                                                                    className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-900"
+                                                                >
+                                                                    +{c.phonecode} — {c.country}
+                                                                </div>
+                                                            ))
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <input
+                                            type="tel"
+                                            name="phoneNumber"
+                                            value={formData.phoneNumber}
+                                            onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value.replace(/\D/g, '') }))}
+                                            maxLength="10"
+                                            className={`flex-1 px-4 py-3 bg-gray-50 border ${errors.phoneNumber ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900`}
+                                            placeholder="10-digit mobile"
+                                        />
+                                    </div>
                                     {errors.phoneNumber && <p className="text-red-500 text-xs mt-1">{errors.phoneNumber}</p>}
                                 </div>
                             </div>
@@ -508,7 +555,8 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                                     value={formData.country}
                                     onSelect={handleSelectCountry}
                                     disabled={false}
-                                    renderOption={(c) => `${c.flag} ${c.name}`}
+                                    isLoading={loadingStates.countries}
+                                    renderOption={(c) => `${c.flag || ''} ${c.country}`}
                                     getOptionValue={(c) => c.isoCode}
                                     placeholder="Select Country"
                                 />
@@ -526,6 +574,7 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                                         value={formData.state}
                                         onSelect={handleSelectState}
                                         disabled={!formData.countryIsoCode}
+                                        isLoading={loadingStates.states}
                                         renderOption={(s) => s.name}
                                         getOptionValue={(s) => s.isoCode}
                                         placeholder="Select State"
@@ -542,8 +591,9 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                                         value={formData.city}
                                         onSelect={handleSelectCity}
                                         disabled={!formData.stateIsoCode}
-                                        renderOption={(c) => c.name}
-                                        getOptionValue={(c) => c.name}
+                                        isLoading={loadingStates.cities}
+                                        renderOption={(c) => c}
+                                        getOptionValue={(c) => c}
                                         placeholder="Select City"
                                     />
                                     {errors.city && <p className="text-red-500 text-xs mt-1">{errors.city}</p>}
@@ -600,11 +650,7 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-2xl font-serif font-bold text-gray-900">Verify OTP</h3>
                             <button
-                                onClick={() => {
-                                    setShowOtpModal(false);
-                                    setOtp("");
-                                    setApiError("");
-                                }}
+                                onClick={() => { setShowOtpModal(false); setOtp(""); setApiError(""); }}
                                 className="text-gray-400 hover:text-gray-600 text-3xl font-light leading-none w-8 h-8 flex items-center justify-center"
                             >
                                 ×

@@ -1,49 +1,46 @@
 import { Routes, Route, Link } from "react-router-dom";
-import Login from "./pages/LoginPage";
-import Register from "./pages/RegisterPage";
-import HomePage from "./pages/HomePage";
-import Layout from "./layout/Layout";
-import ProductsPage from "./pages/ProductsPage";
-import ScrollToTop from "./components/ScrollToTop";
-import ProductDetailPage from "./pages/ProductDetailPage";
-import WalletPage from "./pages/WalletPage";
-import RedeemPage from "./pages/ReedemPage";
-import RedeemHistory from "./pages/RedeemHistory";
-import Notification from "./pages/NotificationPage";
-import AccountPage from "./pages/AccountPage";
-import EditProfile from "./pages/EditProfilePage";
-import ViewProfile from "./pages/ViewProfile";
-import ShippingAddressPage from "./pages/ShippingAddressPage";
-import AddressForm from "./pages/AddressForm";
-
-// import PaymentPage from "./pages/PaymentPage";
-import OrdersPage from "./pages/OrdersPage";
-import OrderDetailsPage from "./pages/OrderDetailsPage";
-import OrderReturnPage from "./pages/OrderReturnPage";
-import AddReviewPage from "./pages/AddReviewPage";
-import ReferProgramPage from "./pages/ReferProgramPage";
-import BuyCoinsPage from "./pages/BuyCoinsPage";
-import LuckyDrawPage from "./pages/LuckyDrawPage";
-import LanguagePage from "./pages/LanguagePage";
-import TermsPage from "./pages/TermsPage";
-import PrivacyPage from "./pages/PrivacyPage";
-import CosmicChatSupport from "./pages/CosmicChatSupport";
-
-import BlogsPage from "./pages/BlogsPage";
-import BlogDetailPage from "./pages/BlogDetailPage";
-import FAQPage from "./pages/FAQPage";
-import SplashScreen from "./components/SplashScreen";
-import ContactUs from "./components/ContactUs";
-import { useEffect } from "react";
-import WishlistPage from "./components/WishlistPage";
-import { useHeader } from "./context/HeaderContext";
-import ShippingPolicy from "./pages/ShippingPolicy";
-import RefundCancellationPolicy from "./components/RefundCancellationPolicy";
-import AboutUs from "./pages/AboutUs";
-import { useState } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Layout from "./layout/Layout";
+import ScrollToTop from "./components/ScrollToTop";
+import SplashScreen from "./components/SplashScreen";
+import { useHeader } from "./context/HeaderContext";
 import { checkAndHandleExpiredSession } from "./utils/auth";
-import SpinToWin from "./components/spinner/SpinToWin";
+
+const Login = lazy(() => import("./pages/LoginPage"));
+const Register = lazy(() => import("./pages/RegisterPage"));
+const HomePage = lazy(() => import("./pages/HomePage"));
+const ProductsPage = lazy(() => import("./pages/ProductsPage"));
+const ProductDetailPage = lazy(() => import("./pages/ProductDetailPage"));
+const WalletPage = lazy(() => import("./pages/WalletPage"));
+const RedeemPage = lazy(() => import("./pages/ReedemPage"));
+const RedeemHistory = lazy(() => import("./pages/RedeemHistory"));
+const Notification = lazy(() => import("./pages/NotificationPage"));
+const AccountPage = lazy(() => import("./pages/AccountPage"));
+const EditProfile = lazy(() => import("./pages/EditProfilePage"));
+const ViewProfile = lazy(() => import("./pages/ViewProfile"));
+const ShippingAddressPage = lazy(() => import("./pages/ShippingAddressPage"));
+const AddressForm = lazy(() => import("./pages/AddressForm"));
+const OrdersPage = lazy(() => import("./pages/OrdersPage"));
+const OrderDetailsPage = lazy(() => import("./pages/OrderDetailsPage"));
+const OrderReturnPage = lazy(() => import("./pages/OrderReturnPage"));
+const AddReviewPage = lazy(() => import("./pages/AddReviewPage"));
+const ReferProgramPage = lazy(() => import("./pages/ReferProgramPage"));
+const BuyCoinsPage = lazy(() => import("./pages/BuyCoinsPage"));
+const LuckyDrawPage = lazy(() => import("./pages/LuckyDrawPage"));
+const LanguagePage = lazy(() => import("./pages/LanguagePage"));
+const TermsPage = lazy(() => import("./pages/TermsPage"));
+const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
+const CosmicChatSupport = lazy(() => import("./pages/CosmicChatSupport"));
+const BlogsPage = lazy(() => import("./pages/BlogsPage"));
+const BlogDetailPage = lazy(() => import("./pages/BlogDetailPage"));
+const FAQPage = lazy(() => import("./pages/FAQPage"));
+const ContactUs = lazy(() => import("./components/ContactUs"));
+const WishlistPage = lazy(() => import("./components/WishlistPage"));
+const ShippingPolicy = lazy(() => import("./pages/ShippingPolicy"));
+const RefundCancellationPolicy = lazy(() => import("./components/RefundCancellationPolicy"));
+const AboutUs = lazy(() => import("./pages/AboutUs"));
+const SpinToWin = lazy(() => import("./components/spinner/SpinToWin"));
 
 
 function App() {
@@ -135,6 +132,7 @@ function App() {
     <>
 
       <ScrollToTop />
+      <Suspense fallback={<div className="flex justify-center items-center h-screen"><div className="w-10 h-10 border-4 border-gray-900 border-t-transparent rounded-full animate-spin"></div></div>}>
       <SpinToWin />
 
       <Routes>
@@ -199,6 +197,7 @@ function App() {
 
         </Route>
       </Routes>
+      </Suspense>
     </>
   );
 }

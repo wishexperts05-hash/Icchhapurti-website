@@ -28,8 +28,9 @@ import { useHeader } from "../context/HeaderContext";
 import { Mail } from "lucide-react";
 import { LucideShoppingBag } from "lucide-react";
 import CartSidebar from "./CartSidebar"; // Import the new CartSidebar component
-import PaymentModal from "../pages/PaymentModal";
-import SpinToWin from "./spinner/SpinToWin";
+import React, { lazy, Suspense } from "react";
+const PaymentModal = lazy(() => import("../pages/PaymentModal"));
+const SpinToWin = lazy(() => import("./spinner/SpinToWin"));
 
 export default function Navbar({ countryCurrency }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -450,14 +451,20 @@ bg-center bg-no-repeat
           setOpenPayment(true);
         }}
       />
-      {isSpinOpen && <SpinToWin isImmediate="true" />}
+      {isSpinOpen && (
+        <Suspense fallback={null}>
+          <SpinToWin isImmediate="true" />
+        </Suspense>
+      )}
 
       {openPayment && (
-        <PaymentModal
-          countryCurrency={countryCurrency}
-          isOpen={openPayment}
-          onClose={() => setOpenPayment(false)}
-        />
+        <Suspense fallback={null}>
+          <PaymentModal
+            countryCurrency={countryCurrency}
+            isOpen={openPayment}
+            onClose={() => setOpenPayment(false)}
+          />
+        </Suspense>
       )}
 
       {/* RIGHT SLIDING DRAWER (Menu) */}
