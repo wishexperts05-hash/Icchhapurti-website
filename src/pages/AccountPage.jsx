@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { User, MapPin, ShoppingCart, Package, Gift, Ticket, MessageCircle, Globe, FileText, Shield, LogOut, ChevronRight, ArrowRight, Share2, Copy, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 
 export default function AccountPage() {
-  const { t } = useTranslation();
-  const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("user"));
   const [showShareModal, setShowShareModal] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -13,12 +11,12 @@ export default function AccountPage() {
   const referralLink = `${window.location.origin}/?ref=${user?.referralCode || user?._id || 'default'}`;
 
   const menuItems = [
-    { link: "/view-profile", icon: User, label: t('account.menuItems.profile') },
-    { link: "/addresses", icon: MapPin, label: t('account.menuItems.shippingAddress') },
-    // { link: "/cart", icon: ShoppingCart, label: t('account.menuItems.myCart') },
-    { link: "/orders", icon: Package, label: t('account.menuItems.myOrders') },
-    { link: "/refer-programme", icon: Gift, label: t('account.menuItems.referralProgram') },
-    { link: "/chat-support", icon: MessageCircle, label: t('account.menuItems.chatSupport') },
+    { link: "/view-profile", icon: User, label: "Profile" },
+    { link: "/addresses", icon: MapPin, label: "Shipping Address" },
+    // { link: "/cart", icon: ShoppingCart, label: "My Cart" },
+    { link: "/orders", icon: Package, label: "My Orders" },
+    { link: "/refer-programme", icon: Gift, label: "Referral Program" },
+    { link: "/chat-support", icon: MessageCircle, label: "Chat Support" },
   ];
 
   const handleShare = async () => {
@@ -60,7 +58,7 @@ export default function AccountPage() {
   };
 
   const shareToTelegram = () => {
-    const message = encodeURIComponent(`Join me on this amazing platform! 🎁`);
+    const message = encodeURIComponent("Join me on this amazing platform! 🎁");
     window.open(`https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${message}`, '_blank');
   };
 
@@ -69,7 +67,7 @@ export default function AccountPage() {
   };
 
   const shareToTwitter = () => {
-    const text = encodeURIComponent(`Join me on this amazing platform! 🎁`);
+    const text = encodeURIComponent("Join me on this amazing platform! 🎁");
     window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(referralLink)}&text=${text}`, '_blank');
   };
 
@@ -89,7 +87,7 @@ export default function AccountPage() {
  <div className="relative z-10 max-w-4xl mx-auto p-4 bg-white rounded-xl shadow-sm">
   {/* Header */}
   <h1 className="text-slate-900 font-bold text-xl mb-6">
-    {t("account.title")}
+    {"Account"}
   </h1>
 
   {/* Profile Avatar */}
@@ -111,7 +109,7 @@ export default function AccountPage() {
     {menuItems.map((item, index) => {
       const IconComponent = item.icon;
       const isLogout =
-        item.label === t("account.menuItems.logout");
+        item.label === "Logout";
 
       return (
         <Link

@@ -22,7 +22,6 @@ import {
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Wallet } from "lucide-react";
 import { MdAccountBox } from "react-icons/md";
-import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { useHeader } from "../context/HeaderContext";
 import { Mail } from "lucide-react";
@@ -40,33 +39,32 @@ export default function Navbar({ countryCurrency }) {
   const [copiedProductId, setCopiedProductId] = useState(null); // Track copied product
   const location = useLocation();
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  const token = localStorage?.getItem("token");
+    const token = localStorage?.getItem("token");
   const [openPayment, setOpenPayment] = useState(false);
   const baseMenu = [
     {
       icon: MdAccountBox,
-      label: t(`nav.account`),
+      label: "Account",
       href: "/account",
       auth: true,
     },
-    { icon: Home, label: t(`nav.home`), href: "/", auth: false },
+    { icon: Home, label: "Home", href: "/", auth: false },
     {
       icon: ShoppingBag,
-      label: t(`nav.products`),
+      label: "Products",
       href: "/products",
       auth: false,
     },
-    { icon: Package, label: t(`nav.orders`), href: "/orders", auth: true },
-    { icon: Wallet, label: t(`nav.wallet`), href: "/wallet", auth: true },
+    { icon: Package, label: "My Orders", href: "/orders", auth: true },
+    { icon: Wallet, label: "Wallet", href: "/wallet", auth: true },
   ];
 
   const menuItems = baseMenu.filter((item) => !item.auth || token);
 
   const navLinks = [
-    { label: t(`nav.home`), href: "/" },
-    { label: t(`nav.about`), href: "/about-us" },
-    { label: t(`nav.blogs`), href: "/blogs" },
+    { label: "Home", href: "/" },
+    { label: "About Us", href: "/about-us" },
+    { label: "Blogs", href: "/blogs" },
     { label: "Shop", href: "/products" },
     { label: "Contact Us", href: "/contact" },
   ];
@@ -87,7 +85,7 @@ export default function Navbar({ countryCurrency }) {
   };
 
 
-  const { cartCount, wishlistCount, unreadCount ,setCount} = useHeader();
+  const { cartCount, wishlistCount, unreadCount, setCount } = useHeader();
 
   // Function to open cart sidebar
   const openCartSidebar = (e) => {
@@ -110,7 +108,7 @@ export default function Navbar({ countryCurrency }) {
   };
 
 
-  const products = JSON.parse(sessionStorage.getItem("products"))||[]
+  const products = JSON.parse(sessionStorage.getItem("products")) || []
 
   return (
     <>
@@ -133,7 +131,7 @@ bg-center bg-no-repeat
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                   <span className="text-white/80">
-                    1000+ {t(`nav.trustedUsers`)}
+                    1000+ {"Trusted Users"}
                   </span>
                 </div>
               </div>
@@ -286,17 +284,17 @@ bg-center bg-no-repeat
               <div className="hidden lg:flex items-center gap-8 flex-1 justify-center">
                 {navLinks.map((link, index) => (
                   <Link
-                     style={{ fontFamily: 'Tenor Sans, sans-serif' }}
+                    //  style={{ fontFamily: 'Tenor Sans, sans-serif' }}
                     key={index}
                     to={link.href}
-                    className={`text-[16px] lg:text-[17px] font-bold cursor-pointer relative pb-1 group ${isActive(link.href)
+                    className={`text-lg font-bold cursor-pointer relative pb-1 group ${isActive(link.href)
                       ? "text-[#D3AF37]"
                       : "hover:text-[#D3AF37]"
                       }`}
                   >
                     {link.label}
                     <span
-                    
+
                       className={`absolute bottom-0 left-0 h-0.5 bg-[#D3AF37]  ${isActive(link.href)
                         ? "w-full"
                         : "w-0 group-hover:w-full"
@@ -497,7 +495,7 @@ bg-center bg-no-repeat
                     {user?.name || "Guest User"}
                   </p>
                   <p className="text-xs sm:text-sm text-white/90 flex items-center gap-1 group-hover:gap-2 transition-all">
-                    {t("nav.viewProfile")}
+                    {"View Profile"}
                     <ChevronRight size={14} />
                   </p>
                 </Link>
@@ -571,7 +569,7 @@ bg-center bg-no-repeat
             return (
               <Link
                 key={index}
-             
+
                 to={item.href}
                 onClick={() => setMenuOpen(false)}
                 className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isItemActive
@@ -583,7 +581,7 @@ bg-center bg-no-repeat
                   size={20}
                   className="group-hover:scale-110 transition-transform"
                 />
-                <span  className="font-medium flex-1 text-sm sm:text-base">
+                <span className="font-medium flex-1 text-sm sm:text-base">
                   {item.label}
                 </span>
                 <ChevronRight
@@ -611,8 +609,8 @@ bg-center bg-no-repeat
                 size={20}
                 className="group-hover:scale-110 transition-transform"
               />
-              <span className="font-medium flex-1 text-sm sm:text-base">
-                {t("nav.about")}
+              <span className="font-medium flex-1 text-body">
+                {"About Us"}
               </span>
               <ChevronRight
                 size={18}
@@ -632,7 +630,7 @@ bg-center bg-no-repeat
                 size={20}
                 className="group-hover:scale-110 transition-transform"
               />
-              <span className="font-medium flex-1 text-sm sm:text-base">
+              <span className="font-medium flex-1 text-body">
                 Contact Us
               </span>
               <ChevronRight
@@ -653,8 +651,8 @@ bg-center bg-no-repeat
                 size={20}
                 className="group-hover:scale-110 transition-transform"
               />
-              <span className="font-medium flex-1 text-sm sm:text-base">
-                {t("nav.blogs")}
+              <span className="font-medium flex-1 text-body">
+                {"Blogs"}
               </span>
               <ChevronRight
                 size={18}
@@ -679,7 +677,7 @@ bg-center bg-no-repeat
                 navigate("/");
                 setMenuOpen(false);
               }}
-              className=" flex items-center cursor-pointer justify-center gap-3 bg-gradient-to-r from-red-600 to-red-700 text-white py-2.5 sm:py-3 px-4 rounded-lg font-medium hover:shadow-lg hover:shadow-red-600/30 transition-all group text-sm sm:text-base"
+              className=" flex items-center cursor-pointer justify-center gap-3 bg-gradient-to-r from-red-600 to-red-700 text-white py-2.5 sm:py-3 px-4 rounded-lg font-medium hover:shadow-lg hover:shadow-red-600/30 transition-all group text-body"
             >
               <LogOut
                 size={20}

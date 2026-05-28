@@ -3,7 +3,6 @@ import { Copy, Users, Coins, ChevronLeft, Loader2 } from 'lucide-react';
 import { User, MapPin, ShoppingCart, Package, Gift, Ticket, MessageCircle, Globe, FileText, Shield, LogOut, ChevronRight, ArrowRight, Share2, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 
 const ReferProgramPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,7 +19,6 @@ const ReferProgramPage = () => {
   const [commissonCoins, setCommissionCoins] = useState()
 
   // let commissonCoins ;
-  const { t } = useTranslation();
   // Fetch coins rate
   useEffect(() => {
     const fetchCoinsRate = async () => {
@@ -147,7 +145,7 @@ const ReferProgramPage = () => {
         alert(`Successfully converted ${availableCoins} coins to ₹${(availableCoins / coinsRate.coins * coinsRate.rate).toFixed(2)}`);
         // Refresh the page data
         setCurrentPage(1);
-       window.location.reload();
+        window.location.reload();
       } else {
         setError(data.message || 'Failed to convert coins');
         alert(data.message || 'Failed to convert coins');
@@ -155,13 +153,13 @@ const ReferProgramPage = () => {
     } catch (err) {
       console.error('Error converting coins:', err);
       setError('Failed to convert coins to money');
-      alert('Failed to convert coins to money');
+      alert("Failed to convert coins to money");
     } finally {
       setConverting(false);
     }
   };
 
- 
+
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -192,7 +190,7 @@ const ReferProgramPage = () => {
     }
   };
 
-const navigate = useNavigate()
+  const navigate = useNavigate()
 
   const renderPagination = () => {
     const pages = [];
@@ -303,200 +301,199 @@ const navigate = useNavigate()
       {/* Content */}
       <div className="relative z-10 max-w-4xl bg-white mx-auto p-6">
         <div className="w-full flex justify-start">
-        <button
-          onClick={() => navigate(-1)}
-          className="inline-flex cursor-pointer items-center my-2 gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 hover:text-gray-900 transition"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-4 h-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="2"
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex cursor-pointer items-center my-2 gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 hover:text-gray-900 transition"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-          Back
-        </button>
-      </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+        </div>
 
-  {/* Page Title */}
-  <h1 className="text-3xl font-bold text-slate-900 mb-6">
-    {t("referProgramme.title")}
-  </h1>
+        {/* Page Title */}
+        <h1 className="text-3xl font-bold text-slate-900 mb-6">
+          {"Refer Program"}
+        </h1>
 
-  {error && (
-    <div className="bg-red-100 border border-red-400 rounded-lg p-4 mb-6 text-red-700">
-      {error}
-    </div>
-  )}
+        {error && (
+          <div className="bg-red-100 border border-red-400 rounded-lg p-4 mb-6 text-red-700">
+            {error}
+          </div>
+        )}
 
-  {/* Coins Card */}
-  <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-lg p-6 mb-6 shadow-xl">
-    <div className="flex flex-col items-center mb-4">
-      <div className="w-16 h-16 bg-amber-400 rounded-full flex items-center justify-center mb-3 shadow-lg">
-        <Coins className="w-8 h-8 text-amber-900" />
-      </div>
+        {/* Coins Card */}
+        <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-lg p-6 mb-6 shadow-xl">
+          <div className="flex flex-col items-center mb-4">
+            <div className="w-16 h-16 bg-amber-400 rounded-full flex items-center justify-center mb-3 shadow-lg">
+              <Coins className="w-8 h-8 text-amber-900" />
+            </div>
 
-      <p className="text-white text-sm mb-1">Available Coins</p>
-      <p className="text-white text-4xl font-bold">
-        {referAc?.coins || 0}
-      </p>
-      <p className="text-amber-200 text-xs">
-        {coinsRate.coins} {t("referProgramme.coin")} = ₹ {coinsRate.rate}
-      </p>
-    </div>
+            <p className="text-white text-sm mb-1">Available Coins</p>
+            <p className="text-white text-4xl font-bold">
+              {referAc?.coins || 0}
+            </p>
+            <p className="text-amber-200 text-xs">
+              {coinsRate.coins} {"Coin"} = ₹ {coinsRate.rate}
+            </p>
+          </div>
 
-    <div className="grid grid-cols-2 gap-3">
-      <button
-        onClick={() =>
-          Navigate(
-            `/buy-coins?totalCoins=${referAc?.coins || 0}&coins=${coinsRate.coins}&rate=${coinsRate.rate}`
-          )
-        }
-        className="bg-amber-400 hover:bg-amber-500 text-amber-900 font-semibold py-2.5 rounded shadow"
-      >
-        Buy Coins
-      </button>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() =>
+                Navigate(
+                  `/buy-coins?totalCoins=${referAc?.coins || 0}&coins=${coinsRate.coins}&rate=${coinsRate.rate}`
+                )
+              }
+              className="bg-amber-400 hover:bg-amber-500 text-amber-900 font-semibold py-2.5 rounded shadow"
+            >
+              Buy Coins
+            </button>
 
-      <button
-        onClick={handleConvertToMoney}
-        disabled={converting || availableCoins === 0}
-        className="bg-amber-400 hover:bg-amber-500 text-amber-900 font-semibold py-2.5 rounded shadow disabled:opacity-50"
-      >
-        {converting ? t("referProgramme.converting") : t("referProgramme.convertMoney")}
-      </button>
-    </div>
-  </div>
+            <button
+              onClick={handleConvertToMoney}
+              disabled={converting || availableCoins === 0}
+              className="bg-amber-400 hover:bg-amber-500 text-amber-900 font-semibold py-2.5 rounded shadow disabled:opacity-50"
+            >
+              {converting ? "Converting" : "Convert to Money"}
+            </button>
+          </div>
+        </div>
 
-  {/* Refer Friend Card */}
-  {/* <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg p-6 mb-6 shadow-xl text-center">
+        {/* Refer Friend Card */}
+        {/* <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg p-6 mb-6 shadow-xl text-center">
     <p className="text-blue-200 text-sm mb-2">
-      {t("referProgramme.referFriend")}
+      {"Refer a friend"}
     </p>
     <p className="text-white text-xl font-bold">
-      {t("referProgramme.get")} 1 {t("referProgramme.referal")} ={" "}
-      {commissonCoins || 0} {t("referProgramme.coin")}
+      {"Get"} 1 {"Referal"} ={" "}
+      {commissonCoins || 0} {"Coin"}
     </p>
   </div> */}
 
-  {/* Referral Code */}
-  <div className="mb-6">
-    <label className="text-slate-700 text-sm mb-2 block">
-      {t("referProgramme.referalCode")}
-    </label>
+        {/* Referral Code */}
+        <div className="mb-6">
+          <label className="text-slate-700 text-sm mb-2 block">
+            {"Your Referral Code"}
+          </label>
 
-    <div className="relative">
-      <input
-        type="text"
-        value={referAc.referralCode}
-        readOnly
-        className="w-full bg-gray-100 border border-slate-300 rounded-lg px-4 py-3 text-slate-900 pr-12 focus:ring-2 focus:ring-amber-400"
-      />
+          <div className="relative">
+            <input
+              type="text"
+              value={referAc.referralCode}
+              readOnly
+              className="w-full bg-gray-100 border border-slate-300 rounded-lg px-4 py-3 text-slate-900 pr-12 focus:ring-2 focus:ring-amber-400"
+            />
 
-      <button
-        onClick={handleCopy}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-900"
-      >
-        <Copy className="w-5 h-5" />
-      </button>
+            <button
+              onClick={handleCopy}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-900"
+            >
+              <Copy className="w-5 h-5" />
+            </button>
 
-      {copied && (
-        <span className="absolute right-12 top-1/2 -translate-y-1/2 text-green-600 text-sm">
-          Copied!
-        </span>
-      )}
-    </div>
-  </div>
-
-  {/* Earn History */}
-  <h2 className="text-lg font-semibold text-slate-800 mb-4">
-    Coin Earn History
-  </h2>
-
-  {loading ? (
-    <div className="flex justify-center py-10">
-      <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
-    </div>
-  ) : referrals.length === 0 ? (
-    <div className="bg-slate-100 border border-slate-300 rounded-lg p-6 text-center text-slate-500">
-      {t("referProgramme.noReferal")}
-    </div>
-  ) : (
-   <div className="space-y-3 mb-6">
-  {referrals.map((referral) => {
-    const isReferral = referral.sourceType == "REFERRAL";
-
-    return (
-      <div
-        key={referral.id}
-        className="bg-white border border-slate-200 rounded-lg p-4 flex justify-between items-center hover:bg-slate-50"
-      >
-        {/* Left */}
-        <div className="flex items-center gap-3">
-          <img
-            src={referral.userProfileImage || "https://cdn-icons-png.flaticon.com/512/219/219988.png"}
-            alt=""
-            className="w-10 h-10 rounded-full object-cover"
-          />
-
-          <div>
-            {/* Primary text */}
-            <p className="text-slate-800 text-sm font-medium">
-              {isReferral
-                ? `Referral reward from ${referral.userName}`
-                : "Purchase reward"}
-            </p>
-
-            {/* Secondary info */}
-            <p className="text-slate-500 text-xs">
-              {isReferral
-                ? "Coins earned when your referral made a purchase"
-                : "Coins earned from your purchase"}
-            </p>
-
-            {/* Date */}
-            <p className="text-slate-400 text-[11px] mt-0.5">
-              {referral.dateEarned}
-            </p>
+            {copied && (
+              <span className="absolute right-12 top-1/2 -translate-y-1/2 text-green-600 text-sm">
+                Copied!
+              </span>
+            )}
           </div>
         </div>
 
-        {/* Right */}
-        <div className="flex flex-col items-end gap-1">
-          {/* Source badge */}
-          <span
-            className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-              isReferral
-                ? "bg-indigo-50 text-indigo-600"
-                : "bg-emerald-50 text-emerald-600"
-            }`}
-          >
-            {isReferral ? "REFERRAL BONUS" : "PURCHASE BONUS"}
-          </span>
+        {/* Earn History */}
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">
+          Coin Earn History
+        </h2>
 
-          {/* Coins */}
-          <div className="flex items-center gap-1 text-amber-500 font-semibold">
-            <Coins className="w-4 h-4" />
-            +{referral.coinsEarned}
+        {loading ? (
+          <div className="flex justify-center py-10">
+            <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
           </div>
-        </div>
-      </div>
-    );
-  })}
-</div>
+        ) : referrals.length === 0 ? (
+          <div className="bg-slate-100 border border-slate-300 rounded-lg p-6 text-center text-slate-500">
+            {" No referral history yet. Start referring friends to earn coins!"}
+          </div>
+        ) : (
+          <div className="space-y-3 mb-6">
+            {referrals.map((referral) => {
+              const isReferral = referral.sourceType == "REFERRAL";
 
-  )}
+              return (
+                <div
+                  key={referral.id}
+                  className="bg-white border border-slate-200 rounded-lg p-4 flex justify-between items-center hover:bg-slate-50"
+                >
+                  {/* Left */}
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={referral.userProfileImage || "https://cdn-icons-png.flaticon.com/512/219/219988.png"}
+                      alt=""
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
 
-  {/* Refer Button */}
-  {/* <button
+                    <div>
+                      {/* Primary text */}
+                      <p className="text-slate-800 text-sm font-medium">
+                        {isReferral
+                          ? `Referral reward from ${referral.userName}`
+                          : "Purchase reward"}
+                      </p>
+
+                      {/* Secondary info */}
+                      <p className="text-slate-500 text-xs">
+                        {isReferral
+                          ? "Coins earned when your referral made a purchase"
+                          : "Coins earned from your purchase"}
+                      </p>
+
+                      {/* Date */}
+                      <p className="text-slate-400 text-[11px] mt-0.5">
+                        {referral.dateEarned}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right */}
+                  <div className="flex flex-col items-end gap-1">
+                    {/* Source badge */}
+                    <span
+                      className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${isReferral
+                          ? "bg-indigo-50 text-indigo-600"
+                          : "bg-emerald-50 text-emerald-600"
+                        }`}
+                    >
+                      {isReferral ? "REFERRAL BONUS" : "PURCHASE BONUS"}
+                    </span>
+
+                    {/* Coins */}
+                    <div className="flex items-center gap-1 text-amber-500 font-semibold">
+                      <Coins className="w-4 h-4" />
+                      +{referral.coinsEarned}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+        )}
+
+        {/* Refer Button */}
+        {/* <button
     onClick={handleShare}
     className="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 rounded-lg shadow-lg text-lg"
   >
     Refer Now
   </button> */}
-</div>
+      </div>
 
 
       <style>{`

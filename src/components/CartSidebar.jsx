@@ -3,8 +3,7 @@ import { X, Loader2, ShoppingCart, AlertCircle, Plus, Minus, Trash2 } from 'luci
 import { useNavigate } from 'react-router-dom';
 
 import { useHeader } from '../context/HeaderContext';
-// import PaymentModal from '../pages/PaymentModal';
-// import FullscreenModal from './FullscreenModal';
+
 import ProgressOfferBar from './ProgressOfferBar';
 
 export default function CartSidebar({ isOpen, onClose, countryCurrency, onCheckout }) {

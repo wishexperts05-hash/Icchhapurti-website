@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Camera, ChevronDown } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
@@ -21,7 +20,6 @@ export default function ViewProfile() {
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
   const [user, setUsers] = useState();
-  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [avatar, setAvatar] = useState(
@@ -38,7 +36,7 @@ export default function ViewProfile() {
   // ── API CALLS ────────────────────────────────────────────────
 
   const fetchCountries = async () => {
-    const cached = cache.get('all_countries');
+    const cached = cache.get("all_countries");
     if (cached) { setCountries(cached); return cached; }
     try {
       const res = await fetch(`${BASE_URL}/api/location/countries`);
@@ -56,7 +54,7 @@ export default function ViewProfile() {
     setLocationLoading(prev => ({ ...prev, states: true }));
     setCities([]);
     try {
-      const res = await fetch(`${BASE_URL}/api/location/states?country=${countryIsoCode}`);
+      const res = await fetch(`${BASE_URL}/api/user/location/states?country=${countryIsoCode}`);
       const data = await res.json();
       if (data.success) { cache.set(cacheKey, data.data); setStates(data.data); return data.data; }
     } catch (err) { console.error('Failed to fetch states:', err); }
@@ -71,7 +69,7 @@ export default function ViewProfile() {
     if (cached) { setCities(cached); return cached; }
     setLocationLoading(prev => ({ ...prev, cities: true }));
     try {
-      const res = await fetch(`${BASE_URL}/api/location/cities?country=${countryIsoCode}&state=${stateIsoCode}`);
+      const res = await fetch(`${BASE_URL}/api/user/location/cities?country=${countryIsoCode}&state=${stateIsoCode}`);
       const data = await res.json();
       if (data.success) { cache.set(cacheKey, data.data); setCities(data.data); return data.data; }
     } catch (err) { console.error('Failed to fetch cities:', err); }
@@ -252,7 +250,7 @@ export default function ViewProfile() {
           Back
         </button>
 
-        <h1 className="font-bold text-xl mb-6 text-slate-900">{t("profile.title")}</h1>
+        <h1 className="font-bold text-xl mb-6 text-slate-900">{"Update Profile"}</h1>
 
         {/* Avatar */}
         <div className="flex justify-center mb-6">
@@ -268,23 +266,23 @@ export default function ViewProfile() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Personal Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InputField label={t("profile.personal_info.full_name")} name="name"
+            <InputField label={"Full Name"} name="name"
               rules={{ pattern: { value: /^[A-Za-z\s]{2,}$/, message: "Only letters & spaces (min 2 chars)" } }} />
 
-            <InputField label={t("profile.personal_info.mobile_number")} name="phoneNumber"
+            <InputField label={"Mobile Number"} name="phoneNumber"
               rules={{
                 pattern: { value: /^[1-9]\d{9}$/, message: "Mobile number must be 10 digits and cannot start with 0" },
                 required: "Mobile number is required"
               }} />
 
-            <InputField label={t("profile.personal_info.email")} type="email" name="email" required={false}
+            <InputField label={"Email"} type="email" name="email" required={false}
               rules={{ validate: (value) => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || "Invalid email address" }} />
 
-            <InputField label={t("profile.personal_info.dob")} name="dob" type="date" required={false} />
+            <InputField label={"Date Of Birth"} name="dob" type="date" required={false} />
 
             {/* Country — from API */}
             <InputField
-              label={t("profile.personal_info.country")}
+              label={"Country"}
               name="country"
               isSelect
               options={countries}
@@ -293,14 +291,14 @@ export default function ViewProfile() {
 
             {/* State — from API, depends on country */}
             <div className="flex flex-col gap-1">
-              <label className="text-amber-400 text-sm font-medium">{t("profile.personal_info.state")}</label>
+              <label className="text-amber-400 text-sm font-medium">{"State"}</label>
               <div className="relative">
                 <select
                   {...register("state", { required: "State is required" })}
                   disabled={locationLoading.states || states.length === 0}
                   className="w-full bg-gray-200 text-gray-800 rounded-lg py-3 px-4 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-amber-400 disabled:opacity-50"
                 >
-                  <option value="">{locationLoading.states ? "Loading states..." : t("profile.personal_info.state")}</option>
+                  <option value="">{locationLoading.states ? "Loading states..." : "State"}</option>
                   {states.map((s, i) => <option key={i} value={s.name}>{s.name}</option>)}
                 </select>
                 <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -310,14 +308,14 @@ export default function ViewProfile() {
 
             {/* City — from API, depends on state, plain strings */}
             <div className="flex flex-col gap-1">
-              <label className="text-amber-400 text-sm font-medium">{t("profile.personal_info.city")}</label>
+              <label className="text-amber-400 text-sm font-medium">{"City"}</label>
               <div className="relative">
                 <select
                   {...register("city", { required: "City is required" })}
                   disabled={locationLoading.cities || cities.length === 0}
                   className="w-full bg-gray-200 text-gray-800 rounded-lg py-3 px-4 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-amber-400 disabled:opacity-50"
                 >
-                  <option value="">{locationLoading.cities ? "Loading cities..." : t("profile.personal_info.city")}</option>
+                  <option value="">{locationLoading.cities ? "Loading cities..." : "City"}</option>
                   {cities.map((c, i) => <option key={i} value={c}>{c}</option>)}
                 </select>
                 <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -327,16 +325,16 @@ export default function ViewProfile() {
           </div>
 
           {/* Bank Details */}
-          <h2 className="text-slate-800 font-semibold mt-6">{t("profile.bank_details.title")}</h2>
+          <h2 className="text-slate-800 font-semibold mt-6">{"Bank Details"}</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InputField label={t("profile.bank_details.bank_name")} name="bankName" />
+            <InputField label={"Bank Name"} name="bankName" />
 
-            <InputField label={t("profile.bank_details.account_number")} name="accountNumber"
+            <InputField label={"Account Number"} name="accountNumber"
               rules={{ pattern: { value: /^[0-9]{9,18}$/, message: "Account number must be 9–18 digits" } }}
               inputMode="numeric" />
 
-            <InputField label={t("profile.bank_details.ifsc")} name="ifscCode"
+            <InputField label={"IFSC"} name="ifscCode"
               rules={{
                 setValueAs: (v) => v?.toUpperCase() || "",
                 pattern: { value: /^[A-Z]{4}0[A-Z0-9]{6}$/, message: "Invalid IFSC (e.g. SBIN0001234)" },
@@ -344,18 +342,18 @@ export default function ViewProfile() {
               }}
               maxLength={11} />
 
-            <InputField label={t("profile.bank_details.account_type")} name="accountType" isSelect
+            <InputField label={"Account Type"} name="accountType" isSelect
               options={["Savings", "Current", "Salary"]} />
           </div>
 
-          <InputField label={t("profile.bank_details.account_holder_name")} name="accountHolderName"
+          <InputField label={"Account Holder Name"} name="accountHolderName"
             rules={{ pattern: { value: /^[A-Za-z\s]{2,}$/, message: "Only letters & spaces (min 2 chars)" } }} />
 
           <button
             className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-60"
             disabled={loading}
           >
-            {loading ? t("profile.buttons.saving") : t("profile.buttons.save")}
+            {loading ? "Saving..." : "Save Changes"}
           </button>
         </form>
       </div>

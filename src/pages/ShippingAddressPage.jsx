@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
-import { useTranslation } from "react-i18next";
 
 const ShippingAddressPage = () => {
   const [addresses, setAddresses] = useState([]);
   const [selected, setSelected] = useState(null);
   const [loading, setLoading] = useState(true);
   const [deleteLoading, setDeleteLoading] = useState(null); // track delete button state
-  const { t } = useTranslation();
-  useEffect(() => {
+    useEffect(() => {
     fetchAddresses();
   }, []);
 
@@ -105,13 +103,13 @@ const ShippingAddressPage = () => {
       </div>
       {/* Title */}
       <h2 className="text-slate-900 text-lg font-semibold mb-6">
-        {t("addresses.shippingAddress")}
+        {"Shipping Address"}
       </h2>
 
       {/* Empty State */}
       {addresses.length === 0 ? (
         <p className="text-slate-500 mb-6">
-          {t("addresses.noAddress")}
+          {"No Shipping Address"}
         </p>
       ) : (
         <div className="w-full flex flex-col gap-4">
@@ -169,7 +167,7 @@ const ShippingAddressPage = () => {
         to="/address-form"
         className="mt-8 px-10 py-3 rounded-md bg-gradient-to-r from-amber-500 to-orange-500 text-white text-lg font-semibold transition hover:opacity-90"
       >
-        {t("addresses.addAddress")}
+        {"Add New Address"}
       </Link>
     </div>
 

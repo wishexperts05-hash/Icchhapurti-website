@@ -1,12 +1,10 @@
 // import { useState, useEffect } from 'react';
 // import { MapPin, Plus, Loader2, ShoppingCart, AlertCircle } from 'lucide-react';
 // import { Link, useNavigate } from 'react-router-dom';
-// import { useTranslation } from 'react-i18next';
-// import { useHeader } from '../context/HeaderContext';
+// // import { useHeader } from '../context/HeaderContext';
 
 // export default function CartPage() {
-//   const { t } = useTranslation();
-//   const [cartItems, setCartItems] = useState([]);
+//   //   const [cartItems, setCartItems] = useState([]);
 //   const [addresses, setAddresses] = useState([]);
 //   const [selectedAddress, setSelectedAddress] = useState(null);
 //   const [selectedAddressIndex, setSelectedAddressIndex] = useState(0);
@@ -144,7 +142,7 @@
 //     } catch (err) {
 //       console.error('Error updating quantity:', err);
 //       setCartItems(previousItems);
-//       alert('Failed to update quantity. Please try again.');
+//       alert("Failed to update quantity. Please try again.");
 //     }
 //   };
 
@@ -166,7 +164,7 @@
 //       localStorage.setItem('cart', totalItems);
 
 //       setCartItems(guestCart);
-//       window.dispatchEvent(new CustomEvent('cartUpdated'));
+//       window.dispatchEvent(new CustomEven"cartUpdated");
 //     }
 //   };
 //   const { setCount } = useHeader();
@@ -208,7 +206,7 @@
 //       console.error('Error removing item:', err);
 //       setCartItems(previousItems);
 //       localStorage.setItem("cart", oldCount);
-//       alert('Failed to remove item. Please try again.');
+//       alert("Failed to remove item. Please try again.");
 //     }
 //   };
 
@@ -225,12 +223,12 @@
 //     localStorage.setItem('cart', totalItems);
 //     setCount(totalItems)
 //     setCartItems(updatedCart);
-//     window.dispatchEvent(new CustomEvent('cartUpdated'));
+//     window.dispatchEvent(new CustomEven"cartUpdated");
 //   };
 
 //   const handleAddAddress = () => {
 //     if (isGuest) {
-//       alert('Please login to add delivery address');
+//       alert("Please login to add delivery address");
 //       Navigate('/login');
 //       return;
 //     }
@@ -238,7 +236,7 @@
 //   };
 
 //   const handleViewDetails = (product) => {
-//     // alert('Navigating to product details page');
+//     // alert("Navigating to product details page");
 //     Navigate(`/product/${product.id || product._id}`);
 //   };
 
@@ -254,7 +252,7 @@
 //       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
 //         <div className="text-center">
 //           <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-purple-600" />
-//           <p className="text-gray-700 text-lg">{t('cart.loading')}</p>
+//           <p className="text-gray-700 text-lg">{"Loading cart..."}</p>
 //         </div>
 //       </div>
 //     );
@@ -265,12 +263,12 @@
 //       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
 //         <div className="text-center bg-white rounded-2xl p-8 max-w-md w-full border-2 border-red-200 shadow-lg">
 //           <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-//           <p className="text-red-600 text-xl mb-4">{t('cart.error')}: {error}</p>
+//           <p className="text-red-600 text-xl mb-4">{"Error"}: {error}</p>
 //           <button
 //             onClick={fetchCartData}
 //             className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all"
 //           >
-//             {t('cart.retry')}
+//             {"Retry"}
 //           </button>
 //         </div>
 //       </div>
@@ -286,7 +284,7 @@
 //           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
 //             <div className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-2xl">
 //               <div className="flex justify-between items-center mb-4">
-//                 <h2 className="text-xl font-bold text-gray-800">{t('cart.deliveryAddress.selectAddress')}</h2>
+//                 <h2 className="text-xl font-bold text-gray-800">{"Select Delivery Address"}</h2>
 //                 <button
 //                   onClick={() => setShowAddressModal(false)}
 //                   className="text-gray-400 hover:text-gray-600 text-2xl"
@@ -297,13 +295,13 @@
 
 //               {addresses.length === 0 ? (
 //                 <div className="text-center py-8">
-//                   <p className="text-gray-500 mb-4">{t('cart.deliveryAddress.noAddressesFound')}</p>
+//                   <p className="text-gray-500 mb-4">{"No addresses found"}</p>
 //                   <button
 //                     onClick={handleAddAddress}
 //                     className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-2.5 rounded-lg transition-colors flex items-center gap-2 mx-auto"
 //                   >
 //                     <Plus className="w-5 h-5" />
-//                     {t('cart.deliveryAddress.addNewAddress')}
+//                     {"Add New Address"}
 //                   </button>
 //                 </div>
 //               ) : (
@@ -327,7 +325,7 @@
 //                       <p className="text-gray-600 text-sm mt-1">{address.street}</p>
 //                       <p className="text-gray-600 text-sm">{address.city}, {address.state} - {address.pinCode}</p>
 //                       <p className="text-gray-600 text-sm">{address.country}</p>
-//                       <p className="text-gray-600 text-sm">{t('cart.deliveryAddress.mobileNumber')} {address.phoneNumber}</p>
+//                       <p className="text-gray-600 text-sm">{"Mobile Number:"} {address.phoneNumber}</p>
 //                     </div>
 //                   ))}
 //                   <button
@@ -335,7 +333,7 @@
 //                     className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-4 py-3 rounded-lg transition-colors flex items-center justify-center gap-2 border border-gray-300"
 //                   >
 //                     <Plus className="w-5 h-5" />
-//                     {t('cart.deliveryAddress.addNewAddress')}
+//                     {"Add New Address"}
 //                   </button>
 //                 </div>
 //               )}
@@ -421,7 +419,7 @@
 //                     }}
 //                     className="text-red-500 hover:text-red-600 text-xs transition-colors"
 //                   >
-//                     {t('cart.product.remove')}
+//                     {"Remove"}
 //                   </button>
 //                 </div>
 //               </div>
@@ -433,12 +431,12 @@
 //         {cartItems.length === 0 && (
 //           <div className="bg-white rounded-xl p-8 mb-4 border-2 border-gray-200 text-center shadow-sm">
 //             <ShoppingCart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-//             <p className="text-gray-600 text-lg mb-4">{t('cart.emptyCart.message')}</p>
+//             <p className="text-gray-600 text-lg mb-4">{"Your cart is empty"}</p>
 //             <Link
 //               to="/products"
 //               className="inline-block bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all"
 //             >
-//               {t('cart.emptyCart.continueShopping')}
+//               {"Continue Shopping"}
 //             </Link>
 //           </div>
 //         )}
@@ -449,7 +447,7 @@
 //             {!isGuest && !selectedAddress && (
 //               <p className="text-purple-600 text-sm flex items-center gap-2">
 //                 <MapPin className="w-4 h-4" />
-//                 {t('cart.checkout.addAddressWarning')}
+//                 {"Please add a delivery address to proceed"}
 //               </p>
 //             )}
 //             <button

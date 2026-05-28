@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Package, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -61,8 +60,7 @@ const OrdersPage = () => {
     // Navigate to order details page
 
   };
-  const { t } = useTranslation();
-  
+    
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -140,7 +138,7 @@ const navigate =  useNavigate()
   if (loading) {
     return (
       <div className="min-h-screen  flex items-center justify-center">
-        <div className="text-white text-xl">{t("common.loadingOrders")}</div>
+        <div className="text-white text-xl">{"Loading Orders"}</div>
       </div>
     );
   }
@@ -200,12 +198,12 @@ const navigate =  useNavigate()
           Back
         </button>
       </div>
-        <h1 className="text-3xl font-bold text-black mb-8">{t("nav.orders")}</h1>
+        <h1 className="text-3xl font-bold text-black mb-8">{"My Orders"}</h1>
 
         {orders.length === 0 ? (
           <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-8 text-center">
             <Package className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-            <p className="text-gray-400 text-lg">{t("common.noOrder")}</p>
+            <p className="text-gray-400 text-lg">{"No orders found"}</p>
             <button
               onClick={() => window.location.href = '/'}
               className="mt-4 bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-lg transition-colors"
@@ -217,7 +215,7 @@ const navigate =  useNavigate()
           <div className="space-y-4">
             {orders.map((order) => {
               const statusColors = getStatusColor(order.status);
-              const [textColor, bgColor] = statusColors.split(' ');
+              const [textColor, bgColor] = statusColors.split(" ");
               const isDelivered = order.status === 'Delivered';
 
               return (

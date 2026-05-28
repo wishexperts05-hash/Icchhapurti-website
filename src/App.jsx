@@ -6,6 +6,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import SplashScreen from "./components/SplashScreen";
 import { useHeader } from "./context/HeaderContext";
 import { checkAndHandleExpiredSession } from "./utils/auth";
+import ThankYou from "./components/Payment/ThankYou";
 
 const Login = lazy(() => import("./pages/LoginPage"));
 const Register = lazy(() => import("./pages/RegisterPage"));
@@ -171,7 +172,7 @@ function App() {
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/chat-support" element={<CosmicChatSupport />} />
           <Route path="/about-us" element={<AboutUs />} />
-          {/* <Route path="/about-us" element={<AboutUsPage />} /> */}
+          <Route path="/thank-you" element={<ThankYou />} />
           <Route path="/blogs" element={<BlogsPage />} />
           <Route path="/blogs/:id" element={<BlogDetailPage />} />
           <Route path="/faq" element={<FAQPage />} />

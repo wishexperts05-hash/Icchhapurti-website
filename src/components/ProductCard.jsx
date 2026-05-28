@@ -10,10 +10,8 @@ import {
 
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-// import { useTranslation } from "react-i18next";
 import { useHeader } from "../context/HeaderContext";
 
-import PaymentModal from "../pages/PaymentModal";
 
 export default function ProductCard({ product, country, countryCurrency, onAddToCart, onWishlistUpdate, openPayment, setOpenPayment, setCartSidebarOpen }) {
     const [addingToCart, setAddingToCart] = useState(false);
@@ -105,7 +103,7 @@ export default function ProductCard({ product, country, countryCurrency, onAddTo
                         detail: { cart: existingCart, count: totalItems },
                     })
                 );
-                setCartSidebarOpen(true)
+                // setCartSidebarOpen(true)
 
             } else {
                 await onAddToCart(product);
@@ -115,11 +113,11 @@ export default function ProductCard({ product, country, countryCurrency, onAddTo
                 } else {
                     setAddedToCart(true);
                     setTimeout(() => setAddedToCart(false), 2000);
-                    setCartSidebarOpen(true)
+                    // setCartSidebarOpen(true)
                 }
             }
         } catch (error) {
-            setCartSidebarOpen(true)
+            // setCartSidebarOpen(true)
         } finally {
             setAddingToCart(false);
             setBuyingNow(false);
@@ -177,7 +175,13 @@ export default function ProductCard({ product, country, countryCurrency, onAddTo
     };
 
     const handleViewDetails = () => {
-        navigate(`/product/${product.id || product._id}/${encodeURIComponent(product.name || "product")}`);
+        const productSlug = (product.name || "product")
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9\s]/g, "")
+            .replace(/\s+/g, "_");
+
+        navigate(`/product/${product.id || product._id}/${productSlug}`);
     };
 
     const toggleWishlist = async (e) => {
@@ -233,14 +237,6 @@ export default function ProductCard({ product, country, countryCurrency, onAddTo
 
     return (
         <div className="relative group h-full">
-            {openPayment && (
-                <PaymentModal
-                    country_name={country}
-                    isOpen={openPayment}
-                    onClose={() => setOpenPayment(false)}
-                    countryCurrency={countryCurrency}
-                />
-            )}
             <div
                 onClick={handleViewDetails}
                 className="relative bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-lg cursor-pointer transition-all duration-300 hover:shadow-xl border border-gray-200 hover:border-purple-300 flex flex-col h-full"

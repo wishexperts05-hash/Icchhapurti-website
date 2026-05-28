@@ -1,7 +1,6 @@
 // import axios from 'axios';
 // import { useEffect, useState } from 'react';
-// import { useTranslation } from 'react-i18next';
-// import { BsCashCoin } from 'react-icons/bs';
+// // import { BsCashCoin } from 'react-icons/bs';
 // import { useLocation, useNavigate } from 'react-router-dom';
 // import { Loader2, Lock, AlertCircle, CheckCircle, Package, CreditCard, Wallet, ArrowLeft, ArrowRight, ShieldCheck, Truck } from 'lucide-react';
 
@@ -84,15 +83,14 @@
 //   const [successMsg, setSuccessMsg] = useState('');
 //   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
 
-//   const { t } = useTranslation();
-//   const Navigate = useNavigate();
+//   //   const Navigate = useNavigate();
 
 //   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
 //   const [addressIndex, setAddressesIndex] = useState(0)
 
 //   const paymentMethods = [
-//     { id: 'wallet', name: t('payment.methods.wallet'), balance: balance, icon: 'wallet' },
+//     { id: 'wallet', name: "Wallet", balance: balance, icon: 'wallet' },
 //     { id: 'razorpay', name: 'Online (Card/UPI/Netbanking)', icon: 'razorpay' },
 //   ];
 
@@ -121,7 +119,7 @@
 
 //   // Load Razorpay Script
 //   useEffect(() => {
-//     const script = document.createElement('script');
+//     const script = document.createElement("script");
 //     script.src = 'https://checkout.razorpay.com/v1/checkout.js';
 //     script.async = true;
 //     document.body.appendChild(script);
@@ -480,13 +478,13 @@
 //     }
 
 //     if (!cartItems.length) {
-//       alert(t('payment.alerts.cart_empty'));
+//       alert("Cart is empty!");
 
 //       return;
 //     }
 
 //     if (!addresses[addressIndex || 0]) {
-//       alert('Please select a delivery address');
+//       alert("Please select a delivery address");
 //       scrollToTop()
 //       return;
 //     }
@@ -507,7 +505,7 @@
 //       }
 //     } catch (error) {
 //       console.error("Checkout Error:", error);
-//       const errorMsg = error.response?.data?.message || error.message || t('payment.alerts.something_wrong');
+//       const errorMsg = error.response?.data?.message || error.message || "Something went wrong!";
 //       setError(errorMsg);
 //       setTimeout(() => setError(null), 4000);
 //       setCheckoutLoading(false);
@@ -1015,7 +1013,7 @@
 //                     {/* Address */}
 //                     <div className="flex-1 text-sm text-gray-800 leading-snug">
 //                       <p>
-//                         <span className="text-gray-600">{t("cart.deliveryAddress.deliverTo")} </span>
+//                         <span className="text-gray-600">{"Deliver to:"} </span>
 //                         <span className="font-semibold">
 //                           {addresses[addressIndex]?.fullName}
 //                         </span>
@@ -1030,7 +1028,7 @@
 
 //                       <p className="text-xs">
 //                         {addresses[addressIndex]?.country} ·{" "}
-//                         {t("cart.deliveryAddress.mobileNumber")}{" "}
+//                         {"Mobile Number:"}{" "}
 //                         {addresses[addressIndex]?.phoneNumber}
 //                       </p>
 //                     </div>
@@ -1049,7 +1047,7 @@
 //         whitespace-nowrap
 //       "
 //                     >
-//                       {t("cart.deliveryAddress.changeAddress")}
+//                       {"Change Address"}
 //                     </button>
 
 //                   </div>
@@ -1083,7 +1081,7 @@
 //                   {/* Referral Code Input */}
 //                   <div className="mb-4">
 //                     <label className="flex items-center gap-1.5 text-black text-sm font-medium mb-1.5">
-//                       <span>{t("payment.referral.label")}</span>
+//                       <span>{"Enter Referral Code"}</span>
 //                       {codeApplied && <CheckCircle size={14} className="text-green-500" />}
 //                     </label>
 
@@ -1099,7 +1097,7 @@
 //                             setReferralCode(e.target.value);
 //                             setCodeApplied(false);
 //                           }}
-//                           placeholder={t("payment.referral.placeholder")}
+//                           placeholder={"Enter code"}
 //                           className="
 //           flex-1
 //           px-3 py-2
@@ -1134,7 +1132,7 @@
 //                             ) : codeApplied ? (
 //                               "Applied"
 //                             ) : (
-//                               t("payment.referral.apply")
+//                               "Apply"
 //                             )}
 //                           </button>
 //                         )}
@@ -1166,7 +1164,7 @@
 //                           </svg>
 //                         )}
 //                       </div>
-//                       <span className="text-black text-sm font-medium">{t('payment.referral.default')}</span>
+//                       <span className="text-black text-sm font-medium">{"Apply default referral code"}</span>
 //                     </label>
 //                   }
 
@@ -1231,17 +1229,17 @@
 //                   <div className="rounded-lg border border-slate-300 p-4 mb-4">
 //                     <h3 className="text-black font-semibold text-base mb-3 flex items-center gap-2">
 //                       <Package size={16} className="text-amber-400" />
-//                       {t("payment.price_details.title")}
+//                       {"Price Details"}
 //                     </h3>
 
 //                     <div className="space-y-2 text-sm">
 //                       <div className="flex justify-between text-gray-600 border-b border-dashed pb-1">
-//                         <span>{t("payment.price_details.total_items")}</span>
+//                         <span>{"Total Items"}</span>
 //                         <span className="text-black font-medium">{totalItems}</span>
 //                       </div>
 
 //                       <div className="flex justify-between text-gray-600 border-b border-dashed pb-1">
-//                         <span>{t("payment.price_details.price")}</span>
+//                         <span>{"Price"}</span>
 //                         <span className="text-black font-medium">
 //                           {checkoutDetails?.totalAmount?.toLocaleString("en-IN") || 0}
 //                         </span>
@@ -1268,7 +1266,7 @@
 //                       </div>
 
 //                       <div className="flex justify-between text-gray-600 border-b border-dashed pb-1">
-//                         <span>{t("payment.price_details.shipping")}</span>
+//                         <span>{"Shipping Amount"}</span>
 //                         <span className="text-black font-medium">
 //                           + {checkoutDetails?.shippingCharge?.toLocaleString("en-IN") || 0}
 //                         </span>
@@ -1283,7 +1281,7 @@
 
 //                       <div className="flex justify-between items-center pt-2 font-bold">
 //                         <span className="text-black">
-//                           {t("payment.price_details.total_amount")}
+//                           {"Total Amount"}
 //                         </span>
 //                         <span className="text-amber-500 text-xl">
 //                           {checkoutDetails?.grandTotal?.toLocaleString("en-IN") || 0}

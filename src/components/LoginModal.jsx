@@ -122,6 +122,7 @@ const LoginModal = ({ isOpen, onClose, setIsAuthenticated }) => {
       if (data.success) {
         localStorage.setItem("user", JSON.stringify(data.data));
         localStorage.setItem("token", data.token);
+        console.log("data.token", data.token);
 
         await syncLocalCartToServer(data.token);
 
@@ -129,7 +130,7 @@ const LoginModal = ({ isOpen, onClose, setIsAuthenticated }) => {
         setPhone("");
         setOtp("");
         setIsAuthenticated(true)
-        
+
         onClose();
       } else {
         setError(data.message || "Invalid OTP. Please try again.");

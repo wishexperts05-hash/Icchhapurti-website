@@ -1,19 +1,17 @@
 import { Phone, Mail, MapPin, ChevronRight } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 
 const Footer = () => {
-  const { t } = useTranslation();
-  const location = useLocation();
+    const location = useLocation();
   const isHomePage = location.pathname === "/" || location.pathname === "/";
 
   const quickLinks = [
-    { label: t('footer.links.home'), href: "/" },
-    { label: t('footer.links.aboutUs'), href: "/about-us" },
-    { label: t('footer.links.products'), href: "/products" },
-    { label: t('footer.links.blogs'), href: "/blogs" },
-    { label: t('footer.links.privacyPolicy'), href: "/privacy" },
-    { label: t('footer.links.termsConditions'), href: "/terms" },
+    { label: "Home", href: "/" },
+    { label: "About Us", href: "/about-us" },
+    { label: "Products", href: "/products" },
+    { label: "Blogs", href: "/blogs" },
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms & Conditions", href: "/terms" },
     { label: "Shipping Policy", href: "/shipping-policy" },
     { label: "Refund & Cancellation Policy", href: "/refund-cancellation-policy" },
     // { label: "FAQ", href: "/faq" },
@@ -52,7 +50,7 @@ const Footer = () => {
             <img src="/logo-white.png" alt="IcchhaPurti" loading="lazy" className="h-28 mb-6" />
 
             <p className="text-gray-300 mb-6">
-              {t('footer.description')}
+              {"Every stroke brings you closer to your dreams. Experience the premium benefits of manifestation journaling with a tool designed for your spiritual journey."}
             </p>
 
             <div className="flex gap-3">
@@ -76,7 +74,7 @@ const Footer = () => {
           {/* MIDDLE */}
           <div className="md:col-span-3">
             <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
-              <span className="w-8 h-0.5 bg-[#C9A227]" /> {t('footer.quickLinks')}
+              <span className="w-8 h-0.5 bg-[#C9A227]" /> {"QUICK LINKS"}
             </h3>
 
             <ul className="space-y-2">
@@ -100,11 +98,11 @@ const Footer = () => {
           {/* RIGHT */}
           <div className="md:col-span-5">
             {/* <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
-              <span className="w-8 h-0.5 bg-[#C9A227]" /> {t('footer.downloadApp')}
+              <span className="w-8 h-0.5 bg-[#C9A227]" /> {"DOWNLOAD APP"}
             </h3> */}
 
             {/* <p className="text-gray-300 mb-4">
-              {t('footer.downloadAppDesc')}
+              {"Get the best experience on our mobile app. Download now!"}
             </p> */}
 
             {/* <div className="flex gap-3 mb-8">
@@ -113,7 +111,7 @@ const Footer = () => {
             </div> */}
 
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <span className="w-8 h-0.5 bg-[#C9A227]" /> {t('footer.contactInfo')}
+              <span className="w-8 h-0.5 bg-[#C9A227]" /> {"CONTACT INFO"}
             </h3>
 
             <a href="mailto:official@icchhapurti.com" className="flex items-center gap-3">
@@ -139,9 +137,9 @@ const Footer = () => {
           <p>
             © {new Date().getFullYear()}{" "}
             <span className="text-[#C9A227] font-semibold">
-              {t('footer.companyName')}
+              {"ICCHHA PURTI"}
             </span>{" "}
-            {t('footer.allRightsReserved')}
+            {"All Rights Reserved"}
           </p>
 
           <p>

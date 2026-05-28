@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Check } from 'lucide-react';
 
@@ -15,9 +14,8 @@ const LANGUAGES = [
 ];
 
 const LanguagePage = () => {
-  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const [selected, setSelected] = useState(i18n.language || 'en');
+  const [selected, setSelected] = useState('en');
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -34,23 +32,19 @@ const LanguagePage = () => {
 
   const handleSave = () => {
     setSaving(true);
-    
-    // Change language
-    i18n.changeLanguage(selected);
-    
+
     // Save to localStorage
     localStorage.setItem('selectedLanguage', selected);
-    
+
     setTimeout(() => {
       setSaving(false);
-      // Optional: Navigate back or show success message
-      alert('Language changed successfully!');
+      alert("Language changed successfully!");
     }, 500);
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden ">
-      
+    <div className="min-h-screen relative overflow-hidden">
+
       {/* Background effects */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-20 left-1/4 w-96 h-96 border border-blue-400/30 rounded-full"></div>
@@ -76,10 +70,10 @@ const LanguagePage = () => {
       <div className="relative z-10 min-h-screen flex flex-col px-4 pt-12 items-center">
         <div className="w-full max-w-3xl mx-auto">
           <h2 className="text-white font-bold text-2xl sm:text-3xl mb-2 text-center">
-            {t('language.title')}
+            Language
           </h2>
           <p className="text-white text-sm mb-6 text-center font-medium">
-            {t('language.subtitle')} <span className="text-pink-300">*</span>
+            Choose your language <span className="text-pink-300">*</span>
           </p>
 
           <div className="divide-y divide-gray-600 border border-gray-600 rounded-xl backdrop-blur-md bg-white/5 mb-6">
@@ -122,14 +116,14 @@ const LanguagePage = () => {
             ) : (
               <>
                 <Check size={20} />
-                {t('language.save')}
+                Save Language
               </>
             )}
           </button>
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes twinkle {
           0%, 100% { opacity: 0.3; }
           50% { opacity: 1; }

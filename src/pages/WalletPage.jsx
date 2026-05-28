@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Wallet, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 
 export default function WalletPage() {
   const [balance, setBalance] = useState(0);
@@ -113,8 +112,7 @@ export default function WalletPage() {
 
 const navigate = useNavigate()
 
-  const { t } = useTranslation();
-  return (
+    return (
     <div className="  relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 overflow-hidden">
@@ -142,7 +140,7 @@ const navigate = useNavigate()
         </div>
         {/* Page Title */}
         <h1 className="font-bold text-xl mb-4 text-slate-900">
-          {t("nav.wallet")}
+          {"Wallet"}
         </h1>
 
         {/* Wallet Balance Card */}
@@ -154,7 +152,7 @@ const navigate = useNavigate()
             </div>
 
             <p className="text-slate-600 text-sm">
-              {t("common.availableBalanace")}
+              {"Available Balance"}
             </p>
 
             <h2 className="text-slate-900 text-3xl font-bold mb-4">
@@ -165,7 +163,7 @@ const navigate = useNavigate()
               to="/reedem"
               className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-10 py-2 rounded-full font-semibold shadow hover:from-amber-600 hover:to-orange-600 transition-all"
             >
-              {t("common.redeem")}
+              {"Redeem"}
             </Link>
           </div>
         </div>
@@ -176,19 +174,19 @@ const navigate = useNavigate()
             to="/reedem-history"
             className="text-amber-600 text-sm hover:text-amber-700 transition-colors font-medium"
           >
-            {t("common.seeRedeemHistory")}
+            {"See Redeem History"}
           </Link>
         </div>
 
         {/* Transaction Header */}
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-semibold text-slate-900">
-            {t("common.transactionHistory")}
+            {"Transaction History"}
           </h2>
 
           {pagination.totalItems > 0 && (
             <span className="text-slate-500 text-sm">
-              {pagination.totalItems} {t("common.transaction")}
+              {pagination.totalItems} {"Transaction"}
             </span>
           )}
         </div>

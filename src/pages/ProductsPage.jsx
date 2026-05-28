@@ -1,16 +1,17 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, lazy, Suspense } from "react";
 import {
   Loader2,
   ShoppingCart,
   AlertCircle,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { useHeader } from "../context/HeaderContext";
 import { ArrowBigRight } from "lucide-react";
 import { ArrowBigLeft } from "lucide-react";
 import CartSidebar from "../components/CartSidebar";
 import ProductCard from "../components/ProductCard";
+
+const PaymentModal = lazy(() => import("./PaymentModal"));
 
 export default function ProductsPage({ countryCurrency, country }) {
   const [products, setProducts] = useState([]);
@@ -24,8 +25,7 @@ export default function ProductsPage({ countryCurrency, country }) {
   const [debounceSearch, setDebounceSearch] = useState("");
   const { setCount } = useHeader();
   const Navigate = useNavigate();
-  const { t } = useTranslation();
-  const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
   const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
   const [openPayment, setOpenPayment] = useState(false);
@@ -209,10 +209,10 @@ export default function ProductsPage({ countryCurrency, country }) {
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="bg-slate-800/90 backdrop-blur-sm rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-[#D3AF37]/30">
           <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
-          <h3 className="text-2xl font-bold text-white mb-3">
+          <h2 className="text-h2 text-white mb-3">
             Error Loading Products
-          </h3>
-          <p className="text-gray-400 mb-6">{error}</p>
+          </h2>
+          <p className="text-body text-gray-400 mb-6">{error}</p>
           <button
             onClick={fetchProducts}
             className="px-6 py-3 rounded-lg text-white font-medium bg-gradient-to-r from-[#D3AF37] to-[#D3AF37] hover:from-[#D3AF37] hover:to-[#D3AF37] transition-all"
@@ -229,8 +229,8 @@ export default function ProductsPage({ countryCurrency, country }) {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between gap-4 mb-6 md:mb-8">
           <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">{t("common.ourProducts")}</h2>
-            <p className="text-gray-400 text-sm">{t("home.tagline")}</p>
+            <h1 className="text-h1 text-white mb-1">{"Our Products"}</h1>
+            <p className="text-body text-gray-400">{"Get amazing offers on top products"}</p>
           </div>
 
           {/* Search Input */}
@@ -266,10 +266,10 @@ export default function ProductsPage({ countryCurrency, country }) {
               <div className="w-16 h-16 bg-gray-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <ShoppingCart className="w-8 h-8 text-gray-400" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">
+              <h3 className="text-h3 text-white mb-2">
                 No Products Found
               </h3>
-              <p className="text-gray-400">
+              <p className="text-body text-gray-400">
                 We could not find any products at the moment.
               </p>
             </div>
@@ -288,6 +288,17 @@ export default function ProductsPage({ countryCurrency, country }) {
 
         {cartSidebarOpen && (
           <div className="fixed inset-0 bg-black/15 backdrop-blur-[1px] z-51 animate-fadeIn" />
+        )}
+
+        {openPayment && (
+          <Suspense fallback={null}>
+            <PaymentModal
+              country_name={country}
+              countryCurrency={countryCurrency}
+              isOpen={openPayment}
+              onClose={() => setOpenPayment(false)}
+            />
+          </Suspense>
         )}
       </div>
     </div>

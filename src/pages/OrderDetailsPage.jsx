@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Package, Check } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 
 const formatDateTime = (iso) => {
   if (!iso) return '';
@@ -20,8 +19,7 @@ const OrderDetailsPage = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { t } = useTranslation()
-  // Fetch order details from API
+    // Fetch order details from API
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
@@ -61,7 +59,7 @@ const OrderDetailsPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen  flex items-center justify-center">
-        <div className="text-white text-xl">{t("orders.loading")}</div>
+        <div className="text-white text-xl">{"Loading Order Details"}</div>
       </div>
     );
   }
@@ -110,7 +108,7 @@ const OrderDetailsPage = () => {
       </div>
   {/* Header */}
   <h1 className="text-3xl font-bold text-slate-900 mb-2">
-    {t("orders.orderDetails")}
+    {"Order Details"}
   </h1>
 
   <p className="text-sm text-slate-600 mb-6">
@@ -148,19 +146,19 @@ const OrderDetailsPage = () => {
               {item.name}
             </p>
             <p className="text-slate-600 text-xs">
-              {t("order.qty")}: {item.quantity}
+              {"order.qty"}: {item.quantity}
             </p>
 
             <p className="text-amber-600 font-semibold">
               ₹ {item.price}
               <span className="text-xs text-slate-500">
-                ({t("orders.subtotal")}: ₹ {item.subtotal})
+                ({"SubTotal"}: ₹ {item.subtotal})
               </span>
             </p>
 
             {item.returnable && (
               <p className="text-xs text-emerald-600 mt-1">
-                {t("orders.returnable")}
+                {"Returnable"}
                 {item.returnableDays
                   ? ` within ${item.returnableDays} days`
                   : ""}
@@ -202,7 +200,7 @@ const OrderDetailsPage = () => {
   {/* Delivery Address */}
   <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 mb-4">
     <h3 className="text-slate-900 font-semibold mb-3 text-sm border-b border-slate-200 pb-2">
-      {t("orders.deliveryAddress")}
+      {"Delivery Address"}
     </h3>
 
     <div className="text-slate-700 text-sm">
@@ -219,17 +217,17 @@ const OrderDetailsPage = () => {
   {/* Price Details */}
   <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
     <h3 className="text-slate-900 font-semibold mb-3 text-sm border-b border-slate-200 pb-2">
-      {t("orders.price")}
+      {"Price"}
     </h3>
 
     <div className="space-y-2 text-sm">
       <div className="flex justify-between text-slate-700">
-        <span>{t("orders.totalItems")}</span>
+        <span>{"Total Items"}</span>
         <span>{totalProducts}</span>
       </div>
 
       <div className="flex justify-between text-slate-700">
-        <span>{t("orders.price")}</span>
+        <span>{"Price"}</span>
         <span>₹ {subtotalAmount}</span>
       </div>
 
@@ -241,12 +239,12 @@ const OrderDetailsPage = () => {
       )}
 
       <div className="flex justify-between text-slate-700">
-        <span>{t("orders.shippingAmount")}</span>
+        <span>{"Shipping Amount"}</span>
         <span>₹ {shippingAmount}</span>
       </div>
 
       <div className="border-t border-slate-300 pt-2 mt-2 flex justify-between text-slate-900 font-bold">
-        <span>{t("orders.totalAmount")}</span>
+        <span>{"Total Amount"}</span>
         <span>₹ {grandTotal}</span>
       </div>
     </div>

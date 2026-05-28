@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from "react";
 import {
   Star,
   Loader2,
@@ -11,6 +11,8 @@ import { useNavigate } from "react-router-dom";
 import { useHeader } from "../context/HeaderContext";
 import CartSidebar from "./CartSidebar";
 import ProductCard from "./ProductCard";
+
+const PaymentModal = lazy(() => import("../pages/PaymentModal"));
 
 export default function OurProducts({ countryCurrency, country }) {
   const [products, setProducts] = useState([]);
@@ -282,6 +284,17 @@ export default function OurProducts({ countryCurrency, country }) {
 
         {cartSidebarOpen && (
           <div className="fixed inset-0 bg-black/15 backdrop-blur-[1px] z-51 animate-fadeIn" />
+        )}
+
+        {openPayment && (
+          <Suspense fallback={null}>
+            <PaymentModal
+              country_name={country}
+              countryCurrency={countryCurrency}
+              isOpen={openPayment}
+              onClose={() => setOpenPayment(false)}
+            />
+          </Suspense>
         )}
       </div>
     </div>

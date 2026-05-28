@@ -6,17 +6,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useTranslation } from "react-i18next";
 
 export default function BlogsPage() {
   const navigate = useNavigate();
   const [blogs, setBlogs] = useState([]);
 
-  const { t } = useTranslation()
-
+  
   const fetchBlogs = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/blogs/all?page=1&limit=10`);
+      const res = await axios.get("${import.meta.env.VITE_API_URL}/api/user/blogs/all?page=1&limit=10");
       setBlogs(res.data.data || []);
     } catch (error) {
       console.log("Error fetching blogs", error);
@@ -58,11 +56,11 @@ export default function BlogsPage() {
         {/* Explore Our Latest Blog Section */}
         <div className="px-6 py-6">
           <h2 className="text-white text-xl font-bold mb-6">
-            {t("blogs.title")}
+            {"Explore Our Latest Blogs"}
           </h2>
 
           {blogs.length === 0 ? (
-            <p className="text-gray-300">  {t("blogs.noBlog")}</p>
+            <p className="text-gray-300">  {"No Blogs Found"}</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {blogs.map((blog) => (

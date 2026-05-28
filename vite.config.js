@@ -10,6 +10,10 @@ export default defineConfig({
     tailwindcss(),
     visualizer({ open: true })
   ],
+
+  server: {
+    allowedHosts: ['active-evasion-patchy.ngrok-free.dev']
+  },
   build: {
     // Enable code splitting for better performance
     rollupOptions: {
@@ -19,7 +23,6 @@ export default defineConfig({
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'ui-vendor': ['lucide-react'],
           'form-vendor': ['react-hook-form'],
-          'i18n-vendor': ['i18next', 'react-i18next', 'i18next-browser-languagedetector']
         }
       }
     },
