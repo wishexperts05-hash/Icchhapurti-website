@@ -1,216 +1,353 @@
-import { useState, useRef } from 'react';
-import { X, ChevronLeft, ChevronRight, Play } from 'lucide-react';
+import { useState, useRef, useCallback } from 'react';
+import { X, ChevronLeft, ChevronRight, Play, ZoomIn } from 'lucide-react';
 
 export default function ProductImageGallery({ images = [], videos = [] }) {
-  const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMediaIndex, setModalMediaIndex] = useState(0);
-  const swiperRef = useRef(null);
+  const [modalIndex, setModalIndex] = useState(0);
+  const [imgError, setImgError] = useState({});
+  const touchStartX = useRef(null);
 
-  // Combine images and videos into a single media array
   const allMedia = [
     ...images.map(img => ({ type: 'image', url: img })),
-    ...videos.map(vid => ({ type: 'video', url: vid }))
+    ...videos.map(vid => ({ type: 'video', url: vid })),
   ];
+  const media = allMedia.length > 0
+    ? allMedia
+    : [{ type: 'image', url: 'https://via.placeholder.com/600x600?text=No+Image' }];
 
-  const productMedia = allMedia.length > 0 ? allMedia : [{ type: 'image', url: 'https://via.placeholder.com/400x400?text=No+Image' }];
-
-  const handleThumbnailClick = (index) => {
-    setSelectedMediaIndex(index);
-    if (swiperRef.current && swiperRef.current.swiper) {
-      swiperRef.current.swiper.slideTo(index);
+  const go = useCallback((dir, inModal = false) => {
+    if (inModal) {
+      setModalIndex(p => (p + dir + media.length) % media.length);
+    } else {
+      setSelectedIndex(p => (p + dir + media.length) % media.length);
     }
+  }, [media.length]);
+
+  /* swipe support */
+  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
+  const onTouchEnd = (e, inModal = false) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) go(diff > 0 ? 1 : -1, inModal);
+    touchStartX.current = null;
   };
 
-  const openModal = (index) => {
-    setModalMediaIndex(index);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const nextMedia = () => {
-    setModalMediaIndex((prev) => (prev + 1) % productMedia.length);
-  };
-
-  const prevMedia = () => {
-    setModalMediaIndex((prev) => (prev - 1 + productMedia.length) % productMedia.length);
-  };
-
-  const currentMedia = productMedia[selectedMediaIndex];
-  const currentModalMedia = productMedia[modalMediaIndex];
+  const openModal = (i) => { setModalIndex(i); setIsModalOpen(true); };
+  const current = media[selectedIndex];
+  const modalMedia = media[modalIndex];
 
   return (
     <>
-      <div className="space-y-4">
-        {/* Main Media Display */}
-        <div className="bg-white rounded-2xl ">
-          <div className="relative group">
-            {currentMedia.type === 'image' ? (
-              <img
-                src={currentMedia.url}
-                alt={`Product ${selectedMediaIndex + 1}`}
-                loading="eager"
-                className="w-full h-[450px] object-contain rounded-xl cursor-pointer transition-transform hover:scale-105"
-                onError={(e) => {
-                  e.target.src = 'https://via.placeholder.com/400x400?text=No+Image';
-                }}
-              />
-            ) : (
-              <div className="relative w-full h-[450px] bg-black rounded-xl overflow-hidden">
-                <video
-                  src={currentMedia.url}
-                  controls
-                  className="w-full h-full object-contain"
-                  controlsList="nodownload"
-                />
-                <div className="absolute top-3 left-3 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 pointer-events-none">
-                  <Play size={12} />
-                  VIDEO
-                </div>
-              </div>
-            )}
+      <style>{`
+        .pgg-thumb::-webkit-scrollbar { display: none; }
+        .pgg-thumb { -ms-overflow-style: none; scrollbar-width: none; }
+        .pgg-fade-in { animation: pgg-fade .25s ease; }
+        @keyframes pgg-fade { from { opacity: 0; } to { opacity: 1; } }
+        .pgg-arrow { transition: background .18s, transform .18s; }
+        .pgg-arrow:hover { background: rgba(0,0,0,0.55) !important; transform: translateY(-50%) scale(1.08); }
+        .pgg-thumb-item { transition: opacity .18s, transform .18s; }
+        .pgg-thumb-item:hover { opacity: 1 !important; transform: translateY(-2px); }
+      `}</style>
 
-            {/* Overlay hint for images */}
-            {currentMedia.type === 'image' && (
-              <div
-                onClick={() => openModal(selectedMediaIndex)}
-                className="absolute cursor-pointer inset-0 bg-black/0 group-hover:bg-black/10 transition-all rounded-xl flex items-center justify-center"
+      {/* ── Main viewer ── */}
+      <div
+        style={{ position: 'relative', width: '100%', userSelect: 'none' }}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        {/* Image / Video */}
+        <div
+          className="pgg-fade-in"
+          key={selectedIndex}
+          style={{ position: 'relative', width: '100%', overflow: 'hidden' }}
+        >
+          {current.type === 'image' ? (
+            <img
+              src={imgError[selectedIndex] ? 'https://via.placeholder.com/600x600?text=No+Image' : current.url}
+              alt={`Product ${selectedIndex + 1}`}
+              loading="eager"
+              onError={() => setImgError(p => ({ ...p, [selectedIndex]: true }))}
+              style={{
+                width: '100%',
+                height: 'auto',
+                aspectRatio: '1 / 1',
+                objectFit: 'cover',
+                display: 'block',
+                cursor: 'zoom-in',
+              }}
+              onClick={() => openModal(selectedIndex)}
+            />
+          ) : (
+            <div style={{ position: 'relative', width: '100%', aspectRatio: '1 / 1', background: '#000' }}>
+              <video
+                src={current.url}
+                controls
+                controlsList="nodownload"
+                style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+              />
+              <span style={{
+                position: 'absolute', top: 10, left: 10, background: '#E53E3E',
+                color: '#fff', padding: '3px 10px', borderRadius: 99,
+                fontSize: 11, fontWeight: 700, letterSpacing: '.06em',
+                display: 'flex', alignItems: 'center', gap: 4, pointerEvents: 'none',
+              }}>
+                <Play size={10} fill="#fff" /> VIDEO
+              </span>
+            </div>
+          )}
+
+          {/* Zoom hint overlay */}
+          {current.type === 'image' && (
+            <div
+              onClick={() => openModal(selectedIndex)}
+              style={{
+                position: 'absolute', inset: 0, cursor: 'zoom-in',
+                background: 'rgba(0,0,0,0)', transition: 'background .2s',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.04)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0)'}
+            >
+              <div style={{
+                background: 'rgba(0,0,0,0.5)', color: '#fff',
+                padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 500,
+                display: 'flex', alignItems: 'center', gap: 6,
+                opacity: 0, transition: 'opacity .2s',
+              }}
+                className="pgg-zoom-hint"
               >
-                <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 px-4 py-2 rounded-lg text-sm font-medium">
-                  Click to enlarge
-                </span>
+                <ZoomIn size={14} /> Click to zoom
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
-        {/* Thumbnail Preview */}
-        {productMedia.length > 1 && (
-          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-            {productMedia.map((media, index) => (
-              <div
-                key={index}
-                onClick={() => handleThumbnailClick(index)}
-                className={`relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden cursor-pointer transition-all border-2 ${selectedMediaIndex === index
-                    ? 'border-cyan-500 scale-105 shadow-lg'
-                    : 'border-gray-300 hover:border-gray-400 opacity-70 hover:opacity-100'
-                  }`}
-              >
-                {media.type === 'image' ? (
-                  <img
-                    src={media.url}
-                    alt={`Thumbnail ${index + 1}`}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.src = 'https://via.placeholder.com/80x80?text=No+Image';
-                    }}
-                  />
-                ) : (
-                  <div className="w-full h-full bg-black flex items-center justify-center">
-                    <div className="absolute inset-0 bg-gradient-to-br from-red-600/80 to-red-800/80"></div>
-                    <Play size={24} className="text-white relative z-10" />
-                  </div>
-                )}
-              </div>
+        {/* Prev / Next arrows (only when multiple) */}
+        {media.length > 1 && (
+          <>
+            <button
+              className="pgg-arrow"
+              onClick={() => go(-1)}
+              style={{
+                position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)',
+                width: 36, height: 36, borderRadius: '50%',
+                background: 'rgba(0,0,0,0.35)', border: 'none',
+                color: '#fff', cursor: 'pointer', display: 'flex',
+                alignItems: 'center', justifyContent: 'center', zIndex: 5,
+              }}
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button
+              className="pgg-arrow"
+              onClick={() => go(1)}
+              style={{
+                position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+                width: 36, height: 36, borderRadius: '50%',
+                background: 'rgba(0,0,0,0.35)', border: 'none',
+                color: '#fff', cursor: 'pointer', display: 'flex',
+                alignItems: 'center', justifyContent: 'center', zIndex: 5,
+              }}
+            >
+              <ChevronRight size={20} />
+            </button>
+          </>
+        )}
+
+        {/* Dot indicators */}
+        {media.length > 1 && media.length <= 8 && (
+          <div style={{
+            position: 'absolute', bottom: 10, left: '50%', transform: 'translateX(-50%)',
+            display: 'flex', gap: 6, zIndex: 5,
+          }}>
+            {media.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setSelectedIndex(i)}
+                style={{
+                  width: i === selectedIndex ? 18 : 7,
+                  height: 7, borderRadius: 99, border: 'none', cursor: 'pointer',
+                  background: i === selectedIndex ? '#C9A84C' : 'rgba(255,255,255,0.6)',
+                  transition: 'all .25s', padding: 0,
+                }}
+              />
             ))}
           </div>
         )}
       </div>
 
-      {/* Full Screen Modal */}
-      {isModalOpen && (
-        <div className="fixed h-[100vh] inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
-          {/* Close Button */}
-          <button
-            onClick={closeModal}
-            className="absolute top-4 right-4 z-10 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full transition-all backdrop-blur-sm"
-            aria-label="Close modal"
-          >
-            <X className="w-6 h-6" />
-          </button>
+      {/* ── Thumbnails ── */}
+      {media.length > 1 && (
+        <div
+          className="pgg-thumb"
+          style={{
+            display: 'flex', gap: 6, overflowX: 'auto',
+            padding: '10px 0 4px', marginTop: 2,
+          }}
+        >
+          {media.map((m, i) => (
+            <div
+              key={i}
+              className="pgg-thumb-item"
+              onClick={() => setSelectedIndex(i)}
+              style={{
+                flexShrink: 0, width: 68, height: 68,
+                borderRadius: 6, overflow: 'hidden', cursor: 'pointer',
+                opacity: selectedIndex === i ? 1 : 0.45,
+                outline: selectedIndex === i ? '2px solid #C9A84C' : '2px solid transparent',
+                outlineOffset: 2,
+                position: 'relative',
+              }}
+            >
+              {m.type === 'image' ? (
+                <img
+                  src={m.url}
+                  alt={`Thumb ${i + 1}`}
+                  loading="lazy"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  onError={e => { e.target.src = 'https://via.placeholder.com/68x68?text=?'; }}
+                />
+              ) : (
+                <div style={{ width: '100%', height: '100%', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg,#E53E3E99,#7B000099)' }} />
+                  <Play size={20} color="#fff" style={{ position: 'relative', zIndex: 1 }} />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
 
-          {/* Media Counter */}
-          <div className="absolute top-4 left-4 z-10 bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium">
-            {modalMediaIndex + 1} / {productMedia.length}
+      {/* ── Lightbox modal ── */}
+      {isModalOpen && (
+        <div
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            background: 'rgba(0,0,0,0.97)',
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center',
+          }}
+          onTouchStart={onTouchStart}
+          onTouchEnd={e => onTouchEnd(e, true)}
+        >
+          {/* Top bar */}
+          <div style={{
+            position: 'absolute', top: 0, left: 0, right: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '14px 18px', zIndex: 10,
+            background: 'linear-gradient(rgba(0,0,0,0.6),transparent)',
+          }}>
+            <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, fontWeight: 500 }}>
+              {modalIndex + 1} / {media.length}
+            </span>
+            <button
+              onClick={() => setIsModalOpen(false)}
+              style={{
+                width: 36, height: 36, borderRadius: '50%',
+                background: 'rgba(255,255,255,0.12)', border: 'none',
+                color: '#fff', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                transition: 'background .2s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.25)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.12)'}
+            >
+              <X size={18} />
+            </button>
           </div>
 
-          {/* Previous Button */}
-          {productMedia.length > 1 && (
-            <button
-              onClick={prevMedia}
-              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full transition-all backdrop-blur-sm"
-              aria-label="Previous media"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-          )}
-
-          {/* Main Media Display in Modal */}
-          <div className="relative max-w-6xl max-h-[90vh] w-full h-full flex items-center justify-center">
-            {currentModalMedia.type === 'image' ? (
+          {/* Main media */}
+          <div
+            key={modalIndex}
+            className="pgg-fade-in"
+            style={{
+              maxWidth: '92vw', maxHeight: '80vh',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >
+            {modalMedia.type === 'image' ? (
               <img
-                src={currentModalMedia.url}
-                alt={`Full size ${modalMediaIndex + 1}`}
-                className="max-w-full max-h-full object-contain rounded-lg"
-                onError={(e) => {
-                  e.target.src = 'https://via.placeholder.com/800x800?text=No+Image';
+                src={modalMedia.url}
+                alt={`Full ${modalIndex + 1}`}
+                style={{
+                  maxWidth: '92vw', maxHeight: '80vh',
+                  objectFit: 'contain', display: 'block', borderRadius: 4,
                 }}
+                onError={e => { e.target.src = 'https://via.placeholder.com/800x800?text=No+Image'; }}
               />
             ) : (
-              <div className="relative w-full max-h-[85vh]">
-                <video
-                  src={currentModalMedia.url}
-                  controls
-                  autoPlay
-                  className="max-w-full max-h-[85vh] object-contain rounded-lg mx-auto"
-                  controlsList="nodownload"
-                />
-                <div className="absolute top-4 left-4 bg-red-600 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 pointer-events-none">
-                  <Play size={14} />
-                  VIDEO
-                </div>
-              </div>
+              <video
+                src={modalMedia.url}
+                controls autoPlay
+                controlsList="nodownload"
+                style={{ maxWidth: '92vw', maxHeight: '80vh', objectFit: 'contain', borderRadius: 4 }}
+              />
             )}
           </div>
 
-          {/* Next Button */}
-          {productMedia.length > 1 && (
-            <button
-              onClick={nextMedia}
-              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full transition-all backdrop-blur-sm"
-              aria-label="Next media"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
+          {/* Prev / Next */}
+          {media.length > 1 && (
+            <>
+              <button
+                onClick={() => go(-1, true)}
+                style={{
+                  position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)',
+                  width: 42, height: 42, borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.1)', border: 'none',
+                  color: '#fff', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  transition: 'background .2s', zIndex: 10,
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.22)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+              >
+                <ChevronLeft size={22} />
+              </button>
+              <button
+                onClick={() => go(1, true)}
+                style={{
+                  position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)',
+                  width: 42, height: 42, borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.1)', border: 'none',
+                  color: '#fff', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  transition: 'background .2s', zIndex: 10,
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.22)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+              >
+                <ChevronRight size={22} />
+              </button>
+            </>
           )}
 
-          {/* Thumbnail Strip at Bottom */}
-          {productMedia.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 max-w-[90vw] overflow-x-auto pb-2 scrollbar-hide bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-              {productMedia.map((media, index) => (
+          {/* Thumbnail strip */}
+          {media.length > 1 && (
+            <div style={{
+              position: 'absolute', bottom: 16, left: '50%', transform: 'translateX(-50%)',
+              display: 'flex', gap: 8, maxWidth: '88vw', overflowX: 'auto',
+              background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(8px)',
+              borderRadius: 12, padding: '8px 12px',
+            }}>
+              {media.map((m, i) => (
                 <div
-                  key={index}
-                  onClick={() => setModalMediaIndex(index)}
-                  className={`relative flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden cursor-pointer transition-all border-2 ${modalMediaIndex === index
-                      ? 'border-cyan-400 scale-110'
-                      : 'border-white/30 opacity-60 hover:opacity-100'
-                    }`}
+                  key={i}
+                  onClick={() => setModalIndex(i)}
+                  style={{
+                    flexShrink: 0, width: 52, height: 52, borderRadius: 6,
+                    overflow: 'hidden', cursor: 'pointer',
+                    opacity: modalIndex === i ? 1 : 0.45,
+                    outline: modalIndex === i ? '2px solid #C9A84C' : '2px solid transparent',
+                    outlineOffset: 2, transition: 'all .2s',
+                    transform: modalIndex === i ? 'scale(1.1)' : 'none',
+                  }}
                 >
-                  {media.type === 'image' ? (
-                    <img
-                      src={media.url}
-                      alt={`Thumbnail ${index + 1}`}
-                      loading="lazy"
-                      className="w-full h-full object-cover"
-                    />
+                  {m.type === 'image' ? (
+                    <img src={m.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                   ) : (
-                    <div className="w-full h-full bg-black flex items-center justify-center">
-                      <div className="absolute inset-0 bg-gradient-to-br from-red-600/80 to-red-800/80"></div>
-                      <Play size={20} className="text-white relative z-10" />
+                    <div style={{ width: '100%', height: '100%', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Play size={16} color="#fff" />
                     </div>
                   )}
                 </div>
@@ -220,14 +357,9 @@ export default function ProductImageGallery({ images = [], videos = [] }) {
         </div>
       )}
 
-      <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
+      <style>{`
+        .pgg-zoom-hint { opacity: 0 !important; }
+        div:hover > .pgg-zoom-hint { opacity: 1 !important; }
       `}</style>
     </>
   );

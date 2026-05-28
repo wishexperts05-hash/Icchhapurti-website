@@ -6,21 +6,49 @@
   --font-serif: 'Cormorant Garamond', serif;
 }
 
-.text-display { @apply font-serif text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight; }
-.text-h1 { @apply font-serif text-3xl md:text-4xl font-semibold leading-tight; }
-.text-h2 { @apply font-serif text-2xl md:text-3xl font-semibold leading-tight; }
-.text-h3 { @apply font-serif text-xl md:text-2xl font-semibold leading-snug; }
+.text-display {
+  @apply font-serif text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight;
+}
 
-.text-body-large { @apply font-sans text-lg font-normal leading-relaxed; }
-.text-body { @apply font-sans text-base font-normal leading-relaxed; }
-.text-caption { @apply font-sans text-sm font-normal leading-relaxed text-gray-500; }
-.text-label { @apply font-sans text-xs font-semibold uppercase tracking-wider; }
+.text-h1 {
+  @apply font-serif text-3xl md:text-4xl font-semibold leading-tight;
+}
 
-.text-price { @apply font-serif text-2xl md:text-3xl font-medium; }
-.text-price-sm { @apply font-serif text-xl font-medium; }
+.text-h2 {
+  @apply font-serif text-2xl md:text-3xl font-semibold leading-tight;
+}
+
+.text-h3 {
+  @apply font-serif text-xl md:text-2xl font-semibold leading-snug;
+}
+
+.text-body-large {
+  @apply font-sans text-lg font-normal leading-relaxed;
+}
+
+.text-body {
+  @apply font-sans text-base font-normal leading-relaxed;
+}
+
+.text-caption {
+  @apply font-sans text-sm font-normal leading-relaxed text-gray-500;
+}
+
+.text-label {
+  @apply font-sans text-xs font-semibold uppercase tracking-wider;
+}
+
+.text-price {
+  @apply font-serif text-2xl md:text-3xl font-medium;
+}
+
+.text-price-sm {
+  @apply font-serif text-xl font-medium;
+}
 
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -29,7 +57,8 @@ html, body {
   font-size: 16px;
 }
 
-p, span {
+p,
+span {
   font-family: 'DM Sans', sans-serif;
 }
 
@@ -53,7 +82,8 @@ p, span {
   background-position: center;
   z-index: 0;
   /* Add a dark semi-transparent overlay */
-  filter: brightness(0.5); /* darkens the image */
+  filter: brightness(0.5);
+  /* darkens the image */
   /* Alternatively, you can use this for more control:
   ::before {
     content: '';
@@ -64,10 +94,12 @@ p, span {
   }
   */
 }
+
 .background-dark-overlay {
   position: absolute;
   inset: 0;
-  background-color: rgba(26, 6, 6, 0.4); /* semi-transparent black */
+  background-color: rgba(26, 6, 6, 0.4);
+  /* semi-transparent black */
   z-index: 1;
 }
 
@@ -90,14 +122,23 @@ p, span {
 }
 
 
-h1, h2, h3, h4, h5, h6  ,Link ,a{
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+Link,
+a {
   font-family: 'Cormorant Garamond', serif;
 
-  
+
 }
+
 .tenor-heading {
   font-family: 'Cormorant Garamond', serif;
 }
+
 /* Fullscreen video */
 .centered-video {
   position: absolute;
@@ -106,19 +147,23 @@ h1, h2, h3, h4, h5, h6  ,Link ,a{
   width: 100%;
   max-height: 830px;
   transform: translate(-50%, -50%);
-  object-fit: contain; /* keep ratio, no stretch */
+  object-fit: contain;
+  /* keep ratio, no stretch */
   background: transparent;
   z-index: 2;
 
-}@media (max-width: 768px) {
+}
+
+@media (max-width: 768px) {
   .centered-video {
     width: 100vw;
     height: 120vh;
     max-height: none;
     object-fit: cover;
   }
-  
+
 }
+
 /* index.css */
 
 * {
@@ -128,12 +173,15 @@ h1, h2, h3, h4, h5, h6  ,Link ,a{
 /* Hide scrollbar (desktop only via media query) */
 @media (min-width: 768px) {
   .hide-scrollbar-desktop {
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE 10+ */
   }
 
   .hide-scrollbar-desktop::-webkit-scrollbar {
-    display: none; /* Chrome, Safari */
+    display: none;
+    /* Chrome, Safari */
   }
 }
 
@@ -168,14 +216,17 @@ h1, h2, h3, h4, h5, h6  ,Link ,a{
 .policy-content * {
   background: transparent !important;
 }
+
 @keyframes goldShine {
   0% {
     background-position: 0% 50%;
   }
+
   100% {
     background-position: 200% 50%;
   }
 }
+
 /* Pure CSS Wave Divider - Add to your CSS file */
 
 /* Option 1: Simple CSS Wave using border-radius */
@@ -233,6 +284,7 @@ h1, h2, h3, h4, h5, h6  ,Link ,a{
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(50%);
   }
@@ -290,10 +342,12 @@ h1, h2, h3, h4, h5, h6  ,Link ,a{
   transform: translateY(50%);
   clip-path: ellipse(100% 100% at 50% 0%);
 }
+
 @keyframes marquee {
   0% {
     transform: translateX(0%);
   }
+
   100% {
     transform: translateX(-100%);
   }

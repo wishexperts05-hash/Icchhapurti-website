@@ -1,477 +1,383 @@
 import { useState, useEffect } from 'react';
-import { X, Loader2, ShoppingCart, AlertCircle, Plus, Minus, Trash2 } from 'lucide-react';
+import { X, Loader2, ShoppingCart, AlertCircle, Plus, Minus, Trash2, ArrowRight, ShieldCheck, Truck, Package } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
 import { useHeader } from '../context/HeaderContext';
-
 import ProgressOfferBar from './ProgressOfferBar';
 
+/* ─── Design tokens ─── */
+const GOLD = '#C9A84C';
+const GOLD_LIGHT = '#F0D080';
+const GOLD_PALE = '#FDF6E3';
+const DEEP = '#1A1209';
+const INK = '#2C2416';
+const MUTED = '#7A6F60';
+const CREAM = '#FAF6EE';
+const GREEN = '#27623A';
+const RED = '#DC2626';
+const BORDER = 'rgba(201,168,76,0.25)';
+
 export default function CartSidebar({ isOpen, onClose, countryCurrency, onCheckout }) {
-
-
-  // console.log("CartSidebar countryCurrency:", countryCurrency);
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isGuest, setIsGuest] = useState(false);
+  const [removingId, setRemovingId] = useState(null);
 
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const { setCount } = useHeader();
 
-  // Fetch cart data when sidebar opens
   useEffect(() => {
     if (isOpen) {
-      if (token) {
-        setIsGuest(false);
-        fetchCartData();
-      } else {
-        setIsGuest(true);
-        loadGuestCart();
-        setLoading(false);
-      }
+      if (token) { setIsGuest(false); fetchCartData(); }
+      else { setIsGuest(true); loadGuestCart(); setLoading(false); }
     }
   }, [isOpen, token]);
 
   const loadGuestCart = () => {
-    try {
-      const guestCart = JSON.parse(localStorage.getItem('cartItems') || '[]');
-      setCartItems(guestCart);
-    } catch (err) {
-      console.error('Error loading guest cart:', err);
-      setCartItems([]);
-    }
+    try { setCartItems(JSON.parse(localStorage.getItem('cartItems') || '[]')); }
+    catch { setCartItems([]); }
   };
 
   const fetchCartData = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/cartItems?currencyCode=${countryCurrency}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!response.ok) throw new Error('Failed to fetch cart data');
-
-      const data = await response.json();
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/cart/cartItems?currencyCode=${countryCurrency}`,
+        { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } }
+      );
+      if (!res.ok) throw new Error('Failed to fetch cart');
+      const data = await res.json();
       setCartItems(data.data || []);
       setError(null);
-    } catch (err) {
-      setError(err.message);
-      console.error('Error fetching cart:', err);
-    } finally {
-      setLoading(false);
-    }
+    } catch (err) { setError(err.message); }
+    finally { setLoading(false); }
   };
 
-  // Helper function to extract numeric price
   const extractPrice = (price) => {
     if (typeof price === 'number') return price;
-    if (typeof price === 'string') {
-      return Number(price.replace(/[^0-9.]/g, ''));
-    }
+    if (typeof price === 'string') return Number(price.replace(/[^0-9.]/g, ''));
     return 0;
   };
 
   const updateQuantity = async ({ id, cartId, delta, price }) => {
-    if (isGuest) {
-      updateGuestQuantity(id, delta);
-      return;
-    }
-
-    const item = cartItems.find(item => item._id === cartId);
-    const currentQuantity = Number(item.quantity);
-    const newQuantity = Math.max(1, currentQuantity + delta);
-
-    if (newQuantity < 1) return;
-
+    if (isGuest) { updateGuestQuantity(id, delta); return; }
+    const item = cartItems.find(i => i._id === cartId);
+    const newQty = Math.max(1, Number(item.quantity) + delta);
     const numericPrice = extractPrice(price);
-    const previousItems = [...cartItems];
-    setCartItems(prevItems =>
-      prevItems.map(cartItem =>
-        cartItem._id === cartId
-          ? {
-            ...cartItem,
-            quantity: newQuantity,
-            totalAmount: Number(numericPrice * newQuantity)
-          }
-          : cartItem
-      )
-    );
-
+    const prev = [...cartItems];
+    setCartItems(items => items.map(i => i._id === cartId ? { ...i, quantity: newQty, totalAmount: numericPrice * newQty } : i));
     try {
-      const numericPrice = extractPrice(price);
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/updateQuantity?currencyCode=${countryCurrency}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          productId: id,
-          quantity: newQuantity,
-          totalAmount: Number(numericPrice * newQuantity)
-        })
-      });
-
-      if (!response.ok) throw new Error('Failed to update quantity');
-
-      const result = await response.json();
-
-      if (!result.success) {
-        setCartItems(previousItems);
-        throw new Error('Failed to update quantity');
-      }
-    } catch (err) {
-      console.error('Error updating quantity:', err);
-      setCartItems(previousItems);
-      alert('Failed to update quantity. Please try again.');
-    }
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/cart/updateQuantity?currencyCode=${countryCurrency}`,
+        { method: 'PUT', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ productId: id, quantity: newQty, totalAmount: numericPrice * newQty }) }
+      );
+      const result = await res.json();
+      if (!res.ok || !result.success) { setCartItems(prev); }
+    } catch { setCartItems(prev); }
   };
 
   const updateGuestQuantity = (productId, delta) => {
-    const guestCart = JSON.parse(localStorage.getItem('cartItems') || '[]');
-    const itemIndex = guestCart.findIndex(item =>
-      (item.productId || item.product._id) === productId
-    );
-
-    if (itemIndex > -1) {
-      const newQuantity = Math.max(1, guestCart[itemIndex].quantity + delta);
-      const numericPrice = extractPrice(guestCart[itemIndex].product.price);
-      guestCart[itemIndex].quantity = newQuantity;
-      guestCart[itemIndex].totalAmount = newQuantity * numericPrice;
-
-      localStorage.setItem('cartItems', JSON.stringify(guestCart));
-
-      const totalItems = guestCart.reduce((sum, item) => sum + item.quantity, 0);
-      localStorage.setItem('cart', totalItems);
-
-      setCartItems(guestCart);
+    const cart = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    const idx = cart.findIndex(i => (i.productId || i.product._id) === productId);
+    if (idx > -1) {
+      cart[idx].quantity = Math.max(1, cart[idx].quantity + delta);
+      cart[idx].totalAmount = cart[idx].quantity * extractPrice(cart[idx].product.price);
+      localStorage.setItem('cartItems', JSON.stringify(cart));
+      localStorage.setItem('cart', cart.reduce((s, i) => s + i.quantity, 0));
+      setCartItems(cart);
       window.dispatchEvent(new CustomEvent('cartUpdated'));
     }
   };
 
   const removeItem = async (id) => {
-    if (isGuest) {
-      removeGuestItem(id);
-      return;
-    }
-
-    const previousItems = [...cartItems];
-    setCartItems(prevItems => prevItems.filter(item => item.product._id !== id));
-
-    const oldCount = Number(localStorage.getItem("cart")) || 0;
+    if (isGuest) { removeGuestItem(id); return; }
+    setRemovingId(id);
+    const prev = [...cartItems];
+    setCartItems(items => items.filter(i => i.product._id !== id));
+    const oldCount = Number(localStorage.getItem('cart')) || 0;
     const newCount = Math.max(oldCount - 1, 0);
-    localStorage.setItem("cart", newCount);
-    setCount(newCount);
-
+    localStorage.setItem('cart', newCount); setCount(newCount);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/removeFromCart/${id}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-      });
-
-      if (!response.ok) throw new Error('Failed to remove item');
-
-      const result = await response.json();
-
-      if (!result.success) {
-        setCartItems(previousItems);
-        localStorage.setItem("cart", oldCount);
-        throw new Error('Failed to remove item');
-      }
-    } catch (err) {
-      console.error('Error removing item:', err);
-      setCartItems(previousItems);
-      localStorage.setItem("cart", oldCount);
-      alert('Failed to remove item. Please try again.');
-    }
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/removeFromCart/${id}`, { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } });
+      const result = await res.json();
+      if (!res.ok || !result.success) { setCartItems(prev); localStorage.setItem('cart', oldCount); }
+    } catch { setCartItems(prev); localStorage.setItem('cart', oldCount); }
+    finally { setRemovingId(null); }
   };
 
   const removeGuestItem = (productId) => {
-    const guestCart = JSON.parse(localStorage.getItem('cartItems') || '[]');
-    const updatedCart = guestCart.filter(item =>
-      (item.productId || item.product._id) !== productId
-    );
-
-    localStorage.setItem('cartItems', JSON.stringify(updatedCart));
-
-    const totalItems = updatedCart.reduce((sum, item) => sum + item.quantity, 0);
-    localStorage.setItem('cart', totalItems);
-    setCount(totalItems);
-    setCartItems(updatedCart);
+    const cart = JSON.parse(localStorage.getItem('cartItems') || '[]').filter(i => (i.productId || i.product._id) !== productId);
+    localStorage.setItem('cartItems', JSON.stringify(cart));
+    const total = cart.reduce((s, i) => s + i.quantity, 0);
+    localStorage.setItem('cart', total); setCount(total);
+    setCartItems(cart);
     window.dispatchEvent(new CustomEvent('cartUpdated'));
   };
 
-  const handleViewDetails = (product) => {
-    navigate(`/product/${product.id || product._id}`);
-    onClose();
-  };
-
-  const handleCheckout = () => {
-    onCheckout()
-  };
-
-
-  // const totalPrice = cartItems.reduce((sum, item) => sum + Number(extractPrice(item.totalAmount)), 0);
-  const currencySymbol = cartItems[0]?.currencySymbol || "₹"
-  const totalPrice = cartItems.reduce((sum, item) => sum + Number(extractPrice(item.totalAmount)), 0);
+  const currencySymbol = cartItems[0]?.currencySymbol || '₹';
+  const totalPrice = cartItems.reduce((s, i) => s + Number(extractPrice(i.totalAmount)), 0);
+  const totalItems = cartItems.reduce((s, i) => s + Number(i.quantity), 0);
 
   return (
     <>
-      {/* Sidebar Drawer */}
-      <div
-        className={`fixed top-0 right-0 h-full 
-w-[85%] sm:w-100
-bg-white shadow-2xl z-52 
-transform transition-transform duration-300 ease-in-out
-${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap');
+        * { box-sizing: border-box; }
+        .cs-scroll::-webkit-scrollbar { width: 4px; }
+        .cs-scroll::-webkit-scrollbar-track { background: transparent; }
+        .cs-scroll::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); border-radius: 99px; }
+        .cs-scroll::-webkit-scrollbar-thumb:hover { background: ${GOLD}; }
+        .cs-item { transition: border-color .18s, box-shadow .18s; }
+        .cs-item:hover { border-color: ${GOLD} !important; box-shadow: 0 2px 12px rgba(201,168,76,0.1); }
+        .cs-qty-btn { transition: background .15s, transform .1s; }
+        .cs-qty-btn:hover:not(:disabled) { background: ${GOLD} !important; color: #fff !important; transform: scale(1.08); }
+        .cs-remove-btn { transition: background .15s, color .15s; }
+        .cs-remove-btn:hover { background: #FEF2F2 !important; color: ${RED} !important; }
+        .cs-checkout-btn { transition: background .2s, box-shadow .2s, transform .15s; }
+        .cs-checkout-btn:hover { background: #b8952e !important; box-shadow: 0 6px 20px rgba(201,168,76,0.35) !important; transform: translateY(-1px); }
+        .cs-checkout-btn:active { transform: translateY(0); }
+        .cs-browse-btn:hover { background: ${DEEP} !important; color: ${GOLD_LIGHT} !important; }
+        @keyframes cs-spin { to { transform: rotate(360deg); } }
+        @keyframes cs-slidein { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        @keyframes cs-fadeitem { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+      `}</style>
 
-      >
-        {/* Header */}
-        <div className=" p-4 sm:p-6 text-white bg-gradient-to-br 
-from-[#040934] 
-via-[#030e2d] 
-to-[#051036]
-shadow-[inset_0_0_120px_rgba(88,28,135,0.25)]">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                <ShoppingCart size={20} />
+      {/* ── Drawer ── */}
+      <div style={{
+        position: 'fixed', top: 0, right: 0, height: '100%',
+        width: '100%', maxWidth: 400,
+        background: '#fff', zIndex: 52,
+        display: 'flex', flexDirection: 'column',
+        transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
+        transition: 'transform .3s cubic-bezier(.4,0,.2,1)',
+        boxShadow: isOpen ? '-8px 0 40px rgba(26,18,9,0.15)' : 'none',
+        fontFamily: "'DM Sans', sans-serif",
+      }}>
+
+        {/* ── Header ── */}
+        <div style={{ background: DEEP, padding: '20px 20px 18px', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 42, height: 42, borderRadius: '50%', background: 'rgba(201,168,76,0.15)', border: `1px solid ${GOLD}40`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <ShoppingCart size={18} color={GOLD} />
               </div>
               <div>
-                <h2 className="text-lg sm:text-xl font-bold">Shopping Cart</h2>
-                <p className="text-xs text-white/80">{cartItems.length} items</p>
+                <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, fontWeight: 600, color: '#fff', margin: 0, lineHeight: 1.1 }}>
+                  Your Cart
+                </h2>
+                <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', margin: 0, marginTop: 2 }}>
+                  {totalItems} {totalItems === 1 ? 'item' : 'items'}
+                </p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-full hover:bg-white/20 transition-colors"
+              style={{ width: 34, height: 34, borderRadius: '50%', background: 'rgba(255,255,255,0.08)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', transition: 'background .18s' }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.16)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
             >
-              <X size={24} />
+              <X size={17} />
             </button>
           </div>
         </div>
 
-        {cartItems && cartItems.length > 0 && (
-          <ProgressOfferBar
-            confettiOrigin={{ x: 0.95, y: 0.6 }}
-            currentStep={0}
-          />
+        {/* ── Progress offer bar ── */}
+        {cartItems.length > 0 && (
+          <ProgressOfferBar confettiOrigin={{ x: 0.95, y: 0.6 }} currentStep={0} />
         )}
 
-        {/* Content */}
-
-        <div className="flex min-h-0 overflow-y-auto flex-col h-[calc(100%-260px)]">
-          {/* Cart Items - Scrollable */}
-          <div className="flex-1 max-h-[calc(100%-120px)] overflow-y-scroll p-4 space-y-3">
-            {loading ? (
-              <div className="flex flex-col items-center justify-center h-full">
-                <Loader2 className="w-10 h-10 animate-spin text-[#a17b0a] mb-3" />
-                <p className="text-gray-600">Loading cart...</p>
+        {/* ── Body ── */}
+        <div className="cs-scroll" style={{ flex: 1, overflowY: 'auto', padding: '14px 16px', background: CREAM }}>
+          {loading ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 240, gap: 12 }}>
+              <div style={{ width: 36, height: 36, border: `3px solid ${BORDER}`, borderTopColor: GOLD, borderRadius: '50%', animation: 'cs-spin 1s linear infinite' }} />
+              <p style={{ color: MUTED, fontSize: 14 }}>Loading cart…</p>
+            </div>
+          ) : error ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 240, gap: 12, textAlign: 'center' }}>
+              <AlertCircle size={36} color={RED} />
+              <p style={{ color: RED, fontSize: 14 }}>{error}</p>
+              <button onClick={fetchCartData} style={{ background: GOLD, color: DEEP, border: 'none', borderRadius: 8, padding: '9px 20px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                Retry
+              </button>
+            </div>
+          ) : cartItems.length === 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 300, gap: 10, textAlign: 'center', padding: 24 }}>
+              <div style={{ width: 72, height: 72, borderRadius: '50%', background: GOLD_PALE, border: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 4 }}>
+                <ShoppingCart size={28} color={GOLD} />
               </div>
-            ) : error ? (
-              <div className="flex flex-col items-center justify-center h-full text-center p-4">
-                <AlertCircle className="w-12 h-12 text-red-500 mb-3" />
-                <p className="text-red-600 mb-4">{error}</p>
-                <button
-                  onClick={fetchCartData}
-                  className="bg-[#a17b0a] hover:bg-[#a17b0a] text-white px-4 py-2 rounded-lg transition-all"
-                >
-                  Retry
-                </button>
-              </div>
-            ) : cartItems.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-center p-4">
-                <ShoppingCart className="w-16 h-16 text-gray-300 mb-4" />
-                <p className="text-gray-600 text-lg mb-2">Your cart is empty</p>
-                <p className="text-gray-400 text-sm mb-4">Add items to get started</p>
-                <button
-                  onClick={() => {
-                    navigate('/products');
-                    onClose();
-                  }}
-                  className="bg-[#a17b0a] hover:bg-[#a17b0a] text-white px-6 py-2 rounded-lg transition-all"
-                >
-                  Browse Products
-                </button>
-              </div>
-            ) : (
-              cartItems.map((item, index) => (
+              <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, fontWeight: 600, color: DEEP }}>Cart is empty</p>
+              <p style={{ fontSize: 13, color: MUTED, maxWidth: 220 }}>Add products to your cart and they'll appear here</p>
+              <button
+                className="cs-browse-btn"
+                onClick={() => { navigate('/products'); onClose(); }}
+                style={{ marginTop: 8, background: GOLD, color: DEEP, border: 'none', borderRadius: 10, padding: '12px 28px', fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background .2s, color .2s' }}
+              >
+                Browse Products
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {cartItems.map((item, index) => (
                 <div
                   key={item._id || index}
-                  className="bg-gray-50 rounded-lg p-3 border border-gray-200 hover:border-purple-300 transition-all"
+                  className="cs-item"
+                  style={{
+                    background: '#fff', border: `1px solid ${BORDER}`, borderRadius: 12,
+                    padding: '12px 14px', display: 'flex', gap: 12,
+                    opacity: removingId === (isGuest ? item.productId || item.product._id : item.product._id) ? 0.4 : 1,
+                    transition: 'opacity .2s',
+                    animation: 'cs-fadeitem .25s ease',
+                  }}
                 >
-                  <div className="flex gap-3">
-                    {/* Product Image */}
-                    <div
-                      onClick={() => handleViewDetails(item.product)}
-                      className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden cursor-pointer bg-white"
+                  {/* Image */}
+                  <div
+                    onClick={() => { navigate(`/product/${item.product._id || item.product.id}`); onClose(); }}
+                    style={{ width: 72, height: 72, borderRadius: 8, overflow: 'hidden', flexShrink: 0, cursor: 'pointer', border: `1px solid ${BORDER}` }}
+                  >
+                    <img
+                      src={item?.product?.images?.[0] || '/placeholder.png'}
+                      alt={item?.product?.name || 'Product'}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                      onError={e => { e.target.src = '/placeholder.png'; }}
+                    />
+                  </div>
+
+                  {/* Details */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p
+                      onClick={() => { navigate(`/product/${item.product._id || item.product.id}`); onClose(); }}
+                      style={{ fontSize: 13, fontWeight: 600, color: DEEP, marginBottom: 3, cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.4 }}
                     >
-                      <img
-                        src={item?.product?.images?.[0] || "/placeholder.png"}
-                        alt={item?.product?.name || "Product"}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+                      {item.product.name}
+                    </p>
+                    <p style={{ fontSize: 15, fontWeight: 700, color: INK, marginBottom: 8, fontFamily: "'Cormorant Garamond',serif" }}>
+                      {item.product.price}
+                    </p>
 
-                    {/* Product Details */}
-                    <div className="flex-1 min-w-0">
-                      <h3
-                        onClick={() => handleViewDetails(item.product)}
-                        className="text-sm font-medium text-gray-800 mb-1 truncate cursor-pointer hover:text-[#a17b0a]"
-                      >
-                        {item.product.name}
-                      </h3>
-                      <p className="text-black font-semibold text-sm mb-2">
-                        {item.product.price}
-                      </p>
-
-                      {/* Quantity Controls */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() =>
-                              updateQuantity({
-                                id: isGuest ? (item.productId || item.product._id) : item.product._id,
-                                cartId: item._id,
-                                delta: -1,
-                                price: item.product.price,
-                              })
-                            }
-                            className="w-7 h-7 bg-gray-200 cursor-pointer hover:bg-gray-300 text-gray-700 rounded flex items-center justify-center transition-colors"
-                            disabled={item.quantity <= 1}
-                          >
-                            <Minus size={14} />
-                          </button>
-
-                          <span className="w-8 h-7 bg-[#a17b0a] text-white rounded flex items-center justify-center text-sm font-medium">
-                            {item.quantity}
-                          </span>
-
-                          <button
-                            onClick={() =>
-                              updateQuantity({
-                                id: isGuest ? (item.productId || item.product._id) : item.product._id,
-                                cartId: item._id,
-                                delta: 1,
-                                price: item.product.price,
-                              })
-                            }
-                            className="w-7 h-7 bg-gray-200 cursor-pointer hover:bg-gray-300 text-gray-700 rounded flex items-center justify-center transition-colors"
-                          >
-                            <Plus size={14} />
-                          </button>
-                        </div>
-
+                    {/* Qty + remove */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         <button
-                          onClick={() =>
-                            removeItem(isGuest ? (item.productId || item.product._id) : item.product._id)
-                          }
-                          className="text-red-500 hover:text-red-600 p-1.5 hover:bg-red-50 rounded transition-all"
+                          className="cs-qty-btn"
+                          onClick={() => updateQuantity({ id: isGuest ? (item.productId || item.product._id) : item.product._id, cartId: item._id, delta: -1, price: item.product.price })}
+                          disabled={item.quantity <= 1}
+                          style={{ width: 28, height: 28, borderRadius: 7, border: `1px solid ${BORDER}`, background: '#fff', color: MUTED, cursor: item.quantity <= 1 ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: item.quantity <= 1 ? 0.4 : 1 }}
                         >
-                          <Trash2 size={16} />
+                          <Minus size={12} />
+                        </button>
+                        <span style={{ width: 28, height: 28, background: GOLD, color: DEEP, borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700 }}>
+                          {item.quantity}
+                        </span>
+                        <button
+                          className="cs-qty-btn"
+                          onClick={() => updateQuantity({ id: isGuest ? (item.productId || item.product._id) : item.product._id, cartId: item._id, delta: 1, price: item.product.price })}
+                          style={{ width: 28, height: 28, borderRadius: 7, border: `1px solid ${BORDER}`, background: '#fff', color: MUTED, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                        >
+                          <Plus size={12} />
                         </button>
                       </div>
+
+                      <button
+                        className="cs-remove-btn"
+                        onClick={() => removeItem(isGuest ? (item.productId || item.product._id) : item.product._id)}
+                        style={{ width: 30, height: 30, borderRadius: 7, border: `1px solid ${BORDER}`, background: '#fff', color: MUTED, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                      >
+                        <Trash2 size={13} />
+                      </button>
                     </div>
                   </div>
-                </div>
-              ))
-            )}
-          </div>
 
-
-          {
-            cartItems.length > 0 &&
-
-            <div className="sticky bottom-[96px] z-10 w-full bg-gradient-to-r from-[#E59A2F] to-[#D8891E] text-white text-xs font-semibold py-1 flex items-center justify-center gap-4 shadow-sm">
-              <span>Fast Shipping 🚚</span>
-              <span>|</span>
-              <span>Secure & Encrypted Checkout ✅</span>
-            </div>
-          }
-
-
-
-
-          {/* Footer - Checkout */}
-          {cartItems.length > 0 && (
-            <div className="sticky bottom-0 z-20 border-t border-gray-200 p-4 bg-white">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-gray-600 font-medium">SubTotal:</span>
-                <span className="text-2xl font-bold text-black">{currencySymbol}{totalPrice.toLocaleString('en-IN')}</span>
-              </div>
-              <div className="flex items-center justify-between mb-4 text-sm text-gray-500">
-                <p>
-                  Final price (after discounts) will be displayed at checkout
-                </p>
-              </div>
-
-              <button
-                onClick={handleCheckout}
-                className="w-full cursor-pointer bg-gradient-to-r from-[#a17b0a] to-[#a17b0a]
-             hover:from-[#8c6909] hover:to-[#8c6909]
-             text-white py-3 px-4 rounded-lg font-semibold
-             transition-all shadow-lg hover:shadow-xl"
-              >
-                <div className="flex items-center justify-center">
-                  {/* Left Text */}
-                  <span className="text-base">Proceed to Checkout</span>
-
-                  {/* Right Payment Icons */}
-                  <div className="flex items-center ml-2">
-                    {[
-                      { src: "/paytm.png", alt: "Paytm" },
-                      { src: "/phonepay.jpg", alt: "PhonePe" },
-                      { src: "/gpay.jpg", alt: "GPay" },
-                    ].map((logo, index) => (
-                      <div
-                        key={index}
-                        className={`w-6 h-6 rounded-full bg-white border border-white
-                      flex items-center justify-center
-                      ${index !== 0 ? "-ml-2" : ""}`}
-                      >
-                        <img
-                          src={logo.src}
-                          alt={logo.alt}
-                          className="w-4 h-4 object-contain"
-                        />
-                      </div>
-                    ))}
+                  {/* Subtotal */}
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'space-between', flexShrink: 0 }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: DEEP }}>{currencySymbol}{extractPrice(item.totalAmount).toLocaleString('en-IN')}</span>
+                    {item.quantity > 1 && (
+                      <span style={{ fontSize: 10, color: MUTED }}>{item.quantity}× {item.product.price}</span>
+                    )}
                   </div>
                 </div>
-              </button>
-
+              ))}
             </div>
           )}
         </div>
+
+        {/* ── Trust strip ── */}
+        {cartItems.length > 0 && (
+          <div style={{
+            background: GOLD_PALE, borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            gap: 20, padding: '9px 16px', flexShrink: 0, flexWrap: 'wrap',
+          }}>
+            {[
+              { icon: <Truck size={13} color={GOLD} />, text: 'Fast Shipping' },
+              { icon: <ShieldCheck size={13} color={GREEN} />, text: 'Secure Checkout' },
+              { icon: <Package size={13} color={MUTED} />, text: 'Easy Returns' },
+            ].map(({ icon, text }) => (
+              <span key={text} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: MUTED, fontWeight: 500 }}>
+                {icon} {text}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* ── Footer ── */}
+        {cartItems.length > 0 && (
+          <div style={{ background: '#fff', borderTop: `1px solid ${BORDER}`, padding: '16px 18px 20px', flexShrink: 0 }}>
+            {/* Subtotal row */}
+            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 4 }}>
+              <span style={{ fontSize: 13, color: MUTED, fontWeight: 500 }}>Subtotal</span>
+              <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 26, fontWeight: 600, color: DEEP }}>
+                {currencySymbol}{totalPrice.toLocaleString('en-IN')}
+              </span>
+            </div>
+            <p style={{ fontSize: 11, color: MUTED, marginBottom: 14 }}>
+              Final price (with discounts) shown at checkout
+            </p>
+
+            {/* Checkout button */}
+            <button
+              className="cs-checkout-btn"
+              onClick={onCheckout}
+              style={{
+                width: '100%', background: GOLD, color: DEEP, border: 'none',
+                borderRadius: 12, padding: '15px 20px', fontSize: 15, fontWeight: 700,
+                cursor: 'pointer', display: 'flex', alignItems: 'center',
+                justifyContent: 'space-between', letterSpacing: '.02em',
+                boxShadow: '0 4px 14px rgba(201,168,76,0.25)',
+              }}
+            >
+              <span>Proceed to Checkout</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                {/* Payment icons */}
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  {['/paytm.png', '/phonepay.jpg', '/gpay.jpg'].map((src, i) => (
+                    <div key={src} style={{
+                      width: 22, height: 22, borderRadius: '50%',
+                      background: '#fff', border: '2px solid rgba(201,168,76,0.3)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      marginLeft: i !== 0 ? -8 : 0,
+                    }}>
+                      <img src={src} alt="" style={{ width: 14, height: 14, objectFit: 'contain' }} />
+                    </div>
+                  ))}
+                </div>
+                <ArrowRight size={16} />
+              </div>
+            </button>
+
+            {/* Continue shopping */}
+            <button
+              onClick={onClose}
+              style={{ width: '100%', marginTop: 10, background: 'none', border: 'none', color: MUTED, fontSize: 13, fontWeight: 500, cursor: 'pointer', padding: '6px 0', textAlign: 'center', transition: 'color .18s' }}
+              onMouseEnter={e => e.currentTarget.style.color = GOLD}
+              onMouseLeave={e => e.currentTarget.style.color = MUTED}
+            >
+              ← Continue Shopping
+            </button>
+          </div>
+        )}
       </div>
-
-
-      {/* Backdrop Overlay */}
-      {/* {isOpen && !openPayment && (
-        <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
-          onClick={onClose}
-        />
-      )} */}
-
-
-      <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out;
-        }
-      `}</style>
     </>
   );
 }

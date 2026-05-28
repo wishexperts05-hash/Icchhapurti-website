@@ -39,7 +39,7 @@ export default function Navbar({ countryCurrency }) {
   const [copiedProductId, setCopiedProductId] = useState(null); // Track copied product
   const location = useLocation();
   const navigate = useNavigate();
-    const token = localStorage?.getItem("token");
+  const token = localStorage?.getItem("token");
   const [openPayment, setOpenPayment] = useState(false);
   const baseMenu = [
     {
