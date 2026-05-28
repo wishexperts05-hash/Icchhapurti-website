@@ -466,54 +466,71 @@ bg-center bg-no-repeat
       )}
 
       {/* RIGHT SLIDING DRAWER (Menu) */}
-      <div
-        className={`fixed top-0 right-0 h-full w-full sm:w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "translate-x-full"
-          }`}
-      >
-        {/* User Profile Section */}
-        <div className="bg-gradient-to-br from-[#020516] via-[#020A1E] to-[#02081B] shadow-[inset_0_0_120px_rgba(88,28,135,0.25)] relative overflow-hidden p-4 sm:p-6 text-white">
-          <div className="flex items-center justify-between mb-4">
+      {/* ══ Right slide drawer ══ */}
+      <div style={{
+        position: 'fixed', top: 0, right: 0, height: '100%',
+        width: '100%', maxWidth: 320,
+        background: '#fff',
+        boxShadow: menuOpen ? '-8px 0 48px rgba(26,18,9,0.18)' : 'none',
+        zIndex: 50,
+        display: 'flex', flexDirection: 'column',
+        transform: menuOpen ? 'translateX(0)' : 'translateX(100%)',
+        transition: 'transform .3s cubic-bezier(.4,0,.2,1)',
+        fontFamily: "'DM Sans', sans-serif",
+      }}>
+
+        {/* ── Header ── */}
+        <div style={{
+          background: 'linear-gradient(160deg, #1A1209 0%, #2C2416 100%)',
+          padding: '22px 20px 18px',
+          flexShrink: 0,
+          position: 'relative',
+          overflow: 'hidden',
+        }}>
+          {/* Decorative gold circle */}
+          <div style={{ position: 'absolute', top: -32, right: -32, width: 120, height: 120, borderRadius: '50%', background: 'rgba(201,168,76,0.07)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', bottom: -20, left: -20, width: 80, height: 80, borderRadius: '50%', background: 'rgba(201,168,76,0.05)', pointerEvents: 'none' }} />
+
+          {/* Top row: avatar + name + close */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: user ? 18 : 0, position: 'relative', zIndex: 1 }}>
             {user ? (
-              <div className="flex items-center gap-3 flex-1">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden flex items-center justify-center shadow-lg bg-white/20 ring-2 ring-white/30">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0 }}>
+                <div style={{ position: 'relative', flexShrink: 0 }}>
                   <img
-                    className="w-full h-full object-cover"
-                    src={
-                      user?.profileImage || "https://via.placeholder.com/150"
-                    }
+                    src={user?.profileImage || 'https://via.placeholder.com/150'}
                     alt="profile"
                     loading="lazy"
+                    style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover', border: '2px solid #C9A84C', display: 'block' }}
                   />
+                  {/* Online dot */}
+                  <span style={{ position: 'absolute', bottom: 1, right: 1, width: 10, height: 10, borderRadius: '50%', background: '#4ADE80', border: '2px solid #1A1209' }} />
                 </div>
-
                 <Link
                   to="/view-profile"
                   onClick={() => setMenuOpen(false)}
-                  className="group flex-1"
+                  style={{ flex: 1, minWidth: 0, textDecoration: 'none' }}
                 >
-                  <p className="font-semibold text-base sm:text-lg truncate">
-                    {user?.name || "Guest User"}
+                  <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 600, color: '#fff', margin: 0, lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {user?.name || 'My Account'}
                   </p>
-                  <p className="text-xs sm:text-sm text-white/90 flex items-center gap-1 group-hover:gap-2 transition-all">
-                    {"View Profile"}
-                    <ChevronRight size={14} />
+                  <p style={{ fontSize: 12, color: '#C9A84C', margin: '3px 0 0', display: 'flex', alignItems: 'center', gap: 3 }}>
+                    View Profile <ChevronRight size={11} />
                   </p>
                 </Link>
               </div>
             ) : (
-              <div className="flex items-center gap-3 flex-1">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center bg-white/20 ring-2 ring-white/30">
-                  <User size={24} className="sm:w-7 sm:h-7" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1 }}>
+                <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(201,168,76,0.12)', border: '2px solid rgba(201,168,76,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <User size={22} color="#C9A84C" />
                 </div>
                 <div>
-                  <p className="font-semibold text-base sm:text-lg">Welcome!</p>
+                  <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 600, color: '#fff', margin: 0 }}>Welcome!</p>
                   <Link
                     to="/login"
                     onClick={() => setMenuOpen(false)}
-                    className="text-xs sm:text-sm text-white/90 hover:text-white transition-colors flex items-center gap-1"
+                    style={{ fontSize: 12, color: '#C9A84C', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 3, marginTop: 3 }}
                   >
-                    Login to continue
-                    <ChevronRight size={14} />
+                    Login to continue <ChevronRight size={11} />
                   </Link>
                 </div>
               </div>
@@ -521,172 +538,172 @@ bg-center bg-no-repeat
 
             <button
               onClick={() => setMenuOpen(false)}
-              className="p-1.5 rounded-full hover:bg-white/20 transition-colors ml-2"
+              style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(255,255,255,0.08)', border: 'none', cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'background .18s', marginLeft: 8 }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.18)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
             >
-              <X size={24} className="text-white" />
+              <X size={16} />
             </button>
           </div>
 
-          {/* Quick Actions in Header */}
+          {/* Quick actions */}
           {user && (
-            <div className="grid grid-cols-3 gap-2 mt-4">
-              <Link
-                to="/wishlist"
-                onClick={() => setMenuOpen(false)}
-                className="flex flex-col items-center gap-1 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all"
-              >
-                <Heart size={18} />
-                <span className="text-xs">Wishlist</span>
-              </Link>
-              <button
-                onClick={() => {
-                  setMenuOpen(false);
-                  setCartSidebarOpen(true);
-                }}
-                className="flex flex-col cursor-pointer items-center gap-1 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all"
-              >
-                <LucideShoppingBag size={18} />
-                <span className="text-xs">Cart</span>
-              </button>
-              <Link
-                to="/notification"
-                onClick={() => setMenuOpen(false)}
-                className="flex flex-col items-center gap-1 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all"
-              >
-                <Bell size={18} />
-                <span className="text-xs">Alerts</span>
-              </Link>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, position: 'relative', zIndex: 1 }}>
+              {[
+                { to: '/wishlist', icon: <Heart size={16} />, label: 'Wishlist', badge: wishlistCount },
+                { onClick: () => { setMenuOpen(false); setCartSidebarOpen(true); }, icon: <LucideShoppingBag size={16} />, label: 'Cart', badge: cartCount },
+                { to: '/notification', icon: <Bell size={16} />, label: 'Alerts', badge: unreadCount },
+              ].map(({ to, onClick, icon, label, badge }) => {
+                const tile = (
+                  <div
+                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '10px 6px', background: 'rgba(255,255,255,0.07)', borderRadius: 10, cursor: 'pointer', transition: 'background .18s', position: 'relative', border: '1px solid rgba(201,168,76,0.12)' }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(201,168,76,0.12)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.07)'}
+                  >
+                    {icon}
+                    <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.7)', fontWeight: 500, letterSpacing: '.02em' }}>{label}</span>
+                    {badge > 0 && (
+                      <span style={{ position: 'absolute', top: 6, right: 8, minWidth: 15, height: 15, background: '#E53E3E', color: '#fff', fontSize: 9, fontWeight: 700, borderRadius: 99, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px' }}>
+                        {badge}
+                      </span>
+                    )}
+                  </div>
+                );
+                if (to) return (
+                  <Link key={label} to={to} onClick={() => setMenuOpen(false)} style={{ color: '#fff', textDecoration: 'none' }}>
+                    {tile}
+                  </Link>
+                );
+                return (
+                  <button key={label} onClick={onClick} style={{ background: 'none', border: 'none', padding: 0, color: '#fff', cursor: 'pointer' }}>
+                    {tile}
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
 
-        {/* Drawer Menu Items */}
-        <div className="p-4 sm:p-6 flex flex-col gap-2 overflow-y-auto h-[calc(100%-220px)] sm:h-[calc(100%-240px)]">
-          {/* Main Menu Items */}
+        {/* ── Nav links ── */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '10px 12px 0' }}>
+
+          {/* Main items */}
           {menuItems.map((item, index) => {
             const Icon = item.icon;
-            const isItemActive = isActive(item.href);
+            const active = isActive(item.href);
             return (
               <Link
                 key={index}
-
                 to={item.href}
                 onClick={() => setMenuOpen(false)}
-                className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isItemActive
-                  ? "bg-[#C9A227]/10 text-[#D3AF37] shadow-sm"
-                  : "text-gray-700 hover:bg-[#C9A227]/10 hover:text-[#D3AF37]"
-                  }`}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 12,
+                  padding: '11px 14px', borderRadius: 10, marginBottom: 2,
+                  textDecoration: 'none',
+                  background: active ? 'rgba(201,168,76,0.1)' : 'transparent',
+                  color: active ? '#C9A84C' : '#4A3F30',
+                  fontWeight: active ? 600 : 500,
+                  fontSize: 14, transition: 'background .18s, color .18s',
+                  borderLeft: active ? '3px solid #C9A84C' : '3px solid transparent',
+                }}
+                onMouseEnter={e => { if (!active) { e.currentTarget.style.background = 'rgba(201,168,76,0.07)'; e.currentTarget.style.color = '#C9A84C'; } }}
+                onMouseLeave={e => { if (!active) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#4A3F30'; } }}
               >
-                <Icon
-                  size={20}
-                  className="group-hover:scale-110 transition-transform"
-                />
-                <span className="font-medium flex-1 text-sm sm:text-base">
-                  {item.label}
-                </span>
-                <ChevronRight
-                  size={18}
-                  className={`transition-all ${isItemActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
-                />
+                <div style={{ width: 34, height: 34, borderRadius: 9, background: active ? 'rgba(201,168,76,0.15)' : '#F5F0E8', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'background .18s' }}>
+                  <Icon size={17} color={active ? '#C9A84C' : '#7A6F60'} />
+                </div>
+                <span style={{ flex: 1 }}>{item.label}</span>
+                <ChevronRight size={14} style={{ opacity: active ? 1 : 0.25, transition: 'opacity .18s' }} />
               </Link>
             );
           })}
 
-          {/* Additional Navigation Links */}
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-3 sm:px-4">
+          {/* Divider + More section */}
+          <div style={{ margin: '10px 0 6px', paddingTop: 12, borderTop: '1px solid rgba(201,168,76,0.15)' }}>
+            <p style={{ fontSize: 10, fontWeight: 700, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '.1em', padding: '0 4px', marginBottom: 6 }}>
               More
             </p>
-            <Link
-              to="/about-us"
-              onClick={() => setMenuOpen(false)}
-              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isActive("/about-us")
-                ? "bg-[#C9A227]/10 text-[#D3AF37] shadow-sm"
-                : "text-gray-700 hover:bg-[#C9A227]/10 hover:text-[#D3AF37]"
-                }`}
-            >
-              <Info
-                size={20}
-                className="group-hover:scale-110 transition-transform"
-              />
-              <span className="font-medium flex-1 text-body">
-                {"About Us"}
-              </span>
-              <ChevronRight
-                size={18}
-                className={`transition-all ${isActive("/about-us") ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
-              />
-            </Link>
-
-            <Link
-              to="/contact"
-              onClick={() => setMenuOpen(false)}
-              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isActive("/contact")
-                ? "bg-[#C9A227]/10 text-[#D3AF37] shadow-sm"
-                : "text-gray-700 hover:bg-[#C9A227]/10 hover:text-[#D3AF37]"
-                }`}
-            >
-              <Mail
-                size={20}
-                className="group-hover:scale-110 transition-transform"
-              />
-              <span className="font-medium flex-1 text-body">
-                Contact Us
-              </span>
-              <ChevronRight
-                size={18}
-                className={`transition-all ${isActive("/contact-us") ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
-              />
-            </Link>
-
-            <Link
-              to="/blogs"
-              onClick={() => setMenuOpen(false)}
-              className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all group ${isActive("/blogs")
-                ? "bg-[#C9A227]/10 text-[#D3AF37] shadow-sm"
-                : "text-gray-700 hover:bg-[#C9A227]/10 hover:text-[#D3AF37]"
-                }`}
-            >
-              <BookOpen
-                size={20}
-                className="group-hover:scale-110 transition-transform"
-              />
-              <span className="font-medium flex-1 text-body">
-                {"Blogs"}
-              </span>
-              <ChevronRight
-                size={18}
-                className={`transition-all ${isActive("/blogs") ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
-              />
-            </Link>
+            {[
+              { href: '/about-us', icon: Info, label: 'About Us' },
+              { href: '/contact', icon: Mail, label: 'Contact Us' },
+              { href: '/blogs', icon: BookOpen, label: 'Blogs' },
+            ].map(({ href, icon: Icon, label }) => {
+              const active = isActive(href);
+              return (
+                <Link
+                  key={href}
+                  to={href}
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '10px 14px', borderRadius: 10, marginBottom: 2,
+                    textDecoration: 'none',
+                    background: active ? 'rgba(201,168,76,0.1)' : 'transparent',
+                    color: active ? '#C9A84C' : '#4A3F30',
+                    fontWeight: active ? 600 : 500,
+                    fontSize: 14, transition: 'background .18s, color .18s',
+                    borderLeft: active ? '3px solid #C9A84C' : '3px solid transparent',
+                  }}
+                  onMouseEnter={e => { if (!active) { e.currentTarget.style.background = 'rgba(201,168,76,0.07)'; e.currentTarget.style.color = '#C9A84C'; } }}
+                  onMouseLeave={e => { if (!active) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#4A3F30'; } }}
+                >
+                  <div style={{ width: 34, height: 34, borderRadius: 9, background: active ? 'rgba(201,168,76,0.15)' : '#F5F0E8', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'background .18s' }}>
+                    <Icon size={17} color={active ? '#C9A84C' : '#7A6F60'} />
+                  </div>
+                  <span style={{ flex: 1 }}>{label}</span>
+                  <ChevronRight size={14} style={{ opacity: active ? 1 : 0.25 }} />
+                </Link>
+              );
+            })}
           </div>
-
-          {/* Logout Button */}
         </div>
 
-        <div className="absolute  bottom-0 left-0 right-0 p-4 sm:p-6 border-t border-gray-200 bg-white">
-          {user && (
+        {/* ── Footer ── */}
+        <div style={{ padding: '12px 14px 20px', borderTop: '1px solid rgba(201,168,76,0.15)', flexShrink: 0, background: '#fff' }}>
+          {user ? (
             <button
               onClick={() => {
-                localStorage.removeItem("user");
-                localStorage.removeItem("token");
-                localStorage.removeItem("cartItems");
-                localStorage.setItem("cart", 0);
-                localStorage.removeItem("unreadCount");
-                setCount(0)
-                navigate("/");
+                localStorage.removeItem('user');
+                localStorage.removeItem('token');
+                localStorage.removeItem('cartItems');
+                localStorage.setItem('cart', 0);
+                localStorage.removeItem('unreadCount');
+                setCount(0);
+                navigate('/');
                 setMenuOpen(false);
               }}
-              className=" flex items-center cursor-pointer justify-center gap-3 bg-gradient-to-r from-red-600 to-red-700 text-white py-2.5 sm:py-3 px-4 rounded-lg font-medium hover:shadow-lg hover:shadow-red-600/30 transition-all group text-body"
+              style={{
+                width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                gap: 10, background: 'linear-gradient(135deg, #DC2626, #B91C1C)',
+                color: '#fff', border: 'none', borderRadius: 10, padding: '13px',
+                fontFamily: "'DM Sans', sans-serif", fontSize: 14, fontWeight: 600,
+                cursor: 'pointer', letterSpacing: '.02em', transition: 'opacity .18s, box-shadow .18s',
+                boxShadow: '0 2px 10px rgba(220,38,38,0.25)',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.opacity = '.88'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(220,38,38,0.35)'; }}
+              onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.boxShadow = '0 2px 10px rgba(220,38,38,0.25)'; }}
             >
-              <LogOut
-                size={20}
-                className="group-hover:scale-110 transition-transform"
-              />
-              Logout
+              <LogOut size={16} /> Logout
             </button>
+          ) : (
+            <Link
+              to="/login"
+              onClick={() => setMenuOpen(false)}
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                gap: 10, background: '#C9A84C', color: '#1A1209',
+                borderRadius: 10, padding: '13px',
+                fontFamily: "'DM Sans', sans-serif", fontSize: 14, fontWeight: 600,
+                textDecoration: 'none', transition: 'background .18s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = '#b8952e'}
+              onMouseLeave={e => e.currentTarget.style.background = '#C9A84C'}
+            >
+              <User size={16} /> Login / Register
+            </Link>
           )}
         </div>
+
       </div>
 
       {/* BACKDROP OVERLAY */}
