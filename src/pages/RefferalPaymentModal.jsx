@@ -1,9 +1,10 @@
 import axios from 'axios';
-import { useEffect, useState, useCallback, useMemo, lazy, Suspense } from 'react';
+import { useEffect, useState, useCallback, useMemo, lazy, Suspense, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
     Loader2, AlertCircle, CheckCircle, Package,
     ArrowLeft, ArrowRight, ShieldCheck, Truck,
+    Search, ChevronDown
 } from 'lucide-react';
 import { AlertTriangle } from 'lucide-react';
 import { X, Gift } from 'lucide-react';
@@ -26,6 +27,67 @@ import AddressSection from '../components/Payment/AddressSection';
 
 import { useHeader } from '../context/HeaderContext';
 
+const SearchableDropdown = ({
+    field, label, placeholder, options, value,
+    onSelect, disabled, renderOption, getOptionValue, isLoading,
+    openDropdown, setOpenDropdown, searchTerms, setSearchTerms, dropdownRefs, errors
+}) => (
+    <div ref={el => dropdownRefs.current[field] = el} className="relative">
+      <label className="block text-gray-700 text-xs font-semibold uppercase tracking-wider mb-2">{label} *</label>
+      <div className={disabled || isLoading ? 'opacity-50 cursor-not-allowed' : ''}>
+        <div
+          onClick={() => !disabled && !isLoading && setOpenDropdown(openDropdown === field ? null : field)}
+          className={`w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 cursor-pointer flex items-center justify-between hover:border-gray-900 focus:outline-none transition-all ${errors[field] ? 'ring-2 ring-red-500' : ''}`}
+        >
+          <span className={value ? 'text-gray-900 text-sm' : 'text-gray-400 text-sm'}>
+            {isLoading ? 'Loading...' : (value || placeholder)}
+          </span>
+          {isLoading
+            ? <div className="w-4 h-4 border-2 border-gray-400/40 border-t-gray-600 rounded-full animate-spin" />
+            : <ChevronDown className="w-4 h-4 text-gray-500" />
+          }
+        </div>
+
+        {openDropdown === field && !disabled && !isLoading && (
+          <div
+            className="absolute z-50 w-full mt-1 bg-white rounded-xl shadow-lg border border-gray-200 max-h-64 overflow-hidden"
+            onMouseDown={(e) => e.preventDefault()}
+          >
+            <div className="p-2 border-b border-gray-200">
+              <div className="relative flex items-center bg-gray-50 rounded-lg px-2 border border-gray-200">
+                <Search className="w-4 h-4 text-gray-400 pointer-events-none mr-2" />
+                <input
+                  type="text"
+                  value={searchTerms[field] || ''}
+                  onChange={(e) => setSearchTerms(prev => ({ ...prev, [field]: e.target.value }))}
+                  placeholder={`Search ${label.toLowerCase()}...`}
+                  className="w-full bg-transparent py-1.5 text-xs text-gray-900 outline-none focus:ring-0"
+                  autoFocus
+                />
+              </div>
+            </div>
+            <div className="max-h-48 overflow-y-auto">
+              {options.length === 0 ? (
+                <div className="px-4 py-3 text-xs text-gray-500 text-center">No results found</div>
+              ) : (
+                options.map((option, idx) => (
+                  <div
+                    key={idx}
+                    onMouseDown={(e) => { e.preventDefault(); onSelect(getOptionValue(option)); }}
+                    className="px-4 py-2 hover:bg-amber-50 cursor-pointer text-xs text-gray-900 transition-colors"
+                  >
+                    {renderOption(option)}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+      {errors[field] && <p className="text-red-500 text-[10px] mt-1">{errors[field]}</p>}
+    </div>
+);
+
 export default function RefferalPaymentModal({
     isOpen, onClose,
     country_name = 'India', countryCurrency = 'INR',
@@ -38,7 +100,16 @@ export default function RefferalPaymentModal({
     useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [pathname]);
 
     const scrollToTop = useCallback(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, []);
-    const user = useMemo(() => JSON.parse(localStorage.getItem('user') || '{}'), []);
+
+    const user = useMemo(() => {
+        try {
+            const storedUser = localStorage.getItem('user');
+            return storedUser && storedUser !== 'undefined' ? JSON.parse(storedUser) : {};
+        } catch (error) {
+            console.error('Error parsing user from localStorage:', error);
+            return {};
+        }
+    }, []);
 
     /* ── State ── */
     const [referralCode, setReferralCode] = useState(refferalCode);
@@ -72,6 +143,35 @@ export default function RefferalPaymentModal({
     const [currentStep, setCurrentStep] = useState(1);
     const [showWarning, setWarning] = useState(false);
     const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
+
+    /* ── State for Inline Authentication & Onboarding ── */
+    const [authPhone, setAuthPhone] = useState('');
+    const [authOtp, setAuthOtp] = useState('');
+    const [authStage, setAuthStage] = useState('phone'); // 'phone', 'otp', 'add_address', 'checkout'
+    const [authLoading, setAuthLoading] = useState(false);
+    const [authError, setAuthError] = useState('');
+
+    const [addressForm, setAddressForm] = useState({
+        fullName: '',
+        mobileNumber: '',
+        countryCode: '+91',
+        countryIsoCode: 'IN',
+        stateIsoCode: '',
+        country: 'India',
+        state: '',
+        city: '',
+        street: '',
+        pinCode: ''
+    });
+    const [addressErrors, setAddressErrors] = useState({});
+    const [locationDropdown, setLocationDropdown] = useState(null); // 'countryCode' | 'country' | 'state' | 'city' | null
+    const [searchTerms, setSearchTerms] = useState({ countryCode: '', country: '', state: '', city: '' });
+    const [countries, setCountries] = useState([]);
+    const [states, setStates] = useState([]);
+    const [cities, setCities] = useState([]);
+    const [loadingStates, setLoadingStates] = useState({ countries: false, states: false, cities: false });
+    const [addressSaving, setAddressSaving] = useState(false);
+    const dropdownRefs = useRef({});
 
     /* ── Derived ── */
     const totalItems = useMemo(() =>
@@ -131,10 +231,21 @@ export default function RefferalPaymentModal({
             initializePaymentPage();
         } else {
             setIsAuthenticated(false);
-            setShowAuthModal(true);
             setInitialLoading(false);
         }
     }, [isAuthenticated]);
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            if (addresses && addresses.length > 0) {
+                setAuthStage('checkout');
+            } else {
+                setAuthStage('add_address');
+            }
+        } else {
+            setAuthStage('phone');
+        }
+    }, [isAuthenticated, addresses]);
 
     useEffect(() => { fetchOffers(); }, [productId]);
 
@@ -164,6 +275,299 @@ export default function RefferalPaymentModal({
         document.body.style.overflow = 'hidden';
         return () => { document.body.style.overflow = 'auto'; };
     }, []);
+
+    /* ── Inline Onboarding API Services & Handlers ── */
+    const syncLocalCartToServer = async (token) => {
+        try {
+            const localCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+            if (localCart.length === 0) return;
+            for (let item of localCart) {
+                await fetch(`${import.meta.env.VITE_API_URL}/api/user/cart/addToCart`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        productId: item.productId || item.product?._id,
+                        quantity: item.quantity,
+                        totalAmount: item.totalAmount,
+                    }),
+                });
+            }
+            window.dispatchEvent(new CustomEvent("cartUpdated"));
+        } catch (error) {
+            console.error("Error syncing local cart:", error);
+        }
+    };
+
+    const handleSendOtp = async (e) => {
+        if (e) e.preventDefault();
+        if (!authPhone || authPhone.length < 10) {
+            setAuthError("Please enter a valid 10-digit mobile number");
+            return;
+        }
+        setAuthLoading(true);
+        setAuthError("");
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/checkout/send-otp`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ phoneNumber: Number(authPhone) })
+            });
+            const data = await res.json();
+            if (data.success) {
+                setAuthStage('otp');
+            } else {
+                setAuthError(data.message || "Failed to send OTP. Please try again.");
+            }
+        } catch (err) {
+            console.error("OTP Send Error:", err);
+            setAuthError("Something went wrong. Please try again.");
+        } finally {
+            setAuthLoading(false);
+        }
+    };
+
+    const handleVerifyOtp = async (e) => {
+        if (e) e.preventDefault();
+        if (!authOtp || authOtp.length !== 6) {
+            setAuthError("Please enter a valid 6-digit OTP");
+            return;
+        }
+        setAuthLoading(true);
+        setAuthError("");
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/checkout/verify-otp`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ phoneNumber: authPhone, otp: authOtp })
+            });
+            const data = await res.json();
+            if (data.success) {
+                localStorage.setItem("user", JSON.stringify(data.data));
+                localStorage.setItem("token", data.token);
+                await syncLocalCartToServer(data.token);
+                setIsAuthenticated(true);
+            } else {
+                setAuthError(data.message || "Invalid OTP. Please try again.");
+            }
+        } catch (err) {
+            console.error("OTP Verify Error:", err);
+            setAuthError("Verification failed. Please try again.");
+        } finally {
+            setAuthLoading(false);
+        }
+    };
+
+    // Location API calls
+    const fetchCountries = async () => {
+        const cached = sessionStorage.getItem('all_countries');
+        if (cached) {
+            const data = JSON.parse(cached);
+            setCountries(data);
+            return data;
+        }
+        setLoadingStates(prev => ({ ...prev, countries: true }));
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/location/countries`);
+            const data = await res.json();
+            if (data.success) {
+                sessionStorage.setItem('all_countries', JSON.stringify(data.data));
+                setCountries(data.data);
+                return data.data;
+            }
+        } catch (err) {
+            console.error('Failed to fetch countries:', err);
+        } finally {
+            setLoadingStates(prev => ({ ...prev, countries: false }));
+        }
+        return [];
+    };
+
+    const fetchStates = async (countryIsoCode) => {
+        if (!countryIsoCode) return [];
+        const cacheKey = `states_${countryIsoCode}`;
+        const cached = sessionStorage.getItem(cacheKey);
+        if (cached) {
+            const data = JSON.parse(cached);
+            setStates(data);
+            return data;
+        }
+        setLoadingStates(prev => ({ ...prev, states: true }));
+        setCities([]);
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/location/states?country=${countryIsoCode}`);
+            const data = await res.json();
+            if (data.success) {
+                sessionStorage.setItem(cacheKey, JSON.stringify(data.data));
+                setStates(data.data);
+                return data.data;
+            }
+        } catch (err) {
+            console.error('Failed to fetch states:', err);
+        } finally {
+            setLoadingStates(prev => ({ ...prev, states: false }));
+        }
+        return [];
+    };
+
+    const fetchCities = async (countryIsoCode, stateIsoCode) => {
+        if (!countryIsoCode || !stateIsoCode) return [];
+        const cacheKey = `cities_${countryIsoCode}_${stateIsoCode}`;
+        const cached = sessionStorage.getItem(cacheKey);
+        if (cached) {
+            const data = JSON.parse(cached);
+            setCities(data);
+            return data;
+        }
+        setLoadingStates(prev => ({ ...prev, cities: true }));
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/location/cities?country=${countryIsoCode}&state=${stateIsoCode}`);
+            const data = await res.json();
+            if (data.success) {
+                sessionStorage.setItem(cacheKey, JSON.stringify(data.data));
+                setCities(data.data);
+                return data.data;
+            }
+        } catch (err) {
+            console.error('Failed to fetch cities:', err);
+        } finally {
+            setLoadingStates(prev => ({ ...prev, cities: false }));
+        }
+        return [];
+    };
+
+    // Location select handlers
+    const handleSelectCountryCode = (phonecode) => {
+        const matched = countries.find(c => c.phonecode === phonecode);
+        setAddressForm(prev => ({
+            ...prev,
+            countryCode: `+${phonecode}`,
+            ...(matched ? {
+                countryIsoCode: matched.isoCode,
+                country: matched.country,
+                stateIsoCode: '', state: '', city: ''
+            } : {})
+        }));
+        if (matched) { setStates([]); setCities([]); fetchStates(matched.isoCode); }
+        setLocationDropdown(null);
+        setSearchTerms(prev => ({ ...prev, countryCode: '' }));
+    };
+
+    const handleSelectCountry = async (isoCode) => {
+        const selected = countries.find(c => c.isoCode === isoCode);
+        if (!selected) return;
+        setAddressForm(prev => ({
+            ...prev,
+            countryIsoCode: selected.isoCode,
+            country: selected.country,
+            countryCode: selected.phonecode ? `+${selected.phonecode}` : prev.countryCode,
+            stateIsoCode: '', state: '', city: ''
+        }));
+        setStates([]); setCities([]);
+        if (addressErrors.country) setAddressErrors(prev => ({ ...prev, country: '' }));
+        await fetchStates(selected.isoCode);
+        setLocationDropdown(null);
+        setSearchTerms(prev => ({ ...prev, country: '' }));
+    };
+
+    const handleSelectState = async (isoCode) => {
+        const selected = states.find(s => s.isoCode === isoCode);
+        if (!selected) return;
+        setAddressForm(prev => ({ ...prev, stateIsoCode: selected.isoCode, state: selected.name, city: '' }));
+        setCities([]);
+        if (addressErrors.state) setAddressErrors(prev => ({ ...prev, state: '' }));
+        await fetchCities(addressForm.countryIsoCode, isoCode);
+        setLocationDropdown(null);
+        setSearchTerms(prev => ({ ...prev, state: '' }));
+    };
+
+    const handleSelectCity = (cityName) => {
+        setAddressForm(prev => ({ ...prev, city: cityName }));
+        if (addressErrors.city) setAddressErrors(prev => ({ ...prev, city: '' }));
+        setLocationDropdown(null);
+        setSearchTerms(prev => ({ ...prev, city: '' }));
+    };
+
+    // Address form submit
+    const handleSaveAddress = async (e) => {
+        if (e) e.preventDefault();
+        
+        const newErrors = {};
+        if (!addressForm.fullName.trim()) newErrors.fullName = 'Full name is required';
+        if (!addressForm.mobileNumber.trim()) newErrors.mobileNumber = 'Mobile number is required';
+        else if (!/^\d{7,15}$/.test(addressForm.mobileNumber)) newErrors.mobileNumber = 'Invalid mobile number';
+        if (!addressForm.country) newErrors.country = 'Country is required';
+        if (!addressForm.state) newErrors.state = 'State is required';
+        if (!addressForm.city) newErrors.city = 'City is required';
+        if (!addressForm.street.trim()) newErrors.street = 'Street is required';
+        if (!addressForm.pinCode) newErrors.pinCode = 'Pin code is required';
+        
+        if (Object.keys(newErrors).length > 0) {
+            setAddressErrors(newErrors);
+            return;
+        }
+
+        setAddressSaving(true);
+        try {
+            const addressData = {
+                fullName: addressForm.fullName,
+                phoneNumber: addressForm.mobileNumber,
+                country: addressForm.country,
+                state: addressForm.state,
+                city: addressForm.city,
+                street: addressForm.street,
+                pinCode: addressForm.pinCode
+            };
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/address/addAddress`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json', 
+                    'Authorization': `Bearer ${token}` 
+                },
+                body: JSON.stringify(addressData)
+            });
+            if (res.ok) {
+                await fetchAddresses();
+                setAddressesIndex(0);
+                setAuthStage('checkout');
+            } else {
+                const errData = await res.json();
+                alert(errData.message || 'Failed to save address');
+            }
+        } catch (err) {
+            console.error('Save Address Error:', err);
+            alert('Failed to save address. Please try again.');
+        } finally {
+            setAddressSaving(false);
+        }
+    };
+
+    // Filtered lists for address form selection
+    const filteredCountryCodes = countries.filter(c =>
+        `+${c.phonecode} ${c.country}`.toLowerCase().includes((searchTerms.countryCode || '').toLowerCase())
+    );
+    const filteredCountries = countries.filter(c =>
+        c.country.toLowerCase().includes((searchTerms.country || '').toLowerCase())
+    );
+    const filteredStates = states.filter(s =>
+        s.name.toLowerCase().includes((searchTerms.state || '').toLowerCase())
+    );
+    const filteredCities = cities.filter(c =>
+        c.toLowerCase().includes((searchTerms.city || '').toLowerCase())
+    );
+
+    // Initial trigger for location lists
+    useEffect(() => {
+        if (authStage === 'add_address') {
+            fetchCountries().then(async (allCountries) => {
+                const india = allCountries.find(c => c.isoCode === 'IN');
+                if (india) await fetchStates('IN');
+            });
+        }
+    }, [authStage]);
 
     /* ── API calls ── */
     const initializePaymentPage = async () => {
@@ -568,42 +972,327 @@ export default function RefferalPaymentModal({
                                     addressId={editAddressId} setAddressesIndex={setAddressesIndex}
                                 />
 
-                                {/* Unauthenticated CTA */}
-                                {!isAuthenticated && (
-                                    <div className="max-w-md mx-auto bg-white rounded-2xl shadow-lg p-6 space-y-6">
+                                {/* Inline Auth Flow (Guest) - Phone Stage */}
+                                {!isAuthenticated && authStage === 'phone' && (
+                                    <div className="max-w-md mx-auto bg-white rounded-2xl shadow-md p-6 mt-6 border border-gray-100 space-y-6 animate-slide-down">
                                         <div className="text-center space-y-2">
-                                            <h2 className="text-2xl font-bold text-gray-900">Continue to Checkout</h2>
-                                            <p className="text-gray-600 text-sm">Choose how you'd like to proceed. It only takes a few seconds ✨</p>
+                                            <h2 className="text-xl font-bold text-gray-900">Secure Checkout</h2>
+                                            <p className="text-gray-500 text-xs">Enter your mobile number to proceed to payment</p>
                                         </div>
-                                        <div className="grid grid-cols-3 gap-3">
-                                            {[
-                                                { icon: <ShieldCheck className="w-7 h-7 text-green-500 mx-auto mb-1" />, label: 'Secure Payment' },
-                                                { icon: <Truck className="w-7 h-7 text-blue-500 mx-auto mb-1" />, label: 'Fast Delivery' },
-                                                { icon: <Package className="w-7 h-7 text-amber-500 mx-auto mb-1" />, label: 'Quality Product' },
-                                            ].map(({ icon, label }) => (
-                                                <div key={label} className="rounded-xl p-3 text-center border border-gray-200 bg-gray-50">
-                                                    {icon}
-                                                    <p className="text-gray-800 text-xs font-medium">{label}</p>
+                                        {authError && (
+                                            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-2.5 rounded-lg text-xs flex items-center gap-2">
+                                                <AlertCircle size={16} className="shrink-0" />
+                                                <span>{authError}</span>
+                                            </div>
+                                        )}
+                                        <form onSubmit={handleSendOtp} className="space-y-4">
+                                            <div>
+                                                <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                                    Mobile Number
+                                                </label>
+                                                <div className="relative flex rounded-xl border border-gray-200 bg-gray-50 overflow-hidden focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent transition-all">
+                                                    <span className="flex items-center pl-4 pr-2 text-sm text-gray-500 border-r border-gray-200 bg-gray-100/50">
+                                                        +91
+                                                    </span>
+                                                    <input
+                                                        type="tel"
+                                                        value={authPhone}
+                                                        onChange={(e) => setAuthPhone(e.target.value.replace(/\D/g, ''))}
+                                                        className="w-full px-4 py-3 bg-transparent text-sm focus:outline-none text-gray-900"
+                                                        placeholder="Enter 10-digit number"
+                                                        maxLength="10"
+                                                        required
+                                                    />
                                                 </div>
-                                            ))}
+                                            </div>
+
+                                            <button
+                                                type="submit"
+                                                disabled={authLoading}
+                                                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2 cursor-pointer"
+                                            >
+                                                {authLoading ? (
+                                                    <>
+                                                        <Loader2 size={16} className="animate-spin" />
+                                                        <span>Sending OTP...</span>
+                                                    </>
+                                                ) : (
+                                                    <span>Continue to Checkout</span>
+                                                )}
+                                            </button>
+                                        </form>
+                                        <p className="text-center text-[10px] text-gray-400">100% Secure Transaction • Easy Returns</p>
+                                    </div>
+                                )}
+
+                                {/* Inline Auth Flow (Guest) - OTP Stage */}
+                                {!isAuthenticated && authStage === 'otp' && (
+                                    <div className="max-w-md mx-auto bg-white rounded-2xl shadow-md p-6 mt-6 border border-gray-100 space-y-6 animate-slide-down">
+                                        <div className="text-center space-y-2">
+                                            <h2 className="text-xl font-bold text-gray-900">Verify Mobile</h2>
+                                            <p className="text-gray-500 text-xs">
+                                                Enter the 6-digit OTP sent to <span className="font-semibold text-gray-900">+91 {authPhone}</span>
+                                            </p>
                                         </div>
-                                        <button onClick={() => setRegisterModal(true)} className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-4 rounded-xl transition-all shadow-md hover:shadow-lg">
-                                            Add Delivery Address &amp; Continue
-                                        </button>
-                                        <div className="flex items-center gap-3">
-                                            <div className="flex-1 h-px bg-gray-200"></div>
-                                            <span className="text-gray-400 text-xs uppercase">or</span>
-                                            <div className="flex-1 h-px bg-gray-200"></div>
+                                        {authError && (
+                                            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-2.5 rounded-lg text-xs flex items-center gap-2">
+                                                <AlertCircle size={16} className="shrink-0" />
+                                                <span>{authError}</span>
+                                            </div>
+                                        )}
+                                        <form onSubmit={handleVerifyOtp} className="space-y-4">
+                                            <div>
+                                                <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2 text-center">
+                                                    Enter OTP
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={authOtp}
+                                                    onChange={(e) => setAuthOtp(e.target.value.replace(/\D/g, ''))}
+                                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-center text-xl tracking-widest font-semibold text-gray-900"
+                                                    placeholder="• • • • • •"
+                                                    maxLength="6"
+                                                    required
+                                                />
+                                            </div>
+
+                                            <button
+                                                type="submit"
+                                                disabled={authLoading}
+                                                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2 cursor-pointer"
+                                            >
+                                                {authLoading ? (
+                                                    <>
+                                                        <Loader2 size={16} className="animate-spin" />
+                                                        <span>Verifying...</span>
+                                                    </>
+                                                ) : (
+                                                    <span>Verify &amp; Login</span>
+                                                )}
+                                            </button>
+                                        </form>
+
+                                        <div className="flex flex-col gap-2 pt-2">
+                                            <button
+                                                type="button"
+                                                onClick={handleSendOtp}
+                                                disabled={authLoading}
+                                                className="w-full text-center text-xs font-medium text-amber-600 hover:text-amber-700 cursor-pointer transition-colors"
+                                            >
+                                                Resend OTP
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => { setAuthStage('phone'); setAuthOtp(''); setAuthError(''); }}
+                                                className="w-full text-center text-xs text-gray-500 hover:text-gray-700 cursor-pointer transition-colors"
+                                            >
+                                                Change Phone Number
+                                            </button>
                                         </div>
-                                        <button onClick={() => setIsLoginModalOpen(true)} className="w-full border border-gray-300 hover:border-gray-400 text-gray-800 font-semibold py-4 rounded-xl transition-all hover:bg-gray-50">
-                                            I'm Already a Customer — Login
-                                        </button>
-                                        <p className="text-center text-xs text-gray-500">100% secure checkout • Easy returns • Trusted by thousands</p>
+                                    </div>
+                                )}
+
+                                {/* Inline Address Form Onboarding */}
+                                {isAuthenticated && authStage === 'add_address' && (
+                                    <div className="max-w-md mx-auto bg-white rounded-2xl shadow-md p-6 mt-6 border border-gray-100 space-y-6 animate-slide-down">
+                                        <div className="text-center space-y-2">
+                                            <h2 className="text-xl font-bold text-gray-900">Delivery Address</h2>
+                                            <p className="text-gray-500 text-xs">Add your shipping details to complete checkout</p>
+                                        </div>
+
+                                        <form onSubmit={handleSaveAddress} className="space-y-4">
+                                            {/* Full Name */}
+                                            <div>
+                                                <label className="block text-gray-700 text-xs font-semibold uppercase tracking-wider mb-2">Full Name *</label>
+                                                <input
+                                                    type="text"
+                                                    value={addressForm.fullName}
+                                                    onChange={(e) => {
+                                                        setAddressForm(prev => ({ ...prev, fullName: e.target.value }));
+                                                        if (addressErrors.fullName) setAddressErrors(prev => ({ ...prev, fullName: '' }));
+                                                    }}
+                                                    placeholder="Enter your full name"
+                                                    className={`w-full bg-gray-50 border ${addressErrors.fullName ? 'border-red-500' : 'border-gray-200'} rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all`}
+                                                />
+                                                {addressErrors.fullName && <p className="text-red-500 text-[10px] mt-1">{addressErrors.fullName}</p>}
+                                            </div>
+
+                                            {/* Mobile Number */}
+                                            <div>
+                                                <label className="block text-gray-700 text-xs font-semibold uppercase tracking-wider mb-2">Mobile Number *</label>
+                                                <div className="flex gap-2">
+                                                    {/* Country Code Dropdown */}
+                                                    <div ref={el => dropdownRefs.current['countryCode'] = el} className="relative w-28">
+                                                        <div
+                                                            onClick={() => setLocationDropdown(locationDropdown === 'countryCode' ? null : 'countryCode')}
+                                                            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-sm text-gray-900 cursor-pointer flex items-center justify-between hover:border-gray-900 transition-all"
+                                                        >
+                                                            <span className="text-gray-900 text-sm">{addressForm.countryCode || '+91'}</span>
+                                                            <ChevronDown className="w-3.5 h-3.5 text-gray-500" />
+                                                        </div>
+
+                                                        {locationDropdown === 'countryCode' && (
+                                                            <div className="absolute z-50 w-64 mt-1 bg-white rounded-xl shadow-lg border border-gray-200 max-h-64 overflow-hidden" onMouseDown={(e) => e.preventDefault()}>
+                                                                <div className="p-2 border-b border-gray-200">
+                                                                    <div className="relative flex items-center bg-gray-50 rounded-lg px-2 border border-gray-200">
+                                                                        <Search className="w-4 h-4 text-gray-400 pointer-events-none mr-2" />
+                                                                        <input
+                                                                            type="text"
+                                                                            value={searchTerms.countryCode}
+                                                                            onChange={(e) => setSearchTerms(prev => ({ ...prev, countryCode: e.target.value }))}
+                                                                            placeholder="Search country code..."
+                                                                            className="w-full bg-transparent py-1.5 text-xs text-gray-900 outline-none"
+                                                                            autoFocus
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                                <div className="max-h-48 overflow-y-auto">
+                                                                    {filteredCountryCodes.length === 0 ? (
+                                                                        <div className="px-4 py-3 text-xs text-gray-500 text-center">No results found</div>
+                                                                    ) : (
+                                                                        filteredCountryCodes.map(c => (
+                                                                            <div
+                                                                                key={c.isoCode}
+                                                                                onMouseDown={(e) => { e.preventDefault(); handleSelectCountryCode(c.phonecode); }}
+                                                                                className="px-4 py-2 hover:bg-amber-50 cursor-pointer text-xs text-gray-900 transition-colors"
+                                                                            >
+                                                                                +{c.phonecode} — {c.country}
+                                                                            </div>
+                                                                        ))
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    <input
+                                                        type="tel"
+                                                        value={addressForm.mobileNumber}
+                                                        onChange={(e) => {
+                                                            setAddressForm(prev => ({ ...prev, mobileNumber: e.target.value.replace(/\D/g, '') }));
+                                                            if (addressErrors.mobileNumber) setAddressErrors(prev => ({ ...prev, mobileNumber: '' }));
+                                                        }}
+                                                        placeholder="Enter mobile number"
+                                                        className={`flex-1 bg-gray-50 border ${addressErrors.mobileNumber ? 'border-red-500' : 'border-gray-200'} rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all`}
+                                                    />
+                                                </div>
+                                                {addressErrors.mobileNumber && <p className="text-red-500 text-[10px] mt-1">{addressErrors.mobileNumber}</p>}
+                                            </div>
+
+                                            {/* Country */}
+                                            <SearchableDropdown
+                                                field="country"
+                                                label="Country"
+                                                placeholder="Select country"
+                                                options={filteredCountries}
+                                                value={addressForm.country}
+                                                onSelect={handleSelectCountry}
+                                                disabled={false}
+                                                isLoading={loadingStates.countries}
+                                                renderOption={(c) => `${c.flag || ''} ${c.country}`}
+                                                getOptionValue={(c) => c.isoCode}
+                                                openDropdown={locationDropdown}
+                                                setOpenDropdown={setLocationDropdown}
+                                                searchTerms={searchTerms}
+                                                setSearchTerms={setSearchTerms}
+                                                dropdownRefs={dropdownRefs}
+                                                errors={addressErrors}
+                                            />
+
+                                            {/* State */}
+                                            <SearchableDropdown
+                                                field="state"
+                                                label="State"
+                                                placeholder="Select state"
+                                                options={filteredStates}
+                                                value={addressForm.state}
+                                                onSelect={handleSelectState}
+                                                disabled={!addressForm.countryIsoCode}
+                                                isLoading={loadingStates.states}
+                                                renderOption={(s) => s.name}
+                                                getOptionValue={(s) => s.isoCode}
+                                                openDropdown={locationDropdown}
+                                                setOpenDropdown={setLocationDropdown}
+                                                searchTerms={searchTerms}
+                                                setSearchTerms={setSearchTerms}
+                                                dropdownRefs={dropdownRefs}
+                                                errors={addressErrors}
+                                            />
+
+                                            {/* City */}
+                                            <SearchableDropdown
+                                                field="city"
+                                                label="City"
+                                                placeholder="Select city"
+                                                options={filteredCities}
+                                                value={addressForm.city}
+                                                onSelect={handleSelectCity}
+                                                disabled={!addressForm.stateIsoCode}
+                                                isLoading={loadingStates.cities}
+                                                renderOption={(c) => c}
+                                                getOptionValue={(c) => c}
+                                                openDropdown={locationDropdown}
+                                                setOpenDropdown={setLocationDropdown}
+                                                searchTerms={searchTerms}
+                                                setSearchTerms={setSearchTerms}
+                                                dropdownRefs={dropdownRefs}
+                                                errors={addressErrors}
+                                            />
+
+                                            {/* Street */}
+                                            <div>
+                                                <label className="block text-gray-700 text-xs font-semibold uppercase tracking-wider mb-2">Street Address *</label>
+                                                <input
+                                                    type="text"
+                                                    value={addressForm.street}
+                                                    onChange={(e) => {
+                                                        setAddressForm(prev => ({ ...prev, street: e.target.value }));
+                                                        if (addressErrors.street) setAddressErrors(prev => ({ ...prev, street: '' }));
+                                                    }}
+                                                    placeholder="Enter street address"
+                                                    className={`w-full bg-gray-50 border ${addressErrors.street ? 'border-red-500' : 'border-gray-200'} rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all`}
+                                                />
+                                                {addressErrors.street && <p className="text-red-500 text-[10px] mt-1">{addressErrors.street}</p>}
+                                            </div>
+
+                                            {/* Pin Code */}
+                                            <div>
+                                                <label className="block text-gray-700 text-xs font-semibold uppercase tracking-wider mb-2">Pin Code *</label>
+                                                <input
+                                                    type="text"
+                                                    value={addressForm.pinCode}
+                                                    onChange={(e) => {
+                                                        setAddressForm(prev => ({ ...prev, pinCode: e.target.value.replace(/\D/g, '') }));
+                                                        if (addressErrors.pinCode) setAddressErrors(prev => ({ ...prev, pinCode: '' }));
+                                                    }}
+                                                    placeholder="Enter 6-digit pin code"
+                                                    maxLength="6"
+                                                    className={`w-full bg-gray-50 border ${addressErrors.pinCode ? 'border-red-500' : 'border-gray-200'} rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all`}
+                                                />
+                                                {addressErrors.pinCode && <p className="text-red-500 text-[10px] mt-1">{addressErrors.pinCode}</p>}
+                                            </div>
+
+                                            {/* Submit Button */}
+                                            <button
+                                                type="submit"
+                                                disabled={addressSaving}
+                                                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2 cursor-pointer mt-2"
+                                            >
+                                                {addressSaving ? (
+                                                    <>
+                                                        <Loader2 size={16} className="animate-spin" />
+                                                        <span>Saving Address...</span>
+                                                    </>
+                                                ) : (
+                                                    <span>Save Address &amp; Continue</span>
+                                                )}
+                                            </button>
+                                        </form>
                                     </div>
                                 )}
 
                                 {/* Address Section */}
-                                {isAuthenticated && (
+                                {isAuthenticated && authStage === 'checkout' && (
                                     <AddressSection
                                         addresses={addresses}
                                         addressIndex={addressIndex}
@@ -615,7 +1304,7 @@ export default function RefferalPaymentModal({
                                 )}
 
                                 {/* Offers */}
-                                {((offers?.length ?? 0) > 0 || (spinOffers?.length ?? 0) > 0) && (addresses?.length ?? 0) > 0 && (
+                                {isAuthenticated && authStage === 'checkout' && ((offers?.length ?? 0) > 0 || (spinOffers?.length ?? 0) > 0) && (addresses?.length ?? 0) > 0 && (
                                     <OfferDisplay
                                         offers={offers} spinOffers={spinOffers}
                                         referralCode={referralCode} setCouponCode={setCouponCode}
@@ -624,7 +1313,7 @@ export default function RefferalPaymentModal({
                                 )}
 
                                 {/* Checkout flow */}
-                                {isAuthenticated && checkoutDetails && addresses.length > 0 && (
+                                {isAuthenticated && authStage === 'checkout' && checkoutDetails && addresses.length > 0 && (
                                     <>
                                         <ReferralCode1 referralCode={referralCode} setReferralCode={setReferralCode} couponCode={couponCode} />
 

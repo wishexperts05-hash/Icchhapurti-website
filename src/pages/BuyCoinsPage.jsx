@@ -336,13 +336,13 @@ const BuyCoinsPage = () => {
     }
   };
 
-const navigate = useNavigate()
+  const navigate = useNavigate()
 
   const isActionDisabled =
     loading || loadingWallet || !coinQuantity || Number(coinQuantity) <= 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-20 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
@@ -357,7 +357,7 @@ const navigate = useNavigate()
       </div>
 
       {/* Stars */}
-      <div className="absolute inset-0 overflow-hidden">
+      {/* <div className="absolute inset-0 overflow-hidden">
         {[...Array(100)].map((_, i) => (
           <div
             key={i}
@@ -371,30 +371,30 @@ const navigate = useNavigate()
             }}
           />
         ))}
-      </div>
+      </div> */}
 
       {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto p-6 py-12 space-y-6 bg-slate-50">
+      <div style={{ backgroundColor: "#FAF6EE" }} className="relative z-10 max-w-4xl mx-auto p-6 py-12 space-y-6 bg-slate-50">
 
 
-<div className="w-full flex justify-start">
-        <button
-          onClick={() => navigate(-1)}
-          className="inline-flex items-center my-2 gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 hover:text-gray-900 transition"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-4 h-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="2"
+        <div className="w-full flex justify-start">
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center my-2 gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 hover:text-gray-900 transition"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-          Back
-        </button>
-      </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+        </div>
         {/* Header */}
         <div className="text-center space-y-2 mb-8">
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
@@ -565,43 +565,43 @@ const navigate = useNavigate()
           </div>
 
           {/* Pay Button */}
-        <button
-  onClick={handleBuy}
-  disabled={isActionDisabled}
-  className="w-full bg-amber-500 cursor-pointer hover:bg-amber-600 disabled:bg-amber-400 
+          <button
+            onClick={handleBuy}
+            disabled={isActionDisabled}
+            className="w-full bg-amber-500 cursor-pointer hover:bg-amber-600 disabled:bg-amber-400 
              text-white font-semibold py-3.5 rounded-lg shadow-md text-lg 
              transition flex items-center justify-center gap-3"
->
-  {loading ? (
-    "Processing..."
-  ) : (
-    <>
-      <span>Pay ₹{calculatedPrice}</span>
+          >
+            {loading ? (
+              "Processing..."
+            ) : (
+              <>
+                <span>Pay ₹{calculatedPrice}</span>
 
-      {/* Payment Logos */}
-      <span className="flex items-center ml-2">
-        {[
-          { src: "/paytm.png", alt: "Paytm" },
-          { src: "/phonepay.jpg", alt: "PhonePe" },
-          { src: "/gpay.jpg", alt: "GPay" },
-        ].map((logo, index) => (
-          <span
-            key={index}
-            className={`w-6 h-6 rounded-full bg-white border border-white 
+                {/* Payment Logos */}
+                <span className="flex items-center ml-2">
+                  {[
+                    { src: "/paytm.png", alt: "Paytm" },
+                    { src: "/phonepay.jpg", alt: "PhonePe" },
+                    { src: "/gpay.jpg", alt: "GPay" },
+                  ].map((logo, index) => (
+                    <span
+                      key={index}
+                      className={`w-6 h-6 rounded-full bg-white border border-white 
                         flex items-center justify-center
                         ${index !== 0 ? "-ml-2" : ""}`}
-          >
-            <img
-              src={logo.src}
-              alt={logo.alt}
-              className="w-4 h-4 object-contain"
-            />
-          </span>
-        ))}
-      </span>
-    </>
-  )}
-</button>
+                    >
+                      <img
+                        src={logo.src}
+                        alt={logo.alt}
+                        className="w-4 h-4 object-contain"
+                      />
+                    </span>
+                  ))}
+                </span>
+              </>
+            )}
+          </button>
 
         </div>
       </div>

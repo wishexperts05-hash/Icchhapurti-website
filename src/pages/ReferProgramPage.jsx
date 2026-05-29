@@ -18,7 +18,6 @@ const ReferProgramPage = () => {
   const [referAc, setReferAc] = useState({})
   const [commissonCoins, setCommissionCoins] = useState()
 
-  // let commissonCoins ;
   // Fetch coins rate
   useEffect(() => {
     const fetchCoinsRate = async () => {
@@ -99,7 +98,6 @@ const ReferProgramPage = () => {
 
         if (data.success) {
           setReferrals(data.data || []);
-          // setAvailableCoins(data.data.totalCoins || 0);
           setTotalPages(data.pagination.totalPages || 1);
         } else {
           setError(data.message || 'Failed to fetch data');
@@ -121,8 +119,6 @@ const ReferProgramPage = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-
-
   const Navigate = useNavigate()
   const handleConvertToMoney = async () => {
     if (converting) return;
@@ -143,7 +139,6 @@ const ReferProgramPage = () => {
 
       if (data.success) {
         alert(`Successfully converted ${availableCoins} coins to ₹${(availableCoins / coinsRate.coins * coinsRate.rate).toFixed(2)}`);
-        // Refresh the page data
         setCurrentPage(1);
         window.location.reload();
       } else {
@@ -159,12 +154,9 @@ const ReferProgramPage = () => {
     }
   };
 
-
-
   const user = JSON.parse(localStorage.getItem("user"));
 
   const [showShareModal, setShowShareModal] = useState(false);
-  // Generate referral link - adjust this based on your actual referral system
   const referralLink = `${window.location.origin}/?ref=${user?.referralCode || user?._id || 'default'}`;
 
   const handleShare = async () => {
@@ -174,7 +166,6 @@ const ReferProgramPage = () => {
       url: referralLink
     };
 
-    // Check if native share is available (mobile devices)
     if (navigator.share) {
       try {
         await navigator.share(shareData);
@@ -185,7 +176,6 @@ const ReferProgramPage = () => {
         }
       }
     } else {
-      // Fallback: show custom share modal
       setShowShareModal(true);
     }
   };
@@ -211,6 +201,7 @@ const ReferProgramPage = () => {
         );
       }
     } else {
+      // Always show page 1
       pages.push(
         <button
           key={1}
@@ -224,13 +215,14 @@ const ReferProgramPage = () => {
         </button>
       );
 
+      // Left ellipsis
       if (currentPage > 3) {
         pages.push(<span key="dots1" className="text-white px-2">...</span>);
       }
 
+      // Middle window around currentPage
       const start = Math.max(2, currentPage - 1);
       const end = Math.min(totalPages - 1, currentPage + 1);
-
       for (let i = start; i <= end; i++) {
         pages.push(
           <button
@@ -246,10 +238,12 @@ const ReferProgramPage = () => {
         );
       }
 
+      // Right ellipsis
       if (currentPage < totalPages - 2) {
         pages.push(<span key="dots2" className="text-white px-2">...</span>);
       }
 
+      // Always show last page
       pages.push(
         <button
           key={totalPages}
@@ -268,7 +262,8 @@ const ReferProgramPage = () => {
   };
 
   return (
-    <div className="min-h-screen  relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden">
+
       {/* Mystical background elements */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-20 left-1/4 w-96 h-96 border border-blue-400/30 rounded-full"></div>
@@ -284,7 +279,7 @@ const ReferProgramPage = () => {
       </div>
 
       {/* Stars background */}
-      <div className="absolute inset-0">
+      {/* <div className="absolute inset-0">
         {[...Array(50)].map((_, i) => (
           <div
             key={i}
@@ -296,10 +291,10 @@ const ReferProgramPage = () => {
             }}
           ></div>
         ))}
-      </div>
+      </div> */}
 
       {/* Content */}
-      <div className="relative z-10 max-w-4xl bg-white mx-auto p-6">
+      <div style={{ backgroundColor: "#FAF6EE" }} className="relative z-10 max-w-4xl bg-white mx-auto p-6">
         <div className="w-full flex justify-start">
           <button
             onClick={() => navigate(-1)}
@@ -368,17 +363,6 @@ const ReferProgramPage = () => {
           </div>
         </div>
 
-        {/* Refer Friend Card */}
-        {/* <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg p-6 mb-6 shadow-xl text-center">
-    <p className="text-blue-200 text-sm mb-2">
-      {"Refer a friend"}
-    </p>
-    <p className="text-white text-xl font-bold">
-      {"Get"} 1 {"Referal"} ={" "}
-      {commissonCoins || 0} {"Coin"}
-    </p>
-  </div> */}
-
         {/* Referral Code */}
         <div className="mb-6">
           <label className="text-slate-700 text-sm mb-2 block">
@@ -440,21 +424,18 @@ const ReferProgramPage = () => {
                     />
 
                     <div>
-                      {/* Primary text */}
                       <p className="text-slate-800 text-sm font-medium">
                         {isReferral
                           ? `Referral reward from ${referral.userName}`
                           : "Purchase reward"}
                       </p>
 
-                      {/* Secondary info */}
                       <p className="text-slate-500 text-xs">
                         {isReferral
                           ? "Coins earned when your referral made a purchase"
                           : "Coins earned from your purchase"}
                       </p>
 
-                      {/* Date */}
                       <p className="text-slate-400 text-[11px] mt-0.5">
                         {referral.dateEarned}
                       </p>
@@ -463,17 +444,15 @@ const ReferProgramPage = () => {
 
                   {/* Right */}
                   <div className="flex flex-col items-end gap-1">
-                    {/* Source badge */}
                     <span
                       className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${isReferral
-                          ? "bg-indigo-50 text-indigo-600"
-                          : "bg-emerald-50 text-emerald-600"
+                        ? "bg-indigo-50 text-indigo-600"
+                        : "bg-emerald-50 text-emerald-600"
                         }`}
                     >
                       {isReferral ? "REFERRAL BONUS" : "PURCHASE BONUS"}
                     </span>
 
-                    {/* Coins */}
                     <div className="flex items-center gap-1 text-amber-500 font-semibold">
                       <Coins className="w-4 h-4" />
                       +{referral.coinsEarned}
@@ -483,18 +462,33 @@ const ReferProgramPage = () => {
               );
             })}
           </div>
-
         )}
 
-        {/* Refer Button */}
-        {/* <button
-    onClick={handleShare}
-    className="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 rounded-lg shadow-lg text-lg"
-  >
-    Refer Now
-  </button> */}
-      </div>
+        {/* Pagination */}
+        {!loading && totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mb-6">
+            {/* Prev button */}
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-all bg-slate-700/80 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
 
+            {renderPagination()}
+
+            {/* Next button */}
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-all bg-slate-700/80 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+      </div>
 
       <style>{`
         @keyframes twinkle {

@@ -10,18 +10,15 @@ export default function CosmicChatSupport() {
   const [conversation, setConversation] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const chatAreaRef = useRef(null);
-  
-  // Get current user info from localStorage
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     setCurrentUser(user);
   }, []);
 
-  // Fetch chat history
   const fetchChatHistory = async (conversationId) => {
     try {
       setLoading(true);
-
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/user/chat/getPreviousConversation`,
         {
@@ -31,13 +28,8 @@ export default function CosmicChatSupport() {
           }
         }
       );
-
-      if (!res.ok) {
-        throw new Error('Failed to fetch chat history');
-      }
-
+      if (!res.ok) throw new Error('Failed to fetch chat history');
       const data = await res.json();
-
       if (data.success) {
         setConversation(data.data.conversation);
         setMessages(data.data.messages || []);
@@ -49,22 +41,15 @@ export default function CosmicChatSupport() {
     }
   };
 
-  // Send message
- const sendMessage = async () => {
+  const sendMessage = async () => {
     if (inputValue.trim() === '') return;
-
     const messageToSend = inputValue;
     setInputValue('');
 
-    // ─── Show dummy acknowledgement message immediately ────────────────────────
     const dummyMsg = {
       _id: `dummy-${Date.now()}`,
       message: "Your message has been received. Our team will respond shortly.",
-      sender: {
-        userType: 'Admin',
-        Username: 'Support',
-        profileImage: null,
-      },
+      sender: { userType: 'Admin', Username: 'Support', profileImage: null },
       createdAt: new Date().toISOString(),
       isDummy: true,
     };
@@ -72,7 +57,6 @@ export default function CosmicChatSupport() {
 
     try {
       setSending(true);
-
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/user/chat/sendMessage`,
         {
@@ -81,48 +65,34 @@ export default function CosmicChatSupport() {
             'Authorization': localStorage.getItem('token'),
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            message: messageToSend
-          })
+          body: JSON.stringify({ message: messageToSend })
         }
       );
-
-      if (!res.ok) {
-        throw new Error('Failed to send message');
-      }
-
+      if (!res.ok) throw new Error('Failed to send message');
       const data = await res.json();
-
       if (data.success) {
-        // Remove dummy message and load real history
-       setTimeout(() => {
-    setMessages(prev => prev.filter(m => !m.isDummy));
-    fetchChatHistory();
-  }, 3000);
+        setTimeout(() => {
+          setMessages(prev => prev.filter(m => !m.isDummy));
+          fetchChatHistory();
+        }, 3000);
       }
     } catch (err) {
       console.error("Error sending message:", err);
       setInputValue(messageToSend);
-      // Remove dummy message on failure
       setMessages(prev => prev.filter(m => !m.isDummy));
     } finally {
       setSending(false);
     }
   };
 
-  // Auto-scroll to bottom
   useEffect(() => {
     if (chatAreaRef.current) {
       chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
     }
   }, [messages]);
 
-  // Load conversation on mount
   useEffect(() => {
-    const conversationId = '69117b01621a69e4dab6af3c';
-    if (conversationId) {
-      fetchChatHistory(conversationId);
-    }
+    fetchChatHistory();
   }, []);
 
   const handleKeyPress = (e) => {
@@ -132,7 +102,7 @@ export default function CosmicChatSupport() {
     }
   };
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const formatTime = (dateString) => {
     const date = new Date(dateString);
@@ -150,51 +120,43 @@ export default function CosmicChatSupport() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
-      {/* Cosmic Background */}
-      <div className="absolute inset-0 bg-gradient-radial from-blue-800/30 via-transparent to-transparent pointer-events-none"></div>
-
-      {/* Stars */}
-      <div className="absolute inset-0 opacity-40 pointer-events-none">
-        <div className="absolute w-1 h-1 bg-white rounded-full top-[30%] left-[20%] animate-pulse"></div>
-        <div className="absolute w-1 h-1 bg-white rounded-full top-[70%] left-[60%] animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-        <div className="absolute w-0.5 h-0.5 bg-white rounded-full top-[50%] left-[50%] animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute w-0.5 h-0.5 bg-white rounded-full top-[10%] left-[80%] animate-pulse" style={{ animationDelay: '1.5s' }}></div>
-        <div className="absolute w-1 h-1 bg-white rounded-full top-[60%] left-[90%] animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute w-0.5 h-0.5 bg-white rounded-full top-[80%] left-[33%] animate-pulse" style={{ animationDelay: '2.5s' }}></div>
-      </div>
-
-      {/* Spiral */}
+    <div style={{ height: '100dvh' }} className="flex flex-col relative overflow-hidden">
+      {/* Spiral background */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-gradient-radial from-orange-300/80 via-orange-400/60 to-transparent blur-sm animate-pulse pointer-events-none"></div>
-      <div className="w-full flex justify-start">
-        <button
-          onClick={() => navigate(-1)}
-          className="inline-flex cursor-pointer items-center my-2 gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 hover:text-gray-900 transition"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-4 h-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-          Back
-        </button>
-      </div>
-      {/* Main Container */}
-      <div className="relative z-10 flex flex-col h-[60vh] overflow-y-auto bg-white max-w-4xl mx-auto w-full">
 
-        {/* Header */}
-        <div className="flex-shrink-0 px-10 py-5 bg-slate-900 backdrop-blur-sm">
-          <div className="flex items-center justify-between">
-            <h1 className="text-white text-2xl font-semibold">{"Chat support"}</h1>
+      {/* Main Container */}
+      <div
+        style={{ backgroundColor: "#FAF6EE", height: '100dvh' }}
+        className="relative z-10 flex flex-col max-w-4xl mx-auto w-full overflow-hidden"
+      >
+        {/* Header — back button + title on the same bar */}
+        <div
+          style={{ backgroundColor: "#FAF6EE", borderBottom: "1px solid #E5DDD0" }}
+          className="flex-shrink-0 flex items-center gap-3 px-4 sm:px-6 md:px-10 py-3"
+        >
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex cursor-pointer items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 hover:text-gray-900 transition flex-shrink-0"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+
+          <div className="flex items-center justify-between flex-1 min-w-0">
+            <h1 className="text-gray-900 text-xl font-semibold truncate">Chat Support</h1>
             {conversation && (
-              <div className="text-sm text-white/70">
+              <span className="text-sm text-gray-500 flex-shrink-0">
                 {conversation.participants.find(p => p.userType === 'Admin')?.userType || 'Support'}
-              </div>
+              </span>
             )}
           </div>
         </div>
@@ -202,12 +164,16 @@ export default function CosmicChatSupport() {
         {/* Chat Area */}
         <div
           ref={chatAreaRef}
-          className="flex-1 overflow-y-auto px-10 py-5 flex flex-col gap-4"
+          className="flex-1 overflow-y-auto px-4 sm:px-6 md:px-10 py-5 flex flex-col gap-4"
           style={{ minHeight: 0 }}
         >
-          {messages.length === 0 ? (
-            <div className="flex items-center justify-center h-full text-white/50">
-              {"No messages yet. Start the conversation!"}
+          {loading ? (
+            <div className="flex items-center justify-center h-full">
+              <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+            </div>
+          ) : messages.length === 0 ? (
+            <div className="flex items-center justify-center h-full text-gray-400 text-sm">
+              No messages yet. Start the conversation!
             </div>
           ) : (
             messages.map((message) => {
@@ -220,6 +186,7 @@ export default function CosmicChatSupport() {
                   className={`flex gap-3 max-w-[70%] animate-[slideIn_0.3s_ease-out] ${isUser ? 'self-end flex-row-reverse' : 'self-start'
                     } ${message.isSending ? 'opacity-70' : ''}`}
                 >
+                  {/* Avatar */}
                   {message.sender.profileImage ? (
                     <img
                       src={message.sender.profileImage}
@@ -233,24 +200,21 @@ export default function CosmicChatSupport() {
                     </div>
                   )}
 
+                  {/* Bubble */}
                   <div className={`flex flex-col gap-1 ${isUser ? 'items-end' : 'items-start'}`}>
                     <div
                       className={`px-4 py-3 rounded-xl text-sm leading-relaxed relative ${isUser
-                        ? 'bg-orange-300/90 text-gray-800 rounded-br-sm'
-                        : 'bg-white/95 text-gray-800 rounded-bl-sm'
+                          ? 'bg-orange-400 text-white rounded-br-sm'
+                          : 'bg-white text-gray-800 rounded-bl-sm shadow-sm border border-gray-100'
                         }`}
                     >
                       {message.message}
                       {message.isSending && (
-                        <Loader2 className="w-3 h-3 animate-spin absolute -right-5 top-1/2 -translate-y-1/2" />
+                        <Loader2 className="w-3 h-3 animate-spin absolute -right-5 top-1/2 -translate-y-1/2 text-gray-400" />
                       )}
                     </div>
-                    <div className={`flex items-center gap-2 text-xs text-white/70 ${isUser ? 'flex-row-reverse' : ''}`}>
-                      <span>
-                        {message.sender.userType === "User"
-                          ? "You"
-                          : "Admin"}
-                      </span>
+                    <div className={`flex items-center gap-2 text-xs text-gray-400 ${isUser ? 'flex-row-reverse' : ''}`}>
+                      <span>{isUser ? 'You' : 'Admin'}</span>
                       <span>•</span>
                       <span>{formatTime(message.createdAt)}</span>
                     </div>
@@ -262,31 +226,34 @@ export default function CosmicChatSupport() {
         </div>
 
         {/* Input Area */}
-        <div className="flex-shrink-0 px-3 sm:px-6 md:px-10 py-3 sm:py-4 md:py-5 bg-slate-900 backdrop-blur-lg">
-          <div className="flex gap-2 sm:gap-3 bg-white/10 rounded-full px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 border border-white/20">
+        <div
+          style={{ backgroundColor: "#D7D1C5", borderTop: "1px solid #C8C0B5" }}
+          className="flex-shrink-0 px-3 sm:px-6 md:px-10 py-3 sm:py-4"
+        >
+          <div className="flex gap-2 sm:gap-3 bg-white/60 rounded-full px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 border border-white/40">
             <input
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder={"Type Message here"}
+              placeholder="Type message here..."
               disabled={sending || loading}
-              className="flex-1 bg-transparent border-none outline-none text-white text-xs sm:text-sm placeholder-white/50 disabled:opacity-50 min-w-0"
+              className="flex-1 bg-transparent border-none outline-none text-gray-800 text-xs sm:text-sm placeholder-gray-400 disabled:opacity-50 min-w-0"
             />
             <button
               onClick={sendMessage}
               disabled={sending || loading || inputValue.trim() === ''}
-              className="bg-blue-500/80 cursor-pointer hover:bg-blue-500 text-white px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 sm:gap-2 whitespace-nowrap flex-shrink-0"
+              className="bg-blue-500 cursor-pointer hover:bg-blue-600 text-white px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 sm:gap-2 whitespace-nowrap flex-shrink-0"
             >
               {sending ? (
                 <>
                   <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
-                  <span className="hidden sm:inline">{"Sending"}</span>
+                  <span className="hidden sm:inline">Sending</span>
                 </>
               ) : (
                 <>
                   <Send className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">{"Send"}</span>
+                  <span className="hidden sm:inline">Send</span>
                 </>
               )}
             </button>
@@ -296,14 +263,8 @@ export default function CosmicChatSupport() {
 
       <style>{`
         @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
     </div>

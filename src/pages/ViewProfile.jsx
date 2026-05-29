@@ -1,11 +1,11 @@
+
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Camera, ChevronDown } from "lucide-react";
+import { Camera, ChevronDown, ArrowLeft, User, CreditCard, MapPin, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
-// ── sessionStorage cache helpers ──────────────────────────────
 const cache = {
   get: (key) => {
     try { const item = sessionStorage.getItem(key); return item ? JSON.parse(item) : null; }
@@ -27,7 +27,6 @@ export default function ViewProfile() {
   );
   const [avatarFile, setAvatarFile] = useState(null);
 
-  // Location data from API
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
@@ -84,17 +83,13 @@ export default function ViewProfile() {
       try {
         setPageLoading(true);
         const allCountries = await fetchCountries();
-
         const res = await fetch(`${BASE_URL}/api/user/getProfile`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}`, "Content-Type": "application/json" }
         });
         const data = await res.json();
-
         if (data.success) {
           setUsers(data.data);
           localStorage.setItem("user", JSON.stringify(data.data));
-
-          // Pre-load states and cities for the user's existing location
           if (data.data.country) {
             const foundCountry = allCountries.find(c => c.country === data.data.country);
             if (foundCountry) {
@@ -105,6 +100,7 @@ export default function ViewProfile() {
               }
             }
           }
+          if (data.data.profileImage) setAvatar(data.data.profileImage);
         }
       } catch (err) { console.error("Failed to fetch user:", err); }
       finally { setPageLoading(false); }
@@ -135,7 +131,6 @@ export default function ViewProfile() {
     }
   }, [user, reset]);
 
-  // Watch country/state to cascade dropdowns
   const watchedCountry = watch("country");
   const watchedState = watch("state");
 
@@ -175,7 +170,6 @@ export default function ViewProfile() {
     formData.append("bankDetails[ifscCode]", data.ifscCode?.toUpperCase());
     formData.append("bankDetails[accountType]", data.accountType);
     formData.append("bankDetails[accountHolderName]", data.accountHolderName.trim());
-
     try {
       const res = await fetch(`${BASE_URL}/api/user/updateProfile`, {
         method: "PUT",
@@ -189,174 +183,547 @@ export default function ViewProfile() {
     finally { setLoading(false); }
   };
 
+  // ── STYLES ────────────────────────────────────────────────────
+
+  const styles = `
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Outfit:wght@300;400;500;600&display=swap');
+
+    .vp-root { font-family: 'Outfit', sans-serif; background: #edededff; min-height: 100vh; }
+    .vp-root * { box-sizing: border-box; }
+
+    @keyframes vp-fade-up {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes vp-spin { to { transform: rotate(360deg); } }
+
+    .vp-fade-up { animation: vp-fade-up 0.45s cubic-bezier(0.22,1,0.36,1) both; }
+    .vp-fade-up-1 { animation-delay: 0.05s; }
+    .vp-fade-up-2 { animation-delay: 0.12s; }
+    .vp-fade-up-3 { animation-delay: 0.19s; }
+    .vp-fade-up-4 { animation-delay: 0.26s; }
+
+    .vp-header {
+      background: #fff;
+      border-bottom: 1px solid #f0ebe3;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .vp-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      background: transparent;
+      border: 1.5px solid #e8e2da;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #78716c;
+      cursor: pointer;
+      transition: all 0.18s;
+      font-family: 'Outfit', sans-serif;
+    }
+    .vp-back-btn:hover { background: #faf8f5; border-color: #d6cfc6; color: #44403c; }
+
+    .vp-page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: #1c1917;
+      margin: 0;
+    }
+
+    .vp-layout {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 700px) {
+      .vp-layout { grid-template-columns: 1fr; }
+      .vp-header { padding: 12px 16px; }
+    }
+
+    /* ── LEFT CARD ── */
+    .vp-profile-card {
+      background: #fff;
+      border: 1px solid #f0ebe3;
+      border-radius: 20px;
+      padding: 28px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 80px;
+    }
+    .vp-avatar-wrap {
+      position: relative;
+      width: 96px;
+      height: 96px;
+    }
+    .vp-avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 2px #f59e0b, 0 8px 24px rgba(0,0,0,0.10);
+    }
+    .vp-avatar-btn {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #f59e0b;
+      border: 2.5px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.18s;
+    }
+    .vp-avatar-btn:hover { background: #d97706; transform: scale(1.08); }
+    .vp-user-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: #1c1917;
+      text-align: center;
+      margin: 0;
+      line-height: 1.3;
+    }
+    .vp-user-phone {
+      font-size: 12px;
+      color: #a8a29e;
+      margin: 0;
+      letter-spacing: 0.02em;
+    }
+    .vp-divider { width: 100%; height: 1px; background: #f0ebe3; }
+    .vp-card-nav { width: 100%; display: flex; flex-direction: column; gap: 4px; }
+    .vp-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #78716c;
+      cursor: default;
+    }
+    .vp-nav-item.active { background: #fff8ed; color: #b45309; }
+    .vp-nav-item.active svg { color: #f59e0b; }
+
+    /* ── RIGHT FORM ── */
+    .vp-form-area { display: flex; flex-direction: column; gap: 20px; }
+
+    .vp-section {
+      background: #fff;
+      border: 1px solid #f0ebe3;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .vp-section-header {
+      padding: 18px 24px 16px;
+      border-bottom: 1px solid #f5f0ea;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .vp-section-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: #fff8ed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .vp-section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: #1c1917;
+      margin: 0;
+    }
+    .vp-section-body {
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .vp-section-body.single { grid-template-columns: 1fr; }
+    @media (max-width: 560px) { .vp-section-body { grid-template-columns: 1fr; } }
+
+    /* ── FIELD ── */
+    .vp-field { display: flex; flex-direction: column; gap: 5px; }
+    .vp-field.full { grid-column: 1 / -1; }
+
+    .vp-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #a8a29e;
+    }
+    .vp-label .req { color: #f59e0b; margin-left: 2px; }
+
+    .vp-input {
+      width: 100%;
+      background: #faf8f5;
+      border: 1.5px solid #e8e2da;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-size: 14px;
+      font-family: 'Outfit', sans-serif;
+      color: #1c1917;
+      outline: none;
+      transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+    }
+    .vp-input::placeholder { color: #c4bdb5; }
+    .vp-input:focus {
+      border-color: #f59e0b;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(245,158,11,0.12);
+    }
+    .vp-input:disabled { opacity: 0.45; cursor: not-allowed; }
+    .vp-input.error { border-color: #f87171; background: #fff9f9; }
+
+    .vp-select-wrap { position: relative; }
+    .vp-select-wrap select {
+      width: 100%;
+      background: #faf8f5;
+      border: 1.5px solid #e8e2da;
+      border-radius: 12px;
+      padding: 11px 38px 11px 14px;
+      font-size: 14px;
+      font-family: 'Outfit', sans-serif;
+      color: #1c1917;
+      outline: none;
+      appearance: none;
+      cursor: pointer;
+      transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+    }
+    .vp-select-wrap select:focus {
+      border-color: #f59e0b;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(245,158,11,0.12);
+    }
+    .vp-select-wrap select:disabled { opacity: 0.45; cursor: not-allowed; }
+    .vp-select-wrap select.error { border-color: #f87171; }
+    .vp-select-wrap .vp-chevron {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: #a8a29e;
+    }
+    .vp-select-wrap .vp-spinner {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: #f59e0b;
+      animation: vp-spin 0.8s linear infinite;
+    }
+
+    .vp-error { font-size: 11px; color: #ef4444; margin-top: 2px; }
+
+    /* ── SUBMIT ── */
+    .vp-submit-wrap {
+      background: #fff;
+      border: 1px solid #f0ebe3;
+      border-radius: 20px;
+      padding: 20px 24px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+    }
+    .vp-submit-hint { font-size: 12px; color: #a8a29e; flex: 1; }
+    .vp-submit-btn {
+      padding: 12px 32px;
+      border-radius: 12px;
+      border: none;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+      transition: opacity 0.18s, transform 0.18s, box-shadow 0.18s;
+      box-shadow: 0 4px 16px rgba(245,158,11,0.30);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .vp-submit-btn:hover:not(:disabled) { opacity: 0.92; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(245,158,11,0.38); }
+    .vp-submit-btn:active:not(:disabled) { transform: translateY(0); }
+    .vp-submit-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    /* ── LOADING SCREEN ── */
+    .vp-loading-screen {
+      position: fixed; inset: 0; z-index: 50;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(250,248,245,0.92);
+      backdrop-filter: blur(6px);
+      gap: 16px;
+    }
+    .vp-loading-ring {
+      width: 44px; height: 44px;
+      border: 3px solid #f0ebe3;
+      border-top-color: #f59e0b;
+      border-radius: 50%;
+      animation: vp-spin 0.75s linear infinite;
+    }
+    .vp-loading-text {
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      color: #78716c;
+      letter-spacing: 0.04em;
+    }
+  `;
+
   // ── REUSABLE INPUT ────────────────────────────────────────────
 
-  const InputField = ({ label, name, type = "text", isSelect, options, optionLabelKey, rules = {}, required = true, ...rest }) => (
-    <div className="flex flex-col gap-1">
-      <label className="text-amber-400 text-sm font-medium">{label}</label>
-
+  const InputField = ({ label, name, type = "text", isSelect, options, optionLabelKey, rules = {}, required = true, className = "", ...rest }) => (
+    <div className={`vp-field${className ? ' ' + className : ''}`}>
+      <label className="vp-label">{label}{required && <span className="req">*</span>}</label>
       {isSelect ? (
-        <div className="relative">
+        <div className="vp-select-wrap">
           <select
             {...register(name, { ...(required && { required: `${label} is required` }), ...rules })}
-            className="w-full bg-gray-200 text-gray-800 rounded-lg py-3 px-4 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-amber-400"
+            className={errors[name] ? "error" : ""}
           >
-            <option value="">{label}</option>
+            <option value="">Select {label}</option>
             {options?.map((opt, i) => {
-              const label = typeof opt === 'string' ? opt : (opt[optionLabelKey] || opt.name || opt.country || opt);
-              return <option key={i} value={label}>{label}</option>;
+              const lbl = typeof opt === 'string' ? opt : (opt[optionLabelKey] || opt.name || opt.country || opt);
+              return <option key={i} value={lbl}>{lbl}</option>;
             })}
           </select>
-          <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <ChevronDown size={15} className="vp-chevron" />
         </div>
       ) : (
         <input
           type={type}
           {...register(name, { ...(required && { required: `${label} is required` }), ...rules })}
-          className="w-full bg-gray-200 text-gray-800 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+          className={`vp-input${errors[name] ? ' error' : ''}`}
           {...rest}
         />
       )}
-
-      {errors[name] && <small className="text-red-400 text-xs">{errors[name]?.message?.toString()}</small>}
+      {errors[name] && <span className="vp-error">{errors[name]?.message?.toString()}</span>}
     </div>
   );
 
-  // ── LOADING STATE ─────────────────────────────────────────────
+  // ── LOADING SCREEN ────────────────────────────────────────────
 
   if (pageLoading) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-white text-sm">Loading profile...</p>
+      <>
+        <style>{styles}</style>
+        <div className="vp-loading-screen">
+          <div className="vp-loading-ring" />
+          <p className="vp-loading-text">Loading your profile…</p>
         </div>
-      </div>
+      </>
     );
   }
 
   // ── RENDER ────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen">
-      <div className="max-w-4xl mx-auto p-6 bg-white text-slate-900">
-        <button
-          onClick={() => navigate(-1)}
-          className="inline-flex my-2 items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 hover:text-gray-900 transition"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-          Back
-        </button>
+    <>
+      <style>{styles}</style>
+      <div className="vp-root">
 
-        <h1 className="font-bold text-xl mb-6 text-slate-900">{"Update Profile"}</h1>
-
-        {/* Avatar */}
-        <div className="flex justify-center mb-6">
-          <div className="relative">
-            <img src={avatar} className="w-24 h-24 rounded-full object-cover border-2 border-amber-400" />
-            <label className="absolute bottom-0 right-0 bg-amber-500 hover:bg-amber-600 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition">
-              <Camera size={15} className="text-white" />
-              <input type="file" className="hidden" onChange={onAvatarChange} />
-            </label>
-          </div>
-        </div>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Personal Info */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InputField label={"Full Name"} name="name"
-              rules={{ pattern: { value: /^[A-Za-z\s]{2,}$/, message: "Only letters & spaces (min 2 chars)" } }} />
-
-            <InputField label={"Mobile Number"} name="phoneNumber"
-              rules={{
-                pattern: { value: /^[1-9]\d{9}$/, message: "Mobile number must be 10 digits and cannot start with 0" },
-                required: "Mobile number is required"
-              }} />
-
-            <InputField label={"Email"} type="email" name="email" required={false}
-              rules={{ validate: (value) => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || "Invalid email address" }} />
-
-            <InputField label={"Date Of Birth"} name="dob" type="date" required={false} />
-
-            {/* Country — from API */}
-            <InputField
-              label={"Country"}
-              name="country"
-              isSelect
-              options={countries}
-              optionLabelKey="country"
-            />
-
-            {/* State — from API, depends on country */}
-            <div className="flex flex-col gap-1">
-              <label className="text-amber-400 text-sm font-medium">{"State"}</label>
-              <div className="relative">
-                <select
-                  {...register("state", { required: "State is required" })}
-                  disabled={locationLoading.states || states.length === 0}
-                  className="w-full bg-gray-200 text-gray-800 rounded-lg py-3 px-4 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-amber-400 disabled:opacity-50"
-                >
-                  <option value="">{locationLoading.states ? "Loading states..." : "State"}</option>
-                  {states.map((s, i) => <option key={i} value={s.name}>{s.name}</option>)}
-                </select>
-                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
-              </div>
-              {errors.state && <small className="text-red-400 text-xs">{errors.state?.message?.toString()}</small>}
-            </div>
-
-            {/* City — from API, depends on state, plain strings */}
-            <div className="flex flex-col gap-1">
-              <label className="text-amber-400 text-sm font-medium">{"City"}</label>
-              <div className="relative">
-                <select
-                  {...register("city", { required: "City is required" })}
-                  disabled={locationLoading.cities || cities.length === 0}
-                  className="w-full bg-gray-200 text-gray-800 rounded-lg py-3 px-4 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-amber-400 disabled:opacity-50"
-                >
-                  <option value="">{locationLoading.cities ? "Loading cities..." : "City"}</option>
-                  {cities.map((c, i) => <option key={i} value={c}>{c}</option>)}
-                </select>
-                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
-              </div>
-              {errors.city && <small className="text-red-400 text-xs">{errors.city?.message?.toString()}</small>}
-            </div>
-          </div>
-
-          {/* Bank Details */}
-          <h2 className="text-slate-800 font-semibold mt-6">{"Bank Details"}</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InputField label={"Bank Name"} name="bankName" />
-
-            <InputField label={"Account Number"} name="accountNumber"
-              rules={{ pattern: { value: /^[0-9]{9,18}$/, message: "Account number must be 9–18 digits" } }}
-              inputMode="numeric" />
-
-            <InputField label={"IFSC"} name="ifscCode"
-              rules={{
-                setValueAs: (v) => v?.toUpperCase() || "",
-                pattern: { value: /^[A-Z]{4}0[A-Z0-9]{6}$/, message: "Invalid IFSC (e.g. SBIN0001234)" },
-                maxLength: { value: 11, message: "IFSC must be 11 characters" }
-              }}
-              maxLength={11} />
-
-            <InputField label={"Account Type"} name="accountType" isSelect
-              options={["Savings", "Current", "Salary"]} />
-          </div>
-
-          <InputField label={"Account Holder Name"} name="accountHolderName"
-            rules={{ pattern: { value: /^[A-Za-z\s]{2,}$/, message: "Only letters & spaces (min 2 chars)" } }} />
-
-          <button
-            className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-60"
-            disabled={loading}
-          >
-            {loading ? "Saving..." : "Save Changes"}
+        {/* Sticky header */}
+        <header className="vp-header">
+          <button className="vp-back-btn" onClick={() => navigate(-1)}>
+            <ArrowLeft size={14} />
+            Back
           </button>
-        </form>
+          <h1 className="vp-page-title">Edit Profile</h1>
+        </header>
+
+        <div className="vp-layout">
+
+          {/* ── Left: profile card ── */}
+          <aside className="vp-profile-card vp-fade-up">
+            <div className="vp-avatar-wrap">
+              <img src={avatar} alt="avatar" className="vp-avatar" />
+              <label className="vp-avatar-btn" title="Change photo">
+                <Camera size={13} color="#fff" />
+                <input type="file" accept="image/*" className="hidden" style={{ display: 'none' }} onChange={onAvatarChange} />
+              </label>
+            </div>
+
+            <h2 className="vp-user-name">{user?.name || "Your Name"}</h2>
+            <p className="vp-user-phone">+{user?.phoneNumber || "—"}</p>
+
+            <div className="vp-divider" />
+
+            <nav className="vp-card-nav">
+              <div className="vp-nav-item active">
+                <User size={15} />
+                Personal Info
+              </div>
+              <div className="vp-nav-item">
+                <MapPin size={15} />
+                Location
+              </div>
+              <div className="vp-nav-item">
+                <CreditCard size={15} />
+                Bank Details
+              </div>
+            </nav>
+          </aside>
+
+          {/* ── Right: form sections ── */}
+          <form onSubmit={handleSubmit(onSubmit)} className="vp-form-area">
+
+            {/* Personal Info */}
+            <section className="vp-section vp-fade-up vp-fade-up-1">
+              <div className="vp-section-header">
+                <div className="vp-section-icon">
+                  <User size={16} color="#f59e0b" />
+                </div>
+                <h2 className="vp-section-title">Personal Information</h2>
+              </div>
+              <div className="vp-section-body">
+                <InputField label="Full Name" name="name"
+                  rules={{ pattern: { value: /^[A-Za-z\s]{2,}$/, message: "Only letters & spaces (min 2 chars)" } }}
+                  placeholder="e.g. Arun Kumar" />
+
+                <InputField label="Mobile Number" name="phoneNumber"
+                  rules={{
+                    pattern: { value: /^[1-9]\d{9}$/, message: "Must be 10 digits, not starting with 0" },
+                    required: "Mobile number is required"
+                  }}
+                  placeholder="9876543210" />
+
+                <InputField label="Email Address" type="email" name="email" required={false}
+                  rules={{ validate: (v) => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || "Invalid email address" }}
+                  placeholder="you@example.com" />
+
+                <InputField label="Date of Birth" name="dob" type="date" required={false} />
+              </div>
+            </section>
+
+            {/* Location */}
+            <section className="vp-section vp-fade-up vp-fade-up-2">
+              <div className="vp-section-header">
+                <div className="vp-section-icon">
+                  <MapPin size={16} color="#f59e0b" />
+                </div>
+                <h2 className="vp-section-title">Location</h2>
+              </div>
+              <div className="vp-section-body">
+                {/* Country */}
+                <InputField label="Country" name="country" isSelect options={countries} optionLabelKey="country" />
+
+                {/* State */}
+                <div className="vp-field">
+                  <label className="vp-label">State<span style={{ color: '#f59e0b', marginLeft: 2 }}>*</span></label>
+                  <div className="vp-select-wrap">
+                    <select
+                      {...register("state", { required: "State is required" })}
+                      disabled={locationLoading.states || states.length === 0}
+                      className={errors.state ? "error" : ""}
+                    >
+                      <option value="">{locationLoading.states ? "Loading…" : "Select State"}</option>
+                      {states.map((s, i) => <option key={i} value={s.name}>{s.name}</option>)}
+                    </select>
+                    {locationLoading.states
+                      ? <Loader2 size={14} className="vp-spinner" />
+                      : <ChevronDown size={15} className="vp-chevron" />
+                    }
+                  </div>
+                  {errors.state && <span className="vp-error">{errors.state?.message?.toString()}</span>}
+                </div>
+
+                {/* City */}
+                <div className="vp-field">
+                  <label className="vp-label">City<span style={{ color: '#f59e0b', marginLeft: 2 }}>*</span></label>
+                  <div className="vp-select-wrap">
+                    <select
+                      {...register("city", { required: "City is required" })}
+                      disabled={locationLoading.cities || cities.length === 0}
+                      className={errors.city ? "error" : ""}
+                    >
+                      <option value="">{locationLoading.cities ? "Loading…" : "Select City"}</option>
+                      {cities.map((c, i) => <option key={i} value={c}>{c}</option>)}
+                    </select>
+                    {locationLoading.cities
+                      ? <Loader2 size={14} className="vp-spinner" />
+                      : <ChevronDown size={15} className="vp-chevron" />
+                    }
+                  </div>
+                  {errors.city && <span className="vp-error">{errors.city?.message?.toString()}</span>}
+                </div>
+              </div>
+            </section>
+
+            {/* Bank Details */}
+            <section className="vp-section vp-fade-up vp-fade-up-3">
+              <div className="vp-section-header">
+                <div className="vp-section-icon">
+                  <CreditCard size={16} color="#f59e0b" />
+                </div>
+                <h2 className="vp-section-title">Bank Details</h2>
+              </div>
+              <div className="vp-section-body">
+                <InputField label="Bank Name" name="bankName" placeholder="e.g. State Bank of India" />
+
+                <InputField label="Account Number" name="accountNumber"
+                  rules={{ pattern: { value: /^[0-9]{9,18}$/, message: "9–18 digits required" } }}
+                  inputMode="numeric" placeholder="XXXXXXXXXXXXXXXXXX" />
+
+                <InputField label="IFSC Code" name="ifscCode"
+                  rules={{
+                    setValueAs: (v) => v?.toUpperCase() || "",
+                    pattern: { value: /^[A-Z]{4}0[A-Z0-9]{6}$/, message: "Invalid IFSC (e.g. SBIN0001234)" },
+                    maxLength: { value: 11, message: "IFSC must be 11 characters" }
+                  }}
+                  maxLength={11} placeholder="SBIN0001234" />
+
+                <InputField label="Account Type" name="accountType" isSelect
+                  options={["Savings", "Current", "Salary"]} />
+
+                <InputField label="Account Holder Name" name="accountHolderName" className="full"
+                  rules={{ pattern: { value: /^[A-Za-z\s]{2,}$/, message: "Only letters & spaces (min 2 chars)" } }}
+                  placeholder="As printed on your passbook" />
+              </div>
+            </section>
+
+            {/* Submit */}
+            <div className="vp-submit-wrap vp-fade-up vp-fade-up-4">
+              <p className="vp-submit-hint">All changes are saved to your account immediately.</p>
+              <button type="submit" className="vp-submit-btn" disabled={loading}>
+                {loading ? (
+                  <><Loader2 size={16} style={{ animation: 'vp-spin 0.75s linear infinite' }} /> Saving…</>
+                ) : "Save Changes"}
+              </button>
+            </div>
+
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
+
