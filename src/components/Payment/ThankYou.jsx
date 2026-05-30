@@ -370,7 +370,7 @@ export default function ThankYou() {
                 { label: 'Payment Method', value: paymentMethod === 'razorpay' ? 'Online (Card / UPI)' : paymentMethod === 'wallet' ? 'Wallet' : paymentMethod },
                 { label: 'Amount Paid', value: grandTotal ? `${grandTotal}` : '—' },
                 { label: 'Confirmation', value: 'Email & SMS Sent' },
-                { label: 'Support', value: 'support@icchhapurti.com' },
+                { label: 'Support', value: 'official@icchhapurti.com' },
               ].map(({ label, value }) => (
                 <div key={label} style={{ background: CREAM, borderRadius: 8, padding: '10px 14px' }}>
                   <p style={{ fontSize: 11, color: MUTED, textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 3 }}>{label}</p>
