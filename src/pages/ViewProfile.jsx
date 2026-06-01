@@ -188,7 +188,7 @@ export default function ViewProfile() {
   const styles = `
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Outfit:wght@300;400;500;600&display=swap');
 
-    .vp-root { font-family: 'Outfit', sans-serif; background: #edededff; min-height: 100vh; }
+    .vp-root { font-family: 'Outfit', sans-serif;   min-height: 100vh; }
     .vp-root * { box-sizing: border-box; }
 
     @keyframes vp-fade-up {

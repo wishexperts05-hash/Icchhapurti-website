@@ -15,7 +15,7 @@ const cache = {
 };
 
 const SpinToWin = ({ isImmediate = false }) => {
-    const SHOW_POPUP_AFTER = 240;
+    const SHOW_POPUP_AFTER = 40;
     const SHOW_AGAIN_AFTER_CLOSE = 5 * 60 * 1000;
     const [token, setToken] = useState("");
 

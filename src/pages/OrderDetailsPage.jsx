@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Package, Check, ArrowLeft, MapPin, CreditCard, Tag, Loader } from 'lucide-react';
+import { Package, Check, ArrowLeft, MapPin, CreditCard, Tag, Download, MapPinned, Copy, CheckCheck, Headphones } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 // Add to your index.html:
@@ -64,6 +64,7 @@ const styles = `
     align-items: center;
     gap: 8px;
     flex-wrap: wrap;
+    margin-bottom: 10px;
   }
   .od-order-id {
     font-size: 12px;
@@ -73,6 +74,24 @@ const styles = `
   }
   .od-order-id span { color: #333; font-weight: 500; }
   .od-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: #ddd; }
+
+  /* ── Copy ID button ── */
+  .od-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: #999;
+    background: #f3ede2;
+    border: none;
+    border-radius: 6px;
+    padding: 2px 8px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: color 0.18s, background 0.18s;
+  }
+  .od-copy-btn:hover { color: #BA7517; background: #ede5d4; }
+  .od-copy-btn.copied { color: #1a6e38; background: #e1f5e8; }
 
   /* ── Status badges ── */
   .od-badge {
@@ -109,6 +128,57 @@ const styles = `
   .od-badge.Paid .od-badge-dot      { background: #1a6e38; }
   .od-badge.Pending .od-badge-dot   { background: #b45309; }
   .od-badge.Failed .od-badge-dot    { background: #c0392b; }
+
+  /* ── Estimated delivery banner ── */
+  .od-delivery-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.875rem 1.125rem;
+    background: #fff;
+    border: 0.5px solid #e5ddd0;
+    border-left: 3px solid #EF9F27;
+    border-radius: 0 12px 12px 0;
+    margin-bottom: 1.75rem;
+    animation: fadeUp 0.2s ease both;
+  }
+  .od-delivery-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #fff4e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .od-delivery-label { font-size: 11.5px; color: #888; font-weight: 400; margin-bottom: 2px; }
+  .od-delivery-date  { font-size: 14.5px; font-weight: 500; color: #1a1a1a; }
+  .od-delivery-sub   { font-size: 12px; color: #aaa; margin-top: 1px; }
+
+  /* ── Trust badges ── */
+  .od-trust-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 1.75rem;
+    animation: fadeUp 0.22s ease both;
+  }
+  .od-trust-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 13px;
+    background: #fff;
+    border: 0.5px solid #e5ddd0;
+    border-radius: 12px;
+    font-size: 12.5px;
+    color: #555;
+    flex: 1;
+    min-width: 140px;
+  }
+  .od-trust-badge svg { color: #1a6e38; flex-shrink: 0; }
+  .od-trust-badge strong { display: block; font-size: 13px; font-weight: 500; color: #1a1a1a; margin-bottom: 1px; }
 
   /* ── Section ── */
   .od-section {
@@ -183,12 +253,26 @@ const styles = `
     font-weight: 400;
     margin-left: 5px;
   }
-  .od-returnable {
-    font-size: 11px;
-    color: #1a6e38;
-    margin-top: 3px;
-    font-weight: 400;
+
+  /* ── Assurance chips ── */
+  .od-chips-row {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+    margin-top: 0.875rem;
   }
+  .od-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 11px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 500;
+  }
+  .od-chip.green { background: #e1f5e8; color: #1a6e38; }
+  .od-chip.blue  { background: #e8f0fe; color: #1a56db; }
+  .od-chip.amber { background: #fff4e8; color: #b45309; }
 
   /* ── Timeline ── */
   .od-timeline { position: relative; padding-left: 1.5rem; }
@@ -203,7 +287,6 @@ const styles = `
   .od-timeline-item {
     position: relative;
     margin-bottom: 1.25rem;
-    padding-bottom: 0;
   }
   .od-timeline-item:last-child { margin-bottom: 0; }
   .od-timeline-dot {
@@ -244,7 +327,7 @@ const styles = `
     letter-spacing: 0.01em;
   }
 
-  /* ── Info card (address / price) ── */
+  /* ── Info card (address / price / payment) ── */
   .od-info-card {
     border: 0.5px solid #e5ddd0;
     border-radius: 12px;
@@ -280,6 +363,19 @@ const styles = `
     line-height: 1.6;
   }
 
+  /* Payment card last4 */
+  .od-payment-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .od-payment-last4 {
+    font-size: 12px;
+    color: #aaa;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+  }
+
   /* Price rows */
   .od-price-row {
     display: flex;
@@ -300,6 +396,47 @@ const styles = `
     color: #1a1a1a;
   }
   .od-price-row.total span:last-child { color: #BA7517; }
+
+  /* ── Help block ── */
+  .od-help-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.125rem;
+    background: #fff;
+    border: 0.5px solid #e5ddd0;
+    border-radius: 12px;
+    margin-bottom: 1.75rem;
+    animation: fadeUp 0.3s ease both;
+  }
+  .od-help-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e1f5e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .od-help-icon svg { color: #1a6e38; }
+  .od-help-text { flex: 1; }
+  .od-help-title { font-size: 13.5px; font-weight: 500; color: #1a1a1a; margin-bottom: 2px; }
+  .od-help-sub   { font-size: 12px; color: #888; font-weight: 400; }
+  .od-help-btn {
+    font-size: 12.5px;
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: 0.5px solid #e5ddd0;
+    background: #fff;
+    cursor: pointer;
+    color: #333;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    white-space: nowrap;
+    transition: border-color 0.18s, color 0.18s;
+  }
+  .od-help-btn:hover { border-color: #EF9F27; color: #BA7517; }
 
   /* ── Loader / error ── */
   .od-loader {
@@ -343,6 +480,11 @@ const formatDateTime = (iso) => {
   });
 };
 
+const formatDeliveryDate = (iso) => {
+  if (!iso) return null;
+  return iso.split('T')[0];
+};
+
 const StatusBadge = ({ label }) => {
   const cls = ['Placed', 'Processing', 'Shipped', 'Delivered', 'Cancelled',
     'Returned', 'Refunded', 'Paid', 'Pending', 'Failed'].includes(label) ? label : 'default';
@@ -351,6 +493,24 @@ const StatusBadge = ({ label }) => {
       <span className="od-badge-dot" />
       {label}
     </span>
+  );
+};
+
+const CopyOrderId = ({ oid }) => {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(oid).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+  return (
+    <button className={`od-copy-btn${copied ? ' copied' : ''}`} onClick={handleCopy}>
+      {copied
+        ? <><CheckCheck size={11} strokeWidth={2} /> Copied!</>
+        : <><Copy size={11} strokeWidth={1.75} /> Copy ID</>
+      }
+    </button>
   );
 };
 
@@ -406,8 +566,24 @@ const OrderDetailsPage = () => {
   const {
     orderId: oid, products, totalProducts,
     subtotalAmount, shippingAmount, discountAmount, grandTotal,
-    shippingAddress, timeline, status, paymentMethod, paymentStatus
+    shippingAddress, timeline, status, paymentMethod, paymentStatus,
+    createdAt, trackingUrl, paymentLast4,
   } = order;
+
+  const showDelivery = !['Delivered', 'Cancelled', 'Returned', 'Refunded'].includes(status);
+  const estimatedDate = (() => {
+    if (!showDelivery) return null;
+    const fromApi = formatDeliveryDate(order?.estimatedDeliveryDate);
+    if (fromApi) return `By ${fromApi}`;
+    if (!createdAt) return null;
+    const d = new Date(createdAt);
+    d.setDate(d.getDate() + 5);
+    return `By ${d.toISOString().split('T')[0]}`;
+  })();
+
+  const handleTrackShipment = () => {
+    if (trackingUrl) window.open(trackingUrl, '_blank');
+  };
 
   return (
     <>
@@ -419,12 +595,13 @@ const OrderDetailsPage = () => {
           Back
         </button>
 
-        {/* Title */}
+        {/* ── Title ── */}
         <div className="od-title-block">
           <div className="od-eyebrow">Order details</div>
           <h1 className="od-title">Order Summary</h1>
           <div className="od-meta-row">
             <span className="od-order-id">Order <span>#{oid}</span></span>
+            <CopyOrderId oid={oid} />
             <span className="od-meta-dot" />
             <StatusBadge label={status} />
             <span className="od-meta-dot" />
@@ -432,7 +609,46 @@ const OrderDetailsPage = () => {
           </div>
         </div>
 
-        {/* Products */}
+        {/* ── Estimated delivery banner ── */}
+        {estimatedDate && (
+          <div className="od-delivery-banner">
+            <div className="od-delivery-icon">
+              <MapPinned size={17} strokeWidth={1.75} color="#BA7517" />
+            </div>
+            <div>
+              <div className="od-delivery-label">Estimated delivery</div>
+              <div className="od-delivery-date">{estimatedDate}</div>
+              <div className="od-delivery-sub">Standard shipping · 3–5 business days</div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Trust badges ── */}
+        <div className="od-trust-row">
+          <div className="od-trust-badge">
+            <Check size={15} strokeWidth={2.5} />
+            <div>
+              <strong>Verified order</strong>
+              Payment confirmed &amp; secured
+            </div>
+          </div>
+          <div className="od-trust-badge">
+            <Package size={15} strokeWidth={1.75} />
+            <div>
+              <strong>Authentic products</strong>
+              100% genuine, quality assured
+            </div>
+          </div>
+          <div className="od-trust-badge">
+            <Headphones size={15} strokeWidth={1.75} />
+            <div>
+              <strong>24/7 support</strong>
+              We're here if you need help
+            </div>
+          </div>
+        </div>
+
+        {/* ── Products ── */}
         <div className="od-section" style={{ animationDelay: '0.04s' }}>
           <div className="od-section-label">
             {totalProducts} item{totalProducts !== 1 ? 's' : ''} ordered
@@ -456,17 +672,19 @@ const OrderDetailsPage = () => {
                   ₹{item.price}
                   <span className="od-product-subtotal">Subtotal: ₹{item.subtotal}</span>
                 </p>
-                {item.returnable && (
-                  <p className="od-returnable">
-                    ↩ Returnable{item.returnableDays ? ` within ${item.returnableDays} days` : ''}
-                  </p>
-                )}
               </div>
             </div>
           ))}
+
+          {/* Assurance chips below product list */}
+          <div className="od-chips-row">
+            <span className="od-chip blue">✦ Authentic products</span>
+            <span className="od-chip amber">⬡ Secure packaging</span>
+            <span className="od-chip green">✔ Payment verified</span>
+          </div>
         </div>
 
-        {/* Timeline */}
+        {/* ── Timeline ── */}
         {timeline?.length > 0 && (
           <div className="od-section" style={{ animationDelay: '0.1s' }}>
             <div className="od-section-label">Order timeline</div>
@@ -486,7 +704,7 @@ const OrderDetailsPage = () => {
           </div>
         )}
 
-        {/* Delivery address */}
+        {/* ── Delivery address ── */}
         {shippingAddress && (
           <div className="od-section" style={{ animationDelay: '0.16s' }}>
             <div className="od-section-label">Delivery address</div>
@@ -503,7 +721,7 @@ const OrderDetailsPage = () => {
           </div>
         )}
 
-        {/* Payment method */}
+        {/* ── Payment ── */}
         {paymentMethod && (
           <div className="od-section" style={{ animationDelay: '0.2s' }}>
             <div className="od-section-label">Payment</div>
@@ -512,12 +730,17 @@ const OrderDetailsPage = () => {
                 <CreditCard size={13} strokeWidth={2} />
                 Payment method
               </div>
-              <div className="od-addr-line">{paymentMethod}</div>
+              <div className="od-payment-row">
+                <div className="od-addr-line">{paymentMethod}</div>
+                {paymentLast4 && (
+                  <div className="od-payment-last4">•••• {paymentLast4}</div>
+                )}
+              </div>
             </div>
           </div>
         )}
 
-        {/* Price summary */}
+        {/* ── Price breakdown ── */}
         <div className="od-section" style={{ animationDelay: '0.24s' }}>
           <div className="od-section-label">Price breakdown</div>
           <div className="od-info-card">
@@ -544,6 +767,20 @@ const OrderDetailsPage = () => {
               <span>₹{grandTotal}</span>
             </div>
           </div>
+        </div>
+
+        {/* ── Need help ── */}
+        <div className="od-help-card">
+          <div className="od-help-icon">
+            <Headphones size={18} strokeWidth={1.75} />
+          </div>
+          <div className="od-help-text">
+            <div className="od-help-title">Need help with this order?</div>
+            <div className="od-help-sub">Our support team typically replies within 2 hours.</div>
+          </div>
+          <button className="od-help-btn" onClick={() => navigate('/contact')}>
+            Contact us
+          </button>
         </div>
 
       </div>

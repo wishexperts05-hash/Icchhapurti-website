@@ -110,16 +110,16 @@ export default function WalletPage() {
     }).format(amount);
   };
 
-const navigate = useNavigate()
+  const navigate = useNavigate()
 
-    return (
-    <div className="  relative overflow-hidden">
+  return (
+    <div className=" relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-amber-500/20 via-cyan-500/20 to-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
       </div>
 
-      <div className="relative bg-white z-10 max-w-4xl mx-auto p-4 text-slate-900">
+      <div className="relative  bg-[#FAF6EE]  z-10 max-w-4xl mx-auto p-4 text-slate-900">
         <div className="w-full flex justify-start">
           <button
             onClick={() => navigate(-1)}
