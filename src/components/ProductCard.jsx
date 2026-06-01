@@ -103,7 +103,7 @@ export default function ProductCard({ product, country, countryCurrency, onAddTo
                         detail: { cart: existingCart, count: totalItems },
                     })
                 );
-                // setCartSidebarOpen(true)
+                setCartSidebarOpen(true)
 
             } else {
                 await onAddToCart(product);

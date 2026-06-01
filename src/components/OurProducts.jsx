@@ -135,6 +135,7 @@ export default function OurProducts({ countryCurrency, country }) {
       if (result.success) {
         localStorage.setItem("cart", result.data.products.length);
         setCount(result.data.products.length);
+        setCartSidebarOpen(true)
       }
 
       window.dispatchEvent(new CustomEvent("cartUpdated", { detail: result }));
@@ -214,41 +215,41 @@ export default function OurProducts({ countryCurrency, country }) {
         </div>
 
         {products.length > 0 ? (
-         <>
-    {/* Mobile: 4 products in 2 cols */}
-    <div className="grid grid-cols-2 gap-2 sm:gap-3 md:hidden">
-      {products.slice(0, 4).map((product) => (
-        <ProductCard
-          key={product.id || product._id}
-          product={product}
-          country={country}
-          onAddToCart={handleAddToCart}
-          onWishlistUpdate={handleWishlistUpdate}
-          setCartSidebarOpen={setCartSidebarOpen}
-          openPayment={openPayment}
-          setOpenPayment={setOpenPayment}
-          countryCurrency={countryCurrency}
-        />
-      ))}
-    </div>
+          <>
+            {/* Mobile: 4 products in 2 cols */}
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 md:hidden">
+              {products.slice(0, 4).map((product) => (
+                <ProductCard
+                  key={product.id || product._id}
+                  product={product}
+                  country={country}
+                  onAddToCart={handleAddToCart}
+                  onWishlistUpdate={handleWishlistUpdate}
+                  setCartSidebarOpen={setCartSidebarOpen}
+                  openPayment={openPayment}
+                  setOpenPayment={setOpenPayment}
+                  countryCurrency={countryCurrency}
+                />
+              ))}
+            </div>
 
-    {/* Desktop: 3 products in 3 cols */}
-    <div className="hidden md:grid md:grid-cols-3 md:gap-6">
-      {products.slice(0, 3).map((product) => (
-        <ProductCard
-          key={product.id || product._id}
-          product={product}
-          country={country}
-          onAddToCart={handleAddToCart}
-          onWishlistUpdate={handleWishlistUpdate}
-          setCartSidebarOpen={setCartSidebarOpen}
-          openPayment={openPayment}
-          setOpenPayment={setOpenPayment}
-          countryCurrency={countryCurrency}
-        />
-      ))}
-    </div>
-  </>
+            {/* Desktop: 3 products in 3 cols */}
+            <div className="hidden md:grid md:grid-cols-3 md:gap-6">
+              {products.slice(0, 3).map((product) => (
+                <ProductCard
+                  key={product.id || product._id}
+                  product={product}
+                  country={country}
+                  onAddToCart={handleAddToCart}
+                  onWishlistUpdate={handleWishlistUpdate}
+                  setCartSidebarOpen={setCartSidebarOpen}
+                  openPayment={openPayment}
+                  setOpenPayment={setOpenPayment}
+                  countryCurrency={countryCurrency}
+                />
+              ))}
+            </div>
+          </>
         ) : (
           <div className="text-center py-20 px-4">
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 max-w-md mx-auto border border-slate-700">
