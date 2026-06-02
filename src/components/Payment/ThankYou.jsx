@@ -165,8 +165,6 @@ export default function ThankYou() {
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: ${CREAM}; font-family: 'DM Sans', sans-serif; }
 
         .ty-fade-up {
           opacity: 0;

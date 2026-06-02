@@ -11,7 +11,7 @@ const SearchableDropdown = ({
         <div className={disabled || isLoading ? 'opacity-50 cursor-not-allowed' : ''}>
             <div
                 onClick={() => !disabled && !isLoading && setOpenDropdown(openDropdown === field ? null : field)}
-                className={`w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 cursor-pointer flex items-center justify-between hover:border-gray-900 focus:outline-none transition-all ${errors && errors[field] ? 'ring-2 ring-red-500' : ''}`}
+                className={`w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 sm:py-3 text-sm text-gray-900 cursor-pointer flex items-center justify-between hover:border-gray-900 focus:outline-none transition-all ${errors && errors[field] ? 'ring-2 ring-red-500' : ''}`}
             >
                 <span className={value ? 'text-gray-900 text-sm' : 'text-gray-400 text-sm'}>
                     {isLoading ? 'Loading...' : (value || placeholder)}

@@ -251,7 +251,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = 'India', 
     }
 
     return (
-        <div className="fixed inset-0 z-[9999] h-screen backdrop-blur-[2px] scroll-smooth bg-black/20">
+        <div className="fixed inset-0 z-[9999] backdrop-blur-[2px] scroll-smooth bg-black/20 flex flex-col">
             <CartSidebar isOpen={cartSidebarOpen} onClose={() => setCartSidebarOpen(false)} />
 
             {/* Header */}
@@ -284,7 +284,7 @@ export default function PaymentModal({ isOpen, onClose, country_name = 'India', 
             />
 
             {/* Main scroll area */}
-            <div className="relative z-10 h-[calc(100vh-4rem)] overflow-y-auto pt-[env(safe-area-inset-top)]">
+            <div className="relative z-10 flex-1 min-h-0 overflow-y-auto pt-[env(safe-area-inset-top)] pb-16">
                 <div className="max-w-xl mx-auto">
                     <div className="bg-gray-50">
                         <div className="mx-auto px-2 py-6">

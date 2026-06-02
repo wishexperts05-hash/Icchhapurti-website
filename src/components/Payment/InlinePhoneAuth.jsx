@@ -16,7 +16,7 @@ export default function InlinePhoneAuth({
 }) {
     if (authStage === 'phone') {
         return (
-            <div className="max-w-md mx-auto bg-white rounded-2xl shadow-md p-6 mt-6 border border-gray-100 space-y-6 animate-slide-down">
+            <div className="max-w-md mx-auto bg-white rounded-2xl shadow-md p-4 sm:p-6 mt-4 sm:mt-6 border border-gray-100 space-y-4 sm:space-y-6 animate-slide-down">
                 <div className="text-center space-y-2">
                     <h2 className="text-xl font-bold text-gray-900">Secure Checkout</h2>
                     <p className="text-gray-500 text-xs">Enter your mobile number to proceed to payment</p>
@@ -27,7 +27,7 @@ export default function InlinePhoneAuth({
                         <span>{authError}</span>
                     </div>
                 )}
-                <form onSubmit={handleSendOtp} className="space-y-4">
+                <form onSubmit={handleSendOtp} className="space-y-3 sm:space-y-4">
                     <div>
                         <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
                             Mobile Number
@@ -40,7 +40,7 @@ export default function InlinePhoneAuth({
                                 type="tel"
                                 value={authPhone}
                                 onChange={(e) => setAuthPhone(e.target.value.replace(/\D/g, ''))}
-                                className="w-full px-4 py-3 bg-transparent text-sm focus:outline-none text-gray-900"
+                                className="w-full px-4 py-2.5 sm:py-3 bg-transparent text-sm focus:outline-none text-gray-900"
                                 placeholder="Enter 10-digit number"
                                 maxLength="10"
                                 required
@@ -70,7 +70,7 @@ export default function InlinePhoneAuth({
 
     if (authStage === 'otp') {
         return (
-            <div className="max-w-md mx-auto bg-white rounded-2xl shadow-md p-6 mt-6 border border-gray-100 space-y-6 animate-slide-down">
+            <div className="max-w-md mx-auto bg-white rounded-2xl shadow-md p-4 sm:p-6 mt-4 sm:mt-6 border border-gray-100 space-y-4 sm:space-y-6 animate-slide-down">
                 <div className="text-center space-y-2">
                     <h2 className="text-xl font-bold text-gray-900">Verify Mobile</h2>
                     <p className="text-gray-500 text-xs">
@@ -83,7 +83,7 @@ export default function InlinePhoneAuth({
                         <span>{authError}</span>
                     </div>
                 )}
-                <form onSubmit={handleVerifyOtp} className="space-y-4">
+                <form onSubmit={handleVerifyOtp} className="space-y-3 sm:space-y-4">
                     <div>
                         <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2 text-center">
                             Enter OTP
@@ -92,7 +92,7 @@ export default function InlinePhoneAuth({
                             type="text"
                             value={authOtp}
                             onChange={(e) => setAuthOtp(e.target.value.replace(/\D/g, ''))}
-                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-center text-xl tracking-widest font-semibold text-gray-900"
+                            className="w-full px-4 py-2.5 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-center text-xl tracking-widest font-semibold text-gray-900"
                             placeholder="• • • • • •"
                             maxLength="6"
                             required

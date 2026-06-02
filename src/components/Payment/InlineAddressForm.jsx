@@ -25,13 +25,13 @@ export default function InlineAddressForm({
     filteredCities
 }) {
     return (
-        <div className="max-w-md mx-auto bg-white rounded-2xl shadow-md p-6 mt-6 border border-gray-100 space-y-6 animate-slide-down">
+        <div className="max-w-md mx-auto bg-white rounded-2xl shadow-md p-4 sm:p-6 mt-4 sm:mt-6 border border-gray-100 space-y-4 sm:space-y-6 animate-slide-down">
             <div className="text-center space-y-2">
                 <h2 className="text-xl font-bold text-gray-900">Delivery Address</h2>
                 <p className="text-gray-500 text-xs">Add your shipping details to complete checkout</p>
             </div>
 
-            <form onSubmit={handleSaveAddress} className="space-y-4">
+            <form onSubmit={handleSaveAddress} className="space-y-3 sm:space-y-4">
                 {/* Full Name */}
                 <div>
                     <label className="block text-gray-700 text-xs font-semibold uppercase tracking-wider mb-2">Full Name *</label>
@@ -43,7 +43,7 @@ export default function InlineAddressForm({
                             if (addressErrors.fullName) setAddressErrors(prev => ({ ...prev, fullName: '' }));
                         }}
                         placeholder="Enter your full name"
-                        className={`w-full bg-gray-50 border ${addressErrors.fullName ? 'border-red-500' : 'border-gray-200'} rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all`}
+                        className={`w-full bg-gray-50 border ${addressErrors.fullName ? 'border-red-500' : 'border-gray-200'} rounded-xl px-4 py-2.5 sm:py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all`}
                     />
                     {addressErrors.fullName && <p className="text-red-500 text-[10px] mt-1">{addressErrors.fullName}</p>}
                 </div>
@@ -56,7 +56,7 @@ export default function InlineAddressForm({
                         <div ref={el => { if (dropdownRefs && dropdownRefs.current) dropdownRefs.current['countryCode'] = el; }} className="relative w-28">
                             <div
                                 onClick={() => setLocationDropdown(locationDropdown === 'countryCode' ? null : 'countryCode')}
-                                className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-sm text-gray-900 cursor-pointer flex items-center justify-between hover:border-gray-900 transition-all"
+                                className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 sm:py-3 text-sm text-gray-900 cursor-pointer flex items-center justify-between hover:border-gray-900 transition-all"
                             >
                                 <span className="text-gray-900 text-sm">{addressForm.countryCode || '+91'}</span>
                                 <ChevronDown className="w-3.5 h-3.5 text-gray-500" />
@@ -104,7 +104,7 @@ export default function InlineAddressForm({
                                 if (addressErrors.mobileNumber) setAddressErrors(prev => ({ ...prev, mobileNumber: '' }));
                             }}
                             placeholder="Enter mobile number"
-                            className={`flex-1 bg-gray-50 border ${addressErrors.mobileNumber ? 'border-red-500' : 'border-gray-200'} rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all`}
+                            className={`flex-1 bg-gray-50 border ${addressErrors.mobileNumber ? 'border-red-500' : 'border-gray-200'} rounded-xl px-4 py-2.5 sm:py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all`}
                         />
                     </div>
                     {addressErrors.mobileNumber && <p className="text-red-500 text-[10px] mt-1">{addressErrors.mobileNumber}</p>}
@@ -181,7 +181,7 @@ export default function InlineAddressForm({
                             if (addressErrors.street) setAddressErrors(prev => ({ ...prev, street: '' }));
                         }}
                         placeholder="Enter street address"
-                        className={`w-full bg-gray-50 border ${addressErrors.street ? 'border-red-500' : 'border-gray-200'} rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all`}
+                        className={`w-full bg-gray-50 border ${addressErrors.street ? 'border-red-500' : 'border-gray-200'} rounded-xl px-4 py-2.5 sm:py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all`}
                     />
                     {addressErrors.street && <p className="text-red-500 text-[10px] mt-1">{addressErrors.street}</p>}
                 </div>
@@ -198,7 +198,7 @@ export default function InlineAddressForm({
                         }}
                         placeholder="Enter 6-digit pin code"
                         maxLength="6"
-                        className={`w-full bg-gray-50 border ${addressErrors.pinCode ? 'border-red-500' : 'border-gray-200'} rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all`}
+                        className={`w-full bg-gray-50 border ${addressErrors.pinCode ? 'border-red-500' : 'border-gray-200'} rounded-xl px-4 py-2.5 sm:py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all`}
                     />
                     {addressErrors.pinCode && <p className="text-red-500 text-[10px] mt-1">{addressErrors.pinCode}</p>}
                 </div>
@@ -207,7 +207,7 @@ export default function InlineAddressForm({
                 <button
                     type="submit"
                     disabled={addressSaving}
-                    className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2 cursor-pointer mt-2"
+                    className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-3 sm:py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2 cursor-pointer mt-2"
                 >
                     {addressSaving ? (
                         <>

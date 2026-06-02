@@ -74,6 +74,7 @@ export default function useInlineAuth({ setIsAuthenticated, onVerifySuccess }) {
                 body: JSON.stringify({ phoneNumber: authPhone, otp: authOtp })
             });
             const data = await res.json();
+            console.log(data, "login")
             if (data.success) {
                 localStorage.setItem("user", JSON.stringify(data.data));
                 localStorage.setItem("token", data.token);
