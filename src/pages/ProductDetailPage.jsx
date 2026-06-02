@@ -688,21 +688,68 @@ export default function ProductDetails({ countryCurrency, country }) {
         {isPyrite && (
           <>
             <GoldDivider />
-            {/* Pyrite Grid */}
             <div style={{ marginBottom: 60 }}>
-              <div className="text-label" style={{ color: GOLD, marginBottom: 8 }}>The Stone of Abundance</div>
-              <h2 className="text-h2" style={{ color: DEEP, marginBottom: 6 }}>Pyrite. Power. Wealth. Protection.</h2>
-              <p style={{ color: MUTED, fontSize: 14, marginBottom: 28 }}>Often called the 'Stone of Fire', Pyrite is a powerhouse of abundance and defensive shielding.</p>
-              <div className="pd-chakra-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16 }}>
+              <div className="text-label" style={{ color: GOLD, marginBottom: 8 }}>
+                The Stone of Abundance
+              </div>
+              <h2 className="text-h2" style={{ color: DEEP, marginBottom: 6 }}>
+                Pyrite. Power. Wealth. Protection.
+              </h2>
+              <p style={{ color: MUTED, fontSize: 14, marginBottom: 28 }}>
+                Often called the 'Stone of Fire', Pyrite is a powerhouse of abundance and defensive shielding.
+              </p>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                  gap: 16,
+                }}
+              >
                 {[
                   { title: "Wealth Magnet", desc: "Attracts financial opportunities, lucky coincidences, and professional growth.", bg: "#F4D03F" },
                   { title: "Root Activation", desc: "Stimulates the Root and Solar Plexus chakras, grounding your presence and personal power.", bg: "#E67E22" },
                   { title: "Shielding", desc: "Formidably blocks negative vibes, emotional drainage, and environmental smog.", bg: "#C9A84C" },
-                  { title: "Mental Focus", desc: "Fosters focus, drive, and the self-confidence needed to execute your biggest dreams.", bg: "#7A6F60" }
+                  { title: "Mental Focus", desc: "Fosters focus, drive, and the self-confidence needed to execute your biggest dreams.", bg: "#7A6F60" },
                 ].map(p => (
-                  <div key={p.title} style={{ background: '#fff', border: `1px solid ${BORDER}`, borderRadius: 12, padding: '20px 16px', textAlign: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
-                    <div style={{ width: 44, height: 44, borderRadius: '50%', background: p.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, margin: '0 auto 12px', color: '#fff', fontWeight: 600 }}>✦</div>
-                    <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 600, color: DEEP, marginBottom: 6 }}>{p.title}</h3>
+                  <div
+                    key={p.title}
+                    style={{
+                      background: '#fff',
+                      border: `1px solid ${BORDER}`,
+                      borderRadius: 12,
+                      padding: '20px 16px',
+                      textAlign: 'center',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.02)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: '50%',
+                        background: p.bg,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: 16,
+                        margin: '0 auto 12px',
+                        color: '#fff',
+                        fontWeight: 600,
+                      }}
+                    >
+                      ✦
+                    </div>
+                    <h3
+                      style={{
+                        fontFamily: "'Cormorant Garamond', serif",
+                        fontSize: 18,
+                        fontWeight: 600,
+                        color: DEEP,
+                        marginBottom: 6,
+                      }}
+                    >
+                      {p.title}
+                    </h3>
                     <p style={{ fontSize: 12, color: MUTED, lineHeight: 1.5 }}>{p.desc}</p>
                   </div>
                 ))}
