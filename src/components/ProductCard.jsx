@@ -179,7 +179,7 @@ export default function ProductCard({ product, country, countryCurrency, onAddTo
             .toLowerCase()
             .trim()
             .replace(/[^a-z0-9\s]/g, "")
-            .replace(/\s+/g, "_");
+            .replace(/\s+/g, "-");
 
         navigate(`/product/${product.id || product._id}/${productSlug}`);
     };

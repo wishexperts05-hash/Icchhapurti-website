@@ -184,17 +184,18 @@ const WriteFirstCard = ({ token, setOpenReview }) => (
 );
 
 /* ─── Main Review Component ─── */
-const Review = ({
-  reviewData, hasReviewed, totalPages, reviewsLoading, reviewsError,
-  fetchProductReviews, reviews, setOpenReview, orderedReviews,
-  handlePageChange, currentPage,
-}) => {
-  const [selectedImage, setSelectedImage] = useState(null);
-  const token = localStorage.getItem('token');
+const
+  Review = ({
+    reviewData, hasReviewed, totalPages, reviewsLoading, reviewsError,
+    fetchProductReviews, reviews, setOpenReview, orderedReviews,
+    handlePageChange, currentPage,
+  }) => {
+    const [selectedImage, setSelectedImage] = useState(null);
+    const token = localStorage.getItem('token');
 
-  return (
-    <>
-      <style>{`
+    return (
+      <>
+        <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@400;500;700&display=swap');
         .pd-review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         @media(max-width: 640px) { .pd-review-grid { grid-template-columns: 1fr !important; } }
@@ -202,168 +203,168 @@ const Review = ({
         .pd-write-btn-top:hover { background: transparent !important; color: #b8952e !important; border-color: #b8952e !important; }
       `}</style>
 
-      {/* Lightbox */}
-      {selectedImage && ReactDOM.createPortal(
-        <div onClick={() => setSelectedImage(null)} style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.82)', backdropFilter: 'blur(4px)' }}>
-          <button onClick={() => setSelectedImage(null)} style={{ position: 'absolute', top: 16, right: 16, background: 'rgba(0,0,0,0.5)', border: 'none', borderRadius: '50%', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff' }}>
-            <X size={20} />
-          </button>
-          <img src={selectedImage} alt="enlarged" onClick={e => e.stopPropagation()} style={{ maxWidth: '90vw', maxHeight: '90vh', borderRadius: 12, objectFit: 'contain' }} />
-        </div>,
-        document.body
-      )}
-
-      <div style={{ padding: '40px 24px 48px', fontFamily: "'DM Sans', sans-serif", maxWidth: 1100, margin: '0 auto' }}>
-
-        {/* Section header */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 28, flexWrap: 'wrap', gap: 16 }}>
-          <div>
-            <div className="text-label" style={{ color: GOLD, marginBottom: 8 }}>Real Experiences</div>
-            <h2 className="text-display" style={{ color: DEEP, margin: 0 }}>
-              What Our Customers Say
-            </h2>
-          </div>
-          {token && (
-            <button
-              className="pd-write-btn-top"
-              onClick={() => setOpenReview(true)}
-              style={{
-                background: 'transparent', border: `1.5px solid ${GOLD}`, color: GOLD,
-                borderRadius: 8, padding: '10px 22px', fontSize: 14, fontWeight: 500,
-                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8,
-                transition: 'all .2s', letterSpacing: '.02em', whiteSpace: 'nowrap',
-              }}
-            >
-              ✍️ Write a Review
+        {/* Lightbox */}
+        {selectedImage && ReactDOM.createPortal(
+          <div onClick={() => setSelectedImage(null)} style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.82)', backdropFilter: 'blur(4px)' }}>
+            <button onClick={() => setSelectedImage(null)} style={{ position: 'absolute', top: 16, right: 16, background: 'rgba(0,0,0,0.5)', border: 'none', borderRadius: '50%', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff' }}>
+              <X size={20} />
             </button>
+            <img src={selectedImage} alt="enlarged" onClick={e => e.stopPropagation()} style={{ maxWidth: '90vw', maxHeight: '90vh', borderRadius: 12, objectFit: 'contain' }} />
+          </div>,
+          document.body
+        )}
+
+        <div style={{ padding: '40px 24px 48px', fontFamily: "'DM Sans', sans-serif", maxWidth: 1100, margin: '0 auto' }}>
+
+          {/* Section header */}
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 28, flexWrap: 'wrap', gap: 16 }}>
+            <div>
+              <div className="text-label" style={{ color: GOLD, marginBottom: 8 }}>Real Experiences</div>
+              <h2 className="text-display" style={{ color: DEEP, margin: 0 }}>
+                What Our Customers Say
+              </h2>
+            </div>
+            {token && (
+              <button
+                className="pd-write-btn-top"
+                onClick={() => setOpenReview(true)}
+                style={{
+                  background: 'transparent', border: `1.5px solid ${GOLD}`, color: GOLD,
+                  borderRadius: 8, padding: '10px 22px', fontSize: 14, fontWeight: 500,
+                  cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8,
+                  transition: 'all .2s', letterSpacing: '.02em', whiteSpace: 'nowrap',
+                }}
+              >
+                ✍️ Write a Review
+              </button>
+            )}
+          </div>
+
+          {/* Rating summary */}
+          <RatingSummary reviewData={reviewData} />
+
+          {/* States */}
+          {reviewsLoading ? (
+            <div style={{ textAlign: 'center', padding: '48px 0' }}>
+              <Loader2 size={36} style={{ animation: 'spin 1s linear infinite', color: GOLD, marginBottom: 12 }} />
+              <p style={{ color: MUTED }}>Loading reviews…</p>
+              <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+            </div>
+          ) : reviewsError ? (
+            <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 12, padding: 24, textAlign: 'center' }}>
+              <AlertCircle size={32} color="#EF4444" style={{ marginBottom: 8 }} />
+              <p style={{ color: '#DC2626', marginBottom: 12, fontSize: 14 }}>Error loading reviews: {reviewsError}</p>
+              <button onClick={() => fetchProductReviews(currentPage)} style={{ background: '#EF4444', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 20px', cursor: 'pointer', fontWeight: 500 }}>
+                Try Again
+              </button>
+            </div>
+          ) : reviews.length === 0 ? (
+            <WriteFirstCard token={token} setOpenReview={setOpenReview} />
+          ) : (
+            <>
+              {/* Review grid */}
+              <div className="pd-review-grid" style={{ marginBottom: 28 }}>
+                {orderedReviews?.map((review, index) => (
+                  <ReviewCard key={review.id || review._id || index} review={review} onImageClick={setSelectedImage} />
+                ))}
+              </div>
+
+              {/* Write a review CTA strip */}
+              {!hasReviewed && (
+                <div style={{
+                  background: GOLD_PALE, border: `1px solid ${BORDER}`, borderRadius: 12,
+                  padding: '28px 24px', textAlign: 'center', marginBottom: 28,
+                }}>
+                  <p style={{ fontSize: 14, color: MUTED, marginBottom: 14 }}>
+                    Bought this product? Share your manifestation story ✨
+                  </p>
+                  <button
+                    className="pd-write-btn"
+                    onClick={() => token && setOpenReview(true)}
+                    title={!token ? 'Please login to write a review' : ''}
+                    style={{
+                      background: token ? GOLD : '#ccc', color: token ? DEEP : '#4f4f4fff',
+                      border: 'none', borderRadius: 8, padding: '13px 36px',
+                      fontSize: 15, fontWeight: 700, cursor: token ? 'pointer' : 'not-allowed',
+                      letterSpacing: '.03em', transition: 'background .2s',
+                    }}
+                  >
+                    Write a Review
+                  </button>
+                </div>
+              )}
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, flexWrap: 'wrap' }}>
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    style={{
+                      width: 36, height: 36, borderRadius: 8, border: `1.5px solid ${BORDER}`,
+                      background: 'transparent', color: DEEP, display: 'flex', alignItems: 'center',
+                      justifyContent: 'center', cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                      opacity: currentPage === 1 ? 0.4 : 1,
+                    }}
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum;
+                    if (totalPages <= 5) pageNum = i + 1;
+                    else if (currentPage <= 3) pageNum = i + 1;
+                    else if (currentPage >= totalPages - 2) pageNum = totalPages - 4 + i;
+                    else pageNum = currentPage - 2 + i;
+
+                    const isActive = pageNum === currentPage;
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => handlePageChange(pageNum)}
+                        style={{
+                          width: 36, height: 36, borderRadius: 8,
+                          border: `1.5px solid ${isActive ? GOLD : BORDER}`,
+                          background: isActive ? GOLD : 'transparent',
+                          color: isActive ? DEEP : MUTED, fontWeight: isActive ? 700 : 400,
+                          fontSize: 14, cursor: 'pointer', transition: 'all .2s',
+                          transform: isActive ? 'scale(1.08)' : 'none',
+                        }}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+
+                  {totalPages > 5 && currentPage < totalPages - 2 && (
+                    <>
+                      <span style={{ color: MUTED, padding: '0 4px' }}>…</span>
+                      <button onClick={() => handlePageChange(totalPages)}
+                        style={{ width: 36, height: 36, borderRadius: 8, border: `1.5px solid ${BORDER}`, background: 'transparent', color: MUTED, fontSize: 14, cursor: 'pointer' }}>
+                        {totalPages}
+                      </button>
+                    </>
+                  )}
+
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    style={{
+                      width: 36, height: 36, borderRadius: 8, border: `1.5px solid ${BORDER}`,
+                      background: 'transparent', color: DEEP, display: 'flex', alignItems: 'center',
+                      justifyContent: 'center', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                      opacity: currentPage === totalPages ? 0.4 : 1,
+                    }}
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
-
-        {/* Rating summary */}
-        <RatingSummary reviewData={reviewData} />
-
-        {/* States */}
-        {reviewsLoading ? (
-          <div style={{ textAlign: 'center', padding: '48px 0' }}>
-            <Loader2 size={36} style={{ animation: 'spin 1s linear infinite', color: GOLD, marginBottom: 12 }} />
-            <p style={{ color: MUTED }}>Loading reviews…</p>
-            <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
-          </div>
-        ) : reviewsError ? (
-          <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 12, padding: 24, textAlign: 'center' }}>
-            <AlertCircle size={32} color="#EF4444" style={{ marginBottom: 8 }} />
-            <p style={{ color: '#DC2626', marginBottom: 12, fontSize: 14 }}>Error loading reviews: {reviewsError}</p>
-            <button onClick={() => fetchProductReviews(currentPage)} style={{ background: '#EF4444', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 20px', cursor: 'pointer', fontWeight: 500 }}>
-              Try Again
-            </button>
-          </div>
-        ) : reviews.length === 0 ? (
-          <WriteFirstCard token={token} setOpenReview={setOpenReview} />
-        ) : (
-          <>
-            {/* Review grid */}
-            <div className="pd-review-grid" style={{ marginBottom: 28 }}>
-              {orderedReviews?.map((review, index) => (
-                <ReviewCard key={review.id || review._id || index} review={review} onImageClick={setSelectedImage} />
-              ))}
-            </div>
-
-            {/* Write a review CTA strip */}
-            {!hasReviewed && (
-              <div style={{
-                background: GOLD_PALE, border: `1px solid ${BORDER}`, borderRadius: 12,
-                padding: '28px 24px', textAlign: 'center', marginBottom: 28,
-              }}>
-                <p style={{ fontSize: 14, color: MUTED, marginBottom: 14 }}>
-                  Bought this product? Share your manifestation story ✨
-                </p>
-                <button
-                  className="pd-write-btn"
-                  onClick={() => token && setOpenReview(true)}
-                  title={!token ? 'Please login to write a review' : ''}
-                  style={{
-                    background: token ? GOLD : '#ccc', color: token ? DEEP : '#4f4f4fff',
-                    border: 'none', borderRadius: 8, padding: '13px 36px',
-                    fontSize: 15, fontWeight: 700, cursor: token ? 'pointer' : 'not-allowed',
-                    letterSpacing: '.03em', transition: 'background .2s',
-                  }}
-                >
-                  Write a Review
-                </button>
-              </div>
-            )}
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, flexWrap: 'wrap' }}>
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  style={{
-                    width: 36, height: 36, borderRadius: 8, border: `1.5px solid ${BORDER}`,
-                    background: 'transparent', color: DEEP, display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-                    opacity: currentPage === 1 ? 0.4 : 1,
-                  }}
-                >
-                  <ChevronLeft size={16} />
-                </button>
-
-                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                  let pageNum;
-                  if (totalPages <= 5) pageNum = i + 1;
-                  else if (currentPage <= 3) pageNum = i + 1;
-                  else if (currentPage >= totalPages - 2) pageNum = totalPages - 4 + i;
-                  else pageNum = currentPage - 2 + i;
-
-                  const isActive = pageNum === currentPage;
-                  return (
-                    <button
-                      key={pageNum}
-                      onClick={() => handlePageChange(pageNum)}
-                      style={{
-                        width: 36, height: 36, borderRadius: 8,
-                        border: `1.5px solid ${isActive ? GOLD : BORDER}`,
-                        background: isActive ? GOLD : 'transparent',
-                        color: isActive ? DEEP : MUTED, fontWeight: isActive ? 700 : 400,
-                        fontSize: 14, cursor: 'pointer', transition: 'all .2s',
-                        transform: isActive ? 'scale(1.08)' : 'none',
-                      }}
-                    >
-                      {pageNum}
-                    </button>
-                  );
-                })}
-
-                {totalPages > 5 && currentPage < totalPages - 2 && (
-                  <>
-                    <span style={{ color: MUTED, padding: '0 4px' }}>…</span>
-                    <button onClick={() => handlePageChange(totalPages)}
-                      style={{ width: 36, height: 36, borderRadius: 8, border: `1.5px solid ${BORDER}`, background: 'transparent', color: MUTED, fontSize: 14, cursor: 'pointer' }}>
-                      {totalPages}
-                    </button>
-                  </>
-                )}
-
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  style={{
-                    width: 36, height: 36, borderRadius: 8, border: `1.5px solid ${BORDER}`,
-                    background: 'transparent', color: DEEP, display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-                    opacity: currentPage === totalPages ? 0.4 : 1,
-                  }}
-                >
-                  <ChevronRight size={16} />
-                </button>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </>
-  );
-};
+      </>
+    );
+  };
 
 export default Review;
