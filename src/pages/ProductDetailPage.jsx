@@ -397,6 +397,7 @@ export default function ProductDetails({ countryCurrency, country }) {
      
         * { box-sizing: border-box; }
         body { font-family: 'DM Sans', sans-serif; background: ${CREAM}; color: ${INK}; }
+        .pd-product-wrap > div { min-width: 0; }
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
         @keyframes spin { to { transform: rotate(360deg); } }
         .pd-btn-cart:hover { background: #2e1f0f !important; }
@@ -413,7 +414,7 @@ export default function ProductDetails({ countryCurrency, country }) {
           .pd-review-grid { grid-template-columns: 1fr !important; }
           .pd-bottom-cta { padding: 28px 16px !important; }
           .pd-sticky-bar { display: flex !important; }
-          .pd-trust-row { grid-template-columns: repeat(2,1fr) !important; }
+          .pd-trust-row { grid-template-columns: repeat(3,1fr) !important; }
           .pd-ann-bar { font-size: 11px !important; }
         }
         @media(min-width: 769px) { .pd-sticky-bar { display: none !important; } }
@@ -454,21 +455,20 @@ export default function ProductDetails({ countryCurrency, country }) {
 
 
         {/* LEFT: Images */}
-        <div style={{ minWidth: 0 }}>
+        <div>
           <div style={{ background: '#fff', borderRadius: 12, border: `1px solid ${BORDER}`, overflow: 'hidden', padding: 8 }}>
             <ProductImageGallery images={product.images || [product.image]} videos={product.videos || []} />
           </div>
           {/* Trust badges row */}
-          <div className="pd-trust-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8, marginTop: 16 }}>
+          <div className="pd-trust-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginTop: 16 }}>
             <TrustItem icon="🚚" label="Fast Delivery" />
             <TrustItem icon="🔒" label="Secure Payment" />
             <TrustItem icon="💎" label="Quality Product" />
-            <TrustItem icon="✨" label="Vedic Charged" />
           </div>
         </div>
 
         {/* RIGHT: Copy */}
-        <div style={{ minWidth: 0 }}>
+        <div>
           {/* Badges */}
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
             <Badge variant="gold">✦ Premium Spiritual Tool</Badge>
