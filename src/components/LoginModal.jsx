@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { setLoginTimestamp } from "../utils/auth";
 
 const LoginModal = ({ isOpen, onClose, setIsAuthenticated }) => {
   const [phone, setPhone] = useState("");
@@ -122,6 +123,8 @@ const LoginModal = ({ isOpen, onClose, setIsAuthenticated }) => {
       if (data.success) {
         localStorage.setItem("user", JSON.stringify(data.data));
         localStorage.setItem("token", data.token);
+        localStorage.setItem("referralCode", data.referralCode || data.refferralCode || "");
+        setLoginTimestamp();
         console.log("data.token", data.token);
 
         await syncLocalCartToServer(data.token);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Loader, Search, ChevronDown, X } from 'lucide-react';
 import { createPortal } from "react-dom";
+import { setLoginTimestamp } from "../utils/auth";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -341,6 +342,8 @@ const RegistrationModal = ({ isOpen, onClose, setIsAuthenticated }) => {
             if (data.success) {
                 localStorage.setItem("user", JSON.stringify(data.data));
                 localStorage.setItem("token", data.token);
+                localStorage.setItem("referralCode", data.referralCode || data.refferralCode || "");
+                setLoginTimestamp();
                 await syncLocalCartToServer(data.token);
                 setShowOtpModal(false);
                 setFormData({

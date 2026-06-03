@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { setLoginTimestamp } from '../utils/auth';
 
 export default function useInlineAuth({ setIsAuthenticated, onVerifySuccess }) {
     const [authPhone, setAuthPhone] = useState('');
@@ -78,6 +79,8 @@ export default function useInlineAuth({ setIsAuthenticated, onVerifySuccess }) {
             if (data.success) {
                 localStorage.setItem("user", JSON.stringify(data.data));
                 localStorage.setItem("token", data.token);
+                localStorage.setItem("referralCode", data.referralCode || data.refferralCode || "");
+                setLoginTimestamp();
                 if (onVerifySuccess) {
                     onVerifySuccess(data);
                 }
