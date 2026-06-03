@@ -442,15 +442,6 @@ export default function ProductDetails({ countryCurrency, country }) {
         🌟 FREE SHIPPING on prepaid orders &nbsp;·&nbsp; <span style={{ color: '#fff' }}>Use code CHAKRA10 for 10% off your first order</span>
       </div> */}
 
-      {/* Urgency Strip */}
-      {/* <div style={{ background: '#FFF3CD', borderBottom: '1px solid #F0C040', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 24, padding: '10px 20px', fontSize: 13, fontWeight: 500, flexWrap: 'wrap' }}>
-        <span><span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: RED, marginRight: 6, animation: 'blink 1.2s infinite' }} />Ships within 24 hours</span>
-        <span style={{ color: GOLD }}>·</span>
-        <span>🛡️ 7-day easy return</span>
-        <span style={{ color: GOLD }}>·</span>
-        <span>📦 Cash on Delivery available</span>
-      </div> */}
-
       {/* Back button */}
       {/* <div style={{ maxWidth: 1360, margin: '32px auto 0', padding: '0 24px' }}>
         <button onClick={() => Navigate(-1)} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', color: GOLD, fontSize: 13, fontWeight: 500 }}>
@@ -463,7 +454,7 @@ export default function ProductDetails({ countryCurrency, country }) {
 
 
         {/* LEFT: Images */}
-        <div>
+        <div style={{ minWidth: 0 }}>
           <div style={{ background: '#fff', borderRadius: 12, border: `1px solid ${BORDER}`, overflow: 'hidden', padding: 8 }}>
             <ProductImageGallery images={product.images || [product.image]} videos={product.videos || []} />
           </div>
@@ -472,12 +463,12 @@ export default function ProductDetails({ countryCurrency, country }) {
             <TrustItem icon="🚚" label="Fast Delivery" />
             <TrustItem icon="🔒" label="Secure Payment" />
             <TrustItem icon="💎" label="Quality Product" />
-            <TrustItem icon="↩️" label="Easy Return" />
+            <TrustItem icon="✨" label="Vedic Charged" />
           </div>
         </div>
 
         {/* RIGHT: Copy */}
-        <div>
+        <div style={{ minWidth: 0 }}>
           {/* Badges */}
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
             <Badge variant="gold">✦ Premium Spiritual Tool</Badge>

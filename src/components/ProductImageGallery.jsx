@@ -41,13 +41,50 @@ export default function ProductImageGallery({ images = [], videos = [] }) {
     <>
       <style>{`
         .pgg-thumb::-webkit-scrollbar { display: none; }
-        .pgg-thumb { -ms-overflow-style: none; scrollbar-width: none; }
+        .pgg-thumb {
+          display: flex;
+          gap: 6px;
+          overflow-x: auto;
+          width: 100%;
+          max-width: 100%;
+          padding: 10px 0 4px;
+          margin-top: 2px;
+          -webkit-overflow-scrolling: touch;
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
         .pgg-fade-in { animation: pgg-fade .25s ease; }
         @keyframes pgg-fade { from { opacity: 0; } to { opacity: 1; } }
         .pgg-arrow { transition: background .18s, transform .18s; }
         .pgg-arrow:hover { background: rgba(0,0,0,0.55) !important; transform: translateY(-50%) scale(1.08); }
-        .pgg-thumb-item { transition: opacity .18s, transform .18s; }
+        .pgg-thumb-item {
+          flex-shrink: 0;
+          width: 68px;
+          height: 68px;
+          border-radius: 6px;
+          overflow: hidden;
+          cursor: pointer;
+          position: relative;
+          transition: opacity .18s, transform .18s;
+        }
         .pgg-thumb-item:hover { opacity: 1 !important; transform: translateY(-2px); }
+        @media(max-width: 768px) {
+          .pgg-thumb-item {
+            width: 50px;
+            height: 50px;
+          }
+        }
+        .pgg-fraction-badge {
+          display: none;
+        }
+        .pgg-fraction-badge.show-desktop {
+          display: block;
+        }
+        @media (max-width: 768px) {
+          .pgg-fraction-badge {
+            display: block !important;
+          }
+        }
       `}</style>
 
       {/* ── Main viewer ── */}
@@ -175,29 +212,44 @@ export default function ProductImageGallery({ images = [], videos = [] }) {
             ))}
           </div>
         )}
+
+        {/* Floating Page Indicator */}
+        {media.length > 1 && (
+          <div
+            className={`pgg-fraction-badge ${media.length > 8 ? 'show-desktop' : ''}`}
+            style={{
+              position: 'absolute',
+              bottom: 12,
+              right: 12,
+              background: 'rgba(0, 0, 0, 0.65)',
+              backdropFilter: 'blur(4px)',
+              color: '#fff',
+              padding: '4px 10px',
+              borderRadius: 20,
+              fontSize: 11,
+              fontWeight: 600,
+              zIndex: 5,
+              pointerEvents: 'none',
+              letterSpacing: '0.05em',
+            }}
+          >
+            {selectedIndex + 1} / {media.length}
+          </div>
+        )}
       </div>
 
       {/* ── Thumbnails ── */}
       {media.length > 1 && (
-        <div
-          className="pgg-thumb"
-          style={{
-            display: 'flex', gap: 6, overflowX: 'auto',
-            padding: '10px 0 4px', marginTop: 2,
-          }}
-        >
+        <div className="pgg-thumb">
           {media.map((m, i) => (
             <div
               key={i}
               className="pgg-thumb-item"
               onClick={() => setSelectedIndex(i)}
               style={{
-                flexShrink: 0, width: 68, height: 68,
-                borderRadius: 6, overflow: 'hidden', cursor: 'pointer',
                 opacity: selectedIndex === i ? 1 : 0.45,
                 outline: selectedIndex === i ? '2px solid #C9A84C' : '2px solid transparent',
                 outlineOffset: 2,
-                position: 'relative',
               }}
             >
               {m.type === 'image' ? (

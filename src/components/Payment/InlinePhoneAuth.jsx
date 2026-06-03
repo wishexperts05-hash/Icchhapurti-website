@@ -63,7 +63,7 @@ export default function InlinePhoneAuth({
                         )}
                     </button>
                 </form>
-                <p className="text-center text-[10px] text-gray-400">100% Secure Transaction • Easy Returns</p>
+                <p className="text-center text-[10px] text-gray-400">100% Secure Transaction • Vedic Blessed</p>
             </div>
         );
     }

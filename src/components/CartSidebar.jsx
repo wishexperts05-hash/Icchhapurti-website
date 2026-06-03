@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Loader2, ShoppingCart, AlertCircle, Plus, Minus, Trash2, ArrowRight, ShieldCheck, Truck, Package } from 'lucide-react';
+import { X, Loader2, ShoppingCart, AlertCircle, Plus, Minus, Trash2, ArrowRight, ShieldCheck, Truck, Package, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useHeader } from '../context/HeaderContext';
 import ProgressOfferBar from './ProgressOfferBar';
@@ -312,7 +312,7 @@ export default function CartSidebar({ isOpen, onClose, countryCurrency, onChecko
             {[
               { icon: <Truck size={13} color={GOLD} />, text: 'Fast Shipping' },
               { icon: <ShieldCheck size={13} color={GREEN} />, text: 'Secure Checkout' },
-              { icon: <Package size={13} color={MUTED} />, text: 'Easy Returns' },
+              { icon: <Sparkles size={13} color={GOLD} />, text: 'Vedic Charged' },
             ].map(({ icon, text }) => (
               <span key={text} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: MUTED, fontWeight: 500 }}>
                 {icon} {text}
