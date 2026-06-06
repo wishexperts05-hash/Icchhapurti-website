@@ -63,7 +63,7 @@ const HomePage = ({ countryCurrency, country }) => {
 
   const fetchNotifications = useCallback(async () => {
     // Check cache first
-    const cachedUnread = localStorage.getItem('unread_count');
+    const cachedUnread = localStorage.getItem('unreadCount');
     const cacheTime = localStorage.getItem('notifications_cache_time');
 
     if (cachedUnread && cacheTime && Date.now() - parseInt(cacheTime) < CACHE_DURATION) {
@@ -89,7 +89,7 @@ const HomePage = ({ countryCurrency, country }) => {
       const unreadCount = allNotifications.filter(n => !n.isRead).length;
 
       localStorage.setItem("unreadCount", unreadCount);
-      localStorage.setItem("unread_count", unreadCount);
+      // localStorage.setItem("unread_count", unreadCount);
       localStorage.setItem("notifications_cache_time", Date.now().toString());
 
       setUnreadCount(unreadCount);
@@ -124,134 +124,6 @@ const HomePage = ({ countryCurrency, country }) => {
       console.error("Error fetching wishlist:", err);
     }
   }, [token, setList]);
-
-  // ✅ Add this at the top of your component (outside any function)
-  let isSettingUpNotifications = false;
-
-  // ✅ Setup notifications ONCE when component mounts
-  // useEffect(() => {
-  //   if (!token) return;
-
-  //   const setupNotifications = async () => {
-  //     // ✅ Prevent concurrent calls
-  //     if (isSettingUpNotifications) {
-  //       console.log('⏸️ Already setting up notifications, skipping...');
-  //       return;
-  //     }
-
-  //     try {
-  //       isSettingUpNotifications = true; // Lock
-
-  //       // Check if browser supports notifications
-  //       if (!('Notification' in window) || !('serviceWorker' in navigator)) {
-  //         console.log('⚠️ Notifications not supported');
-  //         return;
-  //       }
-
-  //       console.log('🔔 Setting up notifications...', Notification.permission);
-
-  //       // 🟡 CASE 1: Not decided yet → ASK permission
-  //       if (Notification.permission === "default") {
-  //         const permission = await Notification.requestPermission();
-
-  //         if (permission !== 'granted') {
-  //           console.log('⚠️ Notification permission denied');
-  //           return;
-  //         }
-  //       }
-
-  //       // ✅ Check if permission is granted
-  //       if (Notification.permission === 'granted') {
-  //         console.log('✅ Permission granted, getting token...');
-
-  //         // ✅ Wait a bit to ensure service worker is ready
-  //         await new Promise(resolve => setTimeout(resolve, 500));
-
-  //         // Get FCM token
-  //         const fcmToken = await getToken(messaging, {
-  //           vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY
-  //         });
-
-  //         if (!fcmToken) {
-  //           console.error('❌ Failed to get FCM token');
-  //           return;
-  //         }
-
-  //         console.log('🔥 FCM Token:', fcmToken);
-
-  //         // ✅ CHECK: Only save if token is NEW or DIFFERENT
-  //         const savedToken = localStorage.getItem('fcm_token');
-
-  //         if (savedToken === fcmToken) {
-  //           console.log('ℹ️ Token already saved, skipping API call');
-  //           return;
-  //         }
-
-  //         // ✅ Save NEW token to backend
-  //         const response = await fetch(
-  //           `${import.meta.env.VITE_API_URL}/api/user/fcm/add-token`,
-  //           {
-  //             method: 'POST',
-  //             headers: {
-  //               'Content-Type': 'application/json',
-  //               'Authorization': `Bearer ${token}`
-  //             },
-  //             body: JSON.stringify({
-  //               token: fcmToken,
-  //               deviceType: "web"
-  //             })
-  //           }
-  //         );
-
-  //         if (response.ok) {
-  //           console.log('✅ FCM token saved to backend');
-  //           localStorage.setItem('fcm_token', fcmToken);
-  //         } else {
-  //           console.error('❌ Failed to save token to backend');
-  //         }
-  //       } else {
-  //         console.log('⚠️ Notification permission not granted');
-  //       }
-  //     } catch (error) {
-  //       console.error('❌ Error setting up notifications:', error);
-  //     } finally {
-  //       // ✅ Release lock after a delay
-  //       setTimeout(() => {
-  //         isSettingUpNotifications = false;
-  //       }, 1000);
-  //     }
-  //   };
-
-  //   setupNotifications();
-
-
-  // }, []); 
-
-  // ✅ Separate useEffect for foreground notifications
-  // useEffect(() => {
-  //   if (!token) return;
-
-  //   // Handle notifications when app is in foreground
-  //   const unsubscribe = onMessage(messaging, (payload) => {
-  //     console.log('📨 Foreground notification received:', payload);
-
-  //     // Show notification
-  //     if (Notification.permission === 'granted') {
-  //       const { title, body, icon, image } = payload.notification || {};
-
-  //       new Notification(title || 'New Notification', {
-  //         body: body || 'You have a new message',
-  //         icon: icon || '/firebase-logo.png',
-  //         image: image,
-  //         badge: '/badge-icon.png',
-  //         data: payload.data
-  //       });
-  //     }
-  //   });
-
-  //   return () => unsubscribe();
-  // }, [token]);
-
 
 
 

@@ -47,7 +47,7 @@ export const logoutUser = () => {
     localStorage.removeItem('wishlist_count');
     localStorage.removeItem('wishlist_cache_time');
     localStorage.removeItem('unreadCount');
-    localStorage.removeItem('unread_count');
+    // localStorage.removeItem('unread_count');
     localStorage.removeItem('notifications_cache_time');
 
     // Reset cart count
