@@ -190,6 +190,7 @@ const ImageCarousel = ({
                   alt={`Slide ${i + 1}`}
                   className="w-full h-full "
                   loading={i === 0 ? "eager" : "lazy"}
+                  fetchPriority={i === 0 ? "high" : "auto"}
                 />
               ) : (
                 <video

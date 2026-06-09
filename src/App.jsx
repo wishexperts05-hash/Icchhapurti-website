@@ -47,9 +47,7 @@ const SpinToWin = lazy(() => import("./components/spinner/SpinToWin"));
 function App() {
   const token = localStorage.getItem("token");
   const { setList } = useHeader();
-
-
-
+  const navigate = useNavigate();
 
   useEffect(() => {
 
@@ -57,9 +55,19 @@ function App() {
 
     if (isSessionValid) {
       fetchWishlist();
+
+      const intervalId = setInterval(() => {
+        const stillValid = checkAndHandleExpiredSession();
+        if (!stillValid) {
+          clearInterval(intervalId);
+          navigate("/login");
+        }
+      }, 60000); // Check every minute
+
+      return () => clearInterval(intervalId);
     }
 
-  }, [token]);
+  }, [token, navigate]);
 
 
   const fetchWishlist = async () => {
@@ -126,78 +134,79 @@ function App() {
     return () => clearTimeout(timer);
   }, [showSplash]);
 
-  if (showSplash) {
-    return <SplashScreen />;
-  }
   return (
     <>
-
+      {showSplash && (
+        <div className="fixed inset-0 z-[9999] bg-[#1a1a1a]">
+          <SplashScreen />
+        </div>
+      )}
       <ScrollToTop />
       <Suspense fallback={<div className="flex justify-center items-center h-screen"><div className="w-10 h-10 border-4 border-gray-900 border-t-transparent rounded-full animate-spin"></div></div>}>
-      <SpinToWin />
+        <SpinToWin />
 
-      <Routes>
-        {/* Public routes without layout */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        {/* <Route path="/" element={<SplashScreen />} /> */}
-        {/* Routes with layout */}
-        <Route element={<Layout countryCurrency={countryCurrency} />}>
+        <Routes>
+          {/* Public routes without layout */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          {/* <Route path="/" element={<SplashScreen />} /> */}
+          {/* Routes with layout */}
+          <Route element={<Layout countryCurrency={countryCurrency} />}>
 
-          <Route path="/" element={<HomePage countryCurrency={countryCurrency} country={country} />} />
-          <Route path="/products" element={<ProductsPage countryCurrency={countryCurrency} country={country} />} />
-          <Route path="/product/:id/:name" element={<ProductDetailPage countryCurrency={countryCurrency} country={country} />} />
-          <Route path="/wallet" element={<WalletPage />} />
-          <Route path="/reedem" element={<RedeemPage />} />
-          <Route path="/reedem-history" element={<RedeemHistory />} />
-          <Route path="/notification" element={<Notification />} />
-          <Route path="/account" element={<AccountPage />} />
-          <Route path="/edit-profile" element={<EditProfile />} />
-          <Route path="/view-profile" element={<ViewProfile />} />
-          <Route path="/addresses" element={<ShippingAddressPage />} />
-          <Route path="/address-form" element={<AddressForm />} />
-          <Route path="/address-form/:id" element={<AddressForm />} />
-          {/* <Route path="/cart" element={<CartPage />} /> */}
-          <Route path="/wishlist" element={<WishlistPage />} />
-          {/* <Route path="/payments" element={<PaymentPage />} /> */}
-          <Route path="/orders" element={<OrdersPage />} />
-          <Route path="/orders/:orderId" element={<OrderDetailsPage />} />
-          <Route path="/orders/return/:id" element={<OrderReturnPage />} />
-          <Route path="/add/review/:id" element={<AddReviewPage />} />
-          <Route path="/refer-programme" element={<ReferProgramPage />} />
-          <Route path="/buy-coins" element={<BuyCoinsPage />} />
-          <Route path="/lucky-draw" element={<LuckyDrawPage />} />
-          <Route path="/languages" element={<LanguagePage />} />
-          <Route path="/terms" element={<TermsPage />} />
-          <Route path="/privacy" element={<PrivacyPage />} />
-          <Route path="/chat-support" element={<CosmicChatSupport />} />
-          <Route path="/about-us" element={<AboutUs />} />
-          <Route path="/thank-you" element={<ThankYou />} />
-          <Route path="/blogs" element={<BlogsPage />} />
-          <Route path="/blogs/:id" element={<BlogDetailPage />} />
-          <Route path="/faq" element={<FAQPage />} />
-          <Route path="/contact" element={<ContactUs />} />
-          <Route path="/shipping-policy" element={<ShippingPolicy />} />
-          <Route path="/refund-cancellation-policy" element={<RefundCancellationPolicy />} />
-          <Route
-            path="*"
-            element={
-              <div className="flex flex-col items-center justify-center h-screen">
-                <h1 className="text-5xl text-white font-bold">404</h1>
-                <p className="text-gray-200 mt-2">Page Not Found</p>
-                <Link
-                  to="/"
-                  className="mt-4 text-blue-600 hover:underline"
-                >
-                  Go back to Home
-                </Link>
-              </div>
-            }
-          />
+            <Route path="/" element={<HomePage countryCurrency={countryCurrency} country={country} />} />
+            <Route path="/products" element={<ProductsPage countryCurrency={countryCurrency} country={country} />} />
+            <Route path="/product/:id/:name" element={<ProductDetailPage countryCurrency={countryCurrency} country={country} />} />
+            <Route path="/wallet" element={<WalletPage />} />
+            <Route path="/reedem" element={<RedeemPage />} />
+            <Route path="/reedem-history" element={<RedeemHistory />} />
+            <Route path="/notification" element={<Notification />} />
+            <Route path="/account" element={<AccountPage />} />
+            <Route path="/edit-profile" element={<EditProfile />} />
+            <Route path="/view-profile" element={<ViewProfile />} />
+            <Route path="/addresses" element={<ShippingAddressPage />} />
+            <Route path="/address-form" element={<AddressForm />} />
+            <Route path="/address-form/:id" element={<AddressForm />} />
+            {/* <Route path="/cart" element={<CartPage />} /> */}
+            <Route path="/wishlist" element={<WishlistPage />} />
+            {/* <Route path="/payments" element={<PaymentPage />} /> */}
+            <Route path="/orders" element={<OrdersPage />} />
+            <Route path="/orders/:orderId" element={<OrderDetailsPage />} />
+            <Route path="/orders/return/:id" element={<OrderReturnPage />} />
+            <Route path="/add/review/:id" element={<AddReviewPage />} />
+            <Route path="/refer-programme" element={<ReferProgramPage />} />
+            <Route path="/buy-coins" element={<BuyCoinsPage />} />
+            <Route path="/lucky-draw" element={<LuckyDrawPage />} />
+            <Route path="/languages" element={<LanguagePage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/chat-support" element={<CosmicChatSupport />} />
+            <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/thank-you" element={<ThankYou />} />
+            <Route path="/blogs" element={<BlogsPage />} />
+            <Route path="/blogs/:id" element={<BlogDetailPage />} />
+            <Route path="/faq" element={<FAQPage />} />
+            <Route path="/contact" element={<ContactUs />} />
+            <Route path="/shipping-policy" element={<ShippingPolicy />} />
+            <Route path="/refund-cancellation-policy" element={<RefundCancellationPolicy />} />
+            <Route
+              path="*"
+              element={
+                <div className="flex flex-col items-center justify-center h-screen">
+                  <h1 className="text-5xl text-white font-bold">404</h1>
+                  <p className="text-gray-200 mt-2">Page Not Found</p>
+                  <Link
+                    to="/"
+                    className="mt-4 text-blue-600 hover:underline"
+                  >
+                    Go back to Home
+                  </Link>
+                </div>
+              }
+            />
 
 
-        </Route>
-      </Routes>
+          </Route>
+        </Routes>
       </Suspense>
     </>
   );

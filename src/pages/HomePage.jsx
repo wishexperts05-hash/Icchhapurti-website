@@ -1,19 +1,18 @@
 // Add this to your HomePage.jsx
 
-import React, { useEffect, useCallback } from 'react'
-import OurProducts from '../components/OurProducts'
+import React, { useEffect, useCallback, Suspense, lazy } from 'react'
 import ImageCarousel from '../components/ImageCarousel'
 import { useHeader } from '../context/HeaderContext'
-import WhyChooseUs from '../components/WhyChooseUs'
-import { Suspense, lazy } from 'react'
-// import { messaging, getToken, onMessage } from '../utils/firebaseConfig' // ✅ Import Firebase
+import { Star } from 'lucide-react'
+
+// Lazy loaded components
+const OurProducts = lazy(() => import('../components/OurProducts'));
+const WhyChooseUs = lazy(() => import('../components/WhyChooseUs'));
+const Testimonials = lazy(() => import('../components/Testimonials'));
+const ManifestationInfo = lazy(() => import('../components/ManifestationInfo'));
+const HowToUseManifestation = lazy(() => import('../components/HowToUseManifestation'));
 const StoryBanner = lazy(() => import('../components/StoryBanner'));
 const ProductVideoSection = lazy(() => import('../components/ProductVideoSection'));
-import Testimonials from '../components/Testimonials'
-import { Star } from 'lucide-react'
-import ManifestationInfo from '../components/ManifestationInfo'
-import HowToUseManifestation from '../components/HowToUseManifestation'
-
 
 
 
@@ -148,11 +147,13 @@ const HomePage = ({ countryCurrency, country }) => {
 
 
       <ImageCarousel countryCurrency={countryCurrency} />
-      <WhyChooseUs />
-      <OurProducts countryCurrency={countryCurrency} country={country} />
-
-      <ManifestationInfo />
-      <HowToUseManifestation />
+      
+      <Suspense fallback={<div className="h-64 flex items-center justify-center"><p className="text-gray-400">Loading content...</p></div>}>
+        <WhyChooseUs />
+        <OurProducts countryCurrency={countryCurrency} country={country} />
+        <ManifestationInfo />
+        <HowToUseManifestation />
+      </Suspense>
       <Suspense
         fallback={
           <div className="h-[300px] flex items-center justify-center">
@@ -221,7 +222,9 @@ const HomePage = ({ countryCurrency, country }) => {
         </p>
       </div>
 
-      <Testimonials />
+      <Suspense fallback={<div className="h-64 flex items-center justify-center"><p className="text-gray-400">Loading reviews...</p></div>}>
+        <Testimonials />
+      </Suspense>
     </div>
   )
 }

@@ -143,6 +143,7 @@ const SpinToWin = ({ isImmediate = false }) => {
     // ── POPUP LOGIC ──────────────────────────────────────────────
 
     const shouldShowPopup = () => {
+        if (window.__spinPopupOpen) return false;
         if (modalManuallyClosed) return false;
         if (isImmediate) return !(isLoggedIn || hasSpun);
         if (isLoggedIn || hasSpun) return false;
@@ -157,6 +158,13 @@ const SpinToWin = ({ isImmediate = false }) => {
         if (!showWheel || !accessToken) return;
         fetchSpinReward();
     }, [showWheel, accessToken]);
+
+    useEffect(() => {
+        if (showModal) {
+            window.__spinPopupOpen = true;
+            return () => { window.__spinPopupOpen = false; };
+        }
+    }, [showModal]);
 
     useEffect(() => {
         const registered = localStorage.getItem('spinRegistered') === 'true';
@@ -354,10 +362,10 @@ const SpinToWin = ({ isImmediate = false }) => {
         <>
             {showModal && (
                 <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 animate-fadeIn">
-                    <div className="bg-gradient-to-b from-pink-100 to-pink-100 rounded-3xl max-w-2xl w-full relative animate-slideIn shadow-2xl max-h-[90vh] overflow-y-auto">
+                    <div className="bg-[#FAF6EE] rounded-3xl max-w-2xl w-full relative animate-slideIn shadow-2xl max-h-[90vh] overflow-y-auto">
                         <button
                             onClick={closeModal}
-                            className="absolute top-4 right-4 w-9 h-9 bg-black/80 text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform z-10"
+                            className="absolute top-4 right-4 w-9 h-9 bg-[#1A1209]/80 text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform z-10"
                         >✕</button>
 
                         <div className="p-10 pt-14">
@@ -370,13 +378,13 @@ const SpinToWin = ({ isImmediate = false }) => {
                                     <form onSubmit={handleRegister} className="space-y-4">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <input type="text" name="name" placeholder="Full Name *" value={formData.name} onChange={handleInputChange} required
-                                                className="w-full px-4 py-3.5 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all" />
+                                                className="w-full px-4 py-3.5 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-[#C9A84C] focus:border-transparent transition-all" />
 
                                             <input type="email" name="email" placeholder="Email Address (Optional)" value={formData.email} onChange={handleInputChange}
-                                                className="w-full px-4 py-3.5 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all" />
+                                                className="w-full px-4 py-3.5 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-[#C9A84C] focus:border-transparent transition-all" />
 
                                             <input type="tel" name="mobile" placeholder="Mobile Number *" value={formData.mobile} onChange={handleInputChange} required maxLength="10"
-                                                className="w-full px-4 py-3.5 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all" />
+                                                className="w-full px-4 py-3.5 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-[#C9A84C] focus:border-transparent transition-all" />
 
                                             {/* Country */}
                                             <div className="relative" ref={countryRef}>
@@ -388,13 +396,13 @@ const SpinToWin = ({ isImmediate = false }) => {
                                                     onFocus={() => setShowCountryDropdown(true)}
                                                     disabled={locationLoading.countries}
                                                     required
-                                                    className="w-full px-4 py-3.5 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all disabled:bg-gray-100"
+                                                    className="w-full px-4 py-3.5 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-[#C9A84C] focus:border-transparent transition-all disabled:bg-gray-100"
                                                 />
                                                 {showCountryDropdown && !locationLoading.countries && (
                                                     <div className="absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                                                         {filteredCountries.length > 0 ? filteredCountries.map((c) => (
                                                             <div key={c.isoCode} onClick={() => handleCountrySelect(c)}
-                                                                className="px-4 py-2.5 hover:bg-purple-50 cursor-pointer transition-colors border-b border-gray-100 last:border-0">
+                                                                className="px-4 py-2.5 hover:bg-[#FDF6E3] cursor-pointer transition-colors border-b border-gray-100 last:border-0">
                                                                 <span className="font-medium">{c.flag} {c.country}</span>
                                                                 <span className="text-gray-500 text-sm ml-2">({c.isoCode})</span>
                                                             </div>
@@ -413,13 +421,13 @@ const SpinToWin = ({ isImmediate = false }) => {
                                                     onFocus={() => setShowStateDropdown(true)}
                                                     disabled={!formData.countryIsoCode || locationLoading.states}
                                                     required
-                                                    className="w-full px-4 py-3.5 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                                                    className="w-full px-4 py-3.5 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-[#C9A84C] focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
                                                 />
                                                 {showStateDropdown && states.length > 0 && !locationLoading.states && (
                                                     <div className="absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                                                         {filteredStates.length > 0 ? filteredStates.map((s) => (
                                                             <div key={s.isoCode} onClick={() => handleStateSelect(s)}
-                                                                className="px-4 py-2.5 hover:bg-purple-50 cursor-pointer transition-colors border-b border-gray-100 last:border-0">
+                                                                className="px-4 py-2.5 hover:bg-[#FDF6E3] cursor-pointer transition-colors border-b border-gray-100 last:border-0">
                                                                 <span className="font-medium">{s.name}</span>
                                                             </div>
                                                         )) : <div className="px-4 py-3 text-gray-500 text-sm">No states found</div>}
@@ -437,13 +445,13 @@ const SpinToWin = ({ isImmediate = false }) => {
                                                     onFocus={() => setShowCityDropdown(true)}
                                                     disabled={!formData.stateIsoCode || locationLoading.cities}
                                                     required
-                                                    className="w-full px-4 py-3.5 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                                                    className="w-full px-4 py-3.5 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-[#C9A84C] focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
                                                 />
                                                 {showCityDropdown && cities.length > 0 && !locationLoading.cities && (
                                                     <div className="absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                                                         {filteredCities.length > 0 ? filteredCities.map((c, i) => (
                                                             <div key={i} onClick={() => handleCitySelect(c)}
-                                                                className="px-4 py-2.5 hover:bg-purple-50 cursor-pointer transition-colors border-b border-gray-100 last:border-0">
+                                                                className="px-4 py-2.5 hover:bg-[#FDF6E3] cursor-pointer transition-colors border-b border-gray-100 last:border-0">
                                                                 <span className="font-medium">{c}</span>
                                                             </div>
                                                         )) : <div className="px-4 py-3 text-gray-500 text-sm">No cities found</div>}
@@ -452,18 +460,18 @@ const SpinToWin = ({ isImmediate = false }) => {
                                             </div>
 
                                             <input type="text" name="pin" placeholder="PIN Code *" value={formData.pin} onChange={handleInputChange} required maxLength="6"
-                                                className="w-full px-4 py-3.5 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all" />
+                                                className="w-full px-4 py-3.5 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-[#C9A84C] focus:border-transparent transition-all" />
 
                                             <input type="date" name="dob" value={formData.dob} onChange={handleInputChange}
                                                 max={new Date().toISOString().split('T')[0]}
-                                                className="w-full px-4 py-3.5 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all" />
+                                                className="w-full px-4 py-3.5 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-[#C9A84C] focus:border-transparent transition-all" />
                                         </div>
 
                                         <input type="text" name="street" placeholder="Street Address *" value={formData.street} onChange={handleInputChange} required
-                                            className="w-full px-4 py-3.5 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all" />
+                                            className="w-full px-4 py-3.5 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-[#C9A84C] focus:border-transparent transition-all" />
 
                                         <button type="submit"
-                                            className="w-full bg-black text-white py-4 rounded-lg font-bold text-base hover:bg-gray-800 hover:-translate-y-0.5 hover:shadow-xl transition-all mt-6">
+                                            className="w-full bg-[#1A1209] text-[#FAF6EE] py-4 rounded-lg font-bold text-base hover:bg-black hover:-translate-y-0.5 hover:shadow-xl transition-all mt-6">
                                             SEND OTP
                                         </button>
                                         <p className="text-xs text-gray-500 mt-4 px-2">By continuing, you agree to receive promotional emails and SMS</p>
@@ -475,7 +483,7 @@ const SpinToWin = ({ isImmediate = false }) => {
                             {!showWheel && showOtpVerification && (
                                 <div className="text-center max-w-md mx-auto">
                                     <div className="mb-6">
-                                        <div className="w-20 h-20 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <div className="w-20 h-20 bg-[#C9A84C] rounded-full flex items-center justify-center mx-auto mb-4">
                                             <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                             </svg>
@@ -489,20 +497,20 @@ const SpinToWin = ({ isImmediate = false }) => {
                                         <input type="text" placeholder="Enter 6-digit OTP" value={otp}
                                             onChange={(e) => { setOtp(e.target.value.replace(/\D/g, '')); setOtpError(''); }}
                                             maxLength="6"
-                                            className="w-full px-6 py-4 text-center text-2xl font-bold rounded-lg border-2 border-gray-300 outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all tracking-widest"
+                                            className="w-full px-6 py-4 text-center text-2xl font-bold rounded-lg border-2 border-gray-300 outline-none focus:ring-2 focus:ring-[#C9A84C] focus:border-transparent transition-all tracking-widest bg-white"
                                             autoFocus />
                                         {otpError && <p className="text-red-500 text-sm mt-3">{otpError}</p>}
                                     </div>
 
                                     <button type="button" onClick={handleVerifyOtp} disabled={otp.length !== 6 || isVerifying}
-                                        className={`w-full py-4 rounded-lg font-bold text-base transition-all mb-4 ${otp.length !== 6 || isVerifying ? 'bg-gray-400 text-gray-600 cursor-not-allowed' : 'bg-black text-white hover:bg-gray-800 hover:-translate-y-0.5 hover:shadow-xl'}`}>
+                                        className={`w-full py-4 rounded-lg font-bold text-base transition-all mb-4 ${otp.length !== 6 || isVerifying ? 'bg-gray-400 text-gray-600 cursor-not-allowed' : 'bg-[#1A1209] text-[#FAF6EE] hover:bg-black hover:-translate-y-0.5 hover:shadow-xl'}`}>
                                         {isVerifying ? 'VERIFYING...' : 'VERIFY OTP'}
                                     </button>
 
                                     <div className="text-center mb-4">
                                         {resendTimer > 0
                                             ? <p className="text-gray-600 text-sm">Resend OTP in <span className="font-semibold">{resendTimer}s</span></p>
-                                            : <button type="button" onClick={handleRegister} className="text-purple-600 font-semibold text-sm hover:text-purple-700 transition-colors">Resend OTP</button>
+                                            : <button type="button" onClick={handleRegister} className="text-[#C9A84C] font-semibold text-sm hover:text-[#b08d3a] transition-colors">Resend OTP</button>
                                         }
                                     </div>
 
@@ -528,7 +536,7 @@ const SpinToWin = ({ isImmediate = false }) => {
                                                 const isBlack = index % 2 === 0;
                                                 return (
                                                     <div key={index}
-                                                        className={`absolute w-1/2 h-1/2 origin-bottom-right ${isBlack ? 'bg-black' : 'bg-[#f5f5dc]'}`}
+                                                        className={`absolute w-1/2 h-1/2 origin-bottom-right ${isBlack ? 'bg-[#1A1209]' : 'bg-[#FAF6EE]'}`}
                                                         style={{ transform: `rotate(${index * 60}deg)`, clipPath: 'polygon(0 0, 100% 0, 100% 100%)' }}
                                                     >
                                                         <span className={`absolute left-[65%] top-[30%] -translate-x-1/2 rotate-[45deg] ${isBlack ? 'text-white' : 'text-gray-800'} font-bold text-xs text-center w-24 leading-tight whitespace-normal`}>
@@ -542,7 +550,7 @@ const SpinToWin = ({ isImmediate = false }) => {
                                     </div>
 
                                     <button onClick={handleSpin} disabled={isSpinning || hasSpun}
-                                        className={`w-full py-4 rounded-lg font-bold text-base transition-all ${isSpinning || hasSpun ? 'bg-gray-600 cursor-not-allowed opacity-60' : 'bg-black text-white hover:bg-gray-800 hover:-translate-y-1 hover:shadow-xl'}`}>
+                                        className={`w-full py-4 rounded-lg font-bold text-base transition-all ${isSpinning || hasSpun ? 'bg-gray-400 cursor-not-allowed opacity-60 text-gray-700' : 'bg-[#1A1209] text-[#FAF6EE] hover:bg-black hover:-translate-y-1 hover:shadow-xl'}`}>
                                         {hasSpun ? 'ALREADY PLAYED' : isSpinning ? 'SPINNING...' : 'SPIN MY WHEEL'}
                                     </button>
 
@@ -553,7 +561,7 @@ const SpinToWin = ({ isImmediate = false }) => {
                                             <p className="text-gray-600 text-xs mb-2">on {selectedPrize.productName}</p>
                                             {selectedPrize.couponCode && (
                                                 <>
-                                                    <div className="bg-[#f5f5dc] py-2 px-3 rounded-lg font-bold text-gray-800 text-lg tracking-wider my-2">{selectedPrize.couponCode}</div>
+                                                    <div className="bg-[#FAF6EE] border border-[#C9A84C] py-2 px-3 rounded-lg font-bold text-[#1A1209] text-lg tracking-wider my-2">{selectedPrize.couponCode}</div>
                                                     <p className="text-xs text-gray-600">apply at checkout</p>
                                                 </>
                                             )}

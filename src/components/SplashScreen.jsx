@@ -2,15 +2,6 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SplashScreen = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      navigate("/");
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, [navigate]);
 
   return (
     <div className="relative w-full h-screen flex items-center justify-center overflow-hidden">

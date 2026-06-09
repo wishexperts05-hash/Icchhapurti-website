@@ -3,8 +3,8 @@
  * Handles token expiry and auto-logout after 5 days
  */
 
-const AUTH_EXPIRY_DAYS = 5;
-const AUTH_EXPIRY_MS = AUTH_EXPIRY_DAYS * 24 * 60 * 60 * 1000; // 5 days in milliseconds
+const AUTH_EXPIRY_DAYS = 25;
+const AUTH_EXPIRY_MS = AUTH_EXPIRY_DAYS * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 
 /**
  * Store login timestamp when user logs in
