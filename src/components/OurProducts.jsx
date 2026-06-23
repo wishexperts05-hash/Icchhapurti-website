@@ -19,7 +19,7 @@ export default function OurProducts({ countryCurrency, country }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page] = useState(1);
-  const [limit] = useState(4);
+  const [limit] = useState(10);
   const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
   const [openPayment, setOpenPayment] = useState(false);
 

@@ -25,7 +25,7 @@ export default function ProductsPage({ countryCurrency, country }) {
   const [debounceSearch, setDebounceSearch] = useState("");
   const { setCount } = useHeader();
   const Navigate = useNavigate();
-    const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
   const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
   const [openPayment, setOpenPayment] = useState(false);

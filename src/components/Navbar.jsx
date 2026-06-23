@@ -108,7 +108,7 @@ export default function Navbar({ countryCurrency }) {
   };
 
 
-  const products = JSON.parse(sessionStorage.getItem("products")) || []
+  const products = JSON.parse(sessionStorage.getItem("products_INR_1_10")) || []
 
   return (
     <>
