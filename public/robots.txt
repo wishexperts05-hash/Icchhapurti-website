@@ -1,0 +1,41 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Allow: /about-us
+Allow: /products
+Allow: /product/
+Allow: /blogs
+Allow: /blogs/
+Allow: /faq
+Allow: /contact
+Allow: /terms
+Allow: /privacy
+Allow: /shipping-policy
+Allow: /refund-cancellation-policy
+
+# Disallow account, shopping flow, and authentication pages from being indexed
+Disallow: /login
+Disallow: /register
+Disallow: /wallet
+Disallow: /reedem
+Disallow: /reedem-history
+Disallow: /notification
+Disallow: /account
+Disallow: /edit-profile
+Disallow: /view-profile
+Disallow: /addresses
+Disallow: /address-form
+Disallow: /cart
+Disallow: /wishlist
+Disallow: /payments
+Disallow: /orders
+Disallow: /orders/
+Disallow: /add/review/
+Disallow: /refer-programme
+Disallow: /buy-coins
+Disallow: /lucky-draw
+Disallow: /languages
+Disallow: /chat-support
+Disallow: /thank-you
+
+Sitemap: https://icchhapurti.com/sitemap.xml

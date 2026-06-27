@@ -15,6 +15,17 @@
     })(window, document, 'script', 'dataLayer', 'GTM-WW3WSCVJ');</script>
   <!-- End Google Tag Manager -->
 
+  <!-- Google Analytics (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-T4PB7LEX0V"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    // Configure GA4 with send_page_view disabled initially so React Router tracks pages cleanly
+    gtag('config', 'G-T4PB7LEX0V', { send_page_view: false });
+  </script>
+
 
 
   <!-- Meta Pixel Code -->

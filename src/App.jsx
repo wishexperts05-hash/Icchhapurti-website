@@ -1,6 +1,5 @@
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useNavigate, useLocation } from "react-router-dom";
 import React, { lazy, Suspense, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Layout from "./layout/Layout";
 import ScrollToTop from "./components/ScrollToTop";
 import SplashScreen from "./components/SplashScreen";
@@ -48,6 +47,22 @@ function App() {
   const token = localStorage.getItem("token");
   const { setList } = useHeader();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const handlePageView = () => {
+      if (typeof window.gtag === "function") {
+        window.gtag("event", "page_view", {
+          page_path: location.pathname + location.search,
+          page_location: window.location.href,
+          page_title: document.title,
+        });
+      }
+    };
+
+    const timer = setTimeout(handlePageView, 100);
+    return () => clearTimeout(timer);
+  }, [location]);
 
   useEffect(() => {
 
