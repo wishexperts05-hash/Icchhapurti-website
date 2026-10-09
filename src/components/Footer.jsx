@@ -2,7 +2,7 @@ import { Phone, Mail, MapPin, ChevronRight } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Footer = () => {
-    const location = useLocation();
+  const location = useLocation();
   const isHomePage = location.pathname === "/" || location.pathname === "/";
 
   const quickLinks = [
@@ -114,11 +114,11 @@ const Footer = () => {
               <span className="w-8 h-0.5 bg-[#C9A227]" /> {"CONTACT INFO"}
             </h3>
 
-            <a href="mailto:official@icchhapurti.com" className="flex items-center gap-3">
+            <a href="mailto:wishexperts05@gmail.com" className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-[#C9A227]/20">
                 <Mail size={18} className="text-[#C9A227]" />
               </div>
-              <span>Official@icchhapurti.com</span>
+              <span>wishexperts05@gmail.com</span>
             </a>
             <a href="tel:+919084435569" className="flex items-center gap-3 my-2">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-[#C9A227]/20">

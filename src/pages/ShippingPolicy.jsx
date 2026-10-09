@@ -128,7 +128,7 @@ export default function ShippingPolicy() {
             <h2 className="text-2xl font-semibold text-gray-900">Lost or Stolen Packages</h2>
           </div>
           <p className="text-gray-700 leading-relaxed">
-            In the rare event that your package is lost or stolen during transit, please contact our customer support team at <a href="mailto:official@icchhapurti.com" className="text-[#D8891E] font-medium hover:underline">official@icchhapurti.com</a> for assistance. We will work with the shipping carrier to resolve the issue and ensure you receive your order.
+            In the rare event that your package is lost or stolen during transit, please contact our customer support team at <a href="mailto:wishexperts05@gmail.com" className="text-[#D8891E] font-medium hover:underline">wishexperts05@gmail.com</a> for assistance. We will work with the shipping carrier to resolve the issue and ensure you receive your order.
           </p>
         </div>
 
@@ -223,7 +223,7 @@ export default function ShippingPolicy() {
             </div>
             <div className="flex gap-2 text-gray-700">
               <span className="text-[#D8891E] mt-1 font-bold">2.</span>
-              <span>If you accept delivery, take clear photos and videos of the outer packaging and the product immediately and notify us at <a href="mailto:official@icchhapurti.com" className="text-[#D8891E] font-medium hover:underline">official@icchhapurti.com</a> within 24 hours of delivery.</span>
+              <span>If you accept delivery, take clear photos and videos of the outer packaging and the product immediately and notify us at <a href="mailto:wishexperts05@gmail.com" className="text-[#D8891E] font-medium hover:underline">wishexperts05@gmail.com</a> within 24 hours of delivery.</span>
             </div>
           </div>
 
@@ -262,7 +262,7 @@ export default function ShippingPolicy() {
             If you have any questions or concerns regarding your order or our shipping policy, please contact our customer support team.
           </p>
           <div className="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur-sm">
-            <p className="text-lg text-black font-medium">📧 official@icchhapurti.com</p>
+            <p className="text-lg text-black font-medium">📧 wishexperts05@gmail.com</p>
           </div>
           <p className="mt-6 text-sm opacity-90">
             Thank you for choosing ICCHHAPURTI. We appreciate your trust in our products and services.

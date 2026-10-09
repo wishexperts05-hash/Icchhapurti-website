@@ -75,11 +75,17 @@ export default function PaymentModal({ isOpen, onClose, country_name = 'India', 
                 grandTotal: payment.checkoutDetails?.grandTotal
                     ? `${payment.checkoutDetails.grandTotal}`
                     : '',
+                products: cartItems.map(item => ({
+                    name: item.product?.name || item.name || 'Product',
+                    image: item.product?.image || item.product?.images?.[0] || '',
+                    quantity: item.quantity || 1,
+                    price: item.totalAmount || item.product?.price || '',
+                })),
             },
             replace: true,
         });
         sessionStorage.removeItem('orderNumber');
-    }, [Navigate, onClose, setCount, selectedMethod, addressIndex, () => payment?.addresses, () => payment?.checkoutDetails]);
+    }, [Navigate, onClose, setCount, selectedMethod, addressIndex, cartItems, () => payment?.addresses, () => payment?.checkoutDetails]);
 
     /* ── Hooks Wiring ── */
     const auth = useInlineAuth({

@@ -28,7 +28,9 @@ const timeAgo = (iso) => {
     const h = Math.floor(m / 60);
     if (h < 24) return `${h}h ago`;
     const d = Math.floor(h / 24);
-    return `${d}d ago`;
+    if (d < 30) return `${d}d ago`;
+    const mo = Math.floor(d / 30);
+    return `${mo}mo ago`;
 };
 
 /* ─── Skeleton loader ─── */
