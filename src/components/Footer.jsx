@@ -144,7 +144,7 @@ const Footer = () => {
 
           <p>
             Designed by{" "}
-            <span className="text-[#C9A227]">Talentrise Technokrate Pvt. Ltd.</span>
+            <a href="https://one9tech.online" target="_blank" rel="noopener noreferrer" className="text-[#C9A227] text-xl hover:underline">one9tech.online</a>
           </p>
         </div>
       </div>
